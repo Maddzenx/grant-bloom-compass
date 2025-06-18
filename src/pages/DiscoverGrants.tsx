@@ -184,7 +184,7 @@ const DiscoverGrants = () => {
                     <img 
                       src="/lovable-uploads/23db7362-fc6c-4227-9a07-bbc3e401ec75.png" 
                       alt="Vinnova" 
-                      className="w-16 h-6 object-contain"
+                      className="w-20 h-8 object-contain"
                     />
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">{grant.title}</h3>
@@ -243,7 +243,7 @@ const DiscoverGrants = () => {
                     <img 
                       src="/lovable-uploads/23db7362-fc6c-4227-9a07-bbc3e401ec75.png" 
                       alt="Vinnova" 
-                      className="w-16 h-6 object-contain"
+                      className="w-20 h-8 object-contain"
                     />
                   </div>
                   <h2 className="text-xl font-medium text-gray-900 mb-2">{selectedGrant.title}</h2>
