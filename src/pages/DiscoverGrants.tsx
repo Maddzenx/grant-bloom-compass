@@ -1,261 +1,88 @@
 
 import React, { useState } from "react";
-import SearchBar from "@/components/SearchBar";
+import { useGrants } from "@/hooks/useGrants";
 import GrantCard from "@/components/GrantCard";
 import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
+import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
-import { useGrants } from "@/hooks/useGrants";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-const GRANTS_PER_PAGE = 6;
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { PanelLeft } from "lucide-react";
 
 const DiscoverGrants = () => {
+  const { data: grants = [], isLoading, error } = useGrants();
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const { data: grants = [], isLoading, error } = useGrants();
-
-  const toggleBookmark = (grantId: string) => {
-    const newBookmarks = new Set(bookmarkedGrants);
-    if (newBookmarks.has(grantId)) {
-      newBookmarks.delete(grantId);
-    } else {
-      newBookmarks.add(grantId);
-    }
-    setBookmarkedGrants(newBookmarks);
-  };
 
   const filteredGrants = grants.filter(grant =>
-    grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    grant.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  // Reset to first page when search changes
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
-
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredGrants.length / GRANTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * GRANTS_PER_PAGE;
-  const endIndex = startIndex + GRANTS_PER_PAGE;
-  const currentGrants = filteredGrants.slice(startIndex, endIndex);
-
-  // Set the first grant as selected by default
-  React.useEffect(() => {
-    if (currentGrants.length > 0 && !selectedGrant) {
-      setSelectedGrant(currentGrants[0]);
-    }
-  }, [currentGrants, selectedGrant]);
-
-  // Reset selected grant when page changes
-  React.useEffect(() => {
-    if (currentGrants.length > 0) {
-      setSelectedGrant(currentGrants[0]);
-    }
-  }, [currentPage]);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const renderPaginationItems = () => {
-    const items = [];
-    const maxVisiblePages = 5;
-    
-    if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is small
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              onClick={() => handlePageChange(i)}
-              isActive={currentPage === i}
-              className="cursor-pointer"
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    } else {
-      // Show first page
-      items.push(
-        <PaginationItem key={1}>
-          <PaginationLink
-            onClick={() => handlePageChange(1)}
-            isActive={currentPage === 1}
-            className="cursor-pointer"
-          >
-            1
-          </PaginationLink>
-        </PaginationItem>
-      );
-
-      // Show ellipsis if needed
-      if (currentPage > 3) {
-        items.push(
-          <PaginationItem key="ellipsis1">
-            <PaginationEllipsis />
-          </PaginationItem>
-        );
-      }
-
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-      
-      for (let i = start; i <= end; i++) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              onClick={() => handlePageChange(i)}
-              isActive={currentPage === i}
-              className="cursor-pointer"
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-
-      // Show ellipsis if needed
-      if (currentPage < totalPages - 2) {
-        items.push(
-          <PaginationItem key="ellipsis2">
-            <PaginationEllipsis />
-          </PaginationItem>
-        );
-      }
-
-      // Show last page
-      if (totalPages > 1) {
-        items.push(
-          <PaginationItem key={totalPages}>
-            <PaginationLink
-              onClick={() => handlePageChange(totalPages)}
-              isActive={currentPage === totalPages}
-              className="cursor-pointer"
-            >
-              {totalPages}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    }
-
-    return items;
-  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">Laddar bidrag...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg text-gray-600">Loading grants...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-red-500">Fel vid hämtning av bidrag: {error.message}</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg text-red-600">Error loading grants: {error.message}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex h-screen">
-        {/* Left Panel - Grants List */}
-        <div className="w-1/2 flex flex-col">
-          {/* Header section - fixed */}
-          <div className="bg-gray-50 p-8 pb-6 border-b border-gray-200">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Discover Grants</h1>
-            <SearchBar 
-              searchTerm={searchTerm} 
-              onSearchChange={setSearchTerm} 
-            />
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Left Panel - Grant List */}
+      <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
+        {/* Header with collapse button */}
+        <div className="p-6 border-b border-gray-200 bg-white">
+          <div className="flex items-center gap-3 mb-6">
+            <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
+              <PanelLeft className="w-4 h-4" />
+            </SidebarTrigger>
+            <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
+          <SearchBar 
+            searchTerm={searchTerm} 
+            onSearchChange={setSearchTerm}
+          />
+        </div>
 
-          {/* Scrollable grants list */}
-          <div className="flex-1 overflow-y-auto px-8 py-6">
-            <div className="space-y-6">
-              {currentGrants.map((grant) => (
+        {/* Grant Cards */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="space-y-4">
+            {filteredGrants.length === 0 ? (
+              <div className="text-center text-gray-500 mt-8">
+                {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+              </div>
+            ) : (
+              filteredGrants.map((grant) => (
                 <GrantCard
                   key={grant.id}
                   grant={grant}
                   isSelected={selectedGrant?.id === grant.id}
-                  isBookmarked={bookmarkedGrants.has(grant.id)}
-                  onSelect={() => setSelectedGrant(grant)}
-                  onToggleBookmark={() => toggleBookmark(grant.id)}
+                  onClick={() => setSelectedGrant(grant)}
                 />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-8 flex justify-center pb-6">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                        className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
-                      />
-                    </PaginationItem>
-                    
-                    {renderPaginationItems()}
-                    
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                        className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
-
-            {/* Results info */}
-            {filteredGrants.length > 0 && (
-              <div className="text-sm text-gray-500 text-center pb-6">
-                Visar {startIndex + 1}-{Math.min(endIndex, filteredGrants.length)} av {filteredGrants.length} bidrag
-              </div>
+              ))
             )}
           </div>
         </div>
+      </div>
 
-        {/* Right Panel - Grant Details (Fixed/Sticky) */}
-        <div className="w-1/2 bg-white border-l border-gray-200 flex flex-col h-screen">
-          <div className="flex-1 overflow-hidden">
-            {selectedGrant ? (
-              <GrantDetails
-                grant={selectedGrant}
-                isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-                onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
-              />
-            ) : (
-              <EmptyGrantDetails />
-            )}
-          </div>
-        </div>
+      {/* Right Panel - Grant Details */}
+      <div className="w-1/2 bg-white">
+        {selectedGrant ? (
+          <GrantDetails grant={selectedGrant} />
+        ) : (
+          <EmptyGrantDetails />
+        )}
       </div>
     </div>
   );
