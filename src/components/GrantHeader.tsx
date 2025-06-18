@@ -18,7 +18,7 @@ interface GrantHeaderProps {
 const GrantHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: GrantHeaderProps) => {
   return (
     <div className="flex items-start justify-between mb-6">
-      <div className="flex-1 pr-8">
+      <div className="flex-1 pr-4">
         <div className="flex items-center gap-2 mb-4">
           <img 
             src={orgLogo.src}
@@ -27,7 +27,7 @@ const GrantHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: GrantHe
           />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">{grant.title}</h1>
-        <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-none">{grant.description}</p>
+        <p className="text-gray-700 text-lg leading-relaxed mb-6">{grant.description}</p>
       </div>
       <div className="flex gap-3 flex-shrink-0">
         <Button
