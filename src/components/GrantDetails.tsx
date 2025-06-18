@@ -16,7 +16,7 @@ const getOrganizationLogo = (organization: string) => {
     return {
       src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
       alt: "Vinnova",
-      className: "w-16 h-6 object-contain"
+      className: "w-20 h-7 object-contain"
     };
   } else if (orgLower.includes('energimyndigheten')) {
     return {
@@ -34,7 +34,7 @@ const getOrganizationLogo = (organization: string) => {
     return {
       src: "/lovable-uploads/3552e420-3b5f-46bb-9c33-cd4511e2ec34.png",
       alt: "Formas",
-      className: "w-16 h-6 object-contain"
+      className: "w-20 h-7 object-contain"
     };
   } else if (orgLower.includes('tillväxtverket')) {
     return {
@@ -48,7 +48,7 @@ const getOrganizationLogo = (organization: string) => {
   return {
     src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
     alt: organization,
-    className: "w-16 h-6 object-contain"
+    className: "w-20 h-7 object-contain"
   };
 };
 
