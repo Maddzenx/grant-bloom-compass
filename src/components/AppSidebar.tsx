@@ -47,7 +47,7 @@ export function AppSidebar() {
           </Button>
         </div>
 
-        <SidebarContent className="bg-[#f8f4ec] pt-16">
+        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>

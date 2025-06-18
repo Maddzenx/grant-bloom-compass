@@ -40,7 +40,7 @@ const DiscoverHeader = ({
         </div>
         
         <div className="flex items-center justify-between my-0">
-          <div className="text-black text-sm">
+          <div className="text-black text-xs rounded-none">
             {totalGrants} bidrag hittade
           </div>
           <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
