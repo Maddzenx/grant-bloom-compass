@@ -103,7 +103,7 @@ const DiscoverGrants = () => {
       {/* Main Content Area - starts below search */}
       <div className="flex flex-1 h-[calc(100vh-200px)]">
         {/* Left Panel - Grant List (40% width) */}
-        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col h-full">
+        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col">
           {/* Grant Cards - Scrollable */}
           <ScrollArea className="flex-1">
             <div className="p-6 border border-transparent px-[10px] py-[10px]">
@@ -130,20 +130,24 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-[#f8f4ec] h-full p-6 border-transparent px-[10px] py-[10px]">
-          {selectedGrant ? (
-            <div className="bg-white rounded-lg h-full">
-              <GrantDetails
-                grant={selectedGrant}
-                isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-                onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
-              />
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg h-full">
-              <EmptyGrantDetails />
-            </div>
-          )}
+        <div className="w-3/5 bg-[#f8f4ec] flex flex-col">
+          <div className="flex-1 p-6 border-transparent px-[10px] py-[10px]">
+            {selectedGrant ? (
+              <ScrollArea className="h-full">
+                <div className="bg-white rounded-lg">
+                  <GrantDetails
+                    grant={selectedGrant}
+                    isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+                    onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
+                  />
+                </div>
+              </ScrollArea>
+            ) : (
+              <div className="bg-white rounded-lg h-full">
+                <EmptyGrantDetails />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
