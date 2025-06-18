@@ -15,7 +15,8 @@ const DiscoverGrants = () => {
     data: grants = [],
     isLoading,
     error,
-    isError
+    isError,
+    refetch
   } = useGrants();
   
   console.log('DiscoverGrants render:', { grants, isLoading, error, isError });
@@ -87,13 +88,17 @@ const DiscoverGrants = () => {
     setCurrentPage(page);
   }, []);
 
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
           <div className="text-lg text-gray-600 mb-2">Laddar bidrag...</div>
-          <div className="text-sm text-gray-500">Detta kan ta några sekunder</div>
+          <div className="text-sm text-gray-500">Hämtar senaste data från databasen...</div>
         </div>
       </div>
     );
@@ -105,14 +110,20 @@ const DiscoverGrants = () => {
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
           <div className="text-lg text-red-600 mb-2">Fel vid laddning av bidrag</div>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 mb-4">
             {error?.message || 'Ett oväntat fel inträffade'}
           </div>
           <button 
-            onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2"
           >
             Försök igen
+          </button>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+          >
+            Ladda om sidan
           </button>
         </div>
       </div>
@@ -125,7 +136,13 @@ const DiscoverGrants = () => {
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
           <div className="text-lg text-gray-600 mb-2">Inga bidrag hittades</div>
-          <div className="text-sm text-gray-500">Det finns för närvarande inga bidrag tillgängliga</div>
+          <div className="text-sm text-gray-500 mb-4">Det finns för närvarande inga bidrag tillgängliga i databasen</div>
+          <button 
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Uppdatera data
+          </button>
         </div>
       </div>
     );

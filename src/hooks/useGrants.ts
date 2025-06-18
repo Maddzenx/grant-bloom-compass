@@ -14,7 +14,8 @@ export const useGrants = () => {
         const { data, error } = await supabase
           .from('grant_call_details')
           .select('*')
-          .limit(10); // Further reduce limit for faster loading
+          .order('created_at', { ascending: false })
+          .limit(50); // Increased limit to get more data
 
         if (error) {
           console.error('Supabase error:', error);
@@ -35,17 +36,16 @@ export const useGrants = () => {
         return transformedGrants;
       } catch (error) {
         console.error('Failed to fetch grants:', error);
-        // Return empty array instead of throwing to prevent infinite loading
-        return [];
+        throw error; // Let the error bubble up so UI can handle it properly
       }
     },
-    staleTime: 30000, // 30 seconds
+    staleTime: 0, // Always fetch fresh data
     gcTime: 60000, // 1 minute
-    retry: false, // Don't retry on failure
-    refetchOnWindowFocus: false,
+    retry: 2, // Retry twice on failure
+    refetchOnWindowFocus: true,
     refetchOnMount: true,
-    refetchOnReconnect: false,
-    // Add enabled flag to ensure query runs
+    refetchOnReconnect: true,
+    // Force query to run
     enabled: true,
   });
 };
