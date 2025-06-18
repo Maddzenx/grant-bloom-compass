@@ -16,7 +16,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const GRANTS_PER_PAGE = 15;
+const GRANTS_PER_PAGE = 6;
 
 const DiscoverGrants = () => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
@@ -189,69 +189,63 @@ const DiscoverGrants = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-200px)]">
-        {/* Left Panel - Grants List (Scrollable) */}
-        <div className="flex flex-col h-full">
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-            {currentGrants.map((grant) => (
-              <GrantCard
-                key={grant.id}
-                grant={grant}
-                isSelected={selectedGrant?.id === grant.id}
-                isBookmarked={bookmarkedGrants.has(grant.id)}
-                onSelect={() => setSelectedGrant(grant)}
-                onToggleBookmark={() => toggleBookmark(grant.id)}
-              />
-            ))}
-          </div>
-
-          {/* Pagination - Fixed at bottom of left panel */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            {totalPages > 1 && (
-              <div className="flex justify-center">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                        className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
-                      />
-                    </PaginationItem>
-                    
-                    {renderPaginationItems()}
-                    
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                        className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
-
-            {/* Results info */}
-            {filteredGrants.length > 0 && (
-              <div className="text-sm text-gray-500 text-center mt-2">
-                Visar {startIndex + 1}-{Math.min(endIndex, filteredGrants.length)} av {filteredGrants.length} bidrag
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Panel - Grant Details (Sticky) */}
-        <div className="sticky top-6 h-[calc(100vh-200px)] overflow-y-auto">
-          {selectedGrant ? (
-            <GrantDetails
-              grant={selectedGrant}
-              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-              onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Panel - Grants List */}
+        <div className="space-y-4">
+          {currentGrants.map((grant) => (
+            <GrantCard
+              key={grant.id}
+              grant={grant}
+              isSelected={selectedGrant?.id === grant.id}
+              isBookmarked={bookmarkedGrants.has(grant.id)}
+              onSelect={() => setSelectedGrant(grant)}
+              onToggleBookmark={() => toggleBookmark(grant.id)}
             />
-          ) : (
-            <EmptyGrantDetails />
+          ))}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                      className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                    />
+                  </PaginationItem>
+                  
+                  {renderPaginationItems()}
+                  
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                      className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
+          {/* Results info */}
+          {filteredGrants.length > 0 && (
+            <div className="text-sm text-gray-500 text-center mt-4">
+              Visar {startIndex + 1}-{Math.min(endIndex, filteredGrants.length)} av {filteredGrants.length} bidrag
+            </div>
           )}
         </div>
+
+        {/* Right Panel - Grant Details */}
+        {selectedGrant ? (
+          <GrantDetails
+            grant={selectedGrant}
+            isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+            onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+          />
+        ) : (
+          <EmptyGrantDetails />
+        )}
       </div>
     </div>
   );
