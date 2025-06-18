@@ -14,32 +14,38 @@ export const useGrants = () => {
         const { data, error } = await supabase
           .from('grant_call_details')
           .select('*')
-          .limit(20); // Reduce limit for faster loading
+          .limit(10); // Further reduce limit for faster loading
 
         if (error) {
-          console.error('Error fetching grants:', error);
-          throw error;
+          console.error('Supabase error:', error);
+          throw new Error(`Failed to fetch grants: ${error.message}`);
+        }
+
+        if (!data || data.length === 0) {
+          console.log('No grants found in database');
+          return [];
         }
 
         console.log('Raw Supabase data:', data);
         
         // Transform the Supabase data to match our Grant interface
-        const transformedGrants = data?.map(transformSupabaseGrant) || [];
+        const transformedGrants = data.map(transformSupabaseGrant);
         
         console.log('Transformed grants:', transformedGrants);
         return transformedGrants;
       } catch (error) {
         console.error('Failed to fetch grants:', error);
-        // Return empty array as fallback to prevent infinite loading
+        // Return empty array instead of throwing to prevent infinite loading
         return [];
       }
     },
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-    retry: 1, // Only retry once
-    retryDelay: 1000, // Wait 1 second before retry
+    staleTime: 30000, // 30 seconds
+    gcTime: 60000, // 1 minute
+    retry: false, // Don't retry on failure
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
+    // Add enabled flag to ensure query runs
+    enabled: true,
   });
 };

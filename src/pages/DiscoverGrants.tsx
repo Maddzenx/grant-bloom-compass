@@ -14,8 +14,12 @@ const DiscoverGrants = () => {
   const {
     data: grants = [],
     isLoading,
-    error
+    error,
+    isError
   } = useGrants();
+  
+  console.log('DiscoverGrants render:', { grants, isLoading, error, isError });
+  
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
@@ -83,16 +87,48 @@ const DiscoverGrants = () => {
     setCurrentPage(page);
   }, []);
 
+  // Show loading state
   if (isLoading) {
-    return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <div className="text-lg text-gray-600">Laddar bidrag...</div>
-      </div>;
+    return (
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Laddar bidrag...</div>
+          <div className="text-sm text-gray-500">Detta kan ta några sekunder</div>
+        </div>
+      </div>
+    );
   }
 
-  if (error) {
-    return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <div className="text-lg text-red-600">Fel vid laddning av bidrag: {error.message}</div>
-      </div>;
+  // Show error state
+  if (isError || error) {
+    return (
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-2">Fel vid laddning av bidrag</div>
+          <div className="text-sm text-gray-600">
+            {error?.message || 'Ett oväntat fel inträffade'}
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Försök igen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no data state
+  if (!isLoading && grants.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600 mb-2">Inga bidrag hittades</div>
+          <div className="text-sm text-gray-500">Det finns för närvarande inga bidrag tillgängliga</div>
+        </div>
+      </div>
+    );
   }
 
   return (
