@@ -56,17 +56,18 @@ const accountItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, state } = useSidebar();
 
   return (
     <Sidebar className="border-r border-gray-200">
       <SidebarHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-200">
-        <span className="font-semibold text-gray-900">Menu</span>
+        <span className="font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">Menu</span>
         <Button
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:mx-auto"
+          title={state === "collapsed" ? "Expand sidebar" : "Collapse sidebar"}
         >
           <PanelLeft className="w-4 h-4" />
         </Button>
