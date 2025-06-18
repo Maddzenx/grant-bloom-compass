@@ -73,7 +73,7 @@ const DiscoverGrants = () => {
           </div>
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           <div className="mt-3 flex items-center justify-between">
-            <div className="text-blue-500 text-sm">
+            <div className="text-black text-sm">
               {sortedGrants.length} bidrag hittade
             </div>
             <SortingControls sortBy={sortBy} onSortChange={setSortBy} />
