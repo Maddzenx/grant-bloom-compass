@@ -58,8 +58,8 @@ const DiscoverGrants = () => {
         
         {/* Main Content Area */}
         <div className="flex flex-1 h-screen">
-          {/* Left Panel - Grant List */}
-          <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col h-full">
+          {/* Left Panel - Grant List (25% width) */}
+          <div className="w-1/4 border-r border-gray-200 bg-white flex flex-col h-full">
             {/* Header */}
             <div className="p-6 border-b border-gray-200 bg-white flex-shrink-0">
               <div className="flex items-center justify-between mb-6">
@@ -96,8 +96,8 @@ const DiscoverGrants = () => {
             </ScrollArea>
           </div>
 
-          {/* Right Panel - Grant Details */}
-          <div className="w-1/2 bg-white h-full">
+          {/* Right Panel - Grant Details (75% width) */}
+          <div className="w-3/4 bg-white h-full">
             {selectedGrant ? (
               <GrantDetails 
                 grant={selectedGrant}
