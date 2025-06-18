@@ -13,7 +13,52 @@ interface GrantCardProps {
   onToggleBookmark: () => void;
 }
 
+const getOrganizationLogo = (organization: string) => {
+  const orgLower = organization.toLowerCase();
+  
+  if (orgLower.includes('vinnova')) {
+    return {
+      src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
+      alt: "Vinnova",
+      className: "w-16 h-6 object-contain"
+    };
+  } else if (orgLower.includes('energimyndigheten')) {
+    return {
+      src: "/lovable-uploads/f8a26579-c7af-42a6-a518-0af3d65385d6.png",
+      alt: "Energimyndigheten",
+      className: "w-20 h-6 object-contain"
+    };
+  } else if (orgLower.includes('vetenskapsrådet')) {
+    return {
+      src: "/lovable-uploads/65e93ced-f449-4ba6-bcb0-5556c3edeb8a.png",
+      alt: "Vetenskapsrådet",
+      className: "w-18 h-6 object-contain"
+    };
+  } else if (orgLower.includes('formas')) {
+    return {
+      src: "/lovable-uploads/3552e420-3b5f-46bb-9c33-cd4511e2ec34.png",
+      alt: "Formas",
+      className: "w-16 h-6 object-contain"
+    };
+  } else if (orgLower.includes('tillväxtverket')) {
+    return {
+      src: "/lovable-uploads/112d5f02-31e8-4cb1-a8d5-7b7b422b0fa2.png",
+      alt: "Tillväxtverket",
+      className: "w-18 h-6 object-contain"
+    };
+  }
+  
+  // Default fallback to Vinnova
+  return {
+    src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
+    alt: organization,
+    className: "w-16 h-6 object-contain"
+  };
+};
+
 const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark }: GrantCardProps) => {
+  const orgLogo = getOrganizationLogo(grant.organization);
+
   return (
     <div
       className={`bg-white rounded-xl border p-6 cursor-pointer transition-all hover:shadow-md ${
@@ -25,9 +70,9 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-3">
             <img 
-              src="/lovable-uploads/23db7362-fc6c-4227-9a07-bbc3e401ec75.png" 
-              alt="Vinnova" 
-              className="w-16 h-6 object-contain"
+              src={orgLogo.src}
+              alt={orgLogo.alt}
+              className={orgLogo.className}
             />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-3 leading-tight">{grant.title}</h3>
