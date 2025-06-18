@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Grant } from '@/types/grant';
+import { transformSupabaseGrant } from '@/utils/grantTransform';
 
 export const useGrants = () => {
   return useQuery({
@@ -18,8 +19,13 @@ export const useGrants = () => {
         throw error;
       }
 
-      console.log('Grants fetched successfully:', data);
-      return data || [];
+      console.log('Raw Supabase data:', data);
+      
+      // Transform the Supabase data to match our Grant interface
+      const transformedGrants = data?.map(transformSupabaseGrant) || [];
+      
+      console.log('Transformed grants:', transformedGrants);
+      return transformedGrants;
     },
   });
 };
