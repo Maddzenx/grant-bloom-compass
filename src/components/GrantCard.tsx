@@ -63,17 +63,17 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
       
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div>
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Funding amount</span>
+          <span className="text-gray-500 text-xs block mb-1 font-medium">Bidragsbelopp</span>
           <div className="text-gray-900 font-semibold">{grant.fundingAmount}</div>
         </div>
         <div>
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Application deadline</span>
+          <span className="text-gray-500 text-xs block mb-1 font-medium">Ansökningsdeadline</span>
           <div className="text-gray-900 font-semibold">{grant.deadline}</div>
         </div>
       </div>
       
       <div className="mt-3 text-xs">
-        <span className="text-gray-500 text-xs block mb-1 font-medium">Qualifications</span>
+        <span className="text-gray-500 text-xs block mb-1 font-medium">Kvalifikationer</span>
         <div className="text-gray-700 leading-relaxed">{grant.qualifications}</div>
       </div>
     </div>

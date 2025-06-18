@@ -13,7 +13,7 @@ const GrantKeyInfo = ({ grant }: GrantKeyInfoProps) => {
       <div className="flex items-center gap-2">
         <DollarSign className="w-5 h-5 text-gray-600" />
         <div>
-          <span className="text-xs text-gray-600 block">Funding amount</span>
+          <span className="text-xs text-gray-600 block">Bidragsbelopp</span>
           <div className="font-bold text-gray-900 text-sm">{grant.fundingAmount}</div>
         </div>
       </div>

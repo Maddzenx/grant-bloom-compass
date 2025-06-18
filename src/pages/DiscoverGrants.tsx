@@ -85,13 +85,13 @@ const DiscoverGrants = () => {
 
   if (isLoading) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading grants...</div>
+        <div className="text-lg text-gray-600">Laddar bidrag...</div>
       </div>;
   }
 
   if (error) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <div className="text-lg text-red-600">Error loading grants: {error.message}</div>
+        <div className="text-lg text-red-600">Fel vid laddning av bidrag: {error.message}</div>
       </div>;
   }
 
