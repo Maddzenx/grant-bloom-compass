@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
@@ -20,17 +20,24 @@ const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: G
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show the sticky header when scrolled down more than 200px
-      const shouldShow = window.scrollY > 200;
-      setIsVisible(shouldShow);
+      // Find the ScrollArea viewport element
+      const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        const shouldShow = scrollContainer.scrollTop > 200;
+        setIsVisible(shouldShow);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Find the ScrollArea viewport and attach scroll listener
+    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 ${
+    <div className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
     }`}>
       <div className="flex items-center justify-between px-6 py-3 max-w-full">
