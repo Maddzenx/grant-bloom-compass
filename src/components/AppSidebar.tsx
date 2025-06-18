@@ -37,9 +37,9 @@ export function AppSidebar() {
     state
   } = useSidebar();
   return <>
-      {/* Toggle button for collapsed state - positioned absolutely */}
-      {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="fixed top-4 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md border border-gray-200" title="Expand sidebar">
-          <PanelLeft className="w-4 h-4" />
+      {/* Toggle button for collapsed state - positioned better */}
+      {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="fixed top-4 left-2 z-50 flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-lg border border-gray-200" title="Expand sidebar">
+          <PanelLeft className="w-5 h-5" />
         </Button>}
       
       <Sidebar className="border-r border-gray-200">
