@@ -6,9 +6,10 @@ import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { PanelLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
@@ -64,9 +65,13 @@ const DiscoverGrants = () => {
             <div className="p-6 border-b border-gray-200 bg-white">
               <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
-                <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors"
+                >
                   <PanelLeft className="w-4 h-4" />
-                </SidebarTrigger>
+                </Button>
               </div>
               <SearchBar 
                 searchTerm={searchTerm} 
