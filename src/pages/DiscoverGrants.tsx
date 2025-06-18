@@ -5,7 +5,6 @@ import { Grant } from "@/types/grant";
 import { sortGrants } from "@/utils/grantSorting";
 import { SortOption } from "@/components/SortingControls";
 import DiscoverHeader from "@/components/DiscoverHeader";
-import FilterPanel from "@/components/FilterPanel";
 import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
 
@@ -84,11 +83,6 @@ const DiscoverGrants = () => {
     setCurrentPage(page);
   }, []);
 
-  const handleFiltersChange = useCallback((filters: any) => {
-    console.log("Filters changed:", filters);
-    // Here you would implement the actual filtering logic
-  }, []);
-
   if (isLoading) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading grants...</div>
@@ -103,10 +97,13 @@ const DiscoverGrants = () => {
 
   return (
     <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
-      {/* Filter Panel - replaces the old header */}
-      <FilterPanel 
-        totalResults={sortedGrants.length}
-        onFiltersChange={handleFiltersChange}
+      {/* Search Header - fixed height */}
+      <DiscoverHeader
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        totalGrants={sortedGrants.length}
       />
 
       {/* Main Content Area - takes remaining height */}
