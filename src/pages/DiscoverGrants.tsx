@@ -6,15 +6,14 @@ import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
-import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { PanelLeft, Menu } from "lucide-react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { PanelLeft } from "lucide-react";
 
-const DiscoverGrantsContent = () => {
+const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-  const { state } = useSidebar();
 
   const toggleBookmark = (grantId: string) => {
     setBookmarkedGrants(prev => {
@@ -54,12 +53,12 @@ const DiscoverGrantsContent = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Left Panel - Grant List */}
-      <div className={`${state === "collapsed" ? "w-0" : "w-1/2"} transition-all duration-300 border-r border-gray-200 bg-white flex flex-col overflow-hidden`}>
+      <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
         {/* Header with collapse button */}
         <div className="p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-6">
             <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
-              <Menu className="w-4 h-4" />
+              <PanelLeft className="w-4 h-4" />
             </SidebarTrigger>
             <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
@@ -92,17 +91,8 @@ const DiscoverGrantsContent = () => {
         </div>
       </div>
 
-      {/* Collapsed sidebar trigger when sidebar is hidden */}
-      {state === "collapsed" && (
-        <div className="fixed left-4 top-6 z-10">
-          <SidebarTrigger className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-center">
-            <PanelLeft className="w-4 h-4" />
-          </SidebarTrigger>
-        </div>
-      )}
-
       {/* Right Panel - Grant Details */}
-      <div className={`${state === "collapsed" ? "w-full" : "w-1/2"} transition-all duration-300 bg-white`}>
+      <div className="w-1/2 bg-white">
         {selectedGrant ? (
           <GrantDetails 
             grant={selectedGrant}
@@ -114,14 +104,6 @@ const DiscoverGrantsContent = () => {
         )}
       </div>
     </div>
-  );
-};
-
-const DiscoverGrants = () => {
-  return (
-    <SidebarProvider defaultOpen={true}>
-      <DiscoverGrantsContent />
-    </SidebarProvider>
   );
 };
 
