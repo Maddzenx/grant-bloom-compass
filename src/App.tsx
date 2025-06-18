@@ -11,7 +11,18 @@ import DiscoverGrants from "./pages/DiscoverGrants";
 import BusinessPlanEditor from "./pages/BusinessPlanEditor";
 import ProgressChecklist from "./pages/ProgressChecklist";
 
-const queryClient = new QueryClient();
+// Create query client with better error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 10000),
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
