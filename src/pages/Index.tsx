@@ -46,7 +46,7 @@ const Index = () => {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Progress & Upload</h3>
               <p className="text-gray-600">Track your application progress and upload required documents.</p>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
