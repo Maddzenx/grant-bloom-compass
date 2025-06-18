@@ -10,42 +10,51 @@ export const useGrants = () => {
     queryFn: async (): Promise<Grant[]> => {
       console.log('Fetching grants from Supabase...');
       
-      try {
-        const { data, error } = await supabase
-          .from('grant_call_details')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(50); // Increased limit to get more data
+      const { data, error } = await supabase
+        .from('grant_call_details')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20); // Reduce limit for better performance
 
-        if (error) {
-          console.error('Supabase error:', error);
-          throw new Error(`Failed to fetch grants: ${error.message}`);
-        }
-
-        if (!data || data.length === 0) {
-          console.log('No grants found in database');
-          return [];
-        }
-
-        console.log('Raw Supabase data:', data);
-        
-        // Transform the Supabase data to match our Grant interface
-        const transformedGrants = data.map(transformSupabaseGrant);
-        
-        console.log('Transformed grants:', transformedGrants);
-        return transformedGrants;
-      } catch (error) {
-        console.error('Failed to fetch grants:', error);
-        throw error; // Let the error bubble up so UI can handle it properly
+      if (error) {
+        console.error('Supabase error:', error);
+        throw new Error(`Failed to fetch grants: ${error.message}`);
       }
+
+      console.log('Raw Supabase data:', data);
+      console.log('Number of records:', data?.length || 0);
+
+      if (!data || data.length === 0) {
+        console.log('No grants found in database');
+        return [];
+      }
+
+      // Transform the data with better error handling
+      const transformedGrants = data
+        .map((item, index) => {
+          try {
+            console.log(`Transforming grant ${index + 1}:`, item);
+            const transformed = transformSupabaseGrant(item);
+            console.log(`Transformed grant ${index + 1}:`, transformed);
+            return transformed;
+          } catch (transformError) {
+            console.error(`Error transforming grant ${index + 1}:`, transformError, item);
+            return null;
+          }
+        })
+        .filter((grant): grant is Grant => grant !== null);
+      
+      console.log('Final transformed grants:', transformedGrants);
+      console.log('Number of successfully transformed grants:', transformedGrants.length);
+      
+      return transformedGrants;
     },
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 60000, // 1 minute
-    retry: 2, // Retry twice on failure
-    refetchOnWindowFocus: true,
+    staleTime: 30000, // 30 seconds cache
+    gcTime: 300000, // 5 minutes
+    retry: 1,
+    refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: true,
-    // Force query to run
     enabled: true,
   });
 };

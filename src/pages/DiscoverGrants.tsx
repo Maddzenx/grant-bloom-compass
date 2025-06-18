@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
@@ -19,7 +18,13 @@ const DiscoverGrants = () => {
     refetch
   } = useGrants();
   
-  console.log('DiscoverGrants render:', { grants, isLoading, error, isError });
+  console.log('DiscoverGrants render state:', { 
+    grantsCount: grants?.length || 0, 
+    isLoading, 
+    error: error?.message, 
+    isError 
+  });
+  console.log('Raw grants data:', grants);
   
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,17 +45,32 @@ const DiscoverGrants = () => {
   }, []);
 
   const filteredGrants = useMemo(() => {
-    if (!grants.length) return [];
-    return grants.filter(grant => 
-      grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grant.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    if (!grants || grants.length === 0) {
+      console.log('No grants to filter');
+      return [];
+    }
+    
+    const filtered = grants.filter(grant => {
+      if (!grant) return false;
+      
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = 
+        (grant.title || '').toLowerCase().includes(searchLower) ||
+        (grant.organization || '').toLowerCase().includes(searchLower) ||
+        (grant.description || '').toLowerCase().includes(searchLower) ||
+        (grant.tags || []).some(tag => tag.toLowerCase().includes(searchLower));
+      
+      return matchesSearch;
+    });
+    
+    console.log('Filtered grants:', filtered.length, 'out of', grants.length);
+    return filtered;
   }, [grants, searchTerm]);
 
   const sortedGrants = useMemo(() => {
-    return sortGrants(filteredGrants, sortBy);
+    const sorted = sortGrants(filteredGrants, sortBy);
+    console.log('Sorted grants:', sorted.length);
+    return sorted;
   }, [filteredGrants, sortBy]);
 
   // Calculate pagination
@@ -58,6 +78,8 @@ const DiscoverGrants = () => {
   const startIndex = (currentPage - 1) * GRANTS_PER_PAGE;
   const endIndex = startIndex + GRANTS_PER_PAGE;
   const currentGrants = sortedGrants.slice(startIndex, endIndex);
+
+  console.log('Pagination:', { totalPages, currentPage, currentGrants: currentGrants.length });
 
   // Reset to first page when search or sort changes
   useEffect(() => {
@@ -67,16 +89,19 @@ const DiscoverGrants = () => {
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
     if (currentGrants.length > 0 && !selectedGrant) {
+      console.log('Auto-selecting first grant:', currentGrants[0]);
       setSelectedGrant(currentGrants[0]);
     } else if (currentGrants.length > 0 && selectedGrant && !currentGrants.find(g => g.id === selectedGrant.id)) {
-      // If current selection is not in filtered results, select first filtered grant
+      console.log('Current selection not in filtered results, selecting first filtered grant');
       setSelectedGrant(currentGrants[0]);
     } else if (currentGrants.length === 0) {
+      console.log('No grants available, clearing selection');
       setSelectedGrant(null);
     }
   }, [currentGrants, selectedGrant]);
 
   const handleGrantSelect = useCallback((grant: Grant) => {
+    console.log('Grant selected:', grant);
     setSelectedGrant(grant);
   }, []);
 
@@ -89,6 +114,7 @@ const DiscoverGrants = () => {
   }, []);
 
   const handleRefresh = useCallback(() => {
+    console.log('Refreshing grants data...');
     refetch();
   }, [refetch]);
 
@@ -106,6 +132,7 @@ const DiscoverGrants = () => {
 
   // Show error state
   if (isError || error) {
+    console.error('Error state:', { isError, error });
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
@@ -131,7 +158,8 @@ const DiscoverGrants = () => {
   }
 
   // Show no data state
-  if (!isLoading && grants.length === 0) {
+  if (!isLoading && (!grants || grants.length === 0)) {
+    console.log('No data state - grants:', grants);
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
