@@ -8,6 +8,7 @@ import SortingControls, { SortOption } from "@/components/SortingControls";
 import { Grant } from "@/types/grant";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
+
 const DiscoverGrants = () => {
   const {
     data: grants = [],
@@ -18,6 +19,7 @@ const DiscoverGrants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
+  
   const toggleBookmark = (grantId: string) => {
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
@@ -29,6 +31,7 @@ const DiscoverGrants = () => {
       return newSet;
     });
   };
+  
   const filteredGrants = grants.filter(grant => grant.title.toLowerCase().includes(searchTerm.toLowerCase()) || grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) || grant.description.toLowerCase().includes(searchTerm.toLowerCase()) || grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   const sortedGrants = sortGrants(filteredGrants, sortBy);
 
@@ -44,20 +47,20 @@ const DiscoverGrants = () => {
     }
   }, [sortedGrants, selectedGrant]);
   if (isLoading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading grants...</div>
       </div>;
   }
   if (error) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-red-600">Error loading grants: {error.message}</div>
       </div>;
   }
-  return <div className="min-h-screen bg-gray-50 flex w-full">
+  return <div className="min-h-screen bg-[#f8f4ec] flex w-full">
       {/* Main Content Area */}
       <div className="flex flex-1 h-screen">
         {/* Left Panel - Grant List (40% width) */}
-        <div className="w-2/5 border-r border-gray-200 bg-white flex flex-col h-full">
+        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col h-full">
           {/* Header */}
           <div className="p-6 border-b border-gray-200 flex-shrink-0 bg-[#f8f4ec]">
             <div className="flex items-center justify-between mb-6">
@@ -82,10 +85,15 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-white h-full">
-          {selectedGrant ? <GrantDetails grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => toggleBookmark(selectedGrant.id)} /> : <EmptyGrantDetails />}
+        <div className="w-3/5 bg-[#f8f4ec] h-full p-6">
+          {selectedGrant ? <div className="bg-white rounded-lg h-full">
+              <GrantDetails grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => toggleBookmark(selectedGrant.id)} />
+            </div> : <div className="bg-white rounded-lg h-full">
+              <EmptyGrantDetails />
+            </div>}
         </div>
       </div>
     </div>;
 };
+
 export default DiscoverGrants;
