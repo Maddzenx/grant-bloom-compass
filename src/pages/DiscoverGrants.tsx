@@ -107,12 +107,12 @@ const DiscoverGrants = () => {
   return <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
-        <div className="p-4 border border-transparent">
+        <div className="p-4 border border-transparent py-[2px]">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-3 flex items-center justify-between my-0">
             <div className="text-black text-sm">
               {sortedGrants.length} bidrag hittade
             </div>
