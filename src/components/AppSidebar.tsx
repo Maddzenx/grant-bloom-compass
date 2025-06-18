@@ -69,7 +69,7 @@ export function AppSidebar() {
           </SidebarGroup>
 
           <SidebarGroup className="px-0">
-            <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 bg-gray-50">
+            <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 bg-[#f8f4ec]">
               MY APPLICATIONS
             </SidebarGroupLabel>
             <SidebarGroupContent>
