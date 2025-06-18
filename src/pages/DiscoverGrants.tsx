@@ -59,7 +59,7 @@ const DiscoverGrants = () => {
         {/* Left Panel - Grant List (40% width) */}
         <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-gray-200 flex-shrink-0 bg-[#f8f4ec]">
+          <div className="p-6 border-b border-gray-200 flex-shrink-0 bg-[#f8f4ec] px-[10px] py-[15px]">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
             </div>
@@ -71,7 +71,7 @@ const DiscoverGrants = () => {
 
           {/* Grant Cards - Scrollable */}
           <ScrollArea className="flex-1">
-            <div className="p-6 px-[15px] py-[15px]">
+            <div className="p-6 py-0 px-[10px]">
               <div className="space-y-4">
                 {sortedGrants.length === 0 ? <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
