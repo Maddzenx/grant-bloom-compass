@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Search, Filter, Calendar, DollarSign, MapPin, FileText, Mail, Bookmark, ExternalLink } from "lucide-react";
+import { Search, Calendar, DollarSign, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,8 @@ interface Grant {
   whoCanApply: string;
   importantDates: string[];
   fundingRules: string[];
+  generalInfo: string[];
+  requirements: string[];
   contact: {
     name: string;
     organization: string;
@@ -35,7 +37,7 @@ const DiscoverGrants = () => {
   const grants: Grant[] = [
     {
       id: "1",
-      title: "Tech Innovation Grant 2024",
+      title: "Tech innovation grant 2024",
       organization: "Vinnova",
       description: "Supporting breakthrough technology startups in AI, blockchain, and IoT",
       fundingAmount: "50 000 SEK",
@@ -43,17 +45,27 @@ const DiscoverGrants = () => {
       tags: ["Technology", "Startup", "AI"],
       qualifications: "Early stage companies, tech focus, US based",
       aboutGrant: "The Tech Innovation Grant 2024 is designed to support breakthrough technology startups developing solutions in artificial intelligence, blockchain, Internet of Things (IoT), and emerging technologies. This grant aims to accelerate innovation and help promising startups bridge the gap between research and market implementation.",
-      whoCanApply: "Early-stage technology companies with a focus on AI, blockchain, or IoT solutions. Applicants must be registered businesses with fewer than 50 employees and demonstrate innovative potential.",
+      whoCanApply: "The Tech Innovation Grant 2024 is designed to support breakthrough technology startups developing solutions in artificial intelligence, blockchain, Internet of Things (IoT), and emerging technologies. This grant aims to accelerate innovation and help promising startups bridge the gap between research and market implementation. Our mission is to foster technological advancement that creates meaningful impact on society while supporting entrepreneurs who are building the future. Recipients will receive not only financial support but also access to our extensive network of mentors, industry experts, and potential investors.",
       importantDates: [
         "4 okt 2025 - Info seminarium (länk)",
-        "7 okt 2025 - Ansökan öppnar",
+        "7 okt 2025 - Ansökan öppnar", 
         "3 jan 2026 - Senast projektstart",
         "2 jan 2026 - Senast projektslut"
       ],
       fundingRules: [
+        "Bidrag: 500 000 – 2 000 000 SEK",
+        "Projekttid: 12 – 18 mån",
+        "Medfinansiering: 50%"
+      ],
+      generalInfo: [
         "Mottagare: Företag, Universitet, Forskare",
         "Konsortieform: Minst 2 aktörer, varav en från näringsliv",
-        "Finansiering: Lån/bidr, konsulttjänster, licensavg, övriga kostnader"
+        "Finansiering: Löner, konsulttjänster, licenser, övriga kostnader"
+      ],
+      requirements: [
+        "Mottagare: Företag, Universitet, Forskare", 
+        "Konsortieform: Minst 2 aktörer, varav en från näringsliv",
+        "Finansiering: Löner, konsulttjänster, licenser, övriga kostnader"
       ],
       contact: {
         name: "Fredrik Welsner",
@@ -62,26 +74,26 @@ const DiscoverGrants = () => {
         phone: "+46 8 473 31 80"
       },
       templates: [
-        "Bidragsansökan.pdf",
-        "Infofordocumet.pmd",
-        "Projektbeskrivning.docx",
+        "Bidragsinformation.pdf",
+        "Infovideomöte.pm4",
+        "projektbeskrivningsmall.docx",
         "CV-mall.pdf"
       ]
     },
     {
-      id: "2",
-      title: "Sustainable Innovation Fund",
-      organization: "Green Tech Institute",
-      description: "Funding for environmental technology and sustainability solutions",
-      fundingAmount: "75 000 SEK",
-      deadline: "April 20, 2025",
-      tags: ["Sustainability", "Environment", "Technology"],
-      qualifications: "Companies focused on environmental solutions",
+      id: "2", 
+      title: "Tech innovation grant 2024",
+      organization: "Vinnova",
+      description: "Supporting breakthrough technology startups in AI, blockchain, and IoT",
+      fundingAmount: "50 000 SEK",
+      deadline: "March 15, 2025",
+      tags: ["Technology", "Startup", "AI"],
+      qualifications: "Early stage companies, tech focus, US based",
       aboutGrant: "This fund supports innovative companies developing sustainable technologies that address climate change and environmental challenges.",
       whoCanApply: "Startups and SMEs working on environmental technology solutions with proven market potential.",
       importantDates: [
         "15 feb 2025 - Application opens",
-        "20 apr 2025 - Application deadline",
+        "20 apr 2025 - Application deadline", 
         "1 jun 2025 - Results announced"
       ],
       fundingRules: [
@@ -89,11 +101,21 @@ const DiscoverGrants = () => {
         "Minimum co-funding required",
         "Project duration: 12-24 months"
       ],
+      generalInfo: [
+        "Mottagare: Företag, Universitet, Forskare",
+        "Konsortieform: Minst 2 aktörer, varav en från näringsliv",
+        "Finansiering: Löner, konsulttjänster, licenser, övriga kostnader"
+      ],
+      requirements: [
+        "Mottagare: Företag, Universitet, Forskare",
+        "Konsortieform: Minst 2 aktörer, varav en från näringsliv", 
+        "Finansiering: Löner, konsulttjänster, licenser, övriga kostnader"
+      ],
       contact: {
-        name: "Anna Lindberg",
-        organization: "Green Tech Institute",
-        email: "anna.lindberg@greentech.se",
-        phone: "+46 8 555 12 34"
+        name: "Fredrik Welsner",
+        organization: "Utlysningsansvarig",
+        email: "fredrik.welsner@vinnova.se",
+        phone: "+46 8 473 31 80"
       },
       templates: [
         "Application_Form.pdf",
@@ -119,23 +141,29 @@ const DiscoverGrants = () => {
     grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Set the first grant as selected by default
+  React.useEffect(() => {
+    if (filteredGrants.length > 0 && !selectedGrant) {
+      setSelectedGrant(filteredGrants[0]);
+    }
+  }, [filteredGrants, selectedGrant]);
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Discover Grants</h1>
+        <h1 className="text-2xl font-medium text-gray-900 mb-6">Discover Grants</h1>
         <div className="flex gap-4 items-center">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search grants..."
+              placeholder="Sök"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 border-gray-300"
             />
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter className="w-4 h-4" />
-            Filters
+          <Button variant="outline" className="bg-white border-gray-300">
+            Search
           </Button>
         </div>
       </div>
@@ -146,20 +174,23 @@ const DiscoverGrants = () => {
           {filteredGrants.map((grant) => (
             <div
               key={grant.id}
-              className={`bg-white rounded-lg border p-6 cursor-pointer transition-all hover:shadow-md ${
-                selectedGrant?.id === grant.id ? "ring-2 ring-blue-500 shadow-md" : "border-gray-200"
+              className={`bg-white rounded-lg border p-6 cursor-pointer transition-all hover:shadow-sm ${
+                selectedGrant?.id === grant.id ? "ring-1 ring-blue-200 shadow-sm" : "border-gray-200"
               }`}
               onClick={() => setSelectedGrant(grant)}
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">V</span>
+                    </div>
+                    <span className="text-sm font-medium text-green-600">
                       {grant.organization}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{grant.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{grant.description}</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{grant.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{grant.description}</p>
                 </div>
                 <Button
                   variant="ghost"
@@ -168,7 +199,7 @@ const DiscoverGrants = () => {
                     e.stopPropagation();
                     toggleBookmark(grant.id);
                   }}
-                  className="ml-2 p-1"
+                  className="ml-2 p-1 hover:bg-gray-100"
                 >
                   <Bookmark
                     className={`w-4 h-4 ${
@@ -180,22 +211,24 @@ const DiscoverGrants = () => {
               
               <div className="flex flex-wrap gap-2 mb-4">
                 {grant.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <Badge key={tag} variant="secondary" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
                     {tag}
                   </Badge>
                 ))}
               </div>
               
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1 text-gray-600">
-                    <DollarSign className="w-4 h-4" />
-                    {grant.fundingAmount}
-                  </span>
-                  <span className="flex items-center gap-1 text-gray-600">
-                    <Calendar className="w-4 h-4" />
-                    {grant.deadline}
-                  </span>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="font-medium text-gray-700">Funding amount</span>
+                  <div className="text-gray-900">{grant.fundingAmount}</div>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Application deadline</span>
+                  <div className="text-gray-900">{grant.deadline}</div>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">Qualifications</span>
+                  <div className="text-gray-900">{grant.qualifications}</div>
                 </div>
               </div>
             </div>
@@ -208,54 +241,70 @@ const DiscoverGrants = () => {
             <div>
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">V</span>
+                    </div>
+                    <span className="text-sm font-medium text-green-600">
                       {selectedGrant.organization}
                     </span>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedGrant.title}</h2>
+                  <h2 className="text-xl font-medium text-gray-900 mb-2">{selectedGrant.title}</h2>
                   <p className="text-gray-600">{selectedGrant.description}</p>
                 </div>
-                <Button className="flex items-center gap-2">
-                  Apply
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleBookmark(selectedGrant.id)}
+                    className="p-2 hover:bg-gray-100"
+                  >
+                    <Bookmark
+                      className={`w-4 h-4 ${
+                        bookmarkedGrants.has(selectedGrant.id) ? "fill-blue-500 text-blue-500" : "text-gray-400"
+                      }`}
+                    />
+                  </Button>
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    Apply
+                  </Button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-green-600" />
+                <div className="flex items-center gap-3">
+                  <DollarSign className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm text-gray-600">Funding amount</p>
-                    <p className="font-semibold">{selectedGrant.fundingAmount}</p>
+                    <p className="font-medium text-gray-900">{selectedGrant.fundingAmount}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm text-gray-600">Deadline</p>
-                    <p className="font-semibold">{selectedGrant.deadline}</p>
+                    <p className="font-medium text-gray-900">{selectedGrant.deadline}</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">About this grant</h3>
-                  <p className="text-gray-700">{selectedGrant.aboutGrant}</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">About this grant</h3>
+                  <p className="text-gray-700 leading-relaxed">{selectedGrant.aboutGrant}</p>
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Who can apply?</h3>
-                  <p className="text-gray-700">{selectedGrant.whoCanApply}</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Who can apply?</h3>
+                  <p className="text-gray-700 leading-relaxed">{selectedGrant.whoCanApply}</p>
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Important dates</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Viktiga datum</h3>
                   <ul className="space-y-2">
                     {selectedGrant.importantDates.map((date, index) => (
-                      <li key={index} className="flex items-center gap-2 text-gray-700">
-                        <Calendar className="w-4 h-4 text-blue-600" />
+                      <li key={index} className="flex items-start gap-2 text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
                         {date}
                       </li>
                     ))}
@@ -263,26 +312,40 @@ const DiscoverGrants = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Funding rules</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Allmän information</h3>
                   <ul className="space-y-2">
-                    {selectedGrant.fundingRules.map((rule, index) => (
+                    {selectedGrant.generalInfo.map((info, index) => (
                       <li key={index} className="flex items-start gap-2 text-gray-700">
                         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                        {rule}
+                        {info}
                       </li>
                     ))}
                   </ul>
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Templates and files</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Krav</h3>
+                  <ul className="space-y-2">
+                    {selectedGrant.requirements.map((req, index) => (
+                      <li key={index} className="flex items-start gap-2 text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                        {req}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Mallar och filer</h3>
                   <div className="space-y-2">
                     {selectedGrant.templates.map((template, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 border border-gray-200 rounded">
-                        <FileText className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm text-gray-700">{template}</span>
-                        <Button variant="ghost" size="sm" className="ml-auto">
-                          <ExternalLink className="w-3 h-3" />
+                      <div key={index} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div className="w-8 h-8 bg-red-100 rounded flex items-center justify-center">
+                          <span className="text-red-600 text-xs font-bold">PDF</span>
+                        </div>
+                        <span className="text-sm text-gray-700 flex-1">{template}</span>
+                        <Button variant="ghost" size="sm" className="p-1">
+                          <ExternalLink className="w-4 h-4 text-gray-400" />
                         </Button>
                       </div>
                     ))}
@@ -290,24 +353,34 @@ const DiscoverGrants = () => {
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">Kontakt</h3>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="font-medium text-gray-900">{selectedGrant.contact.name}</p>
                     <p className="text-sm text-gray-600 mb-2">{selectedGrant.contact.organization}</p>
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-gray-400" />
-                        <a href={`mailto:${selectedGrant.contact.email}`} className="text-blue-600 hover:underline text-sm">
-                          {selectedGrant.contact.email}
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{selectedGrant.contact.phone}</span>
-                      </div>
+                      <div className="text-sm text-gray-700">{selectedGrant.contact.email}</div>
+                      <div className="text-sm text-gray-700">{selectedGrant.contact.phone}</div>
                     </div>
                   </div>
                 </section>
+              </div>
+
+              <div className="flex gap-2 mt-8 pt-6 border-t border-gray-200">
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleBookmark(selectedGrant.id)}
+                  className="hover:bg-gray-100"
+                >
+                  <Bookmark
+                    className={`w-4 h-4 mr-2 ${
+                      bookmarkedGrants.has(selectedGrant.id) ? "fill-blue-500 text-blue-500" : "text-gray-400"
+                    }`}
+                  />
+                  {bookmarkedGrants.has(selectedGrant.id) ? "Saved" : "Save"}
+                </Button>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Apply
+                </Button>
               </div>
             </div>
           ) : (
