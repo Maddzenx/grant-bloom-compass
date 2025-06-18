@@ -11,7 +11,7 @@ interface SortingControlsProps {
 
 const SortingControls = ({ sortBy, onSortChange }: SortingControlsProps) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-end gap-2">
       <span className="text-sm text-gray-600 font-medium">Sortera:</span>
       <Select value={sortBy} onValueChange={onSortChange}>
         <SelectTrigger className="w-48">
