@@ -100,7 +100,7 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-[#f8f4ec] h-full p-6">
+        <div className="w-3/5 bg-[#f8f4ec] h-full p-6 border-transparent">
           {selectedGrant ? (
             <div className="bg-white rounded-lg h-full">
               <GrantDetails 
