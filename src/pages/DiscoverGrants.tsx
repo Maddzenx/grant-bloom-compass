@@ -88,7 +88,7 @@ const DiscoverGrants = () => {
   return (
     <div className="min-h-screen bg-[#f8f4ec] flex flex-col w-full">
       {/* Search Header - spans full width */}
-      <div className="w-full bg-[#f8f4ec] border-b border-gray-200">
+      <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
         <div className="p-6 border border-transparent py-[10px] px-[10px]">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
@@ -100,12 +100,12 @@ const DiscoverGrants = () => {
         </div>
       </div>
 
-      {/* Main Content Area - starts below search */}
-      <div className="flex flex-1 h-[calc(100vh-200px)]">
+      {/* Main Content Area - fixed height with scrollable sections */}
+      <div className="flex flex-1 min-h-0">
         {/* Left Panel - Grant List (40% width) */}
         <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col">
-          {/* Grant Cards - Scrollable */}
-          <ScrollArea className="flex-1">
+          {/* Grant Cards - Independently Scrollable */}
+          <ScrollArea className="flex-1 h-full">
             <div className="p-6 border border-transparent px-[10px] py-[10px]">
               <div className="space-y-4">
                 {sortedGrants.length === 0 ? (
@@ -131,9 +131,10 @@ const DiscoverGrants = () => {
 
         {/* Right Panel - Grant Details (60% width) */}
         <div className="w-3/5 bg-[#f8f4ec] flex flex-col">
-          <div className="flex-1 p-6 border-transparent px-[10px] py-[10px]">
-            {selectedGrant ? (
-              <ScrollArea className="h-full">
+          {/* Grant Details - Independently Scrollable */}
+          {selectedGrant ? (
+            <ScrollArea className="flex-1 h-full">
+              <div className="p-6 border-transparent px-[10px] py-[10px]">
                 <div className="bg-white rounded-lg">
                   <GrantDetails
                     grant={selectedGrant}
@@ -141,13 +142,15 @@ const DiscoverGrants = () => {
                     onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
                   />
                 </div>
-              </ScrollArea>
-            ) : (
+              </div>
+            </ScrollArea>
+          ) : (
+            <div className="flex-1 p-6 border-transparent px-[10px] py-[10px]">
               <div className="bg-white rounded-lg h-full">
                 <EmptyGrantDetails />
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
