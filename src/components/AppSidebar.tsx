@@ -2,7 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-
 const menuItems = [{
   title: "Home",
   url: "/",
@@ -30,7 +29,6 @@ const accountItems = [{
   url: "/profile",
   icon: User
 }];
-
 export function AppSidebar() {
   const location = useLocation();
   const {
@@ -44,7 +42,7 @@ export function AppSidebar() {
         </Button>}
       
       <Sidebar className="border-r border-gray-200">
-        <SidebarHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-200 bg-[#f8f4ec]">
+        <SidebarHeader className="p-6 border-b border-transparent flex-shrink-0 bg-[#f8f4ec] px-[10px] py-[15px] rounded-none ">
           <span className="font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">Menu</span>
           <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" title="Collapse sidebar">
             <PanelLeft className="w-4 h-4" />
