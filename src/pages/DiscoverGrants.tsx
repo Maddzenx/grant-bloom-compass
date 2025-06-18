@@ -86,8 +86,8 @@ const DiscoverGrants = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f4ec] flex flex-col w-full">
-      {/* Search Header - spans full width */}
+    <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
+      {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
         <div className="p-6 border border-transparent py-[10px] px-[10px]">
           <div className="flex items-center justify-between mb-6">
@@ -100,12 +100,11 @@ const DiscoverGrants = () => {
         </div>
       </div>
 
-      {/* Main Content Area - fixed height with scrollable sections */}
-      <div className="flex flex-1 min-h-0">
+      {/* Main Content Area - takes remaining height */}
+      <div className="flex flex-1 overflow-hidden">
         {/* Left Panel - Grant List (40% width) */}
-        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] flex flex-col">
-          {/* Grant Cards - Independently Scrollable */}
-          <ScrollArea className="flex-1 h-full">
+        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden">
+          <ScrollArea className="h-full">
             <div className="p-6 border border-transparent px-[10px] py-[10px]">
               <div className="space-y-4">
                 {sortedGrants.length === 0 ? (
@@ -130,10 +129,9 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-[#f8f4ec] flex flex-col">
-          {/* Grant Details - Independently Scrollable */}
+        <div className="w-3/5 bg-[#f8f4ec] overflow-hidden">
           {selectedGrant ? (
-            <ScrollArea className="flex-1 h-full">
+            <ScrollArea className="h-full">
               <div className="p-6 border-transparent px-[10px] py-[10px]">
                 <div className="bg-white rounded-lg">
                   <GrantDetails
@@ -145,8 +143,8 @@ const DiscoverGrants = () => {
               </div>
             </ScrollArea>
           ) : (
-            <div className="flex-1 p-6 border-transparent px-[10px] py-[10px]">
-              <div className="bg-white rounded-lg h-full">
+            <div className="flex items-center justify-center h-full p-6">
+              <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
                 <EmptyGrantDetails />
               </div>
             </div>
