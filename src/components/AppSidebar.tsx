@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+
 const menuItems = [{
   title: "Home",
   url: "/",
@@ -29,6 +30,7 @@ const accountItems = [{
   url: "/profile",
   icon: User
 }];
+
 export function AppSidebar() {
   const location = useLocation();
   const {
@@ -57,7 +59,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-sm">
+                        <Link to={item.url} className={`flex items-center gap-3 px-3 py-2 text-sm ${isActive ? 'bg-[#e2e1db]' : ''}`}>
                           <Icon className="w-4 h-4" />
                           <span>{item.title}</span>
                         </Link>
@@ -79,7 +81,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-sm">
+                        <Link to={item.url} className={`flex items-center gap-3 px-3 py-2 text-sm ${isActive ? 'bg-[#e2e1db]' : ''}`}>
                           <Icon className="w-4 h-4" />
                           <span>{item.title}</span>
                         </Link>
@@ -101,7 +103,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-sm">
+                        <Link to={item.url} className={`flex items-center gap-3 px-3 py-2 text-sm ${isActive ? 'bg-[#e2e1db]' : ''}`}>
                           <Icon className="w-4 h-4" />
                           <span>{item.title}</span>
                         </Link>
