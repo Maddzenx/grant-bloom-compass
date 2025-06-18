@@ -13,6 +13,19 @@ const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
+
+  const toggleBookmark = (grantId: string) => {
+    setBookmarkedGrants(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(grantId)) {
+        newSet.delete(grantId);
+      } else {
+        newSet.add(grantId);
+      }
+      return newSet;
+    });
+  };
 
   const filteredGrants = grants.filter(grant =>
     grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -68,7 +81,9 @@ const DiscoverGrants = () => {
                   key={grant.id}
                   grant={grant}
                   isSelected={selectedGrant?.id === grant.id}
-                  onClick={() => setSelectedGrant(grant)}
+                  isBookmarked={bookmarkedGrants.has(grant.id)}
+                  onSelect={() => setSelectedGrant(grant)}
+                  onToggleBookmark={() => toggleBookmark(grant.id)}
                 />
               ))
             )}
@@ -79,7 +94,11 @@ const DiscoverGrants = () => {
       {/* Right Panel - Grant Details */}
       <div className="w-1/2 bg-white">
         {selectedGrant ? (
-          <GrantDetails grant={selectedGrant} />
+          <GrantDetails 
+            grant={selectedGrant}
+            isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+            onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+          />
         ) : (
           <EmptyGrantDetails />
         )}
