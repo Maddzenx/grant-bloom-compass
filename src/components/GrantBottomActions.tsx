@@ -9,7 +9,7 @@ const GrantBottomActions = ({
   isBookmarked,
   onToggleBookmark
 }: GrantBottomActionsProps) => {
-  return <div className="flex justify-center items-center pt-8 mt-8 border-t border-tranparent-200">
+  return <div className="flex justify-center items-center pt-8 mt-8 border-t border-transparent\n">
       <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-base">
         Apply
       </Button>
