@@ -8,7 +8,7 @@ interface GrantMainContentProps {
 
 const GrantMainContent = ({ grant }: GrantMainContentProps) => {
   return (
-    <div className="lg:col-span-2 space-y-8">
+    <div className="space-y-8">
       <section>
         <h2 className="text-xl font-bold text-gray-900 mb-4">About this grant</h2>
         <div className="text-gray-700 leading-relaxed space-y-4">

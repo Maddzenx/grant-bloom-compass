@@ -61,7 +61,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
 
   return (
     <div className="h-full bg-white overflow-y-auto">
-      <div className="p-8 max-w-4xl">
+      <div className="p-8 max-w-5xl">
         {/* Header section */}
         <div className="mb-8">
           <GrantHeader
@@ -76,12 +76,16 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
         </div>
 
         {/* Main content in two columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Left column - Main content */}
-          <GrantMainContent grant={grant} />
+          <div className="lg:col-span-3">
+            <GrantMainContent grant={grant} />
+          </div>
 
           {/* Right column - Sidebar info */}
-          <GrantSidebar />
+          <div className="lg:col-span-1">
+            <GrantSidebar />
+          </div>
         </div>
 
         {/* Bottom action buttons */}
