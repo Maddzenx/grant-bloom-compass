@@ -11,15 +11,18 @@ import DiscoverGrants from "./pages/DiscoverGrants";
 import BusinessPlanEditor from "./pages/BusinessPlanEditor";
 import ProgressChecklist from "./pages/ProgressChecklist";
 
-// Create query client with better error handling
+// Create query client with very conservative settings to prevent timeouts
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 10000),
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
+      retry: 1,
+      retryDelay: 1000,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 15 * 60 * 1000, // 15 minutes
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      networkMode: 'offlineFirst',
     },
   },
 });

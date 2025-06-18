@@ -10,10 +10,19 @@ export const useGrants = () => {
     queryFn: async (): Promise<Grant[]> => {
       console.log('Fetching grants from Supabase...');
       
+      // Create a timeout promise that rejects after 5 seconds
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Query timeout')), 5000)
+      );
+      
       try {
-        const { data, error } = await supabase
+        const queryPromise = supabase
           .from('grant_call_details')
-          .select('*');
+          .select('*')
+          .limit(50); // Limit results to prevent large data transfers
+
+        // Race between the query and timeout
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
         if (error) {
           console.error('Error fetching grants:', error);
@@ -33,11 +42,13 @@ export const useGrants = () => {
         return [];
       }
     },
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-    retry: 2, // Reduce retry attempts to prevent long loading times
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 10000), // Reduce max retry delay
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    refetchOnMount: false, // Only fetch once per mount
+    staleTime: 10 * 60 * 1000, // Consider data fresh for 10 minutes
+    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
+    retry: 1, // Only retry once
+    retryDelay: 1000, // Wait 1 second before retry
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false, // Don't refetch on reconnect
+    networkMode: 'offlineFirst', // Use cached data when network is slow
   });
 };
