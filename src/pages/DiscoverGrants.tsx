@@ -71,7 +71,7 @@ const DiscoverGrants = () => {
 
           {/* Grant Cards - Scrollable */}
           <ScrollArea className="flex-1">
-            <div className="p-6 py-0 px-[10px]">
+            <div className="p-6 py-0 px-px">
               <div className="space-y-4">
                 {sortedGrants.length === 0 ? <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -82,7 +82,7 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-[#f8f4ec] h-full p-6 py-[15px] px-px">
+        <div className="w-3/5 bg-[#f8f4ec] h-full p-6 py-[10px] px-[15px]">
           {selectedGrant ? <div className="bg-white rounded-lg h-full">
               <GrantDetails grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => toggleBookmark(selectedGrant.id)} />
             </div> : <div className="bg-white rounded-lg h-full">
