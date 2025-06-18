@@ -9,6 +9,17 @@ import GrantStickyHeader from "@/components/GrantStickyHeader";
 import { Grant } from "@/types/grant";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+const GRANTS_PER_PAGE = 15;
+
 const DiscoverGrants = () => {
   const {
     data: grants = [],
@@ -19,6 +30,8 @@ const DiscoverGrants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+
   const getOrganizationLogo = (organization: string) => {
     const orgLower = organization.toLowerCase();
     if (orgLower.includes('vinnova')) {
@@ -58,6 +71,7 @@ const DiscoverGrants = () => {
       className: "w-20 h-6 object-contain"
     };
   };
+
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
@@ -69,42 +83,70 @@ const DiscoverGrants = () => {
       return newSet;
     });
   }, []);
+
   const filteredGrants = useMemo(() => {
     if (!grants.length) return [];
-    return grants.filter(grant => grant.title.toLowerCase().includes(searchTerm.toLowerCase()) || grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) || grant.description.toLowerCase().includes(searchTerm.toLowerCase()) || grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+    return grants.filter(grant => 
+      grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      grant.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
   }, [grants, searchTerm]);
+
   const sortedGrants = useMemo(() => {
     return sortGrants(filteredGrants, sortBy);
   }, [filteredGrants, sortBy]);
 
+  // Calculate pagination
+  const totalPages = Math.ceil(sortedGrants.length / GRANTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * GRANTS_PER_PAGE;
+  const endIndex = startIndex + GRANTS_PER_PAGE;
+  const currentGrants = sortedGrants.slice(startIndex, endIndex);
+
+  // Reset to first page when search or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortBy]);
+
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
-    if (sortedGrants.length > 0 && !selectedGrant) {
-      setSelectedGrant(sortedGrants[0]);
-    } else if (sortedGrants.length > 0 && selectedGrant && !sortedGrants.find(g => g.id === selectedGrant.id)) {
+    if (currentGrants.length > 0 && !selectedGrant) {
+      setSelectedGrant(currentGrants[0]);
+    } else if (currentGrants.length > 0 && selectedGrant && !currentGrants.find(g => g.id === selectedGrant.id)) {
       // If current selection is not in filtered results, select first filtered grant
-      setSelectedGrant(sortedGrants[0]);
-    } else if (sortedGrants.length === 0) {
+      setSelectedGrant(currentGrants[0]);
+    } else if (currentGrants.length === 0) {
       setSelectedGrant(null);
     }
-  }, [sortedGrants, selectedGrant]);
+  }, [currentGrants, selectedGrant]);
+
   const handleGrantSelect = useCallback((grant: Grant) => {
     setSelectedGrant(grant);
   }, []);
+
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
   }, [toggleBookmark]);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
+
   if (isLoading) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading grants...</div>
       </div>;
   }
+
   if (error) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-red-600">Error loading grants: {error.message}</div>
       </div>;
   }
-  return <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
+
+  return (
+    <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
         <div className="p-4 border border-transparent py-[2px]">
@@ -124,36 +166,112 @@ const DiscoverGrants = () => {
       {/* Main Content Area - takes remaining height */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Panel - Grant List (40% width) */}
-        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden">
-          <ScrollArea className="h-full">
+        <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden flex flex-col">
+          <ScrollArea className="flex-1">
             <div className="p-4 border border-transparent py-0 px-[15px]">
               <div className="space-y-3">
-                {sortedGrants.length === 0 ? <div className="text-center text-gray-500 mt-8">
+                {currentGrants.length === 0 ? (
+                  <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
-                  </div> : sortedGrants.map(grant => <GrantCard key={grant.id} grant={grant} isSelected={selectedGrant?.id === grant.id} isBookmarked={bookmarkedGrants.has(grant.id)} onSelect={() => handleGrantSelect(grant)} onToggleBookmark={() => handleToggleBookmark(grant.id)} />)}
+                  </div>
+                ) : (
+                  currentGrants.map(grant => (
+                    <GrantCard
+                      key={grant.id}
+                      grant={grant}
+                      isSelected={selectedGrant?.id === grant.id}
+                      isBookmarked={bookmarkedGrants.has(grant.id)}
+                      onSelect={() => handleGrantSelect(grant)}
+                      onToggleBookmark={() => handleToggleBookmark(grant.id)}
+                    />
+                  ))
+                )}
               </div>
             </div>
           </ScrollArea>
+          
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="border-t border-gray-200 bg-[#f8f4ec] p-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) handlePageChange(currentPage - 1);
+                      }}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(page);
+                        }}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                      }}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
         <div className="w-3/5 bg-[#f8f4ec] overflow-hidden relative">
           {/* Sticky Header - Only show when grant is selected */}
-          {selectedGrant && <GrantStickyHeader grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} />}
+          {selectedGrant && (
+            <GrantStickyHeader
+              grant={selectedGrant}
+              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+              onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
+              orgLogo={getOrganizationLogo(selectedGrant.organization)}
+            />
+          )}
           
-          {selectedGrant ? <ScrollArea className="h-full" data-grant-details-scroll>
+          {selectedGrant ? (
+            <ScrollArea className="h-full" data-grant-details-scroll>
               <div className="p-4 border-transparent px-0 py-0">
                 <div className="bg-white rounded-lg">
-                  <GrantDetails grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)} />
+                  <GrantDetails
+                    grant={selectedGrant}
+                    isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+                    onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
+                  />
                 </div>
               </div>
-            </ScrollArea> : <div className="flex items-center justify-center h-full p-4">
+            </ScrollArea>
+          ) : (
+            <div className="flex items-center justify-center h-full p-4">
               <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
                 <EmptyGrantDetails />
               </div>
-            </div>}
+            </div>
+          )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default DiscoverGrants;
