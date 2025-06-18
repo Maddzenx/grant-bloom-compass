@@ -42,9 +42,9 @@ export function AppSidebar() {
         </Button>}
       
       <Sidebar className="border-r border-gray-200">
-        <SidebarHeader className="p-6 border-b border-transparent flex-shrink-0 bg-[#f8f4ec] px-[10px] rounded-none py-[10px]">
+        <SidebarHeader className="p-6 border-b border-transparent flex-shrink-0 bg-[#f8f4ec] px-[10px] rounded-none py-[10px] flex justify-between items-center">
           <span className="font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">Menu</span>
-          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" title="Collapse sidebar">
+          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden ml-auto" title="Collapse sidebar">
             <PanelLeft className="w-4 h-4" />
           </Button>
         </SidebarHeader>
