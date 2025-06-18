@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Calendar, DollarSign, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -157,16 +156,16 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
             <section className="bg-gray-50 p-6 rounded-lg">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Mallar och filer</h3>
               <div className="space-y-3">
-                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline">
+                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline break-words">
                   Bidragsinformation.pdf
                 </div>
-                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline">
+                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline break-words">
                   Infovideomöte.pm4
                 </div>
-                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline">
+                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline break-words">
                   projektbeskrivningsmall.docx
                 </div>
-                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline">
+                <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline break-words">
                   CV-mall.pdf
                 </div>
               </div>
