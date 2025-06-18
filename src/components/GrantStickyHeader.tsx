@@ -20,30 +20,44 @@ const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: G
 
   useEffect(() => {
     const handleScroll = () => {
-      // Find the grant details scroll container
-      const scrollContainer = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        const shouldShow = scrollContainer.scrollTop > 200;
+      // Look for the scroll viewport created by Radix ScrollArea
+      const scrollViewport = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
+      
+      if (scrollViewport) {
+        const scrollTop = scrollViewport.scrollTop;
+        const shouldShow = scrollTop > 200;
+        console.log('Scroll detected - scrollTop:', scrollTop, 'shouldShow:', shouldShow);
         setIsVisible(shouldShow);
-        console.log('Scroll detected:', scrollContainer.scrollTop, 'Should show:', shouldShow);
       }
     };
 
-    // Find the grant details scroll container and attach scroll listener
-    const scrollContainer = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      console.log('Scroll container found:', scrollContainer);
-      scrollContainer.addEventListener('scroll', handleScroll);
-      return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    } else {
-      console.log('Scroll container not found');
-    }
+    // Add a small delay to ensure the DOM is ready
+    const timer = setTimeout(() => {
+      const scrollViewport = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
+      
+      if (scrollViewport) {
+        console.log('ScrollArea viewport found, attaching listener');
+        scrollViewport.addEventListener('scroll', handleScroll, { passive: true });
+        
+        return () => {
+          scrollViewport.removeEventListener('scroll', handleScroll);
+        };
+      } else {
+        console.log('ScrollArea viewport not found');
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <div className={`absolute top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
-      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
-    }`}>
+    <div className="absolute top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center justify-between px-6 py-3 max-w-full">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <img 
