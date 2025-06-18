@@ -68,7 +68,6 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
                   alt={orgLogo.alt}
                   className={orgLogo.className}
                 />
-                <span className="text-gray-600 text-sm">{grant.organization}</span>
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">{grant.title}</h1>
               <p className="text-gray-700 text-lg leading-relaxed mb-6">{grant.description}</p>
