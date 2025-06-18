@@ -3,6 +3,7 @@ import React from "react";
 import { Calendar, DollarSign, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface GrantDetailsProps {
   grant: Grant;
@@ -14,7 +15,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Header section */}
-      <div className="p-8 pb-6 border-b border-gray-200">
+      <div className="p-8 pb-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-4">
@@ -65,95 +66,97 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
-        <div className="space-y-8">
-          <section>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">About this grant</h3>
-            <p className="text-gray-700 leading-relaxed mb-6">{grant.aboutGrant}</p>
-          </section>
-
-          <section>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Who can apply?</h3>
-            <p className="text-gray-700 leading-relaxed mb-6">{grant.whoCanApply}</p>
-          </section>
-
-          {/* Right sidebar content */}
+      <ScrollArea className="flex-1">
+        <div className="px-8 py-6">
           <div className="space-y-8">
             <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Allmän information</h3>
-              <div className="space-y-3">
-                <div>
-                  <span className="font-semibold text-gray-900">Bidrag:</span>
-                  <span className="text-gray-700 ml-1">500 000 – 2 000 000 SEK</span>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-900">Projekttid:</span>
-                  <span className="text-gray-700 ml-1">12–18 mån</span>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-900">Medfinansiering:</span>
-                  <span className="text-gray-700 ml-1">60%</span>
-                </div>
-              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">About this grant</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">{grant.aboutGrant}</p>
             </section>
 
             <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Viktiga datum</h3>
-              <ul className="space-y-2">
-                {grant.importantDates.map((date, index) => (
-                  <li key={index} className="flex items-start gap-3 text-gray-700">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>{date}</span>
-                  </li>
-                ))}
-              </ul>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Who can apply?</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">{grant.whoCanApply}</p>
             </section>
 
-            <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Krav</h3>
-              <div className="space-y-4">
-                <div>
-                  <span className="font-semibold text-gray-900">Mottagare:</span>
-                  <span className="text-gray-700 ml-1">Företag, Universitet, Forskare</span>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-900">Konsortiekrav:</span>
-                  <span className="text-gray-700 ml-1">Minst 2 aktörer, varav en från näringsliv</span>
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-900">Finansiering:</span>
-                  <span className="text-gray-700 ml-1">Löner, konsulttjänster, licenser, övriga kostnader</span>
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Mallar och filer</h3>
-              <div className="space-y-3">
-                {grant.templates.map((template, index) => (
-                  <div key={index} className="flex items-center gap-3 text-blue-600 hover:text-blue-800 cursor-pointer">
-                    <span className="underline">{template}</span>
-                    <ExternalLink className="w-4 h-4" />
+            {/* Right sidebar content */}
+            <div className="space-y-8">
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Allmän information</h3>
+                <div className="space-y-3">
+                  <div>
+                    <span className="font-semibold text-gray-900">Bidrag:</span>
+                    <span className="text-gray-700 ml-1">500 000 – 2 000 000 SEK</span>
                   </div>
-                ))}
-              </div>
-            </section>
+                  <div>
+                    <span className="font-semibold text-gray-900">Projekttid:</span>
+                    <span className="text-gray-700 ml-1">12–18 mån</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Medfinansiering:</span>
+                    <span className="text-gray-700 ml-1">60%</span>
+                  </div>
+                </div>
+              </section>
 
-            <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Kontakt</h3>
-              <div className="space-y-2">
-                <div className="font-semibold text-gray-900">{grant.contact.name}</div>
-                <div className="text-gray-700">{grant.contact.organization}</div>
-                <div className="text-blue-600 underline cursor-pointer">{grant.contact.email}</div>
-                <div className="text-gray-700">{grant.contact.phone}</div>
-              </div>
-            </section>
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Viktiga datum</h3>
+                <ul className="space-y-2">
+                  {grant.importantDates.map((date, index) => (
+                    <li key={index} className="flex items-start gap-3 text-gray-700">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <span>{date}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Krav</h3>
+                <div className="space-y-4">
+                  <div>
+                    <span className="font-semibold text-gray-900">Mottagare:</span>
+                    <span className="text-gray-700 ml-1">Företag, Universitet, Forskare</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Konsortiekrav:</span>
+                    <span className="text-gray-700 ml-1">Minst 2 aktörer, varav en från näringsliv</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Finansiering:</span>
+                    <span className="text-gray-700 ml-1">Löner, konsulttjänster, licenser, övriga kostnader</span>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Mallar och filer</h3>
+                <div className="space-y-3">
+                  {grant.templates.map((template, index) => (
+                    <div key={index} className="flex items-center gap-3 text-blue-600 hover:text-blue-800 cursor-pointer">
+                      <span className="underline">{template}</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Kontakt</h3>
+                <div className="space-y-2">
+                  <div className="font-semibold text-gray-900">{grant.contact.name}</div>
+                  <div className="text-gray-700">{grant.contact.organization}</div>
+                  <div className="text-blue-600 underline cursor-pointer">{grant.contact.email}</div>
+                  <div className="text-gray-700">{grant.contact.phone}</div>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Fixed bottom action bar */}
-      <div className="flex gap-3 p-8 pt-6 border-t border-gray-200 bg-white">
+      <div className="flex gap-3 p-8 pt-6 border-t border-gray-200 bg-white flex-shrink-0">
         <Button
           variant="ghost"
           onClick={onToggleBookmark}

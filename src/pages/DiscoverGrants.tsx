@@ -8,6 +8,7 @@ import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
@@ -56,11 +57,11 @@ const DiscoverGrants = () => {
         <AppSidebar />
         
         {/* Main Content Area */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 h-screen">
           {/* Left Panel - Grant List */}
-          <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
+          <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col h-full">
             {/* Header */}
-            <div className="p-6 border-b border-gray-200 bg-white">
+            <div className="p-6 border-b border-gray-200 bg-white flex-shrink-0">
               <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
               </div>
@@ -70,31 +71,33 @@ const DiscoverGrants = () => {
               />
             </div>
 
-            {/* Grant Cards */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="space-y-4">
-                {filteredGrants.length === 0 ? (
-                  <div className="text-center text-gray-500 mt-8">
-                    {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
-                  </div>
-                ) : (
-                  filteredGrants.map((grant) => (
-                    <GrantCard
-                      key={grant.id}
-                      grant={grant}
-                      isSelected={selectedGrant?.id === grant.id}
-                      isBookmarked={bookmarkedGrants.has(grant.id)}
-                      onSelect={() => setSelectedGrant(grant)}
-                      onToggleBookmark={() => toggleBookmark(grant.id)}
-                    />
-                  ))
-                )}
+            {/* Grant Cards - Scrollable */}
+            <ScrollArea className="flex-1">
+              <div className="p-6">
+                <div className="space-y-4">
+                  {filteredGrants.length === 0 ? (
+                    <div className="text-center text-gray-500 mt-8">
+                      {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+                    </div>
+                  ) : (
+                    filteredGrants.map((grant) => (
+                      <GrantCard
+                        key={grant.id}
+                        grant={grant}
+                        isSelected={selectedGrant?.id === grant.id}
+                        isBookmarked={bookmarkedGrants.has(grant.id)}
+                        onSelect={() => setSelectedGrant(grant)}
+                        onToggleBookmark={() => toggleBookmark(grant.id)}
+                      />
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
+            </ScrollArea>
           </div>
 
           {/* Right Panel - Grant Details */}
-          <div className="w-1/2 bg-white">
+          <div className="w-1/2 bg-white h-full">
             {selectedGrant ? (
               <GrantDetails 
                 grant={selectedGrant}
