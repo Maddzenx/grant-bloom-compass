@@ -2,7 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-
 const menuItems = [{
   title: "Home",
   url: "/",
@@ -38,9 +37,7 @@ export function AppSidebar() {
   } = useSidebar();
   return <>
       {/* Toggle button for collapsed state - positioned better */}
-      {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="fixed top-4 left-2 z-50 flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-lg border border-gray-200" title="Expand sidebar">
-          <PanelLeft className="w-5 h-5" />
-        </Button>}
+      {state === "collapsed"}
       
       <Sidebar className="border-r border-gray-200">
         {/* Minimize button positioned at top right of sidebar */}
