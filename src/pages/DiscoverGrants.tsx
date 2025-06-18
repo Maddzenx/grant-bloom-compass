@@ -5,12 +5,14 @@ import GrantCard from "@/components/GrantCard";
 import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import { Grant } from "@/types/grant";
-import { grants } from "@/data/grants";
+import { useGrants } from "@/hooks/useGrants";
 
 const DiscoverGrants = () => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
+
+  const { data: grants = [], isLoading, error } = useGrants();
 
   const toggleBookmark = (grantId: string) => {
     const newBookmarks = new Set(bookmarkedGrants);
@@ -23,9 +25,9 @@ const DiscoverGrants = () => {
   };
 
   const filteredGrants = grants.filter(grant =>
-    grant.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    grant.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    grant.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Set the first grant as selected by default
@@ -34,6 +36,26 @@ const DiscoverGrants = () => {
       setSelectedGrant(filteredGrants[0]);
     }
   }, [filteredGrants, selectedGrant]);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <p className="text-gray-500">Laddar bidrag...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <p className="text-red-500">Fel vid hämtning av bidrag: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
