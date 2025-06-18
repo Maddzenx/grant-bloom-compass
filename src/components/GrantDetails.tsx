@@ -13,8 +13,8 @@ interface GrantDetailsProps {
 const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsProps) => {
   return (
     <div className="h-full flex flex-col bg-white">
-      {/* Sticky header section */}
-      <div className="sticky top-0 z-10 p-8 pb-6 border-b border-gray-200 bg-white">
+      {/* Header section */}
+      <div className="p-8 pb-6 border-b border-gray-200">
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-4">
