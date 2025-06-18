@@ -6,6 +6,7 @@ import GrantKeyInfo from "./GrantKeyInfo";
 import GrantMainContent from "./GrantMainContent";
 import GrantSidebar from "./GrantSidebar";
 import GrantBottomActions from "./GrantBottomActions";
+import GrantStickyHeader from "./GrantStickyHeader";
 
 interface GrantDetailsProps {
   grant: Grant;
@@ -60,39 +61,49 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
   const orgLogo = getOrganizationLogo(grant.organization);
 
   return (
-    <div className="p-6 max-w-5xl">
-      {/* Header section */}
-      <div className="mb-6">
-        <GrantHeader
-          grant={grant}
-          isBookmarked={isBookmarked}
-          onToggleBookmark={onToggleBookmark}
-          orgLogo={orgLogo}
-        />
-
-        {/* Key info section */}
-        <GrantKeyInfo grant={grant} />
-      </div>
-
-      {/* Main content in two columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left column - Main content */}
-        <div className="lg:col-span-3">
-          <GrantMainContent grant={grant} />
-        </div>
-
-        {/* Right column - Sidebar info */}
-        <div className="lg:col-span-1">
-          <GrantSidebar />
-        </div>
-      </div>
-
-      {/* Bottom action buttons */}
-      <GrantBottomActions
+    <>
+      {/* Sticky Header */}
+      <GrantStickyHeader
+        grant={grant}
         isBookmarked={isBookmarked}
         onToggleBookmark={onToggleBookmark}
+        orgLogo={orgLogo}
       />
-    </div>
+      
+      <div className="p-6 max-w-5xl">
+        {/* Header section */}
+        <div className="mb-6">
+          <GrantHeader
+            grant={grant}
+            isBookmarked={isBookmarked}
+            onToggleBookmark={onToggleBookmark}
+            orgLogo={orgLogo}
+          />
+
+          {/* Key info section */}
+          <GrantKeyInfo grant={grant} />
+        </div>
+
+        {/* Main content in two columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left column - Main content */}
+          <div className="lg:col-span-3">
+            <GrantMainContent grant={grant} />
+          </div>
+
+          {/* Right column - Sidebar info */}
+          <div className="lg:col-span-1">
+            <GrantSidebar />
+          </div>
+        </div>
+
+        {/* Bottom action buttons */}
+        <GrantBottomActions
+          isBookmarked={isBookmarked}
+          onToggleBookmark={onToggleBookmark}
+        />
+      </div>
+    </>
   );
 };
 
