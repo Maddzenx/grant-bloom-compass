@@ -8,8 +8,6 @@ import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { PanelLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
@@ -61,17 +59,10 @@ const DiscoverGrants = () => {
         <div className="flex flex-1">
           {/* Left Panel - Grant List */}
           <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
-            {/* Header with collapse button */}
+            {/* Header */}
             <div className="p-6 border-b border-gray-200 bg-white">
               <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors"
-                >
-                  <PanelLeft className="w-4 h-4" />
-                </Button>
               </div>
               <SearchBar 
                 searchTerm={searchTerm} 

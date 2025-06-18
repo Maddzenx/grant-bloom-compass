@@ -1,6 +1,6 @@
 
 import { useLocation, Link } from "react-router-dom";
-import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool } from "lucide-react";
+import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,7 +10,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   {
@@ -53,9 +56,21 @@ const accountItems = [
 
 export function AppSidebar() {
   const location = useLocation();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <Sidebar className="border-r border-gray-200">
+      <SidebarHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-200">
+        <span className="font-semibold text-gray-900">Menu</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleSidebar}
+          className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors"
+        >
+          <PanelLeft className="w-4 h-4" />
+        </Button>
+      </SidebarHeader>
       <SidebarContent className="bg-gray-50">
         <SidebarGroup>
           <SidebarGroupContent>
