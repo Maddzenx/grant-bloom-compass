@@ -1,7 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+
 const menuItems = [{
   title: "Home",
   url: "/",
@@ -42,13 +43,14 @@ export function AppSidebar() {
         </Button>}
       
       <Sidebar className="border-r border-gray-200">
-        <SidebarHeader className="flex-shrink-0 px-4 py-3 flex justify-between items-center border-b border-gray-100 bg-[#f8f4ec]">
-          <span className="font-semibold text-gray-900 group-data-[collapsible=icon]:hidden text-left">Menu</span>
-          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden ml-auto" title="Collapse sidebar">
+        {/* Minimize button positioned at top right of sidebar */}
+        <div className="absolute top-4 right-4 z-10">
+          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" title="Collapse sidebar">
             <PanelLeft className="w-4 h-4" />
           </Button>
-        </SidebarHeader>
-        <SidebarContent className="bg-[#f8f4ec]">
+        </div>
+
+        <SidebarContent className="bg-[#f8f4ec] pt-16">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
