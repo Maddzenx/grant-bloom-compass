@@ -27,5 +27,9 @@ export const useGrants = () => {
       console.log('Transformed grants:', transformedGrants);
       return transformedGrants;
     },
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
