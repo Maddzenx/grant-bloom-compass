@@ -8,7 +8,6 @@ import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
 import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { PanelLeft, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const DiscoverGrantsContent = () => {
   const { data: grants = [], isLoading, error } = useGrants();
@@ -59,10 +58,8 @@ const DiscoverGrantsContent = () => {
         {/* Header with collapse button */}
         <div className="p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 mb-6">
-            <SidebarTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
-                <Menu className="w-4 h-4" />
-              </Button>
+            <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
+              <Menu className="w-4 h-4" />
             </SidebarTrigger>
             <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
@@ -98,10 +95,8 @@ const DiscoverGrantsContent = () => {
       {/* Collapsed sidebar trigger when sidebar is hidden */}
       {state === "collapsed" && (
         <div className="fixed left-4 top-6 z-10">
-          <SidebarTrigger asChild>
-            <Button variant="outline" size="sm" className="bg-white shadow-md hover:shadow-lg transition-shadow">
-              <PanelLeft className="w-4 h-4" />
-            </Button>
+          <SidebarTrigger className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-center">
+            <PanelLeft className="w-4 h-4" />
           </SidebarTrigger>
         </div>
       )}
