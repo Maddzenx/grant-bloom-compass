@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ const getOrganizationLogo = (organization: string) => {
   
   if (orgLower.includes('vinnova')) {
     return {
-      src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
+      src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
       alt: "Vinnova",
       className: "w-24 h-8 object-contain"
     };
@@ -36,7 +35,7 @@ const getOrganizationLogo = (organization: string) => {
     };
   } else if (orgLower.includes('formas')) {
     return {
-      src: "/lovable-uploads/3552e420-3b5f-46bb-9c33-cd4511e2ec34.png",
+      src: "/lovable-uploads/c9469cb3-f5f1-4afe-a879-acfc4bc5aa33.png",
       alt: "Formas",
       className: "w-24 h-8 object-contain"
     };
@@ -50,7 +49,7 @@ const getOrganizationLogo = (organization: string) => {
   
   // Default fallback to Vinnova
   return {
-    src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
+    src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
     alt: organization,
     className: "w-24 h-8 object-contain"
   };
