@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Search, Calendar, DollarSign, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -182,12 +181,11 @@ const DiscoverGrants = () => {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">V</span>
-                    </div>
-                    <span className="text-sm font-medium text-green-600">
-                      {grant.organization}
-                    </span>
+                    <img 
+                      src="/lovable-uploads/23db7362-fc6c-4227-9a07-bbc3e401ec75.png" 
+                      alt="Vinnova" 
+                      className="w-16 h-6 object-contain"
+                    />
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">{grant.title}</h3>
                   <p className="text-gray-600 text-sm mb-4">{grant.description}</p>
@@ -242,12 +240,11 @@ const DiscoverGrants = () => {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">V</span>
-                    </div>
-                    <span className="text-sm font-medium text-green-600">
-                      {selectedGrant.organization}
-                    </span>
+                    <img 
+                      src="/lovable-uploads/23db7362-fc6c-4227-9a07-bbc3e401ec75.png" 
+                      alt="Vinnova" 
+                      className="w-16 h-6 object-contain"
+                    />
                   </div>
                   <h2 className="text-xl font-medium text-gray-900 mb-2">{selectedGrant.title}</h2>
                   <p className="text-gray-600">{selectedGrant.description}</p>
