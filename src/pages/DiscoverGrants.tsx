@@ -5,15 +5,18 @@ import GrantCard from "@/components/GrantCard";
 import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import SearchBar from "@/components/SearchBar";
+import SortingControls, { SortOption } from "@/components/SortingControls";
 import { Grant } from "@/types/grant";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { sortGrants } from "@/utils/grantSorting";
 
 const DiscoverGrants = () => {
   const { data: grants = [], isLoading, error } = useGrants();
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
 
   const toggleBookmark = (grantId: string) => {
@@ -35,17 +38,19 @@ const DiscoverGrants = () => {
     grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const sortedGrants = sortGrants(filteredGrants, sortBy);
+
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
-    if (filteredGrants.length > 0 && !selectedGrant) {
-      setSelectedGrant(filteredGrants[0]);
-    } else if (filteredGrants.length > 0 && selectedGrant && !filteredGrants.find(g => g.id === selectedGrant.id)) {
+    if (sortedGrants.length > 0 && !selectedGrant) {
+      setSelectedGrant(sortedGrants[0]);
+    } else if (sortedGrants.length > 0 && selectedGrant && !sortedGrants.find(g => g.id === selectedGrant.id)) {
       // If current selection is not in filtered results, select first filtered grant
-      setSelectedGrant(filteredGrants[0]);
-    } else if (filteredGrants.length === 0) {
+      setSelectedGrant(sortedGrants[0]);
+    } else if (sortedGrants.length === 0) {
       setSelectedGrant(null);
     }
-  }, [filteredGrants, selectedGrant]);
+  }, [sortedGrants, selectedGrant]);
 
   if (isLoading) {
     return (
@@ -81,18 +86,24 @@ const DiscoverGrants = () => {
                 searchTerm={searchTerm} 
                 onSearchChange={setSearchTerm}
               />
+              <div className="mt-4">
+                <SortingControls 
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
+              </div>
             </div>
 
             {/* Grant Cards - Scrollable */}
             <ScrollArea className="flex-1">
               <div className="p-6">
                 <div className="space-y-4">
-                  {filteredGrants.length === 0 ? (
+                  {sortedGrants.length === 0 ? (
                     <div className="text-center text-gray-500 mt-8">
                       {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
                     </div>
                   ) : (
-                    filteredGrants.map((grant) => (
+                    sortedGrants.map((grant) => (
                       <GrantCard
                         key={grant.id}
                         grant={grant}
