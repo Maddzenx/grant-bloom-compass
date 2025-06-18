@@ -48,7 +48,7 @@ export function AppSidebar() {
             <PanelLeft className="w-4 h-4" />
           </Button>
         </SidebarHeader>
-        <SidebarContent className="bg-white">
+        <SidebarContent className="bg-[#f8f4ec]">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
