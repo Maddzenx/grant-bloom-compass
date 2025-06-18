@@ -27,7 +27,7 @@ const GrantHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: GrantHe
           />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">{grant.title}</h1>
-        <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-4xl">{grant.description}</p>
+        <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-none">{grant.description}</p>
       </div>
       <div className="flex gap-3 flex-shrink-0">
         <Button
