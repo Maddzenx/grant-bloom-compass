@@ -8,7 +8,6 @@ import SortingControls, { SortOption } from "@/components/SortingControls";
 import { Grant } from "@/types/grant";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
-
 const DiscoverGrants = () => {
   const {
     data: grants = [],
@@ -19,7 +18,6 @@ const DiscoverGrants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-  
   const toggleBookmark = (grantId: string) => {
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
@@ -31,7 +29,6 @@ const DiscoverGrants = () => {
       return newSet;
     });
   };
-  
   const filteredGrants = grants.filter(grant => grant.title.toLowerCase().includes(searchTerm.toLowerCase()) || grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) || grant.description.toLowerCase().includes(searchTerm.toLowerCase()) || grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   const sortedGrants = sortGrants(filteredGrants, sortBy);
 
@@ -74,7 +71,7 @@ const DiscoverGrants = () => {
 
           {/* Grant Cards - Scrollable */}
           <ScrollArea className="flex-1">
-            <div className="p-6">
+            <div className="p-6 px-[15px] py-[15px]">
               <div className="space-y-4">
                 {sortedGrants.length === 0 ? <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -95,5 +92,4 @@ const DiscoverGrants = () => {
       </div>
     </div>;
 };
-
 export default DiscoverGrants;
