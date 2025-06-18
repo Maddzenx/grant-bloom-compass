@@ -7,8 +7,6 @@ import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import SearchBar from "@/components/SearchBar";
 import SortingControls, { SortOption } from "@/components/SortingControls";
 import { Grant } from "@/types/grant";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
 
@@ -69,71 +67,67 @@ const DiscoverGrants = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen bg-gray-50 flex w-full">
-        <AppSidebar />
-        
-        {/* Main Content Area */}
-        <div className="flex flex-1 h-screen">
-          {/* Left Panel - Grant List (40% width) */}
-          <div className="w-2/5 border-r border-gray-200 bg-white flex flex-col h-full">
-            {/* Header */}
-            <div className="p-6 border-b border-gray-200 bg-white flex-shrink-0">
-              <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
-              </div>
-              <SearchBar 
-                searchTerm={searchTerm} 
-                onSearchChange={setSearchTerm}
+    <div className="min-h-screen bg-gray-50 flex w-full">
+      {/* Main Content Area */}
+      <div className="flex flex-1 h-screen">
+        {/* Left Panel - Grant List (40% width) */}
+        <div className="w-2/5 border-r border-gray-200 bg-white flex flex-col h-full">
+          {/* Header */}
+          <div className="p-6 border-b border-gray-200 bg-white flex-shrink-0">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
+            </div>
+            <SearchBar 
+              searchTerm={searchTerm} 
+              onSearchChange={setSearchTerm}
+            />
+            <div className="mt-4">
+              <SortingControls 
+                sortBy={sortBy}
+                onSortChange={setSortBy}
               />
-              <div className="mt-4">
-                <SortingControls 
-                  sortBy={sortBy}
-                  onSortChange={setSortBy}
-                />
+            </div>
+          </div>
+
+          {/* Grant Cards - Scrollable */}
+          <ScrollArea className="flex-1">
+            <div className="p-6">
+              <div className="space-y-4">
+                {sortedGrants.length === 0 ? (
+                  <div className="text-center text-gray-500 mt-8">
+                    {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+                  </div>
+                ) : (
+                  sortedGrants.map((grant) => (
+                    <GrantCard
+                      key={grant.id}
+                      grant={grant}
+                      isSelected={selectedGrant?.id === grant.id}
+                      isBookmarked={bookmarkedGrants.has(grant.id)}
+                      onSelect={() => setSelectedGrant(grant)}
+                      onToggleBookmark={() => toggleBookmark(grant.id)}
+                    />
+                  ))
+                )}
               </div>
             </div>
+          </ScrollArea>
+        </div>
 
-            {/* Grant Cards - Scrollable */}
-            <ScrollArea className="flex-1">
-              <div className="p-6">
-                <div className="space-y-4">
-                  {sortedGrants.length === 0 ? (
-                    <div className="text-center text-gray-500 mt-8">
-                      {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
-                    </div>
-                  ) : (
-                    sortedGrants.map((grant) => (
-                      <GrantCard
-                        key={grant.id}
-                        grant={grant}
-                        isSelected={selectedGrant?.id === grant.id}
-                        isBookmarked={bookmarkedGrants.has(grant.id)}
-                        onSelect={() => setSelectedGrant(grant)}
-                        onToggleBookmark={() => toggleBookmark(grant.id)}
-                      />
-                    ))
-                  )}
-                </div>
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Right Panel - Grant Details (60% width) */}
-          <div className="w-3/5 bg-white h-full">
-            {selectedGrant ? (
-              <GrantDetails 
-                grant={selectedGrant}
-                isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-                onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
-              />
-            ) : (
-              <EmptyGrantDetails />
-            )}
-          </div>
+        {/* Right Panel - Grant Details (60% width) */}
+        <div className="w-3/5 bg-white h-full">
+          {selectedGrant ? (
+            <GrantDetails 
+              grant={selectedGrant}
+              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+              onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+            />
+          ) : (
+            <EmptyGrantDetails />
+          )}
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
