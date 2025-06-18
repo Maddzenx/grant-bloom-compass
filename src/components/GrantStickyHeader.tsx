@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
@@ -20,19 +20,23 @@ const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: G
 
   useEffect(() => {
     const handleScroll = () => {
-      // Find the ScrollArea viewport element
-      const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      // Find the grant details scroll container
+      const scrollContainer = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
       if (scrollContainer) {
         const shouldShow = scrollContainer.scrollTop > 200;
         setIsVisible(shouldShow);
+        console.log('Scroll detected:', scrollContainer.scrollTop, 'Should show:', shouldShow);
       }
     };
 
-    // Find the ScrollArea viewport and attach scroll listener
-    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+    // Find the grant details scroll container and attach scroll listener
+    const scrollContainer = document.querySelector('[data-grant-details-scroll] [data-radix-scroll-area-viewport]');
     if (scrollContainer) {
+      console.log('Scroll container found:', scrollContainer);
       scrollContainer.addEventListener('scroll', handleScroll);
       return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    } else {
+      console.log('Scroll container not found');
     }
   }, []);
 
