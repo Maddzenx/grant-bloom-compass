@@ -181,32 +181,36 @@ const DiscoverGrants = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex">
+      <div className="flex h-screen">
         {/* Left Panel - Grants List */}
-        <div className="w-1/2 p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900 mb-6">Discover Grants</h1>
+        <div className="w-1/2 flex flex-col">
+          {/* Header section - fixed */}
+          <div className="bg-gray-50 p-8 pb-6 border-b border-gray-200">
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Discover Grants</h1>
             <SearchBar 
               searchTerm={searchTerm} 
               onSearchChange={setSearchTerm} 
             />
           </div>
 
-          <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
-            {currentGrants.map((grant) => (
-              <GrantCard
-                key={grant.id}
-                grant={grant}
-                isSelected={selectedGrant?.id === grant.id}
-                isBookmarked={bookmarkedGrants.has(grant.id)}
-                onSelect={() => setSelectedGrant(grant)}
-                onToggleBookmark={() => toggleBookmark(grant.id)}
-              />
-            ))}
+          {/* Scrollable grants list */}
+          <div className="flex-1 overflow-y-auto px-8 py-6">
+            <div className="space-y-6">
+              {currentGrants.map((grant) => (
+                <GrantCard
+                  key={grant.id}
+                  grant={grant}
+                  isSelected={selectedGrant?.id === grant.id}
+                  isBookmarked={bookmarkedGrants.has(grant.id)}
+                  onSelect={() => setSelectedGrant(grant)}
+                  onToggleBookmark={() => toggleBookmark(grant.id)}
+                />
+              ))}
+            </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-8 flex justify-center">
+              <div className="mt-8 flex justify-center pb-6">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
@@ -231,24 +235,26 @@ const DiscoverGrants = () => {
 
             {/* Results info */}
             {filteredGrants.length > 0 && (
-              <div className="text-sm text-gray-500 text-center mt-4">
+              <div className="text-sm text-gray-500 text-center pb-6">
                 Visar {startIndex + 1}-{Math.min(endIndex, filteredGrants.length)} av {filteredGrants.length} bidrag
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Panel - Grant Details (Sticky) */}
-        <div className="w-1/2 h-screen overflow-y-auto sticky top-0 p-6 pl-0">
-          {selectedGrant ? (
-            <GrantDetails
-              grant={selectedGrant}
-              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-              onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
-            />
-          ) : (
-            <EmptyGrantDetails />
-          )}
+        {/* Right Panel - Grant Details (Fixed/Sticky) */}
+        <div className="w-1/2 bg-white border-l border-gray-200 flex flex-col h-screen">
+          <div className="flex-1 overflow-hidden">
+            {selectedGrant ? (
+              <GrantDetails
+                grant={selectedGrant}
+                isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+                onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+              />
+            ) : (
+              <EmptyGrantDetails />
+            )}
+          </div>
         </div>
       </div>
     </div>
