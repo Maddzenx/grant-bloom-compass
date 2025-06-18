@@ -18,10 +18,10 @@ const SearchBar = ({ searchTerm, onSearchChange }: SearchBarProps) => {
           placeholder="Sök"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 border-gray-300"
+          className="pl-10 border-gray-300 bg-white"
         />
       </div>
-      <Button variant="outline" className="bg-white border-gray-300">
+      <Button variant="outline" className="bg-white border-gray-300 text-gray-700">
         Search
       </Button>
     </div>
