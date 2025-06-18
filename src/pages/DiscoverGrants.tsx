@@ -9,6 +9,9 @@ import GrantStickyHeader from "@/components/GrantStickyHeader";
 import { Grant } from "@/types/grant";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
+import { Button } from "@/components/ui/button";
+import { PanelLeft } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   Pagination,
   PaginationContent,
@@ -31,6 +34,7 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const { toggleSidebar, state } = useSidebar();
 
   const getOrganizationLogo = (organization: string) => {
     const orgLower = organization.toLowerCase();
@@ -150,11 +154,30 @@ const DiscoverGrants = () => {
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
         <div className="p-4 border border-transparent py-[2px]">
-          <div className="flex items-center justify-between mb-4">
+          {/* Header with toggle button and title */}
+          <div className="flex items-center gap-3 mb-4">
+            {state === "collapsed" && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={toggleSidebar}
+                className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md border border-gray-200"
+                title="Expand sidebar"
+              >
+                <PanelLeft className="w-4 h-4" />
+              </Button>
+            )}
             <h1 className="text-xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
-          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          <div className="mt-3 flex items-center justify-between my-0">
+          
+          {/* Centered search bar */}
+          <div className="flex justify-center mb-4">
+            <div className="w-full max-w-md">
+              <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between my-0">
             <div className="text-black text-sm">
               {sortedGrants.length} bidrag hittade
             </div>
