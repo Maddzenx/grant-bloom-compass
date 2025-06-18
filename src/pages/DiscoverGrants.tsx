@@ -89,12 +89,12 @@ const DiscoverGrants = () => {
     <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
-        <div className="p-6 border border-transparent py-[10px] px-[10px]">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
+        <div className="p-4 border border-transparent">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-900">Upptäck bidrag</h1>
           </div>
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          <div className="mt-4">
+          <div className="mt-3">
             <SortingControls sortBy={sortBy} onSortChange={setSortBy} />
           </div>
         </div>
@@ -105,8 +105,8 @@ const DiscoverGrants = () => {
         {/* Left Panel - Grant List (40% width) */}
         <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden">
           <ScrollArea className="h-full">
-            <div className="p-6 border border-transparent px-[10px] py-[10px]">
-              <div className="space-y-4">
+            <div className="p-4 border border-transparent">
+              <div className="space-y-3">
                 {sortedGrants.length === 0 ? (
                   <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -132,7 +132,7 @@ const DiscoverGrants = () => {
         <div className="w-3/5 bg-[#f8f4ec] overflow-hidden">
           {selectedGrant ? (
             <ScrollArea className="h-full">
-              <div className="p-6 border-transparent px-[10px] py-[10px]">
+              <div className="p-4 border-transparent">
                 <div className="bg-white rounded-lg">
                   <GrantDetails
                     grant={selectedGrant}
@@ -143,7 +143,7 @@ const DiscoverGrants = () => {
               </div>
             </ScrollArea>
           ) : (
-            <div className="flex items-center justify-center h-full p-6">
+            <div className="flex items-center justify-center h-full p-4">
               <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
                 <EmptyGrantDetails />
               </div>
