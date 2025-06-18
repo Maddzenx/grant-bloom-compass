@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import GrantCard from "@/components/GrantCard";
@@ -10,7 +9,6 @@ import GrantStickyHeader from "@/components/GrantStickyHeader";
 import { Grant } from "@/types/grant";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sortGrants } from "@/utils/grantSorting";
-
 const DiscoverGrants = () => {
   const {
     data: grants = [],
@@ -21,10 +19,8 @@ const DiscoverGrants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-
   const getOrganizationLogo = (organization: string) => {
     const orgLower = organization.toLowerCase();
-    
     if (orgLower.includes('vinnova')) {
       return {
         src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
@@ -56,14 +52,12 @@ const DiscoverGrants = () => {
         className: "w-20 h-6 object-contain"
       };
     }
-    
     return {
       src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
       alt: organization,
       className: "w-20 h-6 object-contain"
     };
   };
-
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
@@ -75,12 +69,10 @@ const DiscoverGrants = () => {
       return newSet;
     });
   }, []);
-
   const filteredGrants = useMemo(() => {
     if (!grants.length) return [];
     return grants.filter(grant => grant.title.toLowerCase().includes(searchTerm.toLowerCase()) || grant.organization.toLowerCase().includes(searchTerm.toLowerCase()) || grant.description.toLowerCase().includes(searchTerm.toLowerCase()) || grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   }, [grants, searchTerm]);
-
   const sortedGrants = useMemo(() => {
     return sortGrants(filteredGrants, sortBy);
   }, [filteredGrants, sortBy]);
@@ -96,27 +88,22 @@ const DiscoverGrants = () => {
       setSelectedGrant(null);
     }
   }, [sortedGrants, selectedGrant]);
-
   const handleGrantSelect = useCallback((grant: Grant) => {
     setSelectedGrant(grant);
   }, []);
-
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
   }, [toggleBookmark]);
-
   if (isLoading) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading grants...</div>
       </div>;
   }
-
   if (error) {
     return <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-lg text-red-600">Error loading grants: {error.message}</div>
       </div>;
   }
-
   return <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
@@ -139,7 +126,7 @@ const DiscoverGrants = () => {
         {/* Left Panel - Grant List (40% width) */}
         <div className="w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden">
           <ScrollArea className="h-full">
-            <div className="p-4 border border-transparent">
+            <div className="p-4 border border-transparent py-0 px-[15px]">
               <div className="space-y-3">
                 {sortedGrants.length === 0 ? <div className="text-center text-gray-500 mt-8">
                     {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -152,17 +139,10 @@ const DiscoverGrants = () => {
         {/* Right Panel - Grant Details (60% width) */}
         <div className="w-3/5 bg-[#f8f4ec] overflow-hidden relative">
           {/* Sticky Header - Only show when grant is selected */}
-          {selectedGrant && (
-            <GrantStickyHeader
-              grant={selectedGrant}
-              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-              onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
-              orgLogo={getOrganizationLogo(selectedGrant.organization)}
-            />
-          )}
+          {selectedGrant && <GrantStickyHeader grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} />}
           
           {selectedGrant ? <ScrollArea className="h-full" data-grant-details-scroll>
-              <div className="p-4 border-transparent">
+              <div className="p-4 border-transparent px-0 py-0">
                 <div className="bg-white rounded-lg">
                   <GrantDetails grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)} />
                 </div>
@@ -176,5 +156,4 @@ const DiscoverGrants = () => {
       </div>
     </div>;
 };
-
 export default DiscoverGrants;
