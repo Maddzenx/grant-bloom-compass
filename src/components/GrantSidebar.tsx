@@ -57,7 +57,7 @@ const GrantSidebar = () => {
           </div>
           <div>
             <span className="font-semibold text-gray-900 text-xs">• Finansiering:</span>
-            <span className="text-gray-700 ml-1 text-xs">Löner, konsulttjänster, licenser, övriga kostnader</span>
+            <span className="text-gray-700 ml-1 text-xs whitespace-nowrap">Löner, konsulttjänster, licenser, övriga kostnader</span>
           </div>
         </div>
       </section>
@@ -65,16 +65,16 @@ const GrantSidebar = () => {
       <section className="bg-gray-50 p-4 rounded-lg">
         <h3 className="font-bold text-gray-900 mb-3 text-sm">Mallar och filer</h3>
         <div className="space-y-2">
-          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-words">
+          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs">
             Bidragsinformation.pdf
           </div>
-          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-words">
+          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs">
             Infovideomöte.pm4
           </div>
-          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-words">
+          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs">
             projektbeskrivningsmall.docx
           </div>
-          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-words">
+          <div className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs">
             CV-mall.pdf
           </div>
         </div>
