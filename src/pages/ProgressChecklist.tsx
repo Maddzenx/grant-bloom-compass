@@ -1,8 +1,8 @@
-
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Upload, FileText, Image, X, Download } from "lucide-react";
+import { ChevronDown, ChevronRight, Save, Eye, Check, Upload, X, FileText, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 interface Section {
@@ -94,6 +94,7 @@ const ProgressChecklist = () => {
   ]);
 
   const [isDragOver, setIsDragOver] = useState(false);
+  const [autoSaved, setAutoSaved] = useState(false);
 
   const completedSections = sections.filter(section => section.isCompleted).length;
   const progressPercentage = Math.round((completedSections / sections.length) * 100);
@@ -155,139 +156,163 @@ const ProgressChecklist = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Progress & Upload</h1>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content - Business Plan Form */}
-        <div className="lg:col-span-2 space-y-4">
-          {sections.map((section) => (
-            <div key={section.id} className="bg-white rounded-lg border border-gray-200">
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
-                {section.isExpanded ? (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
+    <div className="flex-1 bg-gray-50">
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Sticky Header */}
+        <div className="sticky top-0 bg-gray-50 border-b border-gray-200 pb-4 mb-6 z-10">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-gray-900">Progress & Upload</h1>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                {autoSaved ? (
+                  <>
+                    <Check className="w-4 h-4 text-green-500" />
+                    Auto-saved
+                  </>
                 ) : (
-                  <ChevronRight className="w-5 h-5 text-gray-500" />
+                  <>
+                    <Save className="w-4 h-4 text-gray-400" />
+                    Saving...
+                  </>
                 )}
-              </button>
+              </div>
+              <Button className="flex items-center gap-2">
+                <Eye className="w-4 h-4" />
+                Review
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content - Business Plan Form */}
+          <div className="lg:col-span-2 space-y-4">
+            {sections.map((section) => (
+              <div key={section.id} className="bg-white rounded-lg border border-gray-200">
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
+                  {section.isExpanded ? (
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-gray-500" />
+                  )}
+                </button>
+                
+                {section.isExpanded && (
+                  <div className="px-4 pb-4">
+                    <Textarea
+                      value={section.content}
+                      onChange={(e) => updateSectionContent(section.id, e.target.value)}
+                      className="min-h-[200px] resize-none border-0 focus:ring-0 p-0"
+                      placeholder={`Describe your ${section.title.toLowerCase()}...`}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Right Sidebar - Progress & Upload */}
+          <div className="space-y-6">
+            {/* Progress Checklist */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Progress Checklist</h3>
               
-              {section.isExpanded && (
-                <div className="px-4 pb-4">
-                  <Textarea
-                    value={section.content}
-                    onChange={(e) => updateSectionContent(section.id, e.target.value)}
-                    className="min-h-[200px] resize-none border-0 focus:ring-0 p-0"
-                    placeholder={`Describe your ${section.title.toLowerCase()}...`}
-                  />
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">
+                    {completedSections} of {sections.length} completed
+                  </span>
+                  <span className="text-sm font-medium text-gray-700">{progressPercentage}%</span>
+                </div>
+                <Progress value={progressPercentage} className="h-2" />
+              </div>
+              
+              <div className="space-y-3">
+                {sections.map((section) => (
+                  <div key={section.id} className="flex items-center gap-3">
+                    <button
+                      onClick={() => toggleSectionCompletion(section.id)}
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                        section.isCompleted
+                          ? "bg-green-500 border-green-500 text-white"
+                          : "border-gray-300 hover:border-gray-400"
+                      }`}
+                    >
+                      {section.isCompleted && (
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                    <span className={`text-sm ${section.isCompleted ? "text-gray-900" : "text-gray-600"}`}>
+                      {section.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* File Upload */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload files</h3>
+              
+              {/* Upload Zone */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  isDragOver
+                    ? "border-blue-400 bg-blue-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-4" />
+                <p className="text-sm text-gray-600 mb-2">
+                  Drag and drop to upload or{" "}
+                  <button className="text-blue-600 hover:underline font-medium">browse</button>
+                </p>
+                <p className="text-xs text-gray-500">
+                  PDF, JPG, PNG, and BMP file formats only
+                </p>
+              </div>
+
+              {/* Uploaded Files */}
+              {uploadedFiles.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-sm font-medium text-gray-900 mb-3">Uploaded files</h4>
+                  <div className="space-y-3">
+                    {uploadedFiles.map((file) => (
+                      <div key={file.id} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                        {getFileIcon(file.type)}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                          <p className="text-xs text-gray-500">{file.size}</p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(file.id)}
+                          className="p-1 h-auto text-gray-400 hover:text-red-500"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-          ))}
-        </div>
 
-        {/* Right Sidebar - Progress & Upload */}
-        <div className="space-y-6">
-          {/* Progress Checklist */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Progress Checklist</h3>
-            
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">
-                  {completedSections} of {sections.length} completed
-                </span>
-                <span className="text-sm font-medium text-gray-700">{progressPercentage}%</span>
-              </div>
-              <Progress value={progressPercentage} className="h-2" />
-            </div>
-
-            <div className="space-y-3">
-              {sections.map((section) => (
-                <div key={section.id} className="flex items-center gap-3">
-                  <button
-                    onClick={() => toggleSectionCompletion(section.id)}
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-                      section.isCompleted
-                        ? "bg-green-500 border-green-500 text-white"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
-                  >
-                    {section.isCompleted && (
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-                  <span className={`text-sm ${section.isCompleted ? "text-gray-900" : "text-gray-600"}`}>
-                    {section.title}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {/* Review Button */}
+            <Button className="w-full" size="lg">
+              Review
+            </Button>
           </div>
-
-          {/* File Upload */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload files</h3>
-            
-            {/* Upload Zone */}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                isDragOver
-                  ? "border-blue-400 bg-blue-50"
-                  : "border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              <Upload className="w-8 h-8 text-gray-400 mx-auto mb-4" />
-              <p className="text-sm text-gray-600 mb-2">
-                Drag and drop to upload or{" "}
-                <button className="text-blue-600 hover:underline font-medium">browse</button>
-              </p>
-              <p className="text-xs text-gray-500">
-                PDF, JPG, PNG, and BMP file formats only
-              </p>
-            </div>
-
-            {/* Uploaded Files */}
-            {uploadedFiles.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">Uploaded files</h4>
-                <div className="space-y-3">
-                  {uploadedFiles.map((file) => (
-                    <div key={file.id} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
-                      {getFileIcon(file.type)}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                        <p className="text-xs text-gray-500">{file.size}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFile(file.id)}
-                        className="p-1 h-auto text-gray-400 hover:text-red-500"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Review Button */}
-          <Button className="w-full" size="lg">
-            Review
-          </Button>
         </div>
       </div>
     </div>
