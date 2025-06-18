@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import GrantCard from "@/components/GrantCard";
 import GrantDetails from "@/components/GrantDetails";
@@ -34,6 +34,18 @@ const DiscoverGrants = () => {
     grant.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     grant.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  // Auto-select first grant when grants are loaded or search changes
+  useEffect(() => {
+    if (filteredGrants.length > 0 && !selectedGrant) {
+      setSelectedGrant(filteredGrants[0]);
+    } else if (filteredGrants.length > 0 && selectedGrant && !filteredGrants.find(g => g.id === selectedGrant.id)) {
+      // If current selection is not in filtered results, select first filtered grant
+      setSelectedGrant(filteredGrants[0]);
+    } else if (filteredGrants.length === 0) {
+      setSelectedGrant(null);
+    }
+  }, [filteredGrants, selectedGrant]);
 
   if (isLoading) {
     return (
