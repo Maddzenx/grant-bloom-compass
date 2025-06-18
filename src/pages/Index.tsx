@@ -1,6 +1,10 @@
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import DiscoverGrants from "./DiscoverGrants";
+import BusinessPlanEditor from "./BusinessPlanEditor";
+import ProgressChecklist from "./ProgressChecklist";
 
 const HomePage = () => (
   <div className="min-h-screen bg-gray-50 p-6">
@@ -41,7 +45,23 @@ const HomePage = () => (
 );
 
 const Index = () => {
-  return <HomePage />;
+  return (
+    <Router>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <SidebarInset>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/discover" element={<DiscoverGrants />} />
+              <Route path="/editor" element={<BusinessPlanEditor />} />
+              <Route path="/progress" element={<ProgressChecklist />} />
+            </Routes>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    </Router>
+  );
 };
 
 export default Index;
