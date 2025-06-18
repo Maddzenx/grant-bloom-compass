@@ -6,11 +6,23 @@ import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import { Grant } from "@/types/grant";
 import { useGrants } from "@/hooks/useGrants";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+const GRANTS_PER_PAGE = 6;
 
 const DiscoverGrants = () => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: grants = [], isLoading, error } = useGrants();
 
@@ -30,12 +42,122 @@ const DiscoverGrants = () => {
     grant.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Reset to first page when search changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredGrants.length / GRANTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * GRANTS_PER_PAGE;
+  const endIndex = startIndex + GRANTS_PER_PAGE;
+  const currentGrants = filteredGrants.slice(startIndex, endIndex);
+
   // Set the first grant as selected by default
   React.useEffect(() => {
-    if (filteredGrants.length > 0 && !selectedGrant) {
-      setSelectedGrant(filteredGrants[0]);
+    if (currentGrants.length > 0 && !selectedGrant) {
+      setSelectedGrant(currentGrants[0]);
     }
-  }, [filteredGrants, selectedGrant]);
+  }, [currentGrants, selectedGrant]);
+
+  // Reset selected grant when page changes
+  React.useEffect(() => {
+    if (currentGrants.length > 0) {
+      setSelectedGrant(currentGrants[0]);
+    }
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              onClick={() => handlePageChange(i)}
+              isActive={currentPage === i}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // Show first page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink
+            onClick={() => handlePageChange(1)}
+            isActive={currentPage === 1}
+            className="cursor-pointer"
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+
+      // Show ellipsis if needed
+      if (currentPage > 3) {
+        items.push(
+          <PaginationItem key="ellipsis1">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Show pages around current page
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = start; i <= end; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              onClick={() => handlePageChange(i)}
+              isActive={currentPage === i}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+
+      // Show ellipsis if needed
+      if (currentPage < totalPages - 2) {
+        items.push(
+          <PaginationItem key="ellipsis2">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Show last page
+      if (totalPages > 1) {
+        items.push(
+          <PaginationItem key={totalPages}>
+            <PaginationLink
+              onClick={() => handlePageChange(totalPages)}
+              isActive={currentPage === totalPages}
+              className="cursor-pointer"
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    }
+
+    return items;
+  };
 
   if (isLoading) {
     return (
@@ -70,7 +192,7 @@ const DiscoverGrants = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Panel - Grants List */}
         <div className="space-y-4">
-          {filteredGrants.map((grant) => (
+          {currentGrants.map((grant) => (
             <GrantCard
               key={grant.id}
               grant={grant}
@@ -80,6 +202,38 @@ const DiscoverGrants = () => {
               onToggleBookmark={() => toggleBookmark(grant.id)}
             />
           ))}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                      className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                    />
+                  </PaginationItem>
+                  
+                  {renderPaginationItems()}
+                  
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                      className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
+          {/* Results info */}
+          {filteredGrants.length > 0 && (
+            <div className="text-sm text-gray-500 text-center mt-4">
+              Visar {startIndex + 1}-{Math.min(endIndex, filteredGrants.length)} av {filteredGrants.length} bidrag
+            </div>
+          )}
         </div>
 
         {/* Right Panel - Grant Details */}
