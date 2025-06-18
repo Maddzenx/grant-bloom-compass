@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ const getOrganizationLogo = (organization: string) => {
     return {
       src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
       alt: "Vinnova",
-      className: "w-20 h-7 object-contain"
+      className: "w-24 h-8 object-contain"
     };
   } else if (orgLower.includes('energimyndigheten')) {
     return {
@@ -38,7 +37,7 @@ const getOrganizationLogo = (organization: string) => {
     return {
       src: "/lovable-uploads/3552e420-3b5f-46bb-9c33-cd4511e2ec34.png",
       alt: "Formas",
-      className: "w-20 h-7 object-contain"
+      className: "w-24 h-8 object-contain"
     };
   } else if (orgLower.includes('tillväxtverket')) {
     return {
@@ -52,7 +51,7 @@ const getOrganizationLogo = (organization: string) => {
   return {
     src: "/lovable-uploads/e88eea8f-4801-4b3c-bb7f-eb43d05eec2d.png",
     alt: organization,
-    className: "w-20 h-7 object-contain"
+    className: "w-24 h-8 object-contain"
   };
 };
 
