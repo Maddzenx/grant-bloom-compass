@@ -118,16 +118,6 @@ const DiscoverGrants = () => {
   }
 
   return <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
-      {/* Sticky Header - Only show when grant is selected */}
-      {selectedGrant && (
-        <GrantStickyHeader
-          grant={selectedGrant}
-          isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-          onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
-          orgLogo={getOrganizationLogo(selectedGrant.organization)}
-        />
-      )}
-
       {/* Search Header - fixed height */}
       <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
         <div className="p-4 border border-transparent">
@@ -160,7 +150,17 @@ const DiscoverGrants = () => {
         </div>
 
         {/* Right Panel - Grant Details (60% width) */}
-        <div className="w-3/5 bg-[#f8f4ec] overflow-hidden">
+        <div className="w-3/5 bg-[#f8f4ec] overflow-hidden relative">
+          {/* Sticky Header - Only show when grant is selected */}
+          {selectedGrant && (
+            <GrantStickyHeader
+              grant={selectedGrant}
+              isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+              onToggleBookmark={() => handleToggleBookmark(selectedGrant.id)}
+              orgLogo={getOrganizationLogo(selectedGrant.organization)}
+            />
+          )}
+          
           {selectedGrant ? <ScrollArea className="h-full" data-grant-details-scroll>
               <div className="p-4 border-transparent">
                 <div className="bg-white rounded-lg">

@@ -41,7 +41,7 @@ const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: G
   }, []);
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
+    <div className={`absolute top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
     }`}>
       <div className="flex items-center justify-between px-6 py-3 max-w-full">
