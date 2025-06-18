@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Calendar, DollarSign, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
         {/* Header section */}
         <div className="mb-8">
           <div className="flex items-start justify-between mb-6">
-            <div className="flex-1">
+            <div className="flex-1 pr-8">
               <div className="flex items-center gap-2 mb-4">
                 <img 
                   src={orgLogo.src}
@@ -70,9 +71,9 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
                 />
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">{grant.title}</h1>
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">{grant.description}</p>
+              <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-4xl">{grant.description}</p>
             </div>
-            <div className="flex gap-3 ml-8">
+            <div className="flex gap-3 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
