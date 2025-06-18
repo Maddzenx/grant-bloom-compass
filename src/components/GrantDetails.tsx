@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
 import GrantHeader from "./GrantHeader";
@@ -60,7 +59,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
   const orgLogo = getOrganizationLogo(grant.organization);
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="h-full bg-white overflow-y-auto rounded-lg">
       <div className="p-8 max-w-5xl">
         {/* Header section */}
         <div className="mb-8">
