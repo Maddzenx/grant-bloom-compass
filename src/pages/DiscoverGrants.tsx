@@ -6,7 +6,8 @@ import GrantDetails from "@/components/GrantDetails";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
 import SearchBar from "@/components/SearchBar";
 import { Grant } from "@/types/grant";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { PanelLeft } from "lucide-react";
 
 const DiscoverGrants = () => {
@@ -51,59 +52,66 @@ const DiscoverGrants = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Left Panel - Grant List */}
-      <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
-        {/* Header with collapse button */}
-        <div className="p-6 border-b border-gray-200 bg-white">
-          <div className="flex items-center gap-3 mb-6">
-            <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
-              <PanelLeft className="w-4 h-4" />
-            </SidebarTrigger>
-            <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
-          </div>
-          <SearchBar 
-            searchTerm={searchTerm} 
-            onSearchChange={setSearchTerm}
-          />
-        </div>
-
-        {/* Grant Cards */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-4">
-            {filteredGrants.length === 0 ? (
-              <div className="text-center text-gray-500 mt-8">
-                {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+    <SidebarProvider>
+      <div className="min-h-screen bg-gray-50 flex w-full">
+        <AppSidebar />
+        
+        {/* Main Content Area */}
+        <div className="flex flex-1">
+          {/* Left Panel - Grant List */}
+          <div className="w-1/2 border-r border-gray-200 bg-white flex flex-col">
+            {/* Header with collapse button */}
+            <div className="p-6 border-b border-gray-200 bg-white">
+              <div className="flex items-center justify-between mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">Upptäck bidrag</h1>
+                <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors">
+                  <PanelLeft className="w-4 h-4" />
+                </SidebarTrigger>
               </div>
+              <SearchBar 
+                searchTerm={searchTerm} 
+                onSearchChange={setSearchTerm}
+              />
+            </div>
+
+            {/* Grant Cards */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-4">
+                {filteredGrants.length === 0 ? (
+                  <div className="text-center text-gray-500 mt-8">
+                    {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+                  </div>
+                ) : (
+                  filteredGrants.map((grant) => (
+                    <GrantCard
+                      key={grant.id}
+                      grant={grant}
+                      isSelected={selectedGrant?.id === grant.id}
+                      isBookmarked={bookmarkedGrants.has(grant.id)}
+                      onSelect={() => setSelectedGrant(grant)}
+                      onToggleBookmark={() => toggleBookmark(grant.id)}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Grant Details */}
+          <div className="w-1/2 bg-white">
+            {selectedGrant ? (
+              <GrantDetails 
+                grant={selectedGrant}
+                isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+                onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
+              />
             ) : (
-              filteredGrants.map((grant) => (
-                <GrantCard
-                  key={grant.id}
-                  grant={grant}
-                  isSelected={selectedGrant?.id === grant.id}
-                  isBookmarked={bookmarkedGrants.has(grant.id)}
-                  onSelect={() => setSelectedGrant(grant)}
-                  onToggleBookmark={() => toggleBookmark(grant.id)}
-                />
-              ))
+              <EmptyGrantDetails />
             )}
           </div>
         </div>
       </div>
-
-      {/* Right Panel - Grant Details */}
-      <div className="w-1/2 bg-white">
-        {selectedGrant ? (
-          <GrantDetails 
-            grant={selectedGrant}
-            isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-            onToggleBookmark={() => toggleBookmark(selectedGrant.id)}
-          />
-        ) : (
-          <EmptyGrantDetails />
-        )}
-      </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
