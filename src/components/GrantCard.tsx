@@ -35,7 +35,7 @@ const getOrganizationLogo = (organization: string) => {
     };
   } else if (orgLower.includes('formas')) {
     return {
-      src: "/lovable-uploads/c9469cb3-f5f1-4afe-a879-acfc4bc5aa33.png",
+      src: "/lovable-uploads/24e99124-8ec2-4d23-945b-ead48b809491.png",
       alt: "Formas",
       className: "w-24 h-8 object-contain"
     };
