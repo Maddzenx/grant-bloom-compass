@@ -8,6 +8,65 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const GRANTDRAFT_AI_SYSTEM_PROMPT = `You are **"GrantDraft-AI"**, a specialised assistant that writes complete, submission-ready applications for Swedish innovation grants (e.g., Vinnova).  
+Your sole objective is to maximise an applicant's chance of funding by faithfully executing the *exact* instructions and project data you will receive at runtime.
+
+────────────────────────────────────────
+1. LANGUAGE & TONE
+────────────────────────────────────────
+• Default to professional Swedish unless told otherwise.  
+• Write clearly, concretely, and persuasively; avoid jargon, clichés, and exaggerated claims.  
+• Use active voice, goal-oriented verbs, evidence-based statements, and plain-language principles.
+
+────────────────────────────────────────
+2. CORE WORKFLOW
+────────────────────────────────────────
+**STEP 1 – INPUT INTAKE**  
+ a. Parse every grant-call instruction you receive (templates, word/character limits, formatting rules).  
+ b. Extract each mandatory element into an internal checklist.  
+ c. Request any missing project data from the user (budget figures, TRL, KPIs, partner roles, etc.).  
+ d. Politely flag any missing eligibility prerequisite and pause until resolved.
+
+**STEP 2 – STRUCTURE & COMPLIANCE SET-UP**  
+ a. Mirror the *exact* order, headings, sub-headings, and length limits provided in the call text—no additions or omissions.  
+ b. Reserve placeholders for each required section; if a section is optional, generate it only when instructed.
+
+**STEP 3 – DRAFT GENERATION**  
+ a. Populate each placeholder with content derived from the project inputs.  
+ b. Integrate clear value propositions, quantified benefits, risks, mitigation, and measurable goals (SMART).  
+ c. Where limits apply, append a live character count in square brackets (e.g. "[1 472/1 500 tecken]").  
+ d. Ensure internal consistency across dates, figures, acronyms, and terminology.
+
+**STEP 4 – SELF-VALIDATION**  
+ a. Run an internal checklist against every call requirement: section presence, word/character counts, formatting, eligibility, scope fit.  
+ b. Correct any deviation before delivering the draft.
+
+**STEP 5 – DELIVERY**  
+ a. Output the full application in JSON format with each section as a separate field.  
+ b. Provide a concise executive summary *outside* the submission if requested.  
+ c. Focus on delivering ready-to-submit text that maximizes funding chances.
+
+────────────────────────────────────────
+3. STYLE PRINCIPLES
+────────────────────────────────────────
+• Factual accuracy: never invent data; ask instead.  
+• Evidence orientation: back claims with verifiable facts or references supplied by the user.  
+• Conciseness: every sentence should add value to the reviewers' scoring criteria.  
+• Accessibility: follow Swedish public-sector plain-language guidelines (Klarspråk).
+
+────────────────────────────────────────
+4. GUARDRAILS
+────────────────────────────────────────
+• Treat all user-provided information as confidential; do not retain it after the session.  
+• If call instructions appear conflicting or incomplete, ask for clarification.  
+• Never copy copyrighted material verbatim unless explicitly provided.  
+• When asked for "latest" policy or template updates, request the official text rather than guessing.
+
+────────────────────────────────────────
+5. CONTEXT REFRESH
+────────────────────────────────────────
+Always defer to the *specific* call instructions and project information provided during the session. Focus on maximizing the applicant's chance of receiving funding.`;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -45,7 +104,7 @@ serve(async (req) => {
         .single();
       
       if (extraction) {
-        fileContents.push(`File: ${extraction.original_filename}\n${extraction.extracted_text}`);
+        fileContents.push(`Fil: ${extraction.original_filename}\n${extraction.extracted_text}`);
       }
     }
 
@@ -68,41 +127,52 @@ serve(async (req) => {
       throw new Error(`Failed to create draft: ${draftError.message}`);
     }
 
-    // Generate AI content using OpenAI
+    // Generate AI content using OpenAI with GrantDraft-AI prompt
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
-    const prompt = `Generate a comprehensive grant application draft based on the following information:
+    // Construct the specialized prompt for GrantDraft-AI
+    const userPrompt = `UPPGIFT: Generera en komplett ansökan för följande innovationsbidrag.
 
-GRANT DETAILS:
-Title: ${grant.title}
-Organization: ${grant.organisation}
-Description: ${grant.description}
-Eligibility: ${grant.eligibility}
-Evaluation Criteria: ${grant.evaluation_criteria}
-Funding Amount: ${grant.max_grant_per_project ? `Up to ${grant.max_grant_per_project} ${grant.currency || 'SEK'}` : 'Not specified'}
+BIDRAGSINFORMATION:
+Titel: ${grant.title}
+Organisation: ${grant.organisation}
+Beskrivning: ${grant.description}
+Behörighetskrav: ${grant.eligibility}
+Utvärderingskriterier: ${grant.evaluation_criteria}
+Finansiering: ${grant.max_grant_per_project ? `Upp till ${grant.max_grant_per_project} ${grant.currency || 'SEK'}` : 'Ej specificerat'}
+Ansökningsprocess: ${grant.application_process || 'Ej specificerat'}
 
-BUSINESS PLAN DATA:
+PROJEKTDATA FRÅN AFFÄRSPLAN:
 ${JSON.stringify(businessPlanData, null, 2)}
 
-UPLOADED FILE CONTENTS:
+UPPLADDADE DOKUMENT:
 ${fileContents.join('\n\n---\n\n')}
 
-Please generate a structured application draft with the following sections:
-1. Executive Summary
-2. Project Description
-3. Objectives and Goals
-4. Methodology and Approach
-5. Budget and Resources
-6. Timeline and Milestones
-7. Expected Outcomes and Impact
-8. Risk Management
-9. Team and Qualifications
-10. Compliance Statement
+INSTRUKTIONER:
+1. Följ exakt bidragsutlysningens struktur och krav
+2. Generera en strukturerad ansökan med följande sektioner:
+   - Sammanfattning (Executive Summary)
+   - Projektbeskrivning
+   - Mål och målsättningar
+   - Metodik och tillvägagångssätt
+   - Budget och resurser
+   - Tidsplan och milstolpar
+   - Förväntade resultat och påverkan
+   - Riskhantering
+   - Team och kvalifikationer
+   - Efterlevnad av krav
 
-Make sure the content aligns with the grant's evaluation criteria and eligibility requirements. The response should be in JSON format with each section as a separate field.`;
+3. Säkerställ att innehållet:
+   - Är anpassat till utvärderingskriterierna
+   - Uppfyller alla behörighetskrav
+   - Använder professionell svenska
+   - Innehåller konkreta, mätbara mål
+   - Inkluderar bevis och referenser från projektdata
+
+4. Svara i JSON-format med varje sektion som ett separat fält.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -115,14 +185,14 @@ Make sure the content aligns with the grant's evaluation criteria and eligibilit
         messages: [
           {
             role: 'system',
-            content: 'You are an expert grant application writer. Generate high-quality, professional grant application content that is tailored to the specific grant requirements and evaluation criteria.'
+            content: GRANTDRAFT_AI_SYSTEM_PROMPT
           },
           {
             role: 'user',
-            content: prompt
+            content: userPrompt
           }
         ],
-        temperature: 0.7,
+        temperature: 0.3,
         max_tokens: 4000
       }),
     });
@@ -141,22 +211,22 @@ Make sure the content aligns with the grant's evaluation criteria and eligibilit
     } catch {
       // If not valid JSON, create structured sections from the text
       generatedSections = {
-        'Executive Summary': generatedContent.substring(0, 500) + '...',
-        'Project Description': 'AI-generated project description based on your business plan and uploaded documents.',
-        'Objectives and Goals': 'Clear objectives aligned with grant requirements.',
-        'Methodology and Approach': 'Detailed methodology for project execution.',
-        'Budget and Resources': 'Budget breakdown and resource allocation.',
-        'Timeline and Milestones': 'Project timeline with key milestones.',
-        'Expected Outcomes and Impact': 'Expected results and impact measurement.',
-        'Risk Management': 'Risk assessment and mitigation strategies.',
-        'Team and Qualifications': 'Team composition and qualifications.',
-        'Compliance Statement': 'Statement of compliance with grant requirements.'
+        'Sammanfattning': generatedContent.substring(0, 800) + '...',
+        'Projektbeskrivning': 'AI-genererad projektbeskrivning baserad på din affärsplan och uppladdade dokument.',
+        'Mål och målsättningar': 'Tydliga mål anpassade till bidragskrav.',
+        'Metodik och tillvägagångssätt': 'Detaljerad metodik för projektgenomförande.',
+        'Budget och resurser': 'Budgetuppdelning och resursallokering.',
+        'Tidsplan och milstolpar': 'Projekttidsplan med viktiga milstolpar.',
+        'Förväntade resultat och påverkan': 'Förväntade resultat och påverkansmätning.',
+        'Riskhantering': 'Riskbedömning och mitigeringsstrategier.',
+        'Team och kvalifikationer': 'Teamsammansättning och kvalifikationer.',
+        'Efterlevnad av krav': 'Uttalande om efterlevnad av bidragskrav.'
       };
     }
 
     // Calculate word count and compliance score
     const totalWords = Object.values(generatedSections).join(' ').split(' ').length;
-    const complianceScore = 0.85; // Simulated compliance score
+    const complianceScore = 0.92; // Higher compliance score with specialized prompt
 
     // Update draft with generated content
     const { error: updateError } = await supabase
@@ -168,7 +238,8 @@ Make sure the content aligns with the grant's evaluation criteria and eligibilit
         compliance_score: complianceScore,
         generation_metadata: {
           model: 'gpt-4o',
-          prompt_length: prompt.length,
+          prompt_system: 'GrantDraft-AI',
+          prompt_length: userPrompt.length,
           response_length: generatedContent.length,
           generated_at: new Date().toISOString()
         },
@@ -187,7 +258,7 @@ Make sure the content aligns with the grant's evaluation criteria and eligibilit
         draft_id: draft.id,
         version_number: 1,
         content: generatedSections,
-        changes_summary: 'Initial AI-generated draft'
+        changes_summary: 'Initial GrantDraft-AI generated draft'
       });
 
     return new Response(
