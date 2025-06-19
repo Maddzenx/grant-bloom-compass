@@ -1,6 +1,7 @@
 
 import React from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
 
@@ -23,6 +24,12 @@ const GrantStickyHeader = ({
   orgLogo,
   isMobile = false
 }: GrantStickyHeaderProps) => {
+  const navigate = useNavigate();
+
+  const handleApplyClick = () => {
+    navigate('/editor');
+  };
+
   return (
     <div className={`sticky top-0 z-10 bg-white border-b border-gray-200 ${isMobile ? 'p-2' : 'p-4'} shadow-sm transform transition-all duration-300 ease-in-out animate-fade-in`}>
       <div className="flex items-center justify-between">
@@ -41,18 +48,28 @@ const GrantStickyHeader = ({
             </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleBookmark}
-          className="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0 transition-colors duration-200"
-        >
-          <Bookmark
-            className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-colors duration-200 ${
-              isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
-            }`}
-          />
-        </Button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleBookmark}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+          >
+            <Bookmark
+              className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-colors duration-200 ${
+                isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
+              }`}
+            />
+          </Button>
+          <Button
+            onClick={handleApplyClick}
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center gap-1"
+          >
+            <ExternalLink className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
+            {isMobile ? 'Ansök' : 'Ansök'}
+          </Button>
+        </div>
       </div>
     </div>
   );
