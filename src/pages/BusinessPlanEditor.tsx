@@ -146,23 +146,24 @@ const BusinessPlanEditor = () => {
   };
   return (
     <div className="flex-1 bg-gray-50 min-h-screen relative">
-      {/* Expand button - only show when sidebar is collapsed */}
-      {state === "collapsed" && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-md bg-white border border-gray-200 shadow-md hover:bg-gray-100 transition-colors"
-          title="Visa sidopanel"
-        >
-          <PanelLeft className="w-4 h-4" />
-        </Button>
-      )}
-
       <div className="max-w-7xl mx-auto p-6 bg-[f8f4ec] bg-[#f8f4ec]">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900">Business plan editor</h1>
+          <div className="flex items-center gap-3">
+            {/* Expand button - only show when sidebar is collapsed */}
+            {state === "collapsed" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleSidebar}
+                className="flex items-center justify-center w-8 h-8 rounded-md bg-white border border-gray-200 shadow-md hover:bg-gray-100 transition-colors"
+                title="Visa sidopanel"
+              >
+                <PanelLeft className="w-4 h-4" />
+              </Button>
+            )}
+            <h1 className="text-2xl font-semibold text-gray-900">Business plan editor</h1>
+          </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               {autoSaved ? <>
