@@ -6,14 +6,14 @@ import { useToast } from '@/hooks/use-toast';
 
 export interface ApplicationDraft {
   id: string;
-  grant_id: string;
+  grant_id: string | null;
   user_context: any;
-  uploaded_files: any[];
+  uploaded_files: any;
   generated_sections: Record<string, string>;
   generation_status: 'pending' | 'generating' | 'completed' | 'failed';
   generation_metadata: any;
-  total_word_count: number;
-  compliance_score: number;
+  total_word_count: number | null;
+  compliance_score: number | null;
   created_at: string;
   updated_at: string;
 }
