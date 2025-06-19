@@ -1,11 +1,11 @@
 
 import { useCallback } from "react";
-import { Section } from "@/types/businessPlan";
+import { Section, UploadedFile } from "@/types/businessPlan";
 import { validateField } from "@/utils/businessPlanValidation";
 
 interface UseBusinessPlanActionsProps {
   setSections: React.Dispatch<React.SetStateAction<Section[]>>;
-  setUploadedFiles: React.Dispatch<React.SetStateAction<any[]>>;
+  setUploadedFiles: React.Dispatch<React.SetStateAction<UploadedFile[]>>;
   setAutoSaved: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -51,9 +51,15 @@ export const useBusinessPlanActions = ({
     setAutoSaved(false);
   }, [setUploadedFiles, setAutoSaved]);
 
+  const addFiles = useCallback((newFiles: UploadedFile[]) => {
+    setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
+    setAutoSaved(false);
+  }, [setUploadedFiles, setAutoSaved]);
+
   return {
     updateFieldValue,
     toggleSectionCompletion,
-    removeFile
+    removeFile,
+    addFiles
   };
 };

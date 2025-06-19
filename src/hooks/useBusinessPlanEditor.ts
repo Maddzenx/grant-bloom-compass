@@ -24,7 +24,8 @@ export const useBusinessPlanEditor = (grant?: Grant) => {
   const {
     updateFieldValue,
     toggleSectionCompletion,
-    removeFile
+    removeFile,
+    addFiles
   } = useBusinessPlanActions({
     setSections,
     setUploadedFiles,
@@ -67,6 +68,7 @@ export const useBusinessPlanEditor = (grant?: Grant) => {
     updateFieldValue,
     toggleSectionCompletion,
     removeFile,
+    addFiles,
     exportBusinessPlan
   };
 };

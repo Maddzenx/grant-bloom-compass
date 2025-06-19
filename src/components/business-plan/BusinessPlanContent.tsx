@@ -12,6 +12,7 @@ interface BusinessPlanContentProps {
   onUpdateField: (sectionId: string, fieldId: string, value: string) => void;
   onToggleSectionCompletion: (sectionId: string) => void;
   onRemoveFile: (fileId: string) => void;
+  onFilesUploaded?: (files: UploadedFile[]) => void;
 }
 
 export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
@@ -20,7 +21,8 @@ export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
   overallCompletion,
   onUpdateField,
   onToggleSectionCompletion,
-  onRemoveFile
+  onRemoveFile,
+  onFilesUploaded
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -44,7 +46,8 @@ export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
         />
         <FileUpload 
           uploadedFiles={uploadedFiles} 
-          onRemoveFile={onRemoveFile} 
+          onRemoveFile={onRemoveFile}
+          onFilesUploaded={onFilesUploaded}
         />
       </div>
     </div>

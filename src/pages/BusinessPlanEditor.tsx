@@ -17,7 +17,8 @@ const BusinessPlanEditor = () => {
     overallCompletion,
     updateFieldValue,
     toggleSectionCompletion,
-    removeFile
+    removeFile,
+    addFiles
   } = useBusinessPlanEditor(grant);
 
   return (
@@ -31,6 +32,7 @@ const BusinessPlanEditor = () => {
           onUpdateField={updateFieldValue}
           onToggleSectionCompletion={toggleSectionCompletion}
           onRemoveFile={removeFile}
+          onFilesUploaded={addFiles}
         />
       </div>
     </div>
