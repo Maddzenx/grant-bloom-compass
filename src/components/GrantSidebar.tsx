@@ -7,15 +7,6 @@ interface GrantSidebarProps {
 }
 
 const GrantSidebar = ({ grant }: GrantSidebarProps) => {
-  const formatCurrency = (amount: string) => {
-    // Extract numbers from the funding amount string
-    const numbers = amount.match(/[\d\s]+/g);
-    if (numbers) {
-      return numbers.join(' - ') + ' SEK';
-    }
-    return amount;
-  };
-
   const handleLinkClick = (linkText: string) => {
     console.log('Clicking on link:', linkText);
     
@@ -37,8 +28,6 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
     
     // For file names or descriptions, try to search for them or show a message
     if (linkText.includes('handbook') || linkText.includes('handboken') || linkText.includes('mall') || linkText.includes('template')) {
-      // These seem to be references to handbooks or templates
-      // For now, we'll search for them on the organization's website or show an info message
       console.log('File reference detected:', linkText);
       alert(`Detta verkar vara en referens till en fil eller mall: "${linkText}". Kontakta organisationen för att få tillgång till filen.`);
       return;
@@ -53,31 +42,33 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
 
   return (
     <div className="space-y-6">
-      <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
-        <h3 className="font-bold text-gray-900 mb-3 text-sm">Allmän information</h3>
-        <div className="space-y-2">
-          <div>
-            <span className="font-semibold text-gray-900 text-xs">• Bidrag:</span>
-            <span className="text-gray-700 ml-1 text-xs">{grant.fundingAmount}</span>
+      {/* Basic Grant Information */}
+      <section className="bg-gray-50 p-4 rounded-lg">
+        <h3 className="font-bold text-gray-900 mb-3 text-sm">Grundläggande information</h3>
+        <div className="space-y-3">
+          <div className="border-b border-gray-200 pb-2">
+            <span className="font-semibold text-gray-900 text-xs block">Bidragsbelopp</span>
+            <span className="text-gray-700 text-sm">{grant.fundingAmount}</span>
+          </div>
+          <div className="border-b border-gray-200 pb-2">
+            <span className="font-semibold text-gray-900 text-xs block">Ansökningsdeadline</span>
+            <span className="text-gray-700 text-sm">{grant.deadline}</span>
           </div>
           <div>
-            <span className="font-semibold text-gray-900 text-xs">• Deadline:</span>
-            <span className="text-gray-700 ml-1 text-xs">{grant.deadline}</span>
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900 text-xs">• Organisation:</span>
-            <span className="text-gray-700 ml-1 text-xs">{grant.organization}</span>
+            <span className="font-semibold text-gray-900 text-xs block">Organisation</span>
+            <span className="text-gray-700 text-sm">{grant.organization}</span>
           </div>
         </div>
       </section>
 
+      {/* Important Dates */}
       {grant.importantDates.length > 0 && (
-        <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
-          <h3 className="font-bold text-gray-900 mb-3 text-sm">Viktiga datum</h3>
+        <section className="bg-blue-50 p-4 rounded-lg">
+          <h3 className="font-bold text-blue-900 mb-3 text-sm">📅 Viktiga datum</h3>
           <ul className="space-y-2">
             {grant.importantDates.map((date, index) => (
-              <li key={index} className="flex items-start gap-2 text-gray-700">
-                <span className="font-semibold">•</span>
+              <li key={index} className="flex items-start gap-2 text-blue-800">
+                <span className="text-blue-600 font-bold">•</span>
                 <span className="text-xs">{date}</span>
               </li>
             ))}
@@ -85,31 +76,39 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
         </section>
       )}
 
-      {grant.requirements.length > 0 && (
-        <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
-          <h3 className="font-bold text-gray-900 mb-3 text-sm">Krav</h3>
-          <div className="space-y-2">
-            {grant.requirements.map((requirement, index) => (
-              <div key={index}>
-                <span className="font-semibold text-gray-900 text-xs">• {requirement}:</span>
-              </div>
-            ))}
-            <div>
-              <span className="font-semibold text-gray-900 text-xs">• Kvalifikationer:</span>
-              <span className="text-gray-700 ml-1 text-xs">{grant.qualifications}</span>
-            </div>
+      {/* Eligibility & Requirements */}
+      <section className="bg-amber-50 p-4 rounded-lg">
+        <h3 className="font-bold text-amber-900 mb-3 text-sm">✅ Behörighet och krav</h3>
+        <div className="space-y-3">
+          <div>
+            <span className="font-semibold text-amber-900 text-xs block mb-1">Vem kan ansöka:</span>
+            <span className="text-amber-800 text-xs leading-relaxed">{grant.qualifications}</span>
           </div>
-        </section>
-      )}
+          {grant.requirements.length > 0 && (
+            <div>
+              <span className="font-semibold text-amber-900 text-xs block mb-2">Specifika krav:</span>
+              <ul className="space-y-1">
+                {grant.requirements.map((requirement, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold text-xs">•</span>
+                    <span className="text-amber-800 text-xs">{requirement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </section>
 
+      {/* Templates and Documents */}
       {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
-        <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
-          <h3 className="font-bold text-gray-900 mb-3 text-sm">Mallar och filer</h3>
+        <section className="bg-green-50 p-4 rounded-lg">
+          <h3 className="font-bold text-green-900 mb-3 text-sm">📋 Dokument och mallar</h3>
           <div className="space-y-2">
             {grant.templates.map((template, index) => (
               <div 
                 key={index} 
-                className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all hover:bg-blue-50 p-1 rounded transition-colors"
+                className="text-green-700 hover:text-green-900 cursor-pointer underline text-xs break-all hover:bg-green-100 p-2 rounded transition-colors border border-green-200"
                 onClick={() => handleLinkClick(template)}
                 role="button"
                 tabIndex={0}
@@ -119,15 +118,15 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                     handleLinkClick(template);
                   }
                 }}
-                title="Klicka för att få mer information om denna fil"
+                title="Klicka för att få mer information om denna mall"
               >
-                📄 {template}
+                📄 <span className="font-medium">Mall:</span> {template}
               </div>
             ))}
             {grant.generalInfo.map((file, index) => (
               <div 
                 key={`file-${index}`} 
-                className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all hover:bg-blue-50 p-1 rounded transition-colors"
+                className="text-green-700 hover:text-green-900 cursor-pointer underline text-xs break-all hover:bg-green-100 p-2 rounded transition-colors border border-green-200"
                 onClick={() => handleLinkClick(file)}
                 role="button"
                 tabIndex={0}
@@ -137,32 +136,51 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                     handleLinkClick(file);
                   }
                 }}
-                title="Klicka för att få mer information om denna fil"
+                title="Klicka för att få mer information om detta dokument"
               >
-                📋 {file}
+                📊 <span className="font-medium">Dokument:</span> {file}
               </div>
             ))}
           </div>
         </section>
       )}
 
-      <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
-        <h3 className="font-bold text-gray-900 mb-3 text-sm">Kontakt</h3>
-        <div className="space-y-1">
+      {/* Contact Information */}
+      <section className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+        <h3 className="font-bold text-gray-900 mb-3 text-sm">📞 Kontaktinformation</h3>
+        <div className="space-y-2">
           {grant.contact.name && (
-            <div className="font-semibold text-gray-900 text-xs">{grant.contact.name}</div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-900 text-xs">👤</span>
+              <span className="font-medium text-gray-900 text-xs">{grant.contact.name}</span>
+            </div>
           )}
           {grant.contact.organization && (
-            <div className="text-gray-700 text-xs">{grant.contact.organization}</div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-900 text-xs">🏢</span>
+              <span className="text-gray-700 text-xs">{grant.contact.organization}</span>
+            </div>
           )}
           {grant.contact.email && (
-            <div className="text-blue-600 underline cursor-pointer text-xs break-all">
-              <a href={`mailto:${grant.contact.email}`}>{grant.contact.email}</a>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-900 text-xs">✉️</span>
+              <a 
+                href={`mailto:${grant.contact.email}`}
+                className="text-blue-600 underline hover:text-blue-800 text-xs break-all"
+              >
+                {grant.contact.email}
+              </a>
             </div>
           )}
           {grant.contact.phone && (
-            <div className="text-gray-700 text-xs">
-              <a href={`tel:${grant.contact.phone}`}>{grant.contact.phone}</a>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-900 text-xs">📱</span>
+              <a 
+                href={`tel:${grant.contact.phone}`}
+                className="text-blue-600 underline hover:text-blue-800 text-xs"
+              >
+                {grant.contact.phone}
+              </a>
             </div>
           )}
         </div>
