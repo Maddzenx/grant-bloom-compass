@@ -2,7 +2,7 @@
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export type SortOption = "deadline" | "funding" | "none";
+export type SortOption = "deadline" | "funding" | "relevance" | "none";
 
 interface SortingControlsProps {
   sortBy: SortOption;
@@ -19,6 +19,7 @@ const SortingControls = ({ sortBy, onSortChange }: SortingControlsProps) => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="none">Standard</SelectItem>
+          <SelectItem value="relevance">Relevans</SelectItem>
           <SelectItem value="deadline">Ansökningsdeadline</SelectItem>
           <SelectItem value="funding">Bidragsbelopp</SelectItem>
         </SelectContent>

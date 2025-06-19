@@ -1,21 +1,30 @@
 
 import { Grant } from "@/types/grant";
 
-export type SortOption = "deadline" | "funding" | "none";
+export type SortOption = "deadline" | "funding" | "relevance" | "none";
 
 // Parse funding amount string to number for comparison
 const parseFundingAmount = (fundingAmount: string): number => {
-  // Extract numbers from string like "500 000 - 2 000 000 SEK"
+  // Handle MSEK format and extract first number
+  const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
+  if (match) {
+    const amount = parseFloat(match[1].replace(',', '.'));
+    // If it contains MSEK, multiply by 1,000,000
+    return fundingAmount.includes('M') ? amount * 1000000 : amount;
+  }
+  
+  // Extract any number from the string
   const numbers = fundingAmount.match(/\d+(?:\s*\d+)*/g);
   if (!numbers) return 0;
   
-  // Take the first number (minimum amount) and remove spaces
   const firstNumber = numbers[0].replace(/\s/g, '');
   return parseInt(firstNumber, 10) || 0;
 };
 
 // Parse deadline string to Date for comparison
 const parseDeadline = (deadline: string): Date => {
+  if (deadline === 'Ej specificerat') return new Date(2099, 11, 31); // Far future date
+  
   // Handle Swedish date format like "15 mars 2025"
   const months: { [key: string]: number } = {
     'januari': 0, 'februari': 1, 'mars': 2, 'april': 3, 'maj': 4, 'juni': 5,
@@ -37,7 +46,52 @@ const parseDeadline = (deadline: string): Date => {
   return new Date();
 };
 
-export const sortGrants = (grants: Grant[], sortBy: SortOption): Grant[] => {
+// Calculate relevance score based on various factors
+const calculateRelevanceScore = (grant: Grant, searchTerm: string): number => {
+  let score = 0;
+  const searchLower = searchTerm.toLowerCase();
+  
+  if (!searchTerm) {
+    // If no search term, score by funding amount and deadline
+    const fundingAmount = parseFundingAmount(grant.fundingAmount);
+    const deadline = parseDeadline(grant.deadline);
+    const daysUntilDeadline = Math.max(0, (deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    
+    // Higher funding = higher score (normalized)
+    score += Math.min(fundingAmount / 10000000, 10); // Cap at 10 points
+    
+    // Closer deadline = higher urgency score
+    if (daysUntilDeadline <= 30) score += 5;
+    else if (daysUntilDeadline <= 90) score += 3;
+    else if (daysUntilDeadline <= 365) score += 1;
+    
+    return score;
+  }
+  
+  // Title matches are most important
+  if (grant.title.toLowerCase().includes(searchLower)) {
+    score += 10;
+    if (grant.title.toLowerCase().startsWith(searchLower)) score += 5;
+  }
+  
+  // Organization matches
+  if (grant.organization.toLowerCase().includes(searchLower)) {
+    score += 5;
+  }
+  
+  // Tag matches
+  const tagMatches = grant.tags.filter(tag => tag.toLowerCase().includes(searchLower)).length;
+  score += tagMatches * 3;
+  
+  // Description matches (less weight)
+  if (grant.description.toLowerCase().includes(searchLower)) {
+    score += 2;
+  }
+  
+  return score;
+};
+
+export const sortGrants = (grants: Grant[], sortBy: SortOption, searchTerm: string = ""): Grant[] => {
   if (sortBy === "none") {
     return grants;
   }
@@ -53,6 +107,11 @@ export const sortGrants = (grants: Grant[], sortBy: SortOption): Grant[] => {
         const amountA = parseFundingAmount(a.fundingAmount);
         const amountB = parseFundingAmount(b.fundingAmount);
         return amountB - amountA; // Highest funding first
+      
+      case "relevance":
+        const scoreA = calculateRelevanceScore(a, searchTerm);
+        const scoreB = calculateRelevanceScore(b, searchTerm);
+        return scoreB - scoreA; // Highest relevance score first
       
       default:
         return 0;

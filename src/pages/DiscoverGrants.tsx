@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { sortGrants } from "@/utils/grantSorting";
+import { filterGrants, getUniqueOrganizations } from "@/utils/grantFiltering";
 import { SortOption } from "@/components/SortingControls";
 import DiscoverHeader from "@/components/DiscoverHeader";
+import FilterControls, { FilterOptions } from "@/components/FilterControls";
 import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +34,14 @@ const DiscoverGrants = () => {
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const [showDetails, setShowDetails] = useState(false);
 
+  // New filter state
+  const [filters, setFilters] = useState<FilterOptions>({
+    organization: "",
+    minFunding: "",
+    maxFunding: "",
+    deadline: ""
+  });
+
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
@@ -45,34 +54,28 @@ const DiscoverGrants = () => {
     });
   }, []);
 
+  // Get unique organizations for filter dropdown
+  const uniqueOrganizations = useMemo(() => {
+    return getUniqueOrganizations(grants);
+  }, [grants]);
+
+  // Apply filters first, then sort
   const filteredGrants = useMemo(() => {
     if (!grants || grants.length === 0) {
       console.log('No grants to filter');
       return [];
     }
     
-    const filtered = grants.filter(grant => {
-      if (!grant) return false;
-      
-      const searchLower = searchTerm.toLowerCase();
-      const matchesSearch = 
-        (grant.title || '').toLowerCase().includes(searchLower) ||
-        (grant.organization || '').toLowerCase().includes(searchLower) ||
-        (grant.description || '').toLowerCase().includes(searchLower) ||
-        (grant.tags || []).some(tag => tag.toLowerCase().includes(searchLower));
-      
-      return matchesSearch;
-    });
-    
+    const filtered = filterGrants(grants, searchTerm, filters);
     console.log('Filtered grants:', filtered.length, 'out of', grants.length);
     return filtered;
-  }, [grants, searchTerm]);
+  }, [grants, searchTerm, filters]);
 
   const sortedGrants = useMemo(() => {
-    const sorted = sortGrants(filteredGrants, sortBy);
+    const sorted = sortGrants(filteredGrants, sortBy, searchTerm);
     console.log('Sorted grants:', sorted.length);
     return sorted;
-  }, [filteredGrants, sortBy]);
+  }, [filteredGrants, sortBy, searchTerm]);
 
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
@@ -179,6 +182,13 @@ const DiscoverGrants = () => {
         sortBy={sortBy}
         onSortChange={setSortBy}
         totalGrants={sortedGrants.length}
+      />
+
+      {/* Filter Controls */}
+      <FilterControls
+        filters={filters}
+        onFiltersChange={setFilters}
+        organizations={uniqueOrganizations}
       />
 
       {/* Main Content Area - takes remaining height */}
