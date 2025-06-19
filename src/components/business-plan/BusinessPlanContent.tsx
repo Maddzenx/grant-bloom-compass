@@ -3,9 +3,12 @@ import React from "react";
 import { FormSection } from "@/components/business-plan/FormSection";
 import { ProgressSidebar } from "@/components/business-plan/ProgressSidebar";
 import { FileUpload } from "@/components/business-plan/FileUpload";
+import { AIDraftGenerator } from "@/components/business-plan/AIDraftGenerator";
 import { Section, UploadedFile } from "@/types/businessPlan";
+import { Grant } from "@/types/grant";
 
 interface BusinessPlanContentProps {
+  grant?: Grant;
   sections: Section[];
   uploadedFiles: UploadedFile[];
   overallCompletion: number;
@@ -16,6 +19,7 @@ interface BusinessPlanContentProps {
 }
 
 export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
+  grant,
   sections,
   uploadedFiles,
   overallCompletion,
@@ -48,6 +52,11 @@ export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
           uploadedFiles={uploadedFiles} 
           onRemoveFile={onRemoveFile}
           onFilesUploaded={onFilesUploaded}
+        />
+        <AIDraftGenerator
+          grant={grant}
+          sections={sections}
+          uploadedFiles={uploadedFiles}
         />
       </div>
     </div>

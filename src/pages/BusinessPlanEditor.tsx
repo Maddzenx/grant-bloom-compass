@@ -26,6 +26,7 @@ const BusinessPlanEditor = () => {
       <div className="max-w-7xl mx-auto p-6 bg-[f8f4ec] bg-[#f8f4ec]">
         <BusinessPlanHeader grant={grant} autoSaved={autoSaved} />
         <BusinessPlanContent
+          grant={grant}
           sections={sections}
           uploadedFiles={uploadedFiles}
           overallCompletion={overallCompletion}

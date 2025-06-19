@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      application_drafts: {
+        Row: {
+          compliance_score: number | null
+          created_at: string
+          generated_sections: Json | null
+          generation_metadata: Json | null
+          generation_status: string | null
+          grant_id: string | null
+          id: string
+          total_word_count: number | null
+          updated_at: string
+          uploaded_files: Json | null
+          user_context: Json | null
+        }
+        Insert: {
+          compliance_score?: number | null
+          created_at?: string
+          generated_sections?: Json | null
+          generation_metadata?: Json | null
+          generation_status?: string | null
+          grant_id?: string | null
+          id?: string
+          total_word_count?: number | null
+          updated_at?: string
+          uploaded_files?: Json | null
+          user_context?: Json | null
+        }
+        Update: {
+          compliance_score?: number | null
+          created_at?: string
+          generated_sections?: Json | null
+          generation_metadata?: Json | null
+          generation_status?: string | null
+          grant_id?: string | null
+          id?: string
+          total_word_count?: number | null
+          updated_at?: string
+          uploaded_files?: Json | null
+          user_context?: Json | null
+        }
+        Relationships: []
+      }
       document_metadata: {
         Row: {
           content_hash: string | null
@@ -61,6 +103,80 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      draft_versions: {
+        Row: {
+          changes_summary: string | null
+          content: Json
+          created_at: string
+          draft_id: string | null
+          id: string
+          version_number: number
+        }
+        Insert: {
+          changes_summary?: string | null
+          content: Json
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          version_number: number
+        }
+        Update: {
+          changes_summary?: string | null
+          content?: Json
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "draft_versions_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "application_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      file_extractions: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          extracted_text: string | null
+          extraction_method: string | null
+          extraction_status: string | null
+          file_id: string
+          file_type: string
+          id: string
+          original_filename: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
+          extraction_method?: string | null
+          extraction_status?: string | null
+          file_id: string
+          file_type: string
+          id?: string
+          original_filename: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
+          extraction_method?: string | null
+          extraction_status?: string | null
+          file_id?: string
+          file_type?: string
+          id?: string
+          original_filename?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       grant_call_details: {
         Row: {
