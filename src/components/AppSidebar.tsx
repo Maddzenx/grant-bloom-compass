@@ -49,41 +49,24 @@ export function AppSidebar() {
 
   return (
     <>
-      {/* Hover trigger area for collapsed sidebar */}
-      {state === "collapsed" && (
-        <div 
-          className="fixed left-0 top-0 w-4 h-full z-40 group"
-          onMouseEnter={() => toggleSidebar()}
-        >
-          <div className="w-full h-full opacity-0 bg-transparent hover:bg-blue-500/10 transition-all duration-300" />
-        </div>
-      )}
+      {/* Toggle button for collapsed state - positioned better */}
+      {state === "collapsed"}
       
-      <Sidebar className="border-r border-gray-200 group/sidebar-hover transition-all duration-300 ease-in-out">
+      <Sidebar className="border-r border-gray-200">
         {/* Minimize button positioned at top right of sidebar */}
         <div className="absolute top-4 right-4 z-10">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={toggleSidebar} 
-            className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors" 
+            className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" 
             title="Dölj sidopanel"
           >
             <PanelLeft className="w-4 h-4" />
           </Button>
         </div>
 
-        {/* Close sidebar when mouse leaves and sidebar is expanded */}
-        <div 
-          className="absolute inset-0 z-0"
-          onMouseLeave={() => {
-            if (state === "expanded") {
-              toggleSidebar();
-            }
-          }}
-        />
-
-        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0 relative z-10 transition-all duration-300 ease-in-out">
+        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
