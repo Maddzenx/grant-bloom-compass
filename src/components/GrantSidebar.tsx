@@ -41,6 +41,39 @@ const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
     window.open(searchUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const formatImportantDate = (dateString: string) => {
+    // Try to parse common date formats and add context
+    const lowerDate = dateString.toLowerCase();
+    
+    // Check for webinar/information session keywords
+    if (lowerDate.includes('webinar') || lowerDate.includes('informationsmöte') || lowerDate.includes('information')) {
+      return `📅 Informationsmöte: ${dateString}`;
+    }
+    
+    // Check for deadline keywords
+    if (lowerDate.includes('ansök') || lowerDate.includes('deadline') || lowerDate.includes('sista')) {
+      return `⏰ Ansökningsdeadline: ${dateString}`;
+    }
+    
+    // Check for decision/result keywords
+    if (lowerDate.includes('beslut') || lowerDate.includes('resultat') || lowerDate.includes('meddelande')) {
+      return `📋 Beslutsmeddelande: ${dateString}`;
+    }
+    
+    // Check for project start keywords
+    if (lowerDate.includes('projektstart') || lowerDate.includes('start')) {
+      return `🚀 Projektstart: ${dateString}`;
+    }
+    
+    // Check for project end keywords
+    if (lowerDate.includes('projektslut') || lowerDate.includes('avslut')) {
+      return `🏁 Projektavslut: ${dateString}`;
+    }
+    
+    // Default format - try to infer from date patterns
+    return `📅 Viktigt datum: ${dateString}`;
+  };
+
   const spacingClass = isMobile ? 'space-y-4' : 'space-y-6';
   const paddingClass = isMobile ? 'p-3' : 'p-4';
   const textClass = isMobile ? 'text-xs' : 'text-xs';
@@ -55,8 +88,7 @@ const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
           <ul className="space-y-1 md:space-y-2">
             {grant.importantDates.map((date, index) => (
               <li key={index} className="flex items-start gap-2 text-blue-800">
-                <span className="text-blue-600 font-bold flex-shrink-0">•</span>
-                <span className={`${textClass} leading-relaxed`}>{date}</span>
+                <span className={`${textClass} leading-relaxed`}>{formatImportantDate(date)}</span>
               </li>
             ))}
           </ul>
