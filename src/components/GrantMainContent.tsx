@@ -7,7 +7,7 @@ import {
   AccordionItem, 
   AccordionTrigger 
 } from "@/components/ui/accordion";
-import { FileText, Download, CheckCircle, ClipboardList } from "lucide-react";
+import { FileText, Download, CheckCircle, ClipboardList, Users, Info } from "lucide-react";
 
 interface GrantMainContentProps {
   grant: Grant;
@@ -60,13 +60,37 @@ const GrantMainContent = ({
         </div>
       </section>
 
-      {/* Eligibility */}
-      <section>
-        <h2 className={`font-bold text-gray-900 mb-3 md:mb-4 ${titleClass}`}>
-          Vem kan ansöka?
-        </h2>
-        <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
-          <p className={`text-gray-800 leading-relaxed ${textClass}`}>{grant.whoCanApply}</p>
+      {/* Eligibility - Combined and Prominent */}
+      <section className="bg-blue-50 p-4 md:p-6 rounded-lg border-2 border-blue-200">
+        <div className="flex items-center gap-2 mb-3 md:mb-4">
+          <Users className="w-5 h-5 text-blue-600" />
+          <h2 className={`font-bold text-blue-900 ${titleClass}`}>
+            Behörighet och krav
+          </h2>
+        </div>
+        <div className="bg-white p-4 rounded-lg space-y-3">
+          <div>
+            <h3 className={`font-semibold text-blue-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+              Vem kan ansöka
+            </h3>
+            <p className={`text-gray-800 leading-relaxed ${textClass}`}>{grant.whoCanApply}</p>
+          </div>
+          
+          {grant.requirements.length > 0 && (
+            <div>
+              <h3 className={`font-semibold text-blue-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+                Specifika krav
+              </h3>
+              <ul className="space-y-1">
+                {grant.requirements.map((requirement, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-blue-600 font-bold text-sm flex-shrink-0">•</span>
+                    <span className={`text-gray-800 leading-relaxed ${textClass}`}>{requirement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 
@@ -106,7 +130,7 @@ const GrantMainContent = ({
           <div className="flex items-center gap-2 mb-3 md:mb-4">
             <FileText className="w-5 h-5 text-purple-600" />
             <h2 className={`font-bold text-purple-900 ${titleClass}`}>
-              Mallar och dokument att ladda ner
+              Mallar och dokument
             </h2>
           </div>
           <div className="space-y-3">
@@ -187,39 +211,28 @@ const GrantMainContent = ({
       )}
 
       {/* Additional Information - Collapsible */}
-      <Accordion type="single" collapsible className="bg-white rounded-lg border">
-        <AccordionItem value="additional-info">
-          <AccordionTrigger className="px-4 hover:no-underline">
-            <span className={`font-semibold text-gray-900 ${titleClass}`}>
-              Ytterligare information
-            </span>
-          </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4">
-            <div className="space-y-4">
-              {grant.qualifications && (
+      {grant.qualifications && (
+        <Accordion type="single" collapsible className="bg-white rounded-lg border">
+          <AccordionItem value="additional-info">
+            <AccordionTrigger className="px-4 hover:no-underline">
+              <div className="flex items-center gap-2">
+                <Info className="w-4 h-4 text-gray-600" />
+                <span className={`font-semibold text-gray-900 ${titleClass}`}>
+                  Ytterligare information
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-2">Kvalifikationer</h4>
                   <p className={`text-gray-700 ${textClass}`}>{grant.qualifications}</p>
                 </div>
-              )}
-              
-              {grant.requirements.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">Specifika krav</h4>
-                  <ul className="space-y-1">
-                    {grant.requirements.map((requirement, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-blue-600 font-bold text-sm flex-shrink-0">•</span>
-                        <span className={`text-gray-700 ${textClass}`}>{requirement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
     </div>
   );
 };

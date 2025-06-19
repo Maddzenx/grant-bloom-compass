@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Grant } from "@/types/grant";
+import { Calendar, Mail, Phone, Building, User } from "lucide-react";
 
 interface GrantSidebarProps {
   grant: Grant;
@@ -8,70 +9,30 @@ interface GrantSidebarProps {
 }
 
 const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
-  const handleLinkClick = (linkText: string) => {
-    console.log('Clicking on link:', linkText);
-    
-    // Check if the text contains a direct URL
-    const urlMatch = linkText.match(/https?:\/\/[^\s]+/);
-    if (urlMatch) {
-      console.log('Found direct URL:', urlMatch[0]);
-      window.open(urlMatch[0], '_blank', 'noopener,noreferrer');
-      return;
-    }
-    
-    // Check if it looks like a domain without protocol
-    const possibleUrl = linkText.trim();
-    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100) {
-      console.log('Treating as domain:', possibleUrl);
-      window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
-      return;
-    }
-    
-    // For file names or descriptions, try to search for them or show a message
-    if (linkText.includes('handbook') || linkText.includes('handboken') || linkText.includes('mall') || linkText.includes('template')) {
-      console.log('File reference detected:', linkText);
-      alert(`Detta verkar vara en referens till en fil eller mall: "${linkText}". Kontakta organisationen för att få tillgång till filen.`);
-      return;
-    }
-    
-    // If nothing else works, try a general web search
-    const searchQuery = encodeURIComponent(linkText);
-    const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
-    console.log('Performing web search for:', linkText);
-    window.open(searchUrl, '_blank', 'noopener,noreferrer');
-  };
-
   const formatImportantDate = (dateString: string) => {
-    // Try to parse common date formats and add context
     const lowerDate = dateString.toLowerCase();
     
-    // Check for webinar/information session keywords
     if (lowerDate.includes('webinar') || lowerDate.includes('informationsmöte') || lowerDate.includes('information')) {
-      return `📅 Informationsmöte: ${dateString}`;
+      return `📅 ${dateString}`;
     }
     
-    // Check for deadline keywords
     if (lowerDate.includes('ansök') || lowerDate.includes('deadline') || lowerDate.includes('sista')) {
-      return `⏰ Ansökningsdeadline: ${dateString}`;
+      return `⏰ ${dateString}`;
     }
     
-    // Check for decision/result keywords
     if (lowerDate.includes('beslut') || lowerDate.includes('resultat') || lowerDate.includes('meddelande')) {
-      return `📋 Beslutsmeddelande: ${dateString}`;
+      return `📋 ${dateString}`;
     }
     
-    // Check for project start keywords
     if (lowerDate.includes('projektstart') || lowerDate.includes('start')) {
-      return `🚀 Projektstart: ${dateString}`;
+      return `🚀 ${dateString}`;
     }
     
-    // Check for project end keywords
     if (lowerDate.includes('projektslut') || lowerDate.includes('avslut')) {
-      return `🏁 Projektavslut: ${dateString}`;
+      return `🏁 ${dateString}`;
     }
     
-    // Default format - try to infer from date patterns
-    return `📅 Viktigt datum: ${dateString}`;
+    return `📅 ${dateString}`;
   };
 
   const spacingClass = isMobile ? 'space-y-4' : 'space-y-6';
@@ -83,11 +44,14 @@ const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
     <div className={spacingClass}>
       {/* Important Dates */}
       {grant.importantDates.length > 0 && (
-        <section className={`bg-blue-50 ${paddingClass} rounded-lg`}>
-          <h3 className={`font-bold text-blue-900 mb-2 md:mb-3 ${titleClass}`}>Viktiga datum</h3>
+        <section className={`bg-blue-50 ${paddingClass} rounded-lg border border-blue-200`}>
+          <div className="flex items-center gap-2 mb-2 md:mb-3">
+            <Calendar className="w-4 h-4 text-blue-600" />
+            <h3 className={`font-bold text-blue-900 ${titleClass}`}>Viktiga datum</h3>
+          </div>
           <ul className="space-y-1 md:space-y-2">
             {grant.importantDates.map((date, index) => (
-              <li key={index} className="flex items-start gap-2 text-blue-800">
+              <li key={index} className="text-blue-800">
                 <span className={`${textClass} leading-relaxed`}>{formatImportantDate(date)}</span>
               </li>
             ))}
@@ -95,94 +59,25 @@ const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
         </section>
       )}
 
-      {/* Eligibility & Requirements */}
-      <section className={`bg-amber-50 ${paddingClass} rounded-lg`}>
-        <h3 className={`font-bold text-amber-900 mb-2 md:mb-3 ${titleClass}`}>Behörighet och krav</h3>
-        <div className="space-y-2 md:space-y-3">
-          <div>
-            <span className={`font-semibold text-amber-900 ${textClass} block mb-1`}>Vem kan ansöka:</span>
-            <span className={`text-amber-800 ${textClass} leading-relaxed`}>{grant.qualifications}</span>
-          </div>
-          {grant.requirements.length > 0 && (
-            <div>
-              <span className={`font-semibold text-amber-900 ${textClass} block mb-1 md:mb-2`}>Specifika krav:</span>
-              <ul className="space-y-1">
-                {grant.requirements.map((requirement, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className={`text-amber-600 font-bold ${textClass} flex-shrink-0`}>•</span>
-                    <span className={`text-amber-800 ${textClass} leading-relaxed`}>{requirement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Templates and Documents */}
-      {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
-        <section className={`bg-green-50 ${paddingClass} rounded-lg`}>
-          <h3 className={`font-bold text-green-900 mb-2 md:mb-3 ${titleClass}`}>Dokument och mallar</h3>
-          <div className="space-y-1 md:space-y-2">
-            {grant.templates.map((template, index) => (
-              <div 
-                key={index} 
-                className={`text-green-700 hover:text-green-900 cursor-pointer underline ${textClass} break-all hover:bg-green-100 p-2 rounded transition-colors border border-green-200`}
-                onClick={() => handleLinkClick(template)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleLinkClick(template);
-                  }
-                }}
-                title="Klicka för att få mer information om denna mall"
-              >
-                <span className="font-medium">Mall:</span> {template}
-              </div>
-            ))}
-            {grant.generalInfo.map((file, index) => (
-              <div 
-                key={`file-${index}`} 
-                className={`text-green-700 hover:text-green-900 cursor-pointer underline ${textClass} break-all hover:bg-green-100 p-2 rounded transition-colors border border-green-200`}
-                onClick={() => handleLinkClick(file)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleLinkClick(file);
-                  }
-                }}
-                title="Klicka för att få mer information om detta dokument"
-              >
-                <span className="font-medium">Dokument:</span> {file}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Contact Information */}
-      <section className={`bg-gray-50 ${paddingClass} rounded-lg border-2 border-gray-200`}>
-        <h3 className={`font-bold text-gray-900 mb-2 md:mb-3 ${titleClass}`}>Kontaktinformation</h3>
-        <div className="space-y-1 md:space-y-2">
+      <section className={`bg-gray-50 ${paddingClass} rounded-lg border border-gray-200`}>
+        <h3 className={`font-bold text-gray-900 mb-2 md:mb-3 ${titleClass}`}>Kontakt</h3>
+        <div className="space-y-2">
           {grant.contact.name && (
             <div className="flex items-center gap-2">
-              <span className={`font-semibold text-gray-900 ${textClass} flex-shrink-0`}>Namn:</span>
+              <User className="w-3 h-3 text-gray-600 flex-shrink-0" />
               <span className={`font-medium text-gray-900 ${textClass} truncate`}>{grant.contact.name}</span>
             </div>
           )}
           {grant.contact.organization && (
             <div className="flex items-center gap-2">
-              <span className={`font-semibold text-gray-900 ${textClass} flex-shrink-0`}>Organisation:</span>
+              <Building className="w-3 h-3 text-gray-600 flex-shrink-0" />
               <span className={`text-gray-700 ${textClass} truncate`}>{grant.contact.organization}</span>
             </div>
           )}
           {grant.contact.email && (
             <div className="flex items-center gap-2">
-              <span className={`font-semibold text-gray-900 ${textClass} flex-shrink-0`}>E-post:</span>
+              <Mail className="w-3 h-3 text-gray-600 flex-shrink-0" />
               <a 
                 href={`mailto:${grant.contact.email}`}
                 className={`text-blue-600 underline hover:text-blue-800 ${textClass} break-all truncate`}
@@ -193,7 +88,7 @@ const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
           )}
           {grant.contact.phone && (
             <div className="flex items-center gap-2">
-              <span className={`font-semibold text-gray-900 ${textClass} flex-shrink-0`}>Telefon:</span>
+              <Phone className="w-3 h-3 text-gray-600 flex-shrink-0" />
               <a 
                 href={`tel:${grant.contact.phone}`}
                 className={`text-blue-600 underline hover:text-blue-800 ${textClass}`}
