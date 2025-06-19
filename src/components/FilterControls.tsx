@@ -41,7 +41,7 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
   };
 
   return (
-    <div className="border-b border-gray-200 bg-white">
+    <div className="border-b border-gray-200" style={{ backgroundColor: '#f8f4ec' }}>
       {/* Header with minimize/expand toggle */}
       <div className="p-4 pb-0">
         <div className="flex items-center justify-between">
