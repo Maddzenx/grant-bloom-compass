@@ -1,4 +1,3 @@
-
 import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
@@ -60,20 +59,29 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     }
   };
 
-  // Helper function to format funding amount
+  // Helper function to format funding amount with MSEK format
   const formatFundingAmount = (grant: PartialSupabaseGrantRow): string => {
     const currency = grant.currency || 'SEK';
     
+    // Helper to format large amounts in millions
+    const formatAmount = (amount: number): string => {
+      if (amount >= 1000000) {
+        const millions = amount / 1000000;
+        return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+      }
+      return `${amount.toLocaleString()} ${currency}`;
+    };
+    
     if (grant.max_grant_per_project && grant.min_grant_per_project) {
-      return `${grant.min_grant_per_project.toLocaleString()} - ${grant.max_grant_per_project.toLocaleString()} ${currency}`;
+      return `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
     }
     
     if (grant.max_grant_per_project) {
-      return `Upp till ${grant.max_grant_per_project.toLocaleString()} ${currency}`;
+      return `Upp till ${formatAmount(grant.max_grant_per_project)}`;
     }
     
     if (grant.total_funding_amount) {
-      return `${grant.total_funding_amount.toLocaleString()} ${currency}`;
+      return formatAmount(grant.total_funding_amount);
     }
     
     return 'Ej specificerat';
