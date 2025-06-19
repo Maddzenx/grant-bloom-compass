@@ -1,3 +1,4 @@
+
 import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
@@ -65,7 +66,7 @@ export function AppSidebar() {
             variant="ghost" 
             size="sm" 
             onClick={toggleSidebar} 
-            className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" 
+            className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors" 
             title="Dölj sidopanel"
           >
             <PanelLeft className="w-4 h-4" />
