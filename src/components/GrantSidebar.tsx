@@ -17,20 +17,38 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
   };
 
   const handleLinkClick = (linkText: string) => {
-    // Check if the text contains a URL
+    console.log('Clicking on link:', linkText);
+    
+    // Check if the text contains a direct URL
     const urlMatch = linkText.match(/https?:\/\/[^\s]+/);
     if (urlMatch) {
+      console.log('Found direct URL:', urlMatch[0]);
       window.open(urlMatch[0], '_blank', 'noopener,noreferrer');
-    } else {
-      // If it's not a direct URL, try to treat the whole text as a potential URL
-      // This handles cases where the entire text might be a URL without http/https
-      const possibleUrl = linkText.trim();
-      if (possibleUrl.includes('.') && !possibleUrl.includes(' ')) {
-        window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
-      } else {
-        console.log('No valid URL found in:', linkText);
-      }
+      return;
     }
+    
+    // Check if it looks like a domain without protocol
+    const possibleUrl = linkText.trim();
+    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100) {
+      console.log('Treating as domain:', possibleUrl);
+      window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // For file names or descriptions, try to search for them or show a message
+    if (linkText.includes('handbook') || linkText.includes('handboken') || linkText.includes('mall') || linkText.includes('template')) {
+      // These seem to be references to handbooks or templates
+      // For now, we'll search for them on the organization's website or show an info message
+      console.log('File reference detected:', linkText);
+      alert(`Detta verkar vara en referens till en fil eller mall: "${linkText}". Kontakta organisationen för att få tillgång till filen.`);
+      return;
+    }
+    
+    // If nothing else works, try a general web search
+    const searchQuery = encodeURIComponent(linkText);
+    const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+    console.log('Performing web search for:', linkText);
+    window.open(searchUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -101,8 +119,9 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                     handleLinkClick(template);
                   }
                 }}
+                title="Klicka för att få mer information om denna fil"
               >
-                {template}
+                📄 {template}
               </div>
             ))}
             {grant.generalInfo.map((file, index) => (
@@ -118,8 +137,9 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                     handleLinkClick(file);
                   }
                 }}
+                title="Klicka för att få mer information om denna fil"
               >
-                {file}
+                📋 {file}
               </div>
             ))}
           </div>
