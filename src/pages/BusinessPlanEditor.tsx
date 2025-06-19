@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, Save, Expand } from "lucide-react";
+import { Check, Save, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "@/components/business-plan/FormSection";
 import { ProgressSidebar } from "@/components/business-plan/ProgressSidebar";
@@ -86,7 +86,7 @@ const BusinessPlanEditor = () => {
     isCompleted: false,
     fields: [{
       id: "marknad_beskrivning",
-      label: "Beskriv den tänkta marknaden (nationell och internationell). Vilka potentiella kundgrupper finns? Vilka andra företag finns som konkurrerar med er produkter? Hur förhåller sig er till konkurrenende förtregg? Vad gör er lösing unik?",
+      label: "Beskriv den tänkta marknaden (nationell och internationell). Vilka potentiella kundgrupper finns? Vilka andra företag finns som konkurrerar med er produkter? Hur förhåller sig er till konkurrenende förtregg? Vad gör er lösning unik?",
       value: "",
       type: "textarea"
     }]
@@ -152,10 +152,10 @@ const BusinessPlanEditor = () => {
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 flex items-center justify-center w-10 h-10 rounded-md bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+          className="fixed top-4 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-md bg-white border border-gray-200 shadow-md hover:bg-gray-100 transition-colors"
           title="Visa sidopanel"
         >
-          <Expand className="w-4 h-4" />
+          <PanelLeft className="w-4 h-4" />
         </Button>
       )}
 
