@@ -1,48 +1,124 @@
 
-import { useState, useEffect } from "react";
-import { Section, UploadedFile } from "@/types/businessPlan";
+import { useState, useEffect, useCallback } from "react";
+import { Section, UploadedFile, BusinessPlanData, FormField } from "@/types/businessPlan";
 import { Grant } from "@/types/grant";
+import { 
+  validateField, 
+  calculateSectionCompletion, 
+  calculateOverallCompletion 
+} from "@/utils/businessPlanValidation";
+import { saveToLocalStorage, loadFromLocalStorage } from "@/utils/businessPlanExport";
 
 export const useBusinessPlanEditor = (grant?: Grant) => {
-  const [sections, setSections] = useState<Section[]>(() => createSectionsForGrant(grant));
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [sections, setSections] = useState<Section[]>(() => {
+    // Try to load saved data first
+    const savedData = loadFromLocalStorage(grant?.id);
+    return savedData ? savedData.sections : createSectionsForGrant(grant);
+  });
+  
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(() => {
+    const savedData = loadFromLocalStorage(grant?.id);
+    return savedData ? savedData.uploadedFiles : [];
+  });
+  
   const [autoSaved, setAutoSaved] = useState(true);
+  const [overallCompletion, setOverallCompletion] = useState(0);
+  const [lastSaved, setLastSaved] = useState<Date | null>(() => {
+    const savedData = loadFromLocalStorage(grant?.id);
+    return savedData ? savedData.lastSaved : null;
+  });
 
-  // Update sections when grant changes
+  // Calculate completion percentages
   useEffect(() => {
-    setSections(createSectionsForGrant(grant));
-  }, [grant]);
+    const updatedSections = sections.map(section => ({
+      ...section,
+      completionPercentage: calculateSectionCompletion(section)
+    }));
+    
+    setSections(updatedSections);
+    setOverallCompletion(calculateOverallCompletion(updatedSections));
+  }, [sections.map(s => s.fields.map(f => f.value).join(',')).join('|')]);
 
-  const updateFieldValue = (sectionId: string, fieldId: string, value: string) => {
-    setSections(sections.map(section => section.id === sectionId ? {
-      ...section,
-      fields: section.fields.map(field => field.id === fieldId ? {
-        ...field,
-        value
-      } : field)
-    } : section));
+  // Auto-save functionality
+  useEffect(() => {
+    if (!autoSaved) {
+      const timer = setTimeout(() => {
+        const businessPlanData: BusinessPlanData = {
+          sections,
+          uploadedFiles,
+          overallCompletion,
+          lastSaved: new Date()
+        };
+        
+        const success = saveToLocalStorage(businessPlanData, grant?.id);
+        if (success) {
+          setAutoSaved(true);
+          setLastSaved(new Date());
+        }
+      }, 2000); // Auto-save after 2 seconds of inactivity
+
+      return () => clearTimeout(timer);
+    }
+  }, [sections, uploadedFiles, overallCompletion, autoSaved, grant?.id]);
+
+  const updateFieldValue = useCallback((sectionId: string, fieldId: string, value: string) => {
+    setSections(prevSections => prevSections.map(section => {
+      if (section.id === sectionId) {
+        return {
+          ...section,
+          fields: section.fields.map(field => {
+            if (field.id === fieldId) {
+              const validation = validateField({ ...field, value });
+              return {
+                ...field,
+                value,
+                validation
+              };
+            }
+            return field;
+          })
+        };
+      }
+      return section;
+    }));
     setAutoSaved(false);
-    setTimeout(() => setAutoSaved(true), 1000);
-  };
+  }, []);
   
-  const toggleSectionCompletion = (sectionId: string) => {
-    setSections(sections.map(section => section.id === sectionId ? {
-      ...section,
-      isCompleted: !section.isCompleted
-    } : section));
-  };
+  const toggleSectionCompletion = useCallback((sectionId: string) => {
+    setSections(prevSections => prevSections.map(section => 
+      section.id === sectionId ? {
+        ...section,
+        isCompleted: !section.isCompleted
+      } : section
+    ));
+  }, []);
   
-  const removeFile = (fileId: string) => {
-    setUploadedFiles(uploadedFiles.filter(file => file.id !== fileId));
-  };
+  const removeFile = useCallback((fileId: string) => {
+    setUploadedFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
+    setAutoSaved(false);
+  }, []);
+
+  const exportBusinessPlan = useCallback(() => {
+    const businessPlanData: BusinessPlanData = {
+      sections,
+      uploadedFiles,
+      overallCompletion,
+      lastSaved
+    };
+    
+    return businessPlanData;
+  }, [sections, uploadedFiles, overallCompletion, lastSaved]);
 
   return {
     sections,
     uploadedFiles,
     autoSaved,
+    overallCompletion,
+    lastSaved,
     updateFieldValue,
     toggleSectionCompletion,
-    removeFile
+    removeFile,
+    exportBusinessPlan
   };
 };
 
@@ -53,36 +129,42 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
     title: "Företaget",
     isExpanded: true,
     isCompleted: false,
+    completionPercentage: 0,
     fields: [{
       id: "org_number",
       label: "Organisationsnummer",
       value: "",
       type: "input",
-      placeholder: "XXXXXX-XXXX"
+      placeholder: "XXXXXX-XXXX",
+      required: true
     }, {
       id: "reg_address",
       label: "Registrerad adress",
       value: "",
       type: "input",
-      placeholder: "Gatuadress, postnummer, ort"
+      placeholder: "Gatuadress, postnummer, ort",
+      required: true
     }, {
       id: "antal_anstallda",
       label: "Antal anställda",
       value: "",
       type: "input",
-      placeholder: "Antal heltidsekvivalenter"
+      placeholder: "Antal heltidsekvivalenter",
+      required: true
     }, {
       id: "omsattning_2022",
       label: "Omsättning (2022, 2023)",
       value: "",
       type: "input",
-      placeholder: "Belopp i SEK för de senaste två åren"
+      placeholder: "Belopp i SEK för de senaste två åren",
+      required: true
     }, {
       id: "omsattning_result",
       label: "Resultat (2022, 2023)",
       value: "",
       type: "input",
-      placeholder: "Resultat i SEK för de senaste två åren"
+      placeholder: "Resultat i SEK för de senaste två åren",
+      required: true
     }, {
       id: "beskrivning",
       label: grant 
@@ -92,8 +174,9 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       type: "textarea",
       placeholder: grant 
         ? `Anpassa beskrivningen till ${grant.organization}s krav för ${grant.title}. Inkludera hur ni uppfyller eventuella branschkrav.`
-        : "Beskriv företagets verksamhet, produkter och finansiering samt övergripande mål på 5-10 års sikt."
-    }]
+        : "Beskriv företagets verksamhet, produkter och finansiering samt övergripande mål på 5-10 års sikt.",
+      required: true
+    }].map(field => ({ ...field, validation: { isValid: true } }))
   }];
 
   // Add grant-specific sections based on real database content
@@ -107,12 +190,15 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         title: "Behörighet och kvalifikationer",
         isExpanded: true,
         isCompleted: false,
+        completionPercentage: 0,
         fields: [{
           id: "behorighet_beskrivning",
           label: `Hur uppfyller ni behörighetskraven för ${grant.title}?`,
           value: "",
           type: "textarea",
-          placeholder: `Krav från ${grant.organization}: ${grant.qualifications}`
+          placeholder: `Krav från ${grant.organization}: ${grant.qualifications}`,
+          required: true,
+          validation: { isValid: true }
         }]
       });
     }
@@ -124,12 +210,15 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         title: "Utvärderingskriterier",
         isExpanded: true,
         isCompleted: false,
+        completionPercentage: 0,
         fields: [{
           id: "utvarderings_svar",
           label: "Hur uppfyller ert projekt utvärderingskriterierna?",
           value: "",
           type: "textarea",
-          placeholder: `Utvärderingskriterier: ${grant.evaluationCriteria}`
+          placeholder: `Utvärderingskriterier: ${grant.evaluationCriteria}`,
+          required: true,
+          validation: { isValid: true }
         }]
       });
     }
@@ -140,24 +229,31 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       title: "Projektfinansiering",
       isExpanded: true,
       isCompleted: false,
+      completionPercentage: 0,
       fields: [{
         id: "budget_total",
         label: "Total projektbudget",
         value: "",
         type: "input",
-        placeholder: `Tillgängligt bidrag: ${grant.fundingAmount}`
+        placeholder: `Tillgängligt bidrag: ${grant.fundingAmount}`,
+        required: true,
+        validation: { isValid: true }
       }, {
         id: "sokt_bidrag",
         label: "Sökt bidragsbelopp",
         value: "",
         type: "input",
-        placeholder: "Ange det belopp ni söker"
+        placeholder: "Ange det belopp ni söker",
+        required: true,
+        validation: { isValid: true }
       }, {
         id: "egna_medel",
         label: "Egna medel och övrig finansiering",
         value: "",
         type: "textarea",
-        placeholder: "Beskriv hur resterande budget finansieras"
+        placeholder: "Beskriv hur resterande budget finansieras",
+        required: true,
+        validation: { isValid: true }
       }]
     });
 
@@ -168,7 +264,9 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         label: `Krav: ${req}`,
         value: "",
         type: "textarea" as const,
-        placeholder: `Beskriv hur ni uppfyller detta krav`
+        placeholder: `Beskriv hur ni uppfyller detta krav`,
+        required: true,
+        validation: { isValid: true }
       }));
 
       if (requirementFields.length > 0) {
@@ -177,6 +275,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
           title: "Uppfyllnad av specifika krav",
           isExpanded: true,
           isCompleted: false,
+          completionPercentage: 0,
           fields: requirementFields
         });
       }
@@ -189,12 +288,15 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         title: "Ansökningsprocess",
         isExpanded: true,
         isCompleted: false,
+        completionPercentage: 0,
         fields: [{
           id: "process_bekraftelse",
           label: "Bekräfta att ni förstår ansökningsprocessen",
           value: "",
           type: "textarea",
-          placeholder: `Process: ${grant.applicationProcess}`
+          placeholder: `Process: ${grant.applicationProcess}`,
+          required: true,
+          validation: { isValid: true }
         }]
       });
     }
@@ -206,6 +308,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
     title: "Utmaning och behov",
     isExpanded: true,
     isCompleted: false,
+    completionPercentage: 0,
     fields: [{
       id: "utmaning_beskrivning",
       label: grant 
@@ -213,43 +316,55 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         : "Beskriv den utmaning och det behov som projektet adresserar",
       value: "",
       type: "textarea",
-      placeholder: "Vilka är behoven? Vad har ni gjort för att undersöka dem?"
+      placeholder: "Vilka är behoven? Vad har ni gjort för att undersöka dem?",
+      required: true,
+      validation: { isValid: true }
     }]
   }, {
     id: "losning",
     title: "Lösning och innovation",
     isExpanded: true,
     isCompleted: false,
+    completionPercentage: 0,
     fields: [{
       id: "losning_beskrivning",
       label: "Beskriv den innovativa lösning som ska utvecklas",
       value: "",
       type: "textarea",
-      placeholder: "Vad är nytt med er lösning? Hur skiljer den sig från befintliga alternativ?"
+      placeholder: "Vad är nytt med er lösning? Hur skiljer den sig från befintliga alternativ?",
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "teknisk_genomforbarhet",
       label: "Teknisk genomförbarhet",
       value: "",
       type: "textarea",
-      placeholder: "Beskriv den tekniska genomförbarheten och eventuella risker"
+      placeholder: "Beskriv den tekniska genomförbarheten och eventuella risker",
+      required: false,
+      validation: { isValid: true }
     }]
   }, {
     id: "marknad",
     title: "Marknad och kommersialisering",
     isExpanded: true,
     isCompleted: false,
+    completionPercentage: 0,
     fields: [{
       id: "marknad_beskrivning",
       label: "Marknadsanalys",
       value: "",
       type: "textarea",
-      placeholder: "Beskriv målmarknaden nationellt och internationellt"
+      placeholder: "Beskriv målmarknaden nationellt och internationellt",
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "kommersiell_strategi",
       label: "Kommersialiseringsstrategi",
       value: "",
       type: "textarea",
-      placeholder: "Hur ska lösningen kommersialiseras och nå marknaden?"
+      placeholder: "Hur ska lösningen kommersialiseras och nå marknaden?",
+      required: true,
+      validation: { isValid: true }
     }]
   });
 

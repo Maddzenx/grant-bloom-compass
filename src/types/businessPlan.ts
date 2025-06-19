@@ -5,6 +5,11 @@ export interface FormField {
   value: string;
   type: "input" | "textarea";
   placeholder?: string;
+  required?: boolean;
+  validation?: {
+    isValid: boolean;
+    errorMessage?: string;
+  };
 }
 
 export interface Section {
@@ -13,6 +18,7 @@ export interface Section {
   fields: FormField[];
   isExpanded: boolean;
   isCompleted: boolean;
+  completionPercentage: number;
 }
 
 export interface UploadedFile {
@@ -20,4 +26,11 @@ export interface UploadedFile {
   name: string;
   type: string;
   size: string;
+}
+
+export interface BusinessPlanData {
+  sections: Section[];
+  uploadedFiles: UploadedFile[];
+  overallCompletion: number;
+  lastSaved: Date | null;
 }
