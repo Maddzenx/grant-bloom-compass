@@ -2,22 +2,44 @@
 import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
-// Use the actual Supabase type for grant_call_details
-type SupabaseGrantRow = Database['public']['Tables']['grant_call_details']['Row'];
+// Use a partial type that matches what we actually select from the database
+type PartialSupabaseGrantRow = Pick<
+  Database['public']['Tables']['grant_call_details']['Row'],
+  | 'id'
+  | 'title'
+  | 'organisation'
+  | 'description'
+  | 'subtitle'
+  | 'eligibility'
+  | 'application_closing_date'
+  | 'max_grant_per_project'
+  | 'min_grant_per_project'
+  | 'total_funding_amount'
+  | 'currency'
+  | 'keywords'
+  | 'contact_name'
+  | 'contact_title'
+  | 'contact_email'
+  | 'contact_phone'
+  | 'eligible_cost_categories'
+  | 'information_webinar_dates'
+  | 'files_names'
+  | 'templates_names'
+>;
 
-export const transformSupabaseGrant = (supabaseGrant: SupabaseGrantRow): Grant => {
+export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
   console.log('Transforming grant:', supabaseGrant);
   
   // Helper function to safely convert Json to string array
   const jsonToStringArray = (jsonValue: any): string[] => {
     try {
       if (Array.isArray(jsonValue)) {
-        return jsonValue.filter(item => typeof item === 'string').slice(0, 5); // Limit array size
+        return jsonValue.filter(item => typeof item === 'string').slice(0, 5);
       }
       if (typeof jsonValue === 'string') {
         const parsed = JSON.parse(jsonValue);
         if (Array.isArray(parsed)) {
-          return parsed.filter(item => typeof item === 'string').slice(0, 5); // Limit array size
+          return parsed.filter(item => typeof item === 'string').slice(0, 5);
         }
       }
       return [];
@@ -39,7 +61,7 @@ export const transformSupabaseGrant = (supabaseGrant: SupabaseGrantRow): Grant =
   };
 
   // Helper function to format funding amount
-  const formatFundingAmount = (grant: SupabaseGrantRow): string => {
+  const formatFundingAmount = (grant: PartialSupabaseGrantRow): string => {
     const currency = grant.currency || 'SEK';
     
     if (grant.max_grant_per_project && grant.min_grant_per_project) {
