@@ -26,7 +26,7 @@ const GrantStickyHeader = ({
   const navigate = useNavigate();
 
   const handleApplyClick = () => {
-    navigate('/editor');
+    navigate('/editor', { state: { grant } });
   };
 
   return (

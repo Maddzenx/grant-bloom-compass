@@ -3,18 +3,20 @@ import React from "react";
 import { Bookmark, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Grant } from "@/types/grant";
 
 interface GrantBottomActionsProps {
+  grant?: Grant;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
 }
 
-const GrantBottomActions = ({ isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
+const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
   const navigate = useNavigate();
 
   const handleApplyClick = () => {
-    navigate('/editor');
+    navigate('/editor', { state: { grant } });
   };
 
   return (

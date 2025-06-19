@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +26,7 @@ const GrantHeader = ({
   const navigate = useNavigate();
 
   const handleApplyClick = () => {
-    navigate('/editor');
+    navigate('/editor', { state: { grant } });
   };
 
   return (

@@ -49,6 +49,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark, isMobile = false 
 
       {/* Bottom action buttons */}
       <GrantBottomActions
+        grant={grant}
         isBookmarked={isBookmarked}
         onToggleBookmark={onToggleBookmark}
         isMobile={isMobile}
