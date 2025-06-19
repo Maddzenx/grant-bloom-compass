@@ -1,3 +1,4 @@
+
 import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
@@ -24,6 +25,10 @@ type PartialSupabaseGrantRow = Pick<
   | 'information_webinar_dates'
   | 'files_names'
   | 'templates_names'
+  | 'evaluation_criteria'
+  | 'application_process'
+  | 'eligible_organisations'
+  | 'industry_sectors'
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
@@ -33,12 +38,12 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
   const jsonToStringArray = (jsonValue: any): string[] => {
     try {
       if (Array.isArray(jsonValue)) {
-        return jsonValue.filter(item => typeof item === 'string').slice(0, 5);
+        return jsonValue.filter(item => typeof item === 'string').slice(0, 10);
       }
       if (typeof jsonValue === 'string') {
         const parsed = JSON.parse(jsonValue);
         if (Array.isArray(parsed)) {
-          return parsed.filter(item => typeof item === 'string').slice(0, 5);
+          return parsed.filter(item => typeof item === 'string').slice(0, 10);
         }
       }
       return [];
@@ -101,14 +106,20 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
     fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
     generalInfo: jsonToStringArray(supabaseGrant.files_names),
-    requirements: jsonToStringArray(supabaseGrant.eligible_cost_categories),
+    requirements: [
+      ...jsonToStringArray(supabaseGrant.eligible_cost_categories),
+      ...jsonToStringArray(supabaseGrant.eligible_organisations),
+      ...jsonToStringArray(supabaseGrant.industry_sectors)
+    ].filter(Boolean),
     contact: {
       name: supabaseGrant.contact_name || '',
       organization: supabaseGrant.contact_title || '',
       email: supabaseGrant.contact_email || '',
       phone: supabaseGrant.contact_phone || ''
     },
-    templates: jsonToStringArray(supabaseGrant.templates_names)
+    templates: jsonToStringArray(supabaseGrant.templates_names),
+    evaluationCriteria: supabaseGrant.evaluation_criteria || '',
+    applicationProcess: supabaseGrant.application_process || ''
   };
 
   console.log('Transformation result:', transformed);

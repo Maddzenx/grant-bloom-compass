@@ -32,7 +32,11 @@ export const useGrants = () => {
           eligible_cost_categories,
           information_webinar_dates,
           files_names,
-          templates_names
+          templates_names,
+          evaluation_criteria,
+          application_process,
+          eligible_organisations,
+          industry_sectors
         `)
         .order('created_at', { ascending: false });
 

@@ -21,4 +21,6 @@ export interface Grant {
     phone: string;
   };
   templates: string[];
+  evaluationCriteria?: string;
+  applicationProcess?: string;
 }
