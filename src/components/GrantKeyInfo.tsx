@@ -1,16 +1,15 @@
-
 import React from "react";
 import { Calendar, DollarSign, Building2 } from "lucide-react";
 import { Grant } from "@/types/grant";
-
 interface GrantKeyInfoProps {
   grant: Grant;
   isMobile?: boolean;
 }
-
-const GrantKeyInfo = ({ grant, isMobile = false }: GrantKeyInfoProps) => {
-  return (
-    <div className={`bg-gradient-to-r from-blue-50 to-indigo-50 ${isMobile ? 'p-3' : 'p-4'} rounded-lg border border-blue-200 mb-4 md:mb-6`}>
+const GrantKeyInfo = ({
+  grant,
+  isMobile = false
+}: GrantKeyInfoProps) => {
+  return <div className="">
       <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-1 md:grid-cols-3 gap-4'}`}>
         <div className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm">
           <DollarSign className="w-5 md:w-6 h-5 md:h-6 text-green-600 flex-shrink-0" />
@@ -36,8 +35,6 @@ const GrantKeyInfo = ({ grant, isMobile = false }: GrantKeyInfoProps) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default GrantKeyInfo;
