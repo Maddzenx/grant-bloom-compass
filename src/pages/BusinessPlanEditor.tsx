@@ -5,6 +5,7 @@ import { FormSection } from "@/components/business-plan/FormSection";
 import { ProgressSidebar } from "@/components/business-plan/ProgressSidebar";
 import { FileUpload } from "@/components/business-plan/FileUpload";
 import { Section, UploadedFile } from "@/types/businessPlan";
+
 const BusinessPlanEditor = () => {
   const [sections, setSections] = useState<Section[]>([{
     id: "foretaget",
@@ -19,27 +20,27 @@ const BusinessPlanEditor = () => {
     }, {
       id: "reg_address",
       label: "Registrerad adress",
-      value: "Value",
+      value: "",
       type: "input"
     }, {
       id: "antal_anstallda",
       label: "Antal anställda",
-      value: "Value",
+      value: "",
       type: "input"
     }, {
       id: "omsattning_2022",
       label: "Omsättning (2022, 2023)",
-      value: "Value",
+      value: "",
       type: "input"
     }, {
       id: "omsattning_result",
       label: "Resultat (2022, 2023)",
-      value: "Value",
+      value: "",
       type: "input"
     }, {
       id: "beskrivning",
       label: "Beskriv kortfattat företagets verksamhet, eventuella produkter samt hur företaget finansieras. Vilka är företagets övergripande mål på 5-10 års sikt?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }, {
@@ -50,7 +51,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "utmaning_beskrivning",
       label: "Beskriv den utmaning i vilket och område som ni adresserar. Vilka är behoven? Vad har ni gjort för att undersöka behoven?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }, {
@@ -61,7 +62,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "losning_beskrivning",
       label: "Beskriv den produkt, tjänst eller lösning som ska utvecklas efter förståelse för marknadens ryndselekt. På vilket sätt är den innovativ? Vad är nytten för användaren? Beskriv för lägre prioritet hos kunnet i din utveckling. I vilket ställe ska produktidén befinn sig vid projektets slut?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }, {
@@ -72,7 +73,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "immaterial_beskrivning",
       label: "Har det genererita im nyhetsföbandlag? Har ni skyddad andra platener ni att skydda produktiden med ett patent, designskydd eller liknande?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }, {
@@ -83,7 +84,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "marknad_beskrivning",
       label: "Beskriv den tänkta marknaden (nationell och internationell). Vilka potentiella kundgrupper finns? Vilka andra företag finns som konkurrerar med er produkter? Hur förhåller sig er till konkurrenende förtregg? Vad gör er lösing unik?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }, {
@@ -94,7 +95,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "kommersiell_beskrivning",
       label: "Beskriv strategin för hur idén ska kommersialisera, nyttigöras och implementeras. Vilka nätvreerk och internationella samarbeten kan komma att behövas för att kommersialisaera produktidén? Har ska utvecklingstyrelsen fönga efter att eventuellt finansiering från Vinnova?",
-      value: "Value",
+      value: "",
       type: "textarea"
     }]
   }]);
@@ -176,4 +177,5 @@ const BusinessPlanEditor = () => {
       </div>
     </div>;
 };
+
 export default BusinessPlanEditor;
