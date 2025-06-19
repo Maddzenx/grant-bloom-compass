@@ -49,10 +49,17 @@ export function AppSidebar() {
 
   return (
     <>
-      {/* Toggle button for collapsed state - positioned better */}
-      {state === "collapsed"}
+      {/* Hover trigger area for collapsed sidebar */}
+      {state === "collapsed" && (
+        <div 
+          className="fixed left-0 top-0 w-4 h-full z-40 group"
+          onMouseEnter={() => toggleSidebar()}
+        >
+          <div className="w-full h-full opacity-0 bg-transparent hover:bg-blue-500/10 transition-all duration-300" />
+        </div>
+      )}
       
-      <Sidebar className="border-r border-gray-200">
+      <Sidebar className="border-r border-gray-200 group/sidebar-hover">
         {/* Minimize button positioned at top right of sidebar */}
         <div className="absolute top-4 right-4 z-10">
           <Button 
@@ -66,7 +73,17 @@ export function AppSidebar() {
           </Button>
         </div>
 
-        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0">
+        {/* Close sidebar when mouse leaves and sidebar is expanded */}
+        <div 
+          className="absolute inset-0 z-0"
+          onMouseLeave={() => {
+            if (state === "expanded") {
+              toggleSidebar();
+            }
+          }}
+        />
+
+        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0 relative z-10">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
