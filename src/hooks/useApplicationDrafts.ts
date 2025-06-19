@@ -10,7 +10,7 @@ export interface ApplicationDraft {
   user_context: any;
   uploaded_files: any;
   generated_sections: any; // Changed from Record<string, string> to any to match Json type
-  generation_status: 'pending' | 'generating' | 'completed' | 'failed';
+  generation_status: string; // Changed from union type to string to match database type
   generation_metadata: any;
   total_word_count: number | null;
   compliance_score: number | null;
