@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Check, Save } from "lucide-react";
+import { Check, Save, Expand } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "@/components/business-plan/FormSection";
 import { ProgressSidebar } from "@/components/business-plan/ProgressSidebar";
 import { FileUpload } from "@/components/business-plan/FileUpload";
 import { Section, UploadedFile } from "@/types/businessPlan";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const BusinessPlanEditor = () => {
+  const { state, toggleSidebar } = useSidebar();
+  
   const [sections, setSections] = useState<Section[]>([{
     id: "foretaget",
     title: "Företaget",
@@ -141,7 +144,21 @@ const BusinessPlanEditor = () => {
   const removeFile = (fileId: string) => {
     setUploadedFiles(uploadedFiles.filter(file => file.id !== fileId));
   };
-  return <div className="flex-1 bg-gray-50 min-h-screen">
+  return (
+    <div className="flex-1 bg-gray-50 min-h-screen relative">
+      {/* Expand button - only show when sidebar is collapsed */}
+      {state === "collapsed" && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleSidebar}
+          className="fixed top-4 left-4 z-50 flex items-center justify-center w-10 h-10 rounded-md bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+          title="Visa sidopanel"
+        >
+          <Expand className="w-4 h-4" />
+        </Button>
+      )}
+
       <div className="max-w-7xl mx-auto p-6 bg-[f8f4ec] bg-[#f8f4ec]">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -175,7 +192,8 @@ const BusinessPlanEditor = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default BusinessPlanEditor;
