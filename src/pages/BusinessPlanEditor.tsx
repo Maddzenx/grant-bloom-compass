@@ -18,7 +18,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "org_number",
       label: "Organisationsnummer",
-      value: "827773392",
+      value: "",
       type: "input"
     }, {
       id: "reg_address",
