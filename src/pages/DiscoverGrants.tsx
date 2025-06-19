@@ -7,6 +7,7 @@ import { SortOption } from "@/components/SortingControls";
 import DiscoverHeader from "@/components/DiscoverHeader";
 import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const GRANTS_PER_PAGE = 10; // Reduced for better performance
 
@@ -18,6 +19,8 @@ const DiscoverGrants = () => {
     isError,
     refetch
   } = useGrants();
+  
+  const isMobile = useIsMobile();
   
   console.log('DiscoverGrants render state:', { 
     grantsCount: grants?.length || 0, 
@@ -31,6 +34,7 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [showDetails, setShowDetails] = useState(false);
 
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
@@ -101,7 +105,10 @@ const DiscoverGrants = () => {
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('Grant selected:', grant);
     setSelectedGrant(grant);
-  }, []);
+    if (isMobile) {
+      setShowDetails(true);
+    }
+  }, [isMobile]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
@@ -115,6 +122,10 @@ const DiscoverGrants = () => {
     console.log('Refreshing grants data...');
     refetch();
   }, [refetch]);
+
+  const handleBackToList = useCallback(() => {
+    setShowDetails(false);
+  }, []);
 
   // Show loading state
   if (isLoading) {
@@ -133,7 +144,7 @@ const DiscoverGrants = () => {
   if (isError || error) {
     console.error('Error state:', { isError, error });
     return (
-      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center p-4">
         <div className="text-center max-w-md">
           <div className="text-lg text-red-600 mb-2">Problem med att ladda bidrag</div>
           <div className="text-sm text-gray-600 mb-4">
@@ -162,7 +173,7 @@ const DiscoverGrants = () => {
   if (!isLoading && (!grants || grants.length === 0)) {
     console.log('No data state - grants:', grants);
     return (
-      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-lg text-gray-600 mb-2">Inga bidrag hittades</div>
           <div className="text-sm text-gray-500 mb-4">Det finns för närvarande inga bidrag tillgängliga i databasen</div>
@@ -190,25 +201,62 @@ const DiscoverGrants = () => {
 
       {/* Main Content Area - takes remaining height */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Panel - Grant List */}
-        <GrantList
-          grants={currentGrants}
-          selectedGrant={selectedGrant}
-          bookmarkedGrants={bookmarkedGrants}
-          onGrantSelect={handleGrantSelect}
-          onToggleBookmark={handleToggleBookmark}
-          searchTerm={searchTerm}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        {/* Mobile Layout */}
+        {isMobile ? (
+          <>
+            {/* Show list when not viewing details */}
+            {!showDetails && (
+              <GrantList
+                grants={currentGrants}
+                selectedGrant={selectedGrant}
+                bookmarkedGrants={bookmarkedGrants}
+                onGrantSelect={handleGrantSelect}
+                onToggleBookmark={handleToggleBookmark}
+                searchTerm={searchTerm}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                isMobile={true}
+              />
+            )}
 
-        {/* Right Panel - Grant Details */}
-        <GrantDetailsPanel
-          selectedGrant={selectedGrant}
-          bookmarkedGrants={bookmarkedGrants}
-          onToggleBookmark={handleToggleBookmark}
-        />
+            {/* Show details when viewing a grant */}
+            {showDetails && selectedGrant && (
+              <GrantDetailsPanel
+                selectedGrant={selectedGrant}
+                bookmarkedGrants={bookmarkedGrants}
+                onToggleBookmark={handleToggleBookmark}
+                isMobile={true}
+                onBackToList={handleBackToList}
+              />
+            )}
+          </>
+        ) : (
+          /* Desktop Layout */
+          <>
+            {/* Left Panel - Grant List */}
+            <GrantList
+              grants={currentGrants}
+              selectedGrant={selectedGrant}
+              bookmarkedGrants={bookmarkedGrants}
+              onGrantSelect={handleGrantSelect}
+              onToggleBookmark={handleToggleBookmark}
+              searchTerm={searchTerm}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              isMobile={false}
+            />
+
+            {/* Right Panel - Grant Details */}
+            <GrantDetailsPanel
+              selectedGrant={selectedGrant}
+              bookmarkedGrants={bookmarkedGrants}
+              onToggleBookmark={handleToggleBookmark}
+              isMobile={false}
+            />
+          </>
+        )}
       </div>
     </div>
   );

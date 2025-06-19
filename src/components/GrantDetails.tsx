@@ -12,36 +12,38 @@ interface GrantDetailsProps {
   grant: Grant;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
+  isMobile?: boolean;
 }
 
-const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsProps) => {
+const GrantDetails = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantDetailsProps) => {
   const orgLogo = getOrganizationLogo(grant.organization);
 
   return (
-    <div className="p-6 max-w-5xl">
+    <div className={`${isMobile ? 'p-3' : 'p-6'} max-w-5xl`}>
       {/* Header section */}
-      <div className="mb-6">
+      <div className="mb-4 md:mb-6">
         <GrantHeader
           grant={grant}
           isBookmarked={isBookmarked}
           onToggleBookmark={onToggleBookmark}
           orgLogo={orgLogo}
+          isMobile={isMobile}
         />
 
         {/* Key info section */}
-        <GrantKeyInfo grant={grant} />
+        <GrantKeyInfo grant={grant} isMobile={isMobile} />
       </div>
 
-      {/* Main content in two columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left column - Main content */}
-        <div className="lg:col-span-3">
-          <GrantMainContent grant={grant} />
+      {/* Main content - stack on mobile, side-by-side on desktop */}
+      <div className={`${isMobile ? 'flex flex-col space-y-4' : 'grid grid-cols-1 lg:grid-cols-4 gap-6'}`}>
+        {/* Main content */}
+        <div className={isMobile ? 'order-1' : 'lg:col-span-3'}>
+          <GrantMainContent grant={grant} isMobile={isMobile} />
         </div>
 
-        {/* Right column - Sidebar info */}
-        <div className="lg:col-span-1">
-          <GrantSidebar grant={grant} />
+        {/* Sidebar info */}
+        <div className={isMobile ? 'order-2' : 'lg:col-span-1'}>
+          <GrantSidebar grant={grant} isMobile={isMobile} />
         </div>
       </div>
 
@@ -49,6 +51,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
       <GrantBottomActions
         isBookmarked={isBookmarked}
         onToggleBookmark={onToggleBookmark}
+        isMobile={isMobile}
       />
     </div>
   );

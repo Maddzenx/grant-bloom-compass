@@ -12,29 +12,30 @@ interface GrantCardProps {
   isBookmarked: boolean;
   onSelect: () => void;
   onToggleBookmark: () => void;
+  isMobile?: boolean;
 }
 
-const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark }: GrantCardProps) => {
+const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark, isMobile = false }: GrantCardProps) => {
   const orgLogo = getOrganizationLogo(grant.organization);
 
   return (
     <div
-      className={`bg-white rounded-lg border p-4 cursor-pointer transition-all hover:shadow-md ${
+      className={`bg-white rounded-lg border p-3 md:p-4 cursor-pointer transition-all hover:shadow-md ${
         isSelected ? "ring-2 ring-blue-500 border-blue-200 shadow-md" : "border-gray-200 shadow-sm"
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
+      <div className="flex items-start justify-between mb-2 md:mb-3">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <img 
               src={orgLogo.src}
               alt={orgLogo.alt}
-              className={orgLogo.className}
+              className={`${orgLogo.className} ${isMobile ? 'w-4 h-4' : ''}`}
             />
           </div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-tight">{grant.title}</h3>
-          <p className="text-gray-600 text-xs mb-3 line-clamp-2 leading-relaxed">{grant.description}</p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-tight line-clamp-2">{grant.title}</h3>
+          <p className="text-gray-600 text-xs mb-2 md:mb-3 line-clamp-2 leading-relaxed">{grant.description}</p>
         </div>
         <Button
           variant="ghost"
@@ -43,7 +44,7 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
             e.stopPropagation();
             onToggleBookmark();
           }}
-          className="ml-2 p-1 hover:bg-gray-100 rounded-lg"
+          className="ml-2 p-1 hover:bg-gray-100 rounded-lg flex-shrink-0"
         >
           <Bookmark
             className={`w-4 h-4 ${
@@ -53,29 +54,36 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
         </Button>
       </div>
       
-      <div className="flex flex-wrap gap-1 mb-3">
-        {grant.tags.map((tag) => (
+      <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
+        {grant.tags.slice(0, isMobile ? 2 : 3).map((tag) => (
           <Badge key={tag} variant="secondary" className="text-xs bg-teal-50 text-teal-700 border-0 font-medium px-2 py-0.5 rounded-full">
             {tag}
           </Badge>
         ))}
+        {grant.tags.length > (isMobile ? 2 : 3) && (
+          <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-600 border-0 font-medium px-2 py-0.5 rounded-full">
+            +{grant.tags.length - (isMobile ? 2 : 3)}
+          </Badge>
+        )}
       </div>
       
-      <div className="grid grid-cols-2 gap-3 text-xs">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-xs mb-2 md:mb-0">
         <div>
           <span className="text-gray-500 text-xs block mb-1 font-medium">Bidragsbelopp</span>
-          <div className="text-gray-900 font-semibold">{grant.fundingAmount}</div>
+          <div className="text-gray-900 font-semibold truncate">{grant.fundingAmount}</div>
         </div>
         <div>
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Ansökningsdeadline</span>
-          <div className="text-gray-900 font-semibold">{grant.deadline}</div>
+          <span className="text-gray-500 text-xs block mb-1 font-medium">Deadline</span>
+          <div className="text-gray-900 font-semibold truncate">{grant.deadline}</div>
         </div>
       </div>
       
-      <div className="mt-3 text-xs">
-        <span className="text-gray-500 text-xs block mb-1 font-medium">Kvalifikationer</span>
-        <div className="text-gray-700 leading-relaxed">{grant.qualifications}</div>
-      </div>
+      {!isMobile && (
+        <div className="mt-3 text-xs">
+          <span className="text-gray-500 text-xs block mb-1 font-medium">Kvalifikationer</span>
+          <div className="text-gray-700 leading-relaxed line-clamp-2">{grant.qualifications}</div>
+        </div>
+      )}
     </div>
   );
 };
