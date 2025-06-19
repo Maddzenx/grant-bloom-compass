@@ -134,49 +134,55 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       id: "org_number",
       label: "Organisationsnummer",
       value: "",
-      type: "input",
+      type: "input" as const,
       placeholder: "XXXXXX-XXXX",
-      required: true
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "reg_address",
       label: "Registrerad adress",
       value: "",
-      type: "input",
+      type: "input" as const,
       placeholder: "Gatuadress, postnummer, ort",
-      required: true
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "antal_anstallda",
       label: "Antal anställda",
       value: "",
-      type: "input",
+      type: "input" as const,
       placeholder: "Antal heltidsekvivalenter",
-      required: true
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "omsattning_2022",
       label: "Omsättning (2022, 2023)",
       value: "",
-      type: "input",
+      type: "input" as const,
       placeholder: "Belopp i SEK för de senaste två åren",
-      required: true
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "omsattning_result",
       label: "Resultat (2022, 2023)",
       value: "",
-      type: "input",
+      type: "input" as const,
       placeholder: "Resultat i SEK för de senaste två åren",
-      required: true
+      required: true,
+      validation: { isValid: true }
     }, {
       id: "beskrivning",
       label: grant 
         ? `Beskriv kortfattat företagets verksamhet för ${grant.title}` 
         : "Beskriv kortfattat företagets verksamhet",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: grant 
         ? `Anpassa beskrivningen till ${grant.organization}s krav för ${grant.title}. Inkludera hur ni uppfyller eventuella branschkrav.`
         : "Beskriv företagets verksamhet, produkter och finansiering samt övergripande mål på 5-10 års sikt.",
-      required: true
-    }].map(field => ({ ...field, validation: { isValid: true } }))
+      required: true,
+      validation: { isValid: true }
+    }]
   }];
 
   // Add grant-specific sections based on real database content
@@ -195,7 +201,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
           id: "behorighet_beskrivning",
           label: `Hur uppfyller ni behörighetskraven för ${grant.title}?`,
           value: "",
-          type: "textarea",
+          type: "textarea" as const,
           placeholder: `Krav från ${grant.organization}: ${grant.qualifications}`,
           required: true,
           validation: { isValid: true }
@@ -215,7 +221,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
           id: "utvarderings_svar",
           label: "Hur uppfyller ert projekt utvärderingskriterierna?",
           value: "",
-          type: "textarea",
+          type: "textarea" as const,
           placeholder: `Utvärderingskriterier: ${grant.evaluationCriteria}`,
           required: true,
           validation: { isValid: true }
@@ -234,7 +240,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         id: "budget_total",
         label: "Total projektbudget",
         value: "",
-        type: "input",
+        type: "input" as const,
         placeholder: `Tillgängligt bidrag: ${grant.fundingAmount}`,
         required: true,
         validation: { isValid: true }
@@ -242,7 +248,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         id: "sokt_bidrag",
         label: "Sökt bidragsbelopp",
         value: "",
-        type: "input",
+        type: "input" as const,
         placeholder: "Ange det belopp ni söker",
         required: true,
         validation: { isValid: true }
@@ -250,7 +256,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         id: "egna_medel",
         label: "Egna medel och övrig finansiering",
         value: "",
-        type: "textarea",
+        type: "textarea" as const,
         placeholder: "Beskriv hur resterande budget finansieras",
         required: true,
         validation: { isValid: true }
@@ -259,7 +265,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
 
     // Add requirements section if available from database
     if (grant.requirements.length > 0) {
-      const requirementFields = grant.requirements.slice(0, 5).map((req, index) => ({
+      const requirementFields: FormField[] = grant.requirements.slice(0, 5).map((req, index) => ({
         id: `krav_${index}`,
         label: `Krav: ${req}`,
         value: "",
@@ -293,7 +299,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
           id: "process_bekraftelse",
           label: "Bekräfta att ni förstår ansökningsprocessen",
           value: "",
-          type: "textarea",
+          type: "textarea" as const,
           placeholder: `Process: ${grant.applicationProcess}`,
           required: true,
           validation: { isValid: true }
@@ -315,7 +321,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
         ? `Beskriv den utmaning som ${grant.title} ska adressera`
         : "Beskriv den utmaning och det behov som projektet adresserar",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: "Vilka är behoven? Vad har ni gjort för att undersöka dem?",
       required: true,
       validation: { isValid: true }
@@ -330,7 +336,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       id: "losning_beskrivning",
       label: "Beskriv den innovativa lösning som ska utvecklas",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: "Vad är nytt med er lösning? Hur skiljer den sig från befintliga alternativ?",
       required: true,
       validation: { isValid: true }
@@ -338,7 +344,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       id: "teknisk_genomforbarhet",
       label: "Teknisk genomförbarhet",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: "Beskriv den tekniska genomförbarheten och eventuella risker",
       required: false,
       validation: { isValid: true }
@@ -353,7 +359,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       id: "marknad_beskrivning",
       label: "Marknadsanalys",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: "Beskriv målmarknaden nationellt och internationellt",
       required: true,
       validation: { isValid: true }
@@ -361,7 +367,7 @@ const createSectionsForGrant = (grant?: Grant): Section[] => {
       id: "kommersiell_strategi",
       label: "Kommersialiseringsstrategi",
       value: "",
-      type: "textarea",
+      type: "textarea" as const,
       placeholder: "Hur ska lösningen kommersialiseras och nå marknaden?",
       required: true,
       validation: { isValid: true }

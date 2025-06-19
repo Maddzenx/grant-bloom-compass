@@ -14,6 +14,7 @@ const BusinessPlanEditor = () => {
     sections,
     uploadedFiles,
     autoSaved,
+    overallCompletion,
     updateFieldValue,
     toggleSectionCompletion,
     removeFile
@@ -26,6 +27,7 @@ const BusinessPlanEditor = () => {
         <BusinessPlanContent
           sections={sections}
           uploadedFiles={uploadedFiles}
+          overallCompletion={overallCompletion}
           onUpdateField={updateFieldValue}
           onToggleSectionCompletion={toggleSectionCompletion}
           onRemoveFile={removeFile}

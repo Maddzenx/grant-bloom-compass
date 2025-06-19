@@ -8,6 +8,7 @@ import { Section, UploadedFile } from "@/types/businessPlan";
 interface BusinessPlanContentProps {
   sections: Section[];
   uploadedFiles: UploadedFile[];
+  overallCompletion: number;
   onUpdateField: (sectionId: string, fieldId: string, value: string) => void;
   onToggleSectionCompletion: (sectionId: string) => void;
   onRemoveFile: (fileId: string) => void;
@@ -16,6 +17,7 @@ interface BusinessPlanContentProps {
 export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
   sections,
   uploadedFiles,
+  overallCompletion,
   onUpdateField,
   onToggleSectionCompletion,
   onRemoveFile
@@ -37,6 +39,7 @@ export const BusinessPlanContent: React.FC<BusinessPlanContentProps> = ({
       <div className="space-y-6">
         <ProgressSidebar 
           sections={sections} 
+          overallCompletion={overallCompletion}
           onToggleSectionCompletion={onToggleSectionCompletion} 
         />
         <FileUpload 
