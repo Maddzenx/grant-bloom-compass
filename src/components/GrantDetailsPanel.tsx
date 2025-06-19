@@ -82,16 +82,22 @@ const GrantDetailsPanel = ({
         </div>
       )}
 
-      {/* Conditional Sticky Header - Only show when scrolling down */}
-      {selectedGrant && showStickyHeader && (
-        <GrantStickyHeader
-          grant={selectedGrant}
-          isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-          onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
-          orgLogo={getOrganizationLogo(selectedGrant.organization)}
-          isMobile={isMobile}
-        />
-      )}
+      {/* Conditional Sticky Header with smooth transition */}
+      <div className={`transition-all duration-300 ease-in-out ${
+        selectedGrant && showStickyHeader 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 -translate-y-2 pointer-events-none'
+      }`}>
+        {selectedGrant && (
+          <GrantStickyHeader
+            grant={selectedGrant}
+            isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+            onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
+            orgLogo={getOrganizationLogo(selectedGrant.organization)}
+            isMobile={isMobile}
+          />
+        )}
+      </div>
       
       {selectedGrant ? (
         <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>

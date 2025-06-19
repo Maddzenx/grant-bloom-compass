@@ -24,7 +24,7 @@ const GrantStickyHeader = ({
   isMobile = false
 }: GrantStickyHeaderProps) => {
   return (
-    <div className={`sticky top-0 z-10 bg-white border-b border-gray-200 ${isMobile ? 'p-2' : 'p-4'} shadow-sm`}>
+    <div className={`sticky top-0 z-10 bg-white border-b border-gray-200 ${isMobile ? 'p-2' : 'p-4'} shadow-sm transform transition-all duration-300 ease-in-out animate-fade-in`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
           <img 
@@ -45,10 +45,10 @@ const GrantStickyHeader = ({
           variant="ghost"
           size="sm"
           onClick={onToggleBookmark}
-          className="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0"
+          className="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0 transition-colors duration-200"
         >
           <Bookmark
-            className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} ${
+            className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-colors duration-200 ${
               isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
             }`}
           />
