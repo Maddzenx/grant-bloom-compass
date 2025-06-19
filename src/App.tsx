@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import DiscoverGrants from "./pages/DiscoverGrants";
 import BusinessPlanEditor from "./pages/BusinessPlanEditor";
 import ProgressChecklist from "./pages/ProgressChecklist";
+import DraftViewer from "./pages/DraftViewer";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -39,6 +40,7 @@ const App = () => (
                 <Route path="/discover" element={<DiscoverGrants />} />
                 <Route path="/editor" element={<BusinessPlanEditor />} />
                 <Route path="/progress" element={<ProgressChecklist />} />
+                <Route path="/draft/:draftId" element={<DraftViewer />} />
               </Routes>
             </SidebarInset>
           </div>

@@ -385,6 +385,57 @@ export type Database = {
         }
         Relationships: []
       }
+      template_analysis: {
+        Row: {
+          analysis_timestamp: string | null
+          complexity_score: number | null
+          created_at: string | null
+          estimated_completion_time: number | null
+          form_fields: Json | null
+          form_sections: string[] | null
+          grant_id: string | null
+          id: string
+          organisation: string | null
+          processing_status: string | null
+          template_id: string | null
+          template_name: string | null
+          template_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          analysis_timestamp?: string | null
+          complexity_score?: number | null
+          created_at?: string | null
+          estimated_completion_time?: number | null
+          form_fields?: Json | null
+          form_sections?: string[] | null
+          grant_id?: string | null
+          id: string
+          organisation?: string | null
+          processing_status?: string | null
+          template_id?: string | null
+          template_name?: string | null
+          template_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          analysis_timestamp?: string | null
+          complexity_score?: number | null
+          created_at?: string | null
+          estimated_completion_time?: number | null
+          form_fields?: Json | null
+          form_sections?: string[] | null
+          grant_id?: string | null
+          id?: string
+          organisation?: string | null
+          processing_status?: string | null
+          template_id?: string | null
+          template_name?: string | null
+          template_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       vinnova_ansokningsomgangar: {
         Row: {
           annonseringslage_ar: number | null

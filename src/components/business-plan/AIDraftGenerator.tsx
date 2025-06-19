@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, FileText, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { Sparkles, FileText, CheckCircle, AlertCircle, Clock, Eye } from 'lucide-react';
 import { useApplicationDrafts } from '@/hooks/useApplicationDrafts';
 import { Grant } from '@/types/grant';
 import { Section, UploadedFile } from '@/types/businessPlan';
@@ -20,6 +21,7 @@ export const AIDraftGenerator: React.FC<AIDraftGeneratorProps> = ({
   sections,
   uploadedFiles
 }) => {
+  const navigate = useNavigate();
   const { isGenerating, generateDraft, extractFileContent, drafts } = useApplicationDrafts();
   const [extractionProgress, setExtractionProgress] = useState(0);
 
@@ -66,6 +68,10 @@ export const AIDraftGenerator: React.FC<AIDraftGeneratorProps> = ({
     });
 
     setExtractionProgress(100);
+  };
+
+  const handleViewDraft = (draftId: string) => {
+    navigate(`/draft/${draftId}`);
   };
 
   const getStatusIcon = (status: string) => {
@@ -131,10 +137,21 @@ export const AIDraftGenerator: React.FC<AIDraftGeneratorProps> = ({
             </div>
             
             {latestDraft.generation_status === 'completed' && (
-              <div className="flex gap-4 text-sm text-gray-600">
-                <span>{latestDraft.total_word_count} words</span>
-                <span>{Math.round((latestDraft.compliance_score || 0) * 100)}% compliance</span>
-                <span>{Object.keys(latestDraft.generated_sections || {}).length} sections</span>
+              <div className="space-y-3">
+                <div className="flex gap-4 text-sm text-gray-600">
+                  <span>{latestDraft.total_word_count} words</span>
+                  <span>{Math.round((latestDraft.compliance_score || 0) * 100)}% compliance</span>
+                  <span>{Object.keys(latestDraft.generated_sections || {}).length} sections</span>
+                </div>
+                <Button 
+                  onClick={() => handleViewDraft(latestDraft.id)}
+                  variant="outline" 
+                  size="sm"
+                  className="w-full"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Full Draft
+                </Button>
               </div>
             )}
           </div>
