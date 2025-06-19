@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Bookmark, ExternalLink } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
@@ -64,10 +63,9 @@ const GrantStickyHeader = ({
           <Button
             onClick={handleApplyClick}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center gap-1"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
           >
-            <ExternalLink className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
-            {isMobile ? 'Ansök' : 'Ansök'}
+            Ansök
           </Button>
         </div>
       </div>
