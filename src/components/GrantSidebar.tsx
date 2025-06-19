@@ -16,6 +16,23 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
     return amount;
   };
 
+  const handleLinkClick = (linkText: string) => {
+    // Check if the text contains a URL
+    const urlMatch = linkText.match(/https?:\/\/[^\s]+/);
+    if (urlMatch) {
+      window.open(urlMatch[0], '_blank', 'noopener,noreferrer');
+    } else {
+      // If it's not a direct URL, try to treat the whole text as a potential URL
+      // This handles cases where the entire text might be a URL without http/https
+      const possibleUrl = linkText.trim();
+      if (possibleUrl.includes('.') && !possibleUrl.includes(' ')) {
+        window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
+      } else {
+        console.log('No valid URL found in:', linkText);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
@@ -67,17 +84,41 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
         </section>
       )}
 
-      {grant.templates.length > 0 && (
+      {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
         <section className="bg-gray-50 p-4 rounded-lg px-[5px] py-[16px]">
           <h3 className="font-bold text-gray-900 mb-3 text-sm">Mallar och filer</h3>
           <div className="space-y-2">
             {grant.templates.map((template, index) => (
-              <div key={index} className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all">
+              <div 
+                key={index} 
+                className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all hover:bg-blue-50 p-1 rounded transition-colors"
+                onClick={() => handleLinkClick(template)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleLinkClick(template);
+                  }
+                }}
+              >
                 {template}
               </div>
             ))}
             {grant.generalInfo.map((file, index) => (
-              <div key={`file-${index}`} className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all">
+              <div 
+                key={`file-${index}`} 
+                className="text-blue-600 hover:text-blue-800 cursor-pointer underline text-xs break-all hover:bg-blue-50 p-1 rounded transition-colors"
+                onClick={() => handleLinkClick(file)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleLinkClick(file);
+                  }
+                }}
+              >
                 {file}
               </div>
             ))}
