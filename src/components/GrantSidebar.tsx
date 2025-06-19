@@ -42,29 +42,10 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Basic Grant Information */}
-      <section className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-bold text-gray-900 mb-3 text-sm">Grundläggande information</h3>
-        <div className="space-y-3">
-          <div className="border-b border-gray-200 pb-2">
-            <span className="font-semibold text-gray-900 text-xs block">Bidragsbelopp</span>
-            <span className="text-gray-700 text-sm">{grant.fundingAmount}</span>
-          </div>
-          <div className="border-b border-gray-200 pb-2">
-            <span className="font-semibold text-gray-900 text-xs block">Ansökningsdeadline</span>
-            <span className="text-gray-700 text-sm">{grant.deadline}</span>
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900 text-xs block">Organisation</span>
-            <span className="text-gray-700 text-sm">{grant.organization}</span>
-          </div>
-        </div>
-      </section>
-
       {/* Important Dates */}
       {grant.importantDates.length > 0 && (
         <section className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-bold text-blue-900 mb-3 text-sm">📅 Viktiga datum</h3>
+          <h3 className="font-bold text-blue-900 mb-3 text-sm">Viktiga datum</h3>
           <ul className="space-y-2">
             {grant.importantDates.map((date, index) => (
               <li key={index} className="flex items-start gap-2 text-blue-800">
@@ -78,7 +59,7 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
 
       {/* Eligibility & Requirements */}
       <section className="bg-amber-50 p-4 rounded-lg">
-        <h3 className="font-bold text-amber-900 mb-3 text-sm">✅ Behörighet och krav</h3>
+        <h3 className="font-bold text-amber-900 mb-3 text-sm">Behörighet och krav</h3>
         <div className="space-y-3">
           <div>
             <span className="font-semibold text-amber-900 text-xs block mb-1">Vem kan ansöka:</span>
@@ -103,7 +84,7 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
       {/* Templates and Documents */}
       {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
         <section className="bg-green-50 p-4 rounded-lg">
-          <h3 className="font-bold text-green-900 mb-3 text-sm">📋 Dokument och mallar</h3>
+          <h3 className="font-bold text-green-900 mb-3 text-sm">Dokument och mallar</h3>
           <div className="space-y-2">
             {grant.templates.map((template, index) => (
               <div 
@@ -120,7 +101,7 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                 }}
                 title="Klicka för att få mer information om denna mall"
               >
-                📄 <span className="font-medium">Mall:</span> {template}
+                <span className="font-medium">Mall:</span> {template}
               </div>
             ))}
             {grant.generalInfo.map((file, index) => (
@@ -138,7 +119,7 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
                 }}
                 title="Klicka för att få mer information om detta dokument"
               >
-                📊 <span className="font-medium">Dokument:</span> {file}
+                <span className="font-medium">Dokument:</span> {file}
               </div>
             ))}
           </div>
@@ -147,23 +128,23 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
 
       {/* Contact Information */}
       <section className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-3 text-sm">📞 Kontaktinformation</h3>
+        <h3 className="font-bold text-gray-900 mb-3 text-sm">Kontaktinformation</h3>
         <div className="space-y-2">
           {grant.contact.name && (
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-xs">👤</span>
+              <span className="font-semibold text-gray-900 text-xs">Namn:</span>
               <span className="font-medium text-gray-900 text-xs">{grant.contact.name}</span>
             </div>
           )}
           {grant.contact.organization && (
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-xs">🏢</span>
+              <span className="font-semibold text-gray-900 text-xs">Organisation:</span>
               <span className="text-gray-700 text-xs">{grant.contact.organization}</span>
             </div>
           )}
           {grant.contact.email && (
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-xs">✉️</span>
+              <span className="font-semibold text-gray-900 text-xs">E-post:</span>
               <a 
                 href={`mailto:${grant.contact.email}`}
                 className="text-blue-600 underline hover:text-blue-800 text-xs break-all"
@@ -174,7 +155,7 @@ const GrantSidebar = ({ grant }: GrantSidebarProps) => {
           )}
           {grant.contact.phone && (
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-xs">📱</span>
+              <span className="font-semibold text-gray-900 text-xs">Telefon:</span>
               <a 
                 href={`tel:${grant.contact.phone}`}
                 className="text-blue-600 underline hover:text-blue-800 text-xs"

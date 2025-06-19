@@ -11,8 +11,8 @@ const GrantMainContent = ({ grant }: GrantMainContentProps) => {
     <div className="space-y-8">
       {/* Main Description */}
       <section>
-        <h2 className="font-bold text-gray-900 mb-4 text-xl flex items-center gap-2">
-          📝 Om detta bidrag
+        <h2 className="font-bold text-gray-900 mb-4 text-xl">
+          Om detta bidrag
         </h2>
         <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
           <p className="text-gray-800 leading-relaxed text-sm mb-4">{grant.aboutGrant}</p>
@@ -24,8 +24,8 @@ const GrantMainContent = ({ grant }: GrantMainContentProps) => {
 
       {/* Eligibility */}
       <section>
-        <h2 className="font-bold text-gray-900 mb-4 text-xl flex items-center gap-2">
-          🎯 Vem kan ansöka?
+        <h2 className="font-bold text-gray-900 mb-4 text-xl">
+          Vem kan ansöka?
         </h2>
         <div className="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500">
           <p className="text-gray-800 leading-relaxed text-sm">{grant.whoCanApply}</p>
@@ -35,8 +35,8 @@ const GrantMainContent = ({ grant }: GrantMainContentProps) => {
       {/* Funding Rules */}
       {grant.fundingRules.length > 0 && (
         <section>
-          <h2 className="font-bold text-gray-900 mb-4 text-xl flex items-center gap-2">
-            💰 Finansieringsregler
+          <h2 className="font-bold text-gray-900 mb-4 text-xl">
+            Finansieringsregler
           </h2>
           <div className="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
             <ul className="space-y-3">
@@ -51,29 +51,10 @@ const GrantMainContent = ({ grant }: GrantMainContentProps) => {
         </section>
       )}
 
-      {/* Keywords/Tags */}
-      {grant.tags.length > 0 && (
-        <section>
-          <h2 className="font-bold text-gray-900 mb-4 text-xl flex items-center gap-2">
-            🏷️ Nyckelord och kategorier
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {grant.tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center bg-gradient-to-r from-teal-50 to-blue-50 text-teal-800 px-4 py-2 rounded-full text-sm font-medium border border-teal-200 hover:from-teal-100 hover:to-blue-100 transition-colors"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Quick Summary Box */}
       <section className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
-        <h3 className="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
-          📊 Sammanfattning
+        <h3 className="font-bold text-gray-900 mb-4 text-lg">
+          Sammanfattning
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white p-4 rounded-lg">

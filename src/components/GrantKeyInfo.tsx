@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Calendar, DollarSign, Building2, Clock } from "lucide-react";
+import { Calendar, DollarSign, Building2 } from "lucide-react";
 import { Grant } from "@/types/grant";
 
 interface GrantKeyInfoProps {
