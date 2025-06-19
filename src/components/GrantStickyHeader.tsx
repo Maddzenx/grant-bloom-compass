@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
 
@@ -17,6 +18,11 @@ interface GrantStickyHeaderProps {
 
 const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: GrantStickyHeaderProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleApplyClick = () => {
+    navigate('/editor');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +85,10 @@ const GrantStickyHeader = ({ grant, isBookmarked, onToggleBookmark, orgLogo }: G
           >
             <Bookmark className={`w-5 h-5 ${isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"}`} />
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold text-sm">
+          <Button 
+            onClick={handleApplyClick}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold text-sm"
+          >
             Ansök
           </Button>
         </div>
