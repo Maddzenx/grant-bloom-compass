@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -24,6 +24,43 @@ const GrantDetailsPanel = ({
   isMobile,
   onBackToList
 }: GrantDetailsPanelProps) => {
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollArea = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+      if (!scrollArea) return;
+
+      const currentScrollY = scrollArea.scrollTop;
+      const isScrollingDown = currentScrollY > lastScrollY.current;
+      const hasScrolled = currentScrollY > 100; // Show after scrolling 100px
+
+      // Show sticky header when scrolling down and has scrolled enough
+      // Hide when at the top or scrolling up near the top
+      if (hasScrolled && isScrollingDown) {
+        setShowStickyHeader(true);
+      } else if (currentScrollY < 50) {
+        setShowStickyHeader(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    const scrollArea = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollArea) {
+      scrollArea.addEventListener('scroll', handleScroll);
+      return () => scrollArea.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  // Reset sticky header when grant changes
+  useEffect(() => {
+    setShowStickyHeader(false);
+    lastScrollY.current = 0;
+  }, [selectedGrant?.id]);
+
   const containerClass = isMobile 
     ? "w-full bg-[#f8f4ec] overflow-hidden relative" 
     : "w-3/5 bg-[#f8f4ec] overflow-hidden relative";
@@ -45,8 +82,8 @@ const GrantDetailsPanel = ({
         </div>
       )}
 
-      {/* Sticky Header - Only show when grant is selected */}
-      {selectedGrant && (
+      {/* Conditional Sticky Header - Only show when scrolling down */}
+      {selectedGrant && showStickyHeader && (
         <GrantStickyHeader
           grant={selectedGrant}
           isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
@@ -57,7 +94,7 @@ const GrantDetailsPanel = ({
       )}
       
       {selectedGrant ? (
-        <ScrollArea className="h-full" data-grant-details-scroll>
+        <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
           <div className="p-2 md:p-4 border-transparent px-0 py-0">
             <div className="bg-white rounded-lg">
               <GrantDetails
