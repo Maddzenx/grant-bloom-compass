@@ -41,7 +41,7 @@ const GrantDetails = ({ grant, isBookmarked, onToggleBookmark }: GrantDetailsPro
 
         {/* Right column - Sidebar info */}
         <div className="lg:col-span-1">
-          <GrantSidebar />
+          <GrantSidebar grant={grant} />
         </div>
       </div>
 
