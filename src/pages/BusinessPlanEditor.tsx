@@ -18,7 +18,7 @@ const BusinessPlanEditor = () => {
     fields: [{
       id: "org_number",
       label: "Organisationsnummer",
-      value: "827773392",
+      value: "",
       type: "input"
     }, {
       id: "reg_address",
@@ -55,7 +55,8 @@ const BusinessPlanEditor = () => {
       id: "utmaning_beskrivning",
       label: "Beskriv den utmaning i vilket och område som ni adresserar. Vilka är behoven? Vad har ni gjort för att undersöka behoven?",
       value: "",
-      type: "textarea"
+      type: "textarea",
+      placeholder: "Beskriv den utmaning i vård och omsorg som ni adresserar. Vilket är behovet? Vad har ni gjort för att undersöka behovet?"
     }]
   }, {
     id: "losning",
