@@ -1,4 +1,3 @@
-
 import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PenTool, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
@@ -59,7 +58,7 @@ export function AppSidebar() {
         </div>
       )}
       
-      <Sidebar className="border-r border-gray-200 group/sidebar-hover">
+      <Sidebar className="border-r border-gray-200 group/sidebar-hover transition-all duration-300 ease-in-out">
         {/* Minimize button positioned at top right of sidebar */}
         <div className="absolute top-4 right-4 z-10">
           <Button 
@@ -83,7 +82,7 @@ export function AppSidebar() {
           }}
         />
 
-        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0 relative z-10">
+        <SidebarContent className="bg-[#f8f4ec] pt-16 py-[6px] mx-0 relative z-10 transition-all duration-300 ease-in-out">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
