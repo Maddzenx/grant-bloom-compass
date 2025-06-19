@@ -34,8 +34,7 @@ export const useGrants = () => {
           files_names,
           templates_names
         `)
-        .order('created_at', { ascending: false })
-        .limit(10); // Reduced limit to improve performance
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Supabase error:', error);

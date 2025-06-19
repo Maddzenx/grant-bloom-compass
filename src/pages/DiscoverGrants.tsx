@@ -9,8 +9,6 @@ import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const GRANTS_PER_PAGE = 10; // Reduced for better performance
-
 const DiscoverGrants = () => {
   const {
     data: grants = [],
@@ -33,7 +31,6 @@ const DiscoverGrants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("none");
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-  const [currentPage, setCurrentPage] = useState(1);
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleBookmark = useCallback((grantId: string) => {
@@ -77,30 +74,19 @@ const DiscoverGrants = () => {
     return sorted;
   }, [filteredGrants, sortBy]);
 
-  // Calculate pagination
-  const totalPages = Math.ceil(sortedGrants.length / GRANTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * GRANTS_PER_PAGE;
-  const endIndex = startIndex + GRANTS_PER_PAGE;
-  const currentGrants = sortedGrants.slice(startIndex, endIndex);
-
-  // Reset to first page when search or sort changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, sortBy]);
-
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
-    if (currentGrants.length > 0 && !selectedGrant) {
-      console.log('Auto-selecting first grant:', currentGrants[0]);
-      setSelectedGrant(currentGrants[0]);
-    } else if (currentGrants.length > 0 && selectedGrant && !currentGrants.find(g => g.id === selectedGrant.id)) {
+    if (sortedGrants.length > 0 && !selectedGrant) {
+      console.log('Auto-selecting first grant:', sortedGrants[0]);
+      setSelectedGrant(sortedGrants[0]);
+    } else if (sortedGrants.length > 0 && selectedGrant && !sortedGrants.find(g => g.id === selectedGrant.id)) {
       console.log('Current selection not in filtered results, selecting first filtered grant');
-      setSelectedGrant(currentGrants[0]);
-    } else if (currentGrants.length === 0) {
+      setSelectedGrant(sortedGrants[0]);
+    } else if (sortedGrants.length === 0) {
       console.log('No grants available, clearing selection');
       setSelectedGrant(null);
     }
-  }, [currentGrants, selectedGrant]);
+  }, [sortedGrants, selectedGrant]);
 
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('Grant selected:', grant);
@@ -113,10 +99,6 @@ const DiscoverGrants = () => {
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
   }, [toggleBookmark]);
-
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
-  }, []);
 
   const handleRefresh = useCallback(() => {
     console.log('Refreshing grants data...');
@@ -207,15 +189,12 @@ const DiscoverGrants = () => {
             {/* Show list when not viewing details */}
             {!showDetails && (
               <GrantList
-                grants={currentGrants}
+                grants={sortedGrants}
                 selectedGrant={selectedGrant}
                 bookmarkedGrants={bookmarkedGrants}
                 onGrantSelect={handleGrantSelect}
                 onToggleBookmark={handleToggleBookmark}
                 searchTerm={searchTerm}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
                 isMobile={true}
               />
             )}
@@ -236,15 +215,12 @@ const DiscoverGrants = () => {
           <>
             {/* Left Panel - Grant List */}
             <GrantList
-              grants={currentGrants}
+              grants={sortedGrants}
               selectedGrant={selectedGrant}
               bookmarkedGrants={bookmarkedGrants}
               onGrantSelect={handleGrantSelect}
               onToggleBookmark={handleToggleBookmark}
               searchTerm={searchTerm}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
               isMobile={false}
             />
 
