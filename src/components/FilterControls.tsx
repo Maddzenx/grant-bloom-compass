@@ -31,9 +31,11 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
   };
 
   const updateFilter = (key: keyof FilterOptions, value: string) => {
+    // Convert "all" back to empty string for our filter logic
+    const filterValue = value === "all" ? "" : value;
     onFiltersChange({
       ...filters,
-      [key]: value
+      [key]: filterValue
     });
   };
 
@@ -58,12 +60,12 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
         {/* Organization Filter */}
         <div className="space-y-1">
           <label className="text-xs font-medium text-gray-600">Organisation</label>
-          <Select value={filters.organization} onValueChange={(value) => updateFilter("organization", value)}>
+          <Select value={filters.organization || "all"} onValueChange={(value) => updateFilter("organization", value)}>
             <SelectTrigger className="h-8">
               <SelectValue placeholder="Alla organisationer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Alla organisationer</SelectItem>
+              <SelectItem value="all">Alla organisationer</SelectItem>
               {organizations.map(org => (
                 <SelectItem key={org} value={org}>{org}</SelectItem>
               ))}
@@ -98,12 +100,12 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
         {/* Deadline Filter */}
         <div className="space-y-1">
           <label className="text-xs font-medium text-gray-600">Deadline inom</label>
-          <Select value={filters.deadline} onValueChange={(value) => updateFilter("deadline", value)}>
+          <Select value={filters.deadline || "all"} onValueChange={(value) => updateFilter("deadline", value)}>
             <SelectTrigger className="h-8">
               <SelectValue placeholder="Alla deadlines" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Alla deadlines</SelectItem>
+              <SelectItem value="all">Alla deadlines</SelectItem>
               <SelectItem value="7">7 dagar</SelectItem>
               <SelectItem value="30">30 dagar</SelectItem>
               <SelectItem value="90">90 dagar</SelectItem>
