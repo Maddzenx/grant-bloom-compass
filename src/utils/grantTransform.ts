@@ -12,12 +12,12 @@ export const transformSupabaseGrant = (supabaseGrant: SupabaseGrantRow): Grant =
   const jsonToStringArray = (jsonValue: any): string[] => {
     try {
       if (Array.isArray(jsonValue)) {
-        return jsonValue.filter(item => typeof item === 'string');
+        return jsonValue.filter(item => typeof item === 'string').slice(0, 5); // Limit array size
       }
       if (typeof jsonValue === 'string') {
         const parsed = JSON.parse(jsonValue);
         if (Array.isArray(parsed)) {
-          return parsed.filter(item => typeof item === 'string');
+          return parsed.filter(item => typeof item === 'string').slice(0, 5); // Limit array size
         }
       }
       return [];
@@ -29,12 +29,12 @@ export const transformSupabaseGrant = (supabaseGrant: SupabaseGrantRow): Grant =
 
   // Helper function to format date
   const formatDate = (dateValue: string | null): string => {
-    if (!dateValue) return '';
+    if (!dateValue) return 'Ej specificerat';
     try {
       return new Date(dateValue).toLocaleDateString('sv-SE');
     } catch (error) {
       console.warn('Error formatting date:', error, dateValue);
-      return dateValue;
+      return 'Ej specificerat';
     }
   };
 
@@ -60,14 +60,14 @@ export const transformSupabaseGrant = (supabaseGrant: SupabaseGrantRow): Grant =
   const transformed: Grant = {
     id: supabaseGrant.id,
     title: supabaseGrant.title || 'Ingen titel',
-    organization: supabaseGrant.organisation || '',
-    description: supabaseGrant.description || supabaseGrant.subtitle || '',
+    organization: supabaseGrant.organisation || 'Okänd organisation',
+    description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
     fundingAmount: formatFundingAmount(supabaseGrant),
     deadline: formatDate(supabaseGrant.application_closing_date),
     tags: jsonToStringArray(supabaseGrant.keywords),
-    qualifications: supabaseGrant.eligibility || '',
-    aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || '',
-    whoCanApply: supabaseGrant.eligibility || '',
+    qualifications: supabaseGrant.eligibility || 'Ej specificerat',
+    aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
+    whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
     importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
     fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
     generalInfo: jsonToStringArray(supabaseGrant.files_names),

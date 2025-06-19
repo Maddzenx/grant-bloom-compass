@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
@@ -7,7 +8,7 @@ import DiscoverHeader from "@/components/DiscoverHeader";
 import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
 
-const GRANTS_PER_PAGE = 15;
+const GRANTS_PER_PAGE = 10; // Reduced for better performance
 
 const DiscoverGrants = () => {
   const {
@@ -24,7 +25,6 @@ const DiscoverGrants = () => {
     error: error?.message, 
     isError 
   });
-  console.log('Raw grants data:', grants);
   
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,8 +79,6 @@ const DiscoverGrants = () => {
   const endIndex = startIndex + GRANTS_PER_PAGE;
   const currentGrants = sortedGrants.slice(startIndex, endIndex);
 
-  console.log('Pagination:', { totalPages, currentPage, currentGrants: currentGrants.length });
-
   // Reset to first page when search or sort changes
   useEffect(() => {
     setCurrentPage(1);
@@ -123,8 +121,9 @@ const DiscoverGrants = () => {
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <div className="text-lg text-gray-600 mb-2">Laddar bidrag...</div>
-          <div className="text-sm text-gray-500">Hämtar senaste data från databasen...</div>
+          <div className="text-sm text-gray-500">Hämtar data från databasen...</div>
         </div>
       </div>
     );
@@ -135,23 +134,25 @@ const DiscoverGrants = () => {
     console.error('Error state:', { isError, error });
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-lg text-red-600 mb-2">Fel vid laddning av bidrag</div>
+        <div className="text-center max-w-md">
+          <div className="text-lg text-red-600 mb-2">Problem med att ladda bidrag</div>
           <div className="text-sm text-gray-600 mb-4">
-            {error?.message || 'Ett oväntat fel inträffade'}
+            {error?.message || 'Ett oväntat fel inträffade vid hämtning av data'}
           </div>
-          <button 
-            onClick={handleRefresh}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2"
-          >
-            Försök igen
-          </button>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Ladda om sidan
-          </button>
+          <div className="space-x-2">
+            <button 
+              onClick={handleRefresh}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Försök igen
+            </button>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            >
+              Ladda om sidan
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -167,7 +168,7 @@ const DiscoverGrants = () => {
           <div className="text-sm text-gray-500 mb-4">Det finns för närvarande inga bidrag tillgängliga i databasen</div>
           <button 
             onClick={handleRefresh}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Uppdatera data
           </button>

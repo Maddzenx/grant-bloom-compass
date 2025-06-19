@@ -12,9 +12,30 @@ export const useGrants = () => {
       
       const { data, error } = await supabase
         .from('grant_call_details')
-        .select('*')
+        .select(`
+          id,
+          title,
+          organisation,
+          description,
+          subtitle,
+          eligibility,
+          application_closing_date,
+          max_grant_per_project,
+          min_grant_per_project,
+          total_funding_amount,
+          currency,
+          keywords,
+          contact_name,
+          contact_title,
+          contact_email,
+          contact_phone,
+          eligible_cost_categories,
+          information_webinar_dates,
+          files_names,
+          templates_names
+        `)
         .order('created_at', { ascending: false })
-        .limit(20); // Reduce limit for better performance
+        .limit(10); // Reduced limit to improve performance
 
       if (error) {
         console.error('Supabase error:', error);
@@ -49,9 +70,10 @@ export const useGrants = () => {
       
       return transformedGrants;
     },
-    staleTime: 30000, // 30 seconds cache
+    staleTime: 60000, // 1 minute cache
     gcTime: 300000, // 5 minutes
-    retry: 1,
+    retry: 2,
+    retryDelay: 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: true,
