@@ -50,22 +50,10 @@ const GrantMainContent = ({
 
       {/* Quick Summary Box */}
       <section className="">
-        <h3 className={`font-bold text-gray-900 mb-3 md:mb-4 ${isMobile ? 'text-base' : 'text-lg'}`}>
-          Sammanfattning
-        </h3>
+        
         <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-1 md:grid-cols-2 gap-4'}`}>
-          <div className="bg-white p-3 md:p-4 rounded-lg">
-            <span className="text-xs text-gray-600 block mb-1">Bidragsbelopp</span>
-            <span className={`font-bold text-blue-600 ${isMobile ? 'text-base' : 'text-lg'} truncate block`}>
-              {grant.fundingAmount}
-            </span>
-          </div>
-          <div className="bg-white p-3 md:p-4 rounded-lg">
-            <span className="text-xs text-gray-600 block mb-1">Ansökningsdeadline</span>
-            <span className={`font-bold text-red-600 ${isMobile ? 'text-base' : 'text-lg'} truncate block`}>
-              {grant.deadline}
-            </span>
-          </div>
+          
+          
         </div>
       </section>
     </div>;
