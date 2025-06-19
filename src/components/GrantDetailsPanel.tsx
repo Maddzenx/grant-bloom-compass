@@ -35,13 +35,15 @@ const GrantDetailsPanel = ({
 
       const currentScrollY = scrollArea.scrollTop;
       const isScrollingDown = currentScrollY > lastScrollY.current;
-      const hasScrolled = currentScrollY > 100; // Show after scrolling 100px
+      const hasScrolled = currentScrollY > 200; // Show after scrolling 200px
+
+      console.log('Scroll data:', { currentScrollY, isScrollingDown, hasScrolled, showStickyHeader });
 
       // Show sticky header when scrolling down and has scrolled enough
-      // Hide when at the top or scrolling up near the top
-      if (hasScrolled && isScrollingDown) {
+      if (hasScrolled && isScrollingDown && !showStickyHeader) {
         setShowStickyHeader(true);
-      } else if (currentScrollY < 50) {
+      } else if (currentScrollY < 100) {
+        // Hide when scrolled back to near the top
         setShowStickyHeader(false);
       }
 
@@ -53,7 +55,7 @@ const GrantDetailsPanel = ({
       scrollArea.addEventListener('scroll', handleScroll);
       return () => scrollArea.removeEventListener('scroll', handleScroll);
     }
-  }, []);
+  }, [showStickyHeader]);
 
   // Reset sticky header when grant changes
   useEffect(() => {
@@ -82,13 +84,9 @@ const GrantDetailsPanel = ({
         </div>
       )}
 
-      {/* Conditional Sticky Header with smooth transition */}
-      <div className={`transition-all duration-300 ease-in-out ${
-        selectedGrant && showStickyHeader 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 -translate-y-2 pointer-events-none'
-      }`}>
-        {selectedGrant && (
+      {/* Conditional Sticky Header - only render when we have a grant and should show */}
+      {selectedGrant && showStickyHeader && (
+        <div className="animate-fade-in">
           <GrantStickyHeader
             grant={selectedGrant}
             isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
@@ -96,8 +94,8 @@ const GrantDetailsPanel = ({
             orgLogo={getOrganizationLogo(selectedGrant.organization)}
             isMobile={isMobile}
           />
-        )}
-      </div>
+        </div>
+      )}
       
       {selectedGrant ? (
         <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
