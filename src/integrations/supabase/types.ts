@@ -184,6 +184,8 @@ export type Database = {
           application_closing_date: string | null
           application_opening_date: string | null
           application_process: string | null
+          application_templates_links: Json | null
+          application_templates_names: Json | null
           consortium_requirement: string | null
           contact_email: string | null
           contact_name: string | null
@@ -197,8 +199,6 @@ export type Database = {
           eligible_organisations: Json | null
           error_message: string | null
           evaluation_criteria: string | null
-          files_links: Json | null
-          files_names: Json | null
           geographic_scope: string | null
           id: string
           industry_sectors: Json | null
@@ -210,6 +210,10 @@ export type Database = {
           min_grant_per_project: number | null
           organisation: string | null
           original_url: string
+          other_sources_links: Json | null
+          other_sources_names: Json | null
+          other_templates_links: Json | null
+          other_templates_names: Json | null
           processed_at: string | null
           processing_status: string | null
           project_duration_months_max: number | null
@@ -222,8 +226,6 @@ export type Database = {
           scraped_at: string | null
           subtitle: string | null
           support_level: number | null
-          templates_links: Json | null
-          templates_names: Json | null
           title: string | null
           total_funding_amount: number | null
           updated_at: string | null
@@ -233,6 +235,8 @@ export type Database = {
           application_closing_date?: string | null
           application_opening_date?: string | null
           application_process?: string | null
+          application_templates_links?: Json | null
+          application_templates_names?: Json | null
           consortium_requirement?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -246,8 +250,6 @@ export type Database = {
           eligible_organisations?: Json | null
           error_message?: string | null
           evaluation_criteria?: string | null
-          files_links?: Json | null
-          files_names?: Json | null
           geographic_scope?: string | null
           id?: string
           industry_sectors?: Json | null
@@ -259,6 +261,10 @@ export type Database = {
           min_grant_per_project?: number | null
           organisation?: string | null
           original_url: string
+          other_sources_links?: Json | null
+          other_sources_names?: Json | null
+          other_templates_links?: Json | null
+          other_templates_names?: Json | null
           processed_at?: string | null
           processing_status?: string | null
           project_duration_months_max?: number | null
@@ -271,8 +277,6 @@ export type Database = {
           scraped_at?: string | null
           subtitle?: string | null
           support_level?: number | null
-          templates_links?: Json | null
-          templates_names?: Json | null
           title?: string | null
           total_funding_amount?: number | null
           updated_at?: string | null
@@ -282,6 +286,8 @@ export type Database = {
           application_closing_date?: string | null
           application_opening_date?: string | null
           application_process?: string | null
+          application_templates_links?: Json | null
+          application_templates_names?: Json | null
           consortium_requirement?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -295,8 +301,6 @@ export type Database = {
           eligible_organisations?: Json | null
           error_message?: string | null
           evaluation_criteria?: string | null
-          files_links?: Json | null
-          files_names?: Json | null
           geographic_scope?: string | null
           id?: string
           industry_sectors?: Json | null
@@ -308,6 +312,10 @@ export type Database = {
           min_grant_per_project?: number | null
           organisation?: string | null
           original_url?: string
+          other_sources_links?: Json | null
+          other_sources_names?: Json | null
+          other_templates_links?: Json | null
+          other_templates_names?: Json | null
           processed_at?: string | null
           processing_status?: string | null
           project_duration_months_max?: number | null
@@ -320,8 +328,6 @@ export type Database = {
           scraped_at?: string | null
           subtitle?: string | null
           support_level?: number | null
-          templates_links?: Json | null
-          templates_names?: Json | null
           title?: string | null
           total_funding_amount?: number | null
           updated_at?: string | null
