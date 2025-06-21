@@ -25,18 +25,19 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
+      {/* Header with logo, title, and bookmark */}
+      <div className="flex items-start justify-between mb-5">
+        <div className="flex items-start gap-4 flex-1">
+          <div className="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 flex-shrink-0">
             <img 
               src={orgLogo.src}
               alt={orgLogo.alt}
-              className="w-12 h-8 object-contain"
+              className="w-10 h-7 object-contain"
             />
           </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-gray-900 mb-1 leading-tight">{grant.title}</h3>
-            <div className="text-lg font-medium text-gray-900">{grant.fundingAmount}</div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 leading-snug line-clamp-2">{grant.title}</h3>
+            <div className="text-2xl font-bold text-gray-900">{grant.fundingAmount}</div>
           </div>
         </div>
         <Button
@@ -46,7 +47,7 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
             e.stopPropagation();
             onToggleBookmark();
           }}
-          className="p-2 hover:bg-gray-50 rounded-lg flex-shrink-0"
+          className="p-2 hover:bg-gray-50 rounded-lg flex-shrink-0 ml-2"
         >
           <Bookmark
             className={`w-5 h-5 ${
@@ -56,24 +57,26 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
         </Button>
       </div>
       
-      <div className="flex flex-wrap gap-2 mb-4">
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-5">
         {grant.tags.slice(0, 3).map((tag) => (
-          <Badge key={tag} variant="secondary" className="text-sm bg-gray-100 text-gray-700 border-0 font-medium px-3 py-1 rounded-full">
+          <Badge key={tag} variant="secondary" className="text-xs bg-gray-100 text-gray-700 border-0 font-medium px-2.5 py-1 rounded-full">
             {tag}
           </Badge>
         ))}
         {grant.tags.length > 3 && (
-          <Badge variant="secondary" className="text-sm bg-gray-100 text-gray-600 border-0 font-medium px-3 py-1 rounded-full">
+          <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 border-0 font-medium px-2.5 py-1 rounded-full">
             +{grant.tags.length - 3}
           </Badge>
         )}
       </div>
       
-      <div className="flex items-center justify-between text-sm">
+      {/* Status and deadline info */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div>
-            <span className="text-green-600 font-medium">Open:</span>
-            <span className="text-gray-900 font-medium ml-1">
+          <div className="flex items-center gap-1">
+            <span className="text-green-600 font-semibold text-sm">Open:</span>
+            <span className="text-gray-900 font-semibold text-sm">
               {(() => {
                 const deadlineDate = new Date(grant.deadline);
                 const today = new Date();
@@ -83,12 +86,12 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
               })()}
             </span>
           </div>
-          <div>
-            <span className="text-gray-900 font-medium">Deadline:</span>
-            <span className="text-gray-900 font-medium ml-1">{grant.deadline}</span>
+          <div className="flex items-center gap-1">
+            <span className="text-gray-600 font-medium text-sm">Deadline:</span>
+            <span className="text-gray-900 font-semibold text-sm">{grant.deadline}</span>
           </div>
         </div>
-        <div className="text-gray-400 font-medium">Seen</div>
+        <div className="text-gray-400 font-medium text-sm">Seen</div>
       </div>
     </div>
   );
