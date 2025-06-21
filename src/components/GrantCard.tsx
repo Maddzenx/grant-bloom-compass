@@ -71,7 +71,7 @@ const GrantCard = ({
             <span className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base lg:text-lg">{grant.deadline}</span>
           </div>
         </div>
-        <div className="text-gray-400 font-medium text-sm">Seen</div>
+        <div className="text-gray-400 font-medium text-xs sm:text-sm md:text-base lg:text-lg\n">Seen</div>
       </div>
     </div>;
 };
