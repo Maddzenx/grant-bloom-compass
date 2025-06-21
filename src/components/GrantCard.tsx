@@ -56,7 +56,7 @@ const GrantCard = ({
         <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-1">
             <span className="text-green-600 font-semibold text-sm">Open:</span>
-            <span className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base lg:text-lg mx-[3px]">
+            <span className="text-gray-900 font-semibold text-sm sm:text-sm md:text-base lg:text-lg mx-[3px]">
               {(() => {
               const deadlineDate = new Date(grant.deadline);
               const today = new Date();
@@ -71,7 +71,7 @@ const GrantCard = ({
             <span className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base lg:text-lg mx-[3px]">{grant.deadline}</span>
           </div>
         </div>
-        <div className="text-gray-400 font-medium text-xs sm:text-sm md:text-base lg:text-lg\\n px-0 mx-[3px]">Seen</div>
+        <div className="text-gray-400 font-medium text-xs sm:text-sm md:text-sm lg:text-lg\\\\n px-0 mx-[3px]">Seen</div>
       </div>
     </div>;
 };
