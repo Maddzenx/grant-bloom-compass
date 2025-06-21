@@ -25,7 +25,7 @@ const GrantList = ({
 }: GrantListProps) => {
   const containerClass = isMobile 
     ? "w-full bg-[#f8f4ec] overflow-hidden flex flex-col" 
-    : "w-2/5 border-r border-gray-200 bg-[#f8f4ec] overflow-hidden flex flex-col";
+    : "w-[45%] border-r border-gray-200 bg-[#f8f4ec] overflow-hidden flex flex-col";
 
   return (
     <div className={containerClass}>
