@@ -20,22 +20,24 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
 
   return (
     <div
-      className={`bg-white rounded-lg border p-3 md:p-4 cursor-pointer transition-all hover:shadow-md ${
-        isSelected ? "ring-2 ring-blue-500 border-blue-200 shadow-md" : "border-gray-200 shadow-sm"
+      className={`bg-white rounded-xl border p-6 cursor-pointer transition-all hover:shadow-lg ${
+        isSelected ? "ring-2 ring-blue-500 border-blue-200 shadow-lg" : "border-gray-100 shadow-sm"
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-start justify-between mb-2 md:mb-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
             <img 
               src={orgLogo.src}
               alt={orgLogo.alt}
-              className={`${orgLogo.className} ${isMobile ? 'w-4 h-4' : ''}`}
+              className="w-12 h-8 object-contain"
             />
           </div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-tight line-clamp-2">{grant.title}</h3>
-          <p className="text-gray-600 text-xs mb-2 md:mb-3 line-clamp-2 leading-relaxed">{grant.description}</p>
+          <div className="flex-1">
+            <h3 className="text-xl font-semibold text-gray-900 mb-1 leading-tight">{grant.title}</h3>
+            <div className="text-lg font-medium text-gray-900">{grant.fundingAmount}</div>
+          </div>
         </div>
         <Button
           variant="ghost"
@@ -44,46 +46,50 @@ const GrantCard = ({ grant, isSelected, isBookmarked, onSelect, onToggleBookmark
             e.stopPropagation();
             onToggleBookmark();
           }}
-          className="ml-2 p-1 hover:bg-gray-100 rounded-lg flex-shrink-0"
+          className="p-2 hover:bg-gray-50 rounded-lg flex-shrink-0"
         >
           <Bookmark
-            className={`w-4 h-4 ${
-              isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
+            className={`w-5 h-5 ${
+              isBookmarked ? "fill-gray-600 text-gray-600" : "text-gray-400"
             }`}
           />
         </Button>
       </div>
       
-      <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
-        {grant.tags.slice(0, isMobile ? 2 : 3).map((tag) => (
-          <Badge key={tag} variant="secondary" className="text-xs bg-teal-50 text-teal-700 border-0 font-medium px-2 py-0.5 rounded-full">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {grant.tags.slice(0, 3).map((tag) => (
+          <Badge key={tag} variant="secondary" className="text-sm bg-gray-100 text-gray-700 border-0 font-medium px-3 py-1 rounded-full">
             {tag}
           </Badge>
         ))}
-        {grant.tags.length > (isMobile ? 2 : 3) && (
-          <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-600 border-0 font-medium px-2 py-0.5 rounded-full">
-            +{grant.tags.length - (isMobile ? 2 : 3)}
+        {grant.tags.length > 3 && (
+          <Badge variant="secondary" className="text-sm bg-gray-100 text-gray-600 border-0 font-medium px-3 py-1 rounded-full">
+            +{grant.tags.length - 3}
           </Badge>
         )}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-xs mb-2 md:mb-0">
-        <div>
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Bidragsbelopp</span>
-          <div className="text-gray-900 font-semibold truncate">{grant.fundingAmount}</div>
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center gap-6">
+          <div>
+            <span className="text-green-600 font-medium">Open:</span>
+            <span className="text-gray-900 font-medium ml-1">
+              {(() => {
+                const deadlineDate = new Date(grant.deadline);
+                const today = new Date();
+                const diffTime = deadlineDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return `${diffDays} days left`;
+              })()}
+            </span>
+          </div>
+          <div>
+            <span className="text-gray-900 font-medium">Deadline:</span>
+            <span className="text-gray-900 font-medium ml-1">{grant.deadline}</span>
+          </div>
         </div>
-        <div>
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Deadline</span>
-          <div className="text-gray-900 font-semibold truncate">{grant.deadline}</div>
-        </div>
+        <div className="text-gray-400 font-medium">Seen</div>
       </div>
-      
-      {!isMobile && (
-        <div className="mt-3 text-xs">
-          <span className="text-gray-500 text-xs block mb-1 font-medium">Kvalifikationer</span>
-          <div className="text-gray-700 leading-relaxed line-clamp-2">{grant.qualifications}</div>
-        </div>
-      )}
     </div>
   );
 };
