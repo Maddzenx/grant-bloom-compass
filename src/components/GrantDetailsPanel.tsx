@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -65,7 +64,7 @@ const GrantDetailsPanel = ({
 
   const containerClass = isMobile 
     ? "w-full bg-[#f8f4ec] overflow-hidden relative" 
-    : "w-[55%] bg-[#f8f4ec] overflow-hidden relative";
+    : "w-[65%] bg-[#f8f4ec] overflow-hidden relative";
 
   return (
     <div className={containerClass}>
