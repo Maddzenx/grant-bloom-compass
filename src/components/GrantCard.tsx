@@ -53,7 +53,7 @@ const GrantCard = ({
       
       {/* Status and deadline info */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-1">
             <span className="text-green-600 font-semibold text-sm">Open:</span>
             <span className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base lg:text-lg mx-[3px]">
