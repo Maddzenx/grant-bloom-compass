@@ -83,14 +83,14 @@ const GrantDetailsPanel = ({
         </div>
       )}
 
-      {/* Enhanced Sticky Header with overlay positioning */}
+      {/* Enhanced Sticky Header positioned within the content area */}
       {selectedGrant && (
         <div 
-          className={`fixed top-0 left-0 right-0 z-30 transition-all duration-500 ease-out ${
+          className={`absolute top-0 left-0 right-0 z-30 transition-all duration-500 ease-out ${
             showStickyHeader 
               ? 'opacity-100 transform translate-y-0 shadow-lg' 
               : 'opacity-0 transform -translate-y-full pointer-events-none'
-          } ${isMobile ? 'w-full' : 'w-[65%] ml-[35%]'}`}
+          }`}
         >
           <GrantStickyHeader
             grant={selectedGrant}
