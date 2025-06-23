@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 export const useSeenGrants = () => {
   const [seenGrants, setSeenGrants] = useState<Set<string>>(new Set());
 
-  const markGrantAsSeen = useCallback((grantId: string) => {
+  const markAsSeen = useCallback((grantId: string) => {
     setSeenGrants(prev => {
       const newSet = new Set(prev);
       newSet.add(grantId);
@@ -17,7 +17,7 @@ export const useSeenGrants = () => {
   }, [seenGrants]);
 
   return {
-    markGrantAsSeen,
+    markAsSeen,
     isGrantSeen,
   };
 };

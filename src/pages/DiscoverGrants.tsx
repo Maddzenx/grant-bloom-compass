@@ -5,7 +5,6 @@ import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useGrantSelection } from "@/hooks/useGrantSelection";
-import { useSeenGrants } from "@/hooks/useSeenGrants";
 import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
@@ -27,18 +26,6 @@ const DiscoverGrants = () => {
     isLoading, 
     isError 
   });
-
-  // Seen grants tracking
-  const { markGrantAsSeen, isGrantSeen } = useSeenGrants();
-  const seenGrants = useMemo(() => {
-    const seenSet = new Set<string>();
-    grants.forEach(grant => {
-      if (isGrantSeen(grant.id)) {
-        seenSet.add(grant.id);
-      }
-    });
-    return seenSet;
-  }, [grants, isGrantSeen]);
 
   // Enhanced filter state
   const {
@@ -124,10 +111,11 @@ const DiscoverGrants = () => {
     selectedGrant,
     showDetails,
     bookmarkedGrants,
+    seenGrants,
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
-  } = useGrantSelection({ searchResults, markGrantAsSeen });
+  } = useGrantSelection({ searchResults });
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
