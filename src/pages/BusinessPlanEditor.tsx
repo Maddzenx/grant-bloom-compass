@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -9,7 +8,6 @@ import { useBusinessPlanEditor } from '@/hooks/useBusinessPlanEditor';
 import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeader';
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
 import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
-
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,12 +36,10 @@ const BusinessPlanEditor = () => {
     // Apply the suggestion to the corresponding field
     updateFieldValue(suggestion.sectionKey, suggestion.fieldId, suggestion.suggestedText);
   };
-
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
-
   return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec] sticky top-0 z-50">
@@ -55,9 +51,7 @@ const BusinessPlanEditor = () => {
             <h1 className="text-xl font-semibold text-gray-900">Förhandsgranska</h1>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
-              Review
-            </Button>
+            <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">Download Application</Button>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               Auto-saved
@@ -70,11 +64,7 @@ const BusinessPlanEditor = () => {
         {/* Main Content */}
         <div className="flex-1 p-6 bg-[#f8f4ec]">
           <div className="max-w-4xl">
-            <EditableBusinessPlanContent 
-              draft={draft} 
-              sections={sections} 
-              onUpdateField={updateFieldValue} 
-            />
+            <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} />
           </div>
         </div>
 
@@ -82,16 +72,11 @@ const BusinessPlanEditor = () => {
         <div className="w-80 bg-[#f8f4ec]">
           <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
             <div className="border-l border-gray-200 p-6 h-full">
-              <ReviewSuggestions 
-                draft={draft}
-                grant={grant}
-                onApplySuggestion={handleApplySuggestion}
-              />
+              <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} />
             </div>
           </div>
         </div>
       </div>
     </div>;
 };
-
 export default BusinessPlanEditor;
