@@ -1,9 +1,7 @@
-
 import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-
 const menuItems = [{
   title: "Hem",
   url: "/",
@@ -13,7 +11,6 @@ const menuItems = [{
   url: "/discover",
   icon: Search
 }];
-
 const applicationItems = [{
   title: "Avslutade / Pågående bidrag",
   url: "/ongoing",
@@ -23,20 +20,17 @@ const applicationItems = [{
   url: "/saved",
   icon: Bookmark
 }];
-
 const accountItems = [{
   title: "Profilinformation",
   url: "/profile",
   icon: User
 }];
-
 export function AppSidebar() {
   const location = useLocation();
   const {
     toggleSidebar,
     state
   } = useSidebar();
-  
   return <>
       {/* Toggle button for collapsed state - positioned better */}
       {state === "collapsed"}
