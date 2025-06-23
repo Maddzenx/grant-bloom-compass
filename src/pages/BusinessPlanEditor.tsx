@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
@@ -6,34 +5,30 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ApplicationDraft } from '@/hooks/useChatAgent';
 import { Grant } from '@/types/grant';
-
 interface BusinessPlanEditorProps {}
-
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { draft, grant } = location.state as { draft: ApplicationDraft; grant: Grant } || {};
-
+  const {
+    draft,
+    grant
+  } = location.state as {
+    draft: ApplicationDraft;
+    grant: Grant;
+  } || {};
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/chat')}
-              className="p-2"
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate('/chat')} className="p-2">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl font-semibold text-gray-900">Business plan editor</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Förhandsgranska</h1>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
@@ -53,64 +48,11 @@ const BusinessPlanEditor = () => {
           <div className="max-w-4xl">
             {/* Företaget Section */}
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Företaget</h2>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Organisationsnummer
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    556773292
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Registrerings-<br />datum
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    Value
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Antal anställda
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    Value
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Omsättning
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    Value
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Omsättning (2022, 2023)
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    Value
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Resultat (2022, 2023)
-                  </label>
-                  <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600">
-                    Value
-                  </div>
-                </div>
-              </div>
+              
+              
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Beskriv i vilken utvecklingsfas ert företag befinner sig
-                </label>
-                <div className="bg-gray-100 rounded px-3 py-2 text-sm text-gray-600 min-h-[100px]">
-                  {draft.sections.projektbeskrivning || 'Value'}
-                </div>
+                
+                
               </div>
             </div>
 
@@ -189,8 +131,9 @@ const BusinessPlanEditor = () => {
           </div>
           
           <div className="space-y-3">
-            {Array.from({ length: 10 }).map((_, index) => (
-              <Card key={index} className="border border-gray-200">
+            {Array.from({
+            length: 10
+          }).map((_, index) => <Card key={index} className="border border-gray-200">
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-medium text-gray-500">Correctness</span>
@@ -209,13 +152,10 @@ const BusinessPlanEditor = () => {
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default BusinessPlanEditor;
