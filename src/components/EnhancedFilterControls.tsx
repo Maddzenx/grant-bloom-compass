@@ -29,7 +29,7 @@ export const EnhancedFilterControls = ({
   filteredGrants,
   hasActiveFilters,
 }: EnhancedFilterControlsProps) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false); // Changed from true to false
   const [pendingFilters, setPendingFilters] = useState<EnhancedFilterOptions>(filters);
 
   // Process organizations with grant counts
