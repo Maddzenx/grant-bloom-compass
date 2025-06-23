@@ -57,7 +57,10 @@ const DiscoverHeader = ({
           
           {/* Results count and sorting */}
           <div className={`flex items-center ${isMobile ? 'flex-col gap-2' : 'justify-between'} my-0`}>
-            
+            <div className={`text-black text-xs rounded-none ${isMobile ? 'order-2' : ''}`}>
+              {totalGrants} bidrag hittade
+              {isSearching && <span className="ml-1 text-blue-600">• Söker...</span>}
+            </div>
             <div className={isMobile ? 'order-1 w-full flex justify-center' : ''}>
               <SortingControls sortBy={sortBy} onSortChange={onSortChange} hasSearchTerm={!!searchTerm.trim()} />
             </div>
