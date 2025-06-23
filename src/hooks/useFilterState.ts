@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -55,7 +56,7 @@ export const useFilterState = () => {
     localStorage.removeItem('grantFilters');
   }, [setSearchParams]);
 
-  // Check if any filters are active
+  // Check if any filters are active - simplified and more reliable
   const hasActiveFilters = useMemo(() => {
     const isActive = (
       filters.organizations.length > 0 ||
@@ -63,6 +64,7 @@ export const useFilterState = () => {
       filters.fundingRange.max !== null ||
       (filters.deadline.preset && filters.deadline.preset !== '') ||
       (filters.deadline.customRange?.start !== null) ||
+      (filters.deadline.customRange?.end !== null) ||
       filters.tags.length > 0
     );
     
@@ -72,6 +74,7 @@ export const useFilterState = () => {
       fundingMax: filters.fundingRange.max,
       deadlinePreset: filters.deadline.preset,
       customStart: filters.deadline.customRange?.start,
+      customEnd: filters.deadline.customRange?.end,
       tags: filters.tags.length,
       result: isActive
     });
@@ -89,7 +92,7 @@ export const useFilterState = () => {
 
 // Helper functions
 const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptions => {
-  // Don't load from localStorage on initial load - start with clean state
+  // Always start with default clean state - don't load from localStorage initially
   return {
     organizations: searchParams.get('orgs')?.split(',').filter(Boolean) || [],
     fundingRange: {

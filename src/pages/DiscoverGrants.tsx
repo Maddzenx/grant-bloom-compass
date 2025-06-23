@@ -38,7 +38,7 @@ const DiscoverGrants = () => {
 
   console.log('Filter state:', { filters, hasActiveFilters });
 
-  // Apply filters to grants - show all grants when no filters are active
+  // Apply filters to grants - ALWAYS return all grants when no filters are active
   const filteredGrants = useMemo(() => {
     console.log('Filtering grants:', { 
       totalGrants: grants.length, 
@@ -46,12 +46,13 @@ const DiscoverGrants = () => {
       filters 
     });
 
-    // If no active filters, return all grants
+    // If no active filters, return all grants immediately
     if (!hasActiveFilters) {
       console.log('No active filters, returning all grants:', grants.length);
       return grants;
     }
 
+    // Only apply filtering logic when filters are actually active
     const filtered = grants.filter(grant => {
       // Organization filter
       if (filters.organizations.length > 0) {
@@ -68,7 +69,7 @@ const DiscoverGrants = () => {
       }
 
       // Deadline filter
-      if (filters.deadline.preset || filters.deadline.customRange?.start) {
+      if (filters.deadline.preset || filters.deadline.customRange?.start || filters.deadline.customRange?.end) {
         if (!isGrantWithinDeadline(grant, filters.deadline)) {
           return false;
         }
