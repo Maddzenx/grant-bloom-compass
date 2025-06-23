@@ -2,85 +2,118 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-interface ReviewSuggestion {
-  id: string;
-  type: 'Relevans' | 'Originalitet' | 'Struktur' | 'Övertygelse';
-  suggestion: string;
-  word: string;
-}
+import { useDraftEvaluation, EvaluationSuggestion } from '@/hooks/useDraftEvaluation';
+import { ApplicationDraft } from '@/hooks/useChatAgent';
+import { Grant } from '@/types/grant';
 
 interface ReviewSuggestionsProps {
-  suggestions?: ReviewSuggestion[];
+  draft?: ApplicationDraft;
+  grant?: Grant;
+  onApplySuggestion?: (suggestion: EvaluationSuggestion) => void;
 }
 
 export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({ 
-  suggestions = [] 
+  draft,
+  grant,
+  onApplySuggestion
 }) => {
-  // Mock data with the new categories
-  const mockSuggestions: ReviewSuggestion[] = [
-    { id: '1', type: 'Relevans', suggestion: 'Change the word', word: 'deeply' },
-    { id: '2', type: 'Relevans', suggestion: 'Change the word', word: 'significantly' },
-    { id: '3', type: 'Originalitet', suggestion: 'Change the word', word: 'innovative' },
-    { id: '4', type: 'Originalitet', suggestion: 'Change the word', word: 'unique' },
-    { id: '5', type: 'Struktur', suggestion: 'Change the word', word: 'organize' },
-    { id: '6', type: 'Struktur', suggestion: 'Change the word', word: 'structure' },
-    { id: '7', type: 'Övertygelse', suggestion: 'Change the word', word: 'compelling' },
-    { id: '8', type: 'Övertygelse', suggestion: 'Change the word', word: 'persuasive' },
-    { id: '9', type: 'Relevans', suggestion: 'Change the word', word: 'relevant' }
-  ];
-
-  const displaySuggestions = suggestions.length > 0 ? suggestions : mockSuggestions;
+  const { suggestions } = useDraftEvaluation(draft || null, grant || null);
+  const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
 
   // Group suggestions by type
-  const groupedSuggestions = displaySuggestions.reduce((acc, suggestion) => {
+  const groupedSuggestions = suggestions.reduce((acc, suggestion) => {
     if (!acc[suggestion.type]) {
       acc[suggestion.type] = [];
     }
     acc[suggestion.type].push(suggestion);
     return acc;
-  }, {} as Record<string, ReviewSuggestion[]>);
+  }, {} as Record<string, EvaluationSuggestion[]>);
 
-  const handleAccept = (suggestionId: string) => {
-    console.log('Accepted suggestion:', suggestionId);
+  const handleAccept = (suggestion: EvaluationSuggestion) => {
+    console.log('Accepting suggestion:', suggestion);
+    onApplySuggestion?.(suggestion);
+    setAppliedSuggestions(prev => new Set([...prev, suggestion.id]));
   };
 
   const handleDismiss = (suggestionId: string) => {
     console.log('Dismissed suggestion:', suggestionId);
+    setAppliedSuggestions(prev => new Set([...prev, suggestionId]));
   };
 
-  const renderSuggestionsList = (suggestions: ReviewSuggestion[]) => (
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'border-red-200 bg-red-50';
+      case 'medium': return 'border-yellow-200 bg-yellow-50';
+      case 'low': return 'border-blue-200 bg-blue-50';
+      default: return 'border-gray-200 bg-gray-50';
+    }
+  };
+
+  const renderSuggestionsList = (suggestions: EvaluationSuggestion[]) => (
     <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-300px)]">
-      {suggestions.map((suggestion) => (
-        <div 
-          key={suggestion.id}
-          className="bg-gray-50 rounded-lg p-3 border border-gray-200"
-        >
-          <div className="text-sm text-gray-600 mb-1">
-            {suggestion.suggestion}
-          </div>
-          <div className="font-medium text-gray-900 mb-3">
-            {suggestion.word}
-          </div>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              onClick={() => handleAccept(suggestion.id)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 h-8 text-sm rounded-md"
-            >
-              Accept
-            </Button>
-            <button
-              onClick={() => handleDismiss(suggestion.id)}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium px-2 py-1.5"
-            >
-              Dismiss
-            </button>
-          </div>
+      {suggestions.length === 0 ? (
+        <div className="text-sm text-gray-500 text-center py-4">
+          {draft ? 'No suggestions for this category' : 'Generate a draft to see suggestions'}
         </div>
-      ))}
+      ) : (
+        suggestions
+          .filter(s => !appliedSuggestions.has(s.id))
+          .map((suggestion) => (
+            <div 
+              key={suggestion.id}
+              className={`rounded-lg p-3 border ${getPriorityColor(suggestion.priority)}`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="text-xs font-medium text-gray-600 uppercase">
+                  {suggestion.priority} priority
+                </div>
+                <div className="text-xs text-gray-500">
+                  {suggestion.sectionKey}
+                </div>
+              </div>
+              
+              <div className="text-sm text-gray-800 mb-2 font-medium">
+                {suggestion.suggestion}
+              </div>
+              
+              <div className="text-xs text-gray-600 mb-3 italic">
+                {suggestion.reason}
+              </div>
+
+              {suggestion.suggestedText !== suggestion.originalText && (
+                <div className="text-xs mb-3">
+                  <div className="text-gray-600 mb-1">Suggested improvement:</div>
+                  <div className="bg-white p-2 rounded border text-gray-700">
+                    {suggestion.suggestedText.length > 100 
+                      ? `${suggestion.suggestedText.substring(0, 100)}...` 
+                      : suggestion.suggestedText
+                    }
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleAccept(suggestion)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 h-8 text-sm rounded-md"
+                >
+                  Apply
+                </Button>
+                <button
+                  onClick={() => handleDismiss(suggestion.id)}
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium px-2 py-1.5"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          ))
+      )}
     </div>
   );
+
+  const totalSuggestions = suggestions.filter(s => !appliedSuggestions.has(s.id)).length;
 
   return (
     <div className="h-full">
@@ -88,17 +121,57 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-gray-900 text-base">Review suggestions</h3>
         <div className="bg-yellow-400 text-black text-xs font-medium px-2 py-0.5 rounded-full min-w-[24px] h-5 flex items-center justify-center">
-          {displaySuggestions.length}
+          {totalSuggestions}
         </div>
       </div>
+
+      {/* Evaluation Status */}
+      {draft && (
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="text-sm font-medium text-blue-900 mb-1">
+            Evaluation Complete
+          </div>
+          <div className="text-xs text-blue-700">
+            Analyzed against grant criteria and best practices
+          </div>
+        </div>
+      )}
 
       {/* Tabbed Interface */}
       <Tabs defaultValue="Relevans" className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-4">
-          <TabsTrigger value="Relevans" className="text-xs">Relevans</TabsTrigger>
-          <TabsTrigger value="Originalitet" className="text-xs">Originalitet</TabsTrigger>
-          <TabsTrigger value="Struktur" className="text-xs">Struktur</TabsTrigger>
-          <TabsTrigger value="Övertygelse" className="text-xs">Övertygelse</TabsTrigger>
+          <TabsTrigger value="Relevans" className="text-xs">
+            Relevans
+            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {groupedSuggestions['Relevans'].filter(s => !appliedSuggestions.has(s.id)).length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="Originalitet" className="text-xs">
+            Originalitet
+            {groupedSuggestions['Originalitet']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {groupedSuggestions['Originalitet'].filter(s => !appliedSuggestions.has(s.id)).length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="Struktur" className="text-xs">
+            Struktur
+            {groupedSuggestions['Struktur']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {groupedSuggestions['Struktur'].filter(s => !appliedSuggestions.has(s.id)).length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="Övertygelse" className="text-xs">
+            Övertygelse
+            {groupedSuggestions['Övertygelse']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {groupedSuggestions['Övertygelse'].filter(s => !appliedSuggestions.has(s.id)).length}
+              </span>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="Relevans">

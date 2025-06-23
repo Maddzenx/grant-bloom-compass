@@ -8,6 +8,7 @@ import { useBusinessPlanEditor } from '@/hooks/useBusinessPlanEditor';
 import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeader';
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
 import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
+
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,10 +31,18 @@ const BusinessPlanEditor = () => {
     addFiles,
     exportBusinessPlan
   } = useBusinessPlanEditor(grant);
+
+  // Handle applying suggestions from the review section
+  const handleApplySuggestion = (suggestion: any) => {
+    // Apply the suggestion to the corresponding field
+    updateFieldValue(suggestion.sectionKey, suggestion.fieldId, suggestion.suggestedText);
+  };
+
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
+
   return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec]">
@@ -60,15 +69,24 @@ const BusinessPlanEditor = () => {
         {/* Main Content */}
         <div className="flex-1 p-6 bg-[#f8f4ec]">
           <div className="max-w-4xl">
-            <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} />
+            <EditableBusinessPlanContent 
+              draft={draft} 
+              sections={sections} 
+              onUpdateField={updateFieldValue} 
+            />
           </div>
         </div>
 
         {/* Right Sidebar - Review suggestions */}
         <div className="w-80 border-l border-gray-200 p-6 bg-[#f8f4ec]">
-          <ReviewSuggestions />
+          <ReviewSuggestions 
+            draft={draft}
+            grant={grant}
+            onApplySuggestion={handleApplySuggestion}
+          />
         </div>
       </div>
     </div>;
 };
+
 export default BusinessPlanEditor;
