@@ -1,21 +1,18 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
-
 interface GrantNotionKeyInfoProps {
   grant: Grant;
   isMobile?: boolean;
 }
-
-const GrantNotionKeyInfo = ({ grant, isMobile = false }: GrantNotionKeyInfoProps) => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+const GrantNotionKeyInfo = ({
+  grant,
+  isMobile = false
+}: GrantNotionKeyInfoProps) => {
+  return <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
       {/* Bidragsbelopp */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center">
-            <span className="text-blue-600 text-xs">💰</span>
-          </div>
+          
           <span className="text-xs text-gray-600">Bidragsbelopp</span>
         </div>
         <div className="text-lg font-bold text-gray-900">
@@ -26,9 +23,7 @@ const GrantNotionKeyInfo = ({ grant, isMobile = false }: GrantNotionKeyInfoProps
       {/* Ansökningsdeadline */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-orange-100 rounded flex items-center justify-center">
-            <span className="text-orange-600 text-xs">📅</span>
-          </div>
+          
           <span className="text-xs text-gray-600">Ansökningsdeadline</span>
         </div>
         <div className="text-lg font-bold text-gray-900">
@@ -39,17 +34,13 @@ const GrantNotionKeyInfo = ({ grant, isMobile = false }: GrantNotionKeyInfoProps
       {/* Organisation */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center">
-            <span className="text-green-600 text-xs">🏢</span>
-          </div>
+          
           <span className="text-xs text-gray-600">Organisation</span>
         </div>
         <div className="text-lg font-bold text-gray-900">
           {grant.organization}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default GrantNotionKeyInfo;
