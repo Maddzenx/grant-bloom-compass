@@ -35,6 +35,27 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
   // Enhanced search with caching and metrics
   const searchResults = useMemo(() => {
     const startTime = performance.now();
+    
+    console.log('Enhanced search processing:', {
+      grantsCount: grants.length,
+      debouncedSearchTerm,
+      hasSearchTerm: !!debouncedSearchTerm.trim()
+    });
+
+    // If no search term, return all grants (already filtered) with sorting applied
+    if (!debouncedSearchTerm.trim()) {
+      const results = applySorting(grants, sortBy, '');
+      console.log('No search term - returning all grants:', results.length);
+      
+      setTimeout(() => {
+        recordSearch();
+        const endTime = performance.now();
+        updateMetrics(endTime - startTime, results.length, getCacheHitRate());
+      }, 0);
+      
+      return results;
+    }
+
     const cacheKey = generateCacheKey(debouncedSearchTerm, filters, sortBy);
     
     // Check cache first
@@ -50,26 +71,26 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
       return cached.results;
     }
 
-    // Perform search
-    let results = grants;
+    // Perform text search with relevance scoring
+    let results = grants
+      .map(grant => ({
+        grant,
+        relevanceScore: calculateRelevanceScore(grant, debouncedSearchTerm)
+      }))
+      .filter(item => item.relevanceScore > 0.1) // Minimum relevance threshold
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .map(item => item.grant);
 
-    // Apply text search if term provided
-    if (debouncedSearchTerm.trim()) {
-      results = grants
-        .map(grant => ({
-          grant,
-          relevanceScore: calculateRelevanceScore(grant, debouncedSearchTerm)
-        }))
-        .filter(item => item.relevanceScore > 0.1) // Minimum relevance threshold
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
-        .map(item => item.grant);
-    }
-
-    // Apply filters
+    // Apply filters (though grants should already be filtered)
     results = applyFilters(results, filters);
 
     // Apply sorting
     results = applySorting(results, sortBy, debouncedSearchTerm);
+
+    console.log('Search with term completed:', {
+      searchTerm: debouncedSearchTerm,
+      resultsCount: results.length
+    });
 
     // Cache results and update metrics
     setTimeout(() => {
@@ -92,6 +113,13 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
     const interval = setInterval(cleanCache, 60000); // Clean every minute
     return () => clearInterval(interval);
   }, [cleanCache]);
+
+  console.log('Enhanced search hook result:', {
+    searchTerm,
+    debouncedSearchTerm,
+    searchResultsCount: searchResults.length,
+    grantsCount: grants.length
+  });
 
   return {
     searchTerm,
