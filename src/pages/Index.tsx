@@ -23,7 +23,7 @@ const Index = () => {
           <h1 className="text-4xl font-normal text-gray-900 mb-12">What is your project about?</h1>
           
           <div className="relative max-w-3xl mx-auto">
-            <div className="flex items-center bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow px-6 py-4 gap-4">
+            <div className="flex items-center border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow px-6 py-4 gap-4 bg-[#f1ebe1]">
               {/* Audio Icon */}
               <Button variant="ghost" size="sm" className="p-2 rounded-full hover:bg-gray-100 flex-shrink-0" onClick={handleVoiceInput} title="Voice input">
                 <Mic className="w-5 h-5 text-gray-500" />
