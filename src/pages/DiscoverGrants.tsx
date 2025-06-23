@@ -3,10 +3,10 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
-import { getUniqueOrganizations } from "@/utils/grantFiltering";
+import { useFilterState } from "@/hooks/useFilterState";
 import { SortOption } from "@/components/SortingControls";
 import DiscoverHeader from "@/components/DiscoverHeader";
-import FilterControls, { FilterOptions } from "@/components/FilterControls";
+import { EnhancedFilterControls } from "@/components/EnhancedFilterControls";
 import GrantList from "@/components/GrantList";
 import GrantDetailsPanel from "@/components/GrantDetailsPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -34,13 +34,49 @@ const DiscoverGrants = () => {
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const [showDetails, setShowDetails] = useState(false);
 
-  // Filter state
-  const [filters, setFilters] = useState<FilterOptions>({
-    organization: "",
-    minFunding: "",
-    maxFunding: "",
-    deadline: ""
-  });
+  // Enhanced filter state
+  const {
+    filters,
+    updateFilters,
+    clearFilters,
+    hasActiveFilters,
+  } = useFilterState();
+
+  // Apply filters to grants
+  const filteredGrants = useMemo(() => {
+    return grants.filter(grant => {
+      // Organization filter
+      if (filters.organizations.length > 0) {
+        if (!filters.organizations.includes(grant.organization)) {
+          return false;
+        }
+      }
+
+      // Funding range filter
+      if (filters.fundingRange.min !== null || filters.fundingRange.max !== null) {
+        const amount = parseFundingAmount(grant.fundingAmount);
+        if (filters.fundingRange.min && amount < filters.fundingRange.min) return false;
+        if (filters.fundingRange.max && amount > filters.fundingRange.max) return false;
+      }
+
+      // Deadline filter
+      if (filters.deadline.preset || filters.deadline.customRange?.start) {
+        if (!isGrantWithinDeadline(grant, filters.deadline)) {
+          return false;
+        }
+      }
+
+      // Tags filter
+      if (filters.tags.length > 0) {
+        const hasMatchingTag = filters.tags.some(tag =>
+          grant.tags.some(grantTag => grantTag.toLowerCase().includes(tag.toLowerCase()))
+        );
+        if (!hasMatchingTag) return false;
+      }
+
+      return true;
+    });
+  }, [grants, filters]);
 
   // Enhanced search hook
   const {
@@ -51,8 +87,8 @@ const DiscoverGrants = () => {
     searchMetrics,
     isSearching,
   } = useEnhancedSearch({
-    grants,
-    filters,
+    grants: filteredGrants,
+    filters: { organization: '', minFunding: '', maxFunding: '', deadline: '' }, // Legacy format for compatibility
     sortBy,
   });
 
@@ -67,11 +103,6 @@ const DiscoverGrants = () => {
       return newSet;
     });
   }, []);
-
-  // Get unique organizations for filter dropdown
-  const uniqueOrganizations = useMemo(() => {
-    return getUniqueOrganizations(grants);
-  }, [grants]);
 
   // Auto-select first grant when grants are loaded or search changes
   useEffect(() => {
@@ -183,11 +214,14 @@ const DiscoverGrants = () => {
         searchMetrics={searchMetrics}
       />
 
-      {/* Filter Controls */}
-      <FilterControls
+      {/* Enhanced Filter Controls */}
+      <EnhancedFilterControls
         filters={filters}
-        onFiltersChange={setFilters}
-        organizations={uniqueOrganizations}
+        onFiltersChange={updateFilters}
+        onClearAll={clearFilters}
+        grants={grants}
+        filteredGrants={searchResults}
+        hasActiveFilters={hasActiveFilters}
       />
 
       {/* Main Content Area */}
@@ -245,6 +279,70 @@ const DiscoverGrants = () => {
       </div>
     </div>
   );
+};
+
+// Helper functions
+const parseFundingAmount = (fundingAmount: string): number => {
+  const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
+  if (match) {
+    const amount = parseFloat(match[1].replace(',', '.'));
+    return fundingAmount.includes('M') ? amount * 1000000 : amount;
+  }
+  
+  const numbers = fundingAmount.match(/\d+(?:\s*\d+)*/g);
+  if (!numbers) return 0;
+  
+  const firstNumber = numbers[0].replace(/\s/g, '');
+  return parseInt(firstNumber, 10) || 0;
+};
+
+const isGrantWithinDeadline = (grant: Grant, deadlineFilter: any): boolean => {
+  if (grant.deadline === 'Ej specificerat') return false;
+  
+  // Parse Swedish date format
+  const months: { [key: string]: number } = {
+    'januari': 0, 'februari': 1, 'mars': 2, 'april': 3, 'maj': 4, 'juni': 5,
+    'juli': 6, 'augusti': 7, 'september': 8, 'oktober': 9, 'november': 10, 'december': 11
+  };
+  
+  const parts = grant.deadline.toLowerCase().split(' ');
+  if (parts.length < 3) return false;
+  
+  const day = parseInt(parts[0], 10);
+  const month = months[parts[1]];
+  const year = parseInt(parts[2], 10);
+  
+  if (isNaN(day) || month === undefined || isNaN(year)) return false;
+  
+  const deadlineDate = new Date(year, month, day);
+  const today = new Date();
+  
+  if (deadlineFilter.type === 'preset' && deadlineFilter.preset) {
+    const presetDays: { [key: string]: number } = {
+      'urgent': 7,
+      '2weeks': 14,
+      '1month': 30,
+      '3months': 90,
+      '6months': 180,
+      '1year': 365,
+    };
+    
+    const days = presetDays[deadlineFilter.preset];
+    if (days) {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + days);
+      return deadlineDate >= today && deadlineDate <= targetDate;
+    }
+  }
+  
+  if (deadlineFilter.type === 'custom' && deadlineFilter.customRange) {
+    const { start, end } = deadlineFilter.customRange;
+    if (start && deadlineDate < start) return false;
+    if (end && deadlineDate > end) return false;
+    return true;
+  }
+  
+  return true;
 };
 
 export default DiscoverGrants;
