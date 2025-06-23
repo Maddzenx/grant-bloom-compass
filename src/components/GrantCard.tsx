@@ -54,7 +54,7 @@ const GrantCard = ({
       {/* Status and deadline info */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3.5">
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-40">
             <span className="text-green-600 font-semibold text-xs">Open:</span>
             <span className="text-gray-900 font-semibold mx-[3px] text-xs md:text-base\\n sm:text-xs">
               {(() => {
@@ -66,7 +66,7 @@ const GrantCard = ({
             })()}
             </span>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-40">
             <span className="text-gray-600 font-medium text-xs">Deadline:</span>
             <span className="text-gray-900 font-semibold text-xs sm:text-sm mx-[3px] md:text-xs lg:text-xs">{grant.deadline}</span>
           </div>
