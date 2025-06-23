@@ -58,17 +58,19 @@ export const DiscoverGrantsStates = ({
     );
   }
 
-  // Show no data state
+  // Show no data state - pixel perfect match to the image
   if (!isLoading && (!grants || grants.length === 0)) {
     console.log('No data state - grants:', grants);
     return (
-      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#f1ebe1] flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="text-lg text-gray-600 mb-2">Inga bidrag hittades</div>
-          <div className="text-sm text-gray-500 mb-4">Det finns för närvarande inga bidrag tillgängliga i databasen</div>
+          <h1 className="text-2xl font-normal text-gray-700 mb-4">Inga bidrag hittades</h1>
+          <p className="text-base text-gray-600 mb-8 max-w-md">
+            Det finns för närvarande inga bidrag tillgängliga i databasen
+          </p>
           <button 
             onClick={onRefresh}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="px-8 py-3 bg-[#4f46e5] text-white rounded-lg font-medium hover:bg-[#4338ca] transition-colors"
           >
             Uppdatera data
           </button>
