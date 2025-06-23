@@ -34,15 +34,24 @@ const GrantDetailsPanel = ({
       if (!scrollArea) return;
 
       const currentScrollY = scrollArea.scrollTop;
-      const hasScrolled = currentScrollY > 150; // Show after scrolling 150px
+      const scrollingDown = currentScrollY > lastScrollY.current;
+      const hasScrolledPastThreshold = currentScrollY > 150;
+      const isNearTop = currentScrollY < 50;
 
-      console.log('Scroll data:', { currentScrollY, hasScrolled, showStickyHeader });
+      console.log('Scroll data:', { 
+        currentScrollY, 
+        scrollingDown, 
+        hasScrolledPastThreshold, 
+        isNearTop, 
+        showStickyHeader 
+      });
 
-      // Show sticky header when scrolled enough
-      if (hasScrolled && !showStickyHeader) {
+      // Show sticky header when scrolling down and past threshold
+      if (scrollingDown && hasScrolledPastThreshold && !showStickyHeader) {
         setShowStickyHeader(true);
-      } else if (currentScrollY < 100) {
-        // Hide when scrolled back to near the top
+      }
+      // Hide sticky header when near the top
+      else if (isNearTop && showStickyHeader) {
         setShowStickyHeader(false);
       }
 
@@ -89,10 +98,10 @@ const GrantDetailsPanel = ({
             {/* Enhanced Sticky Header positioned within the white content area */}
             {selectedGrant && (
               <div 
-                className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-500 ease-out ${
+                className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${
                   showStickyHeader 
                     ? 'opacity-100 transform translate-y-0 shadow-lg' 
-                    : 'opacity-0 transform -translate-y-full pointer-events-none'
+                    : 'opacity-0 transform -translate-y-4 pointer-events-none'
                 }`}
               >
                 <GrantStickyHeader
