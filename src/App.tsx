@@ -8,7 +8,6 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import DiscoverGrants from "./pages/DiscoverGrants";
-import BusinessPlanEditor from "./pages/BusinessPlanEditor";
 import ProgressChecklist from "./pages/ProgressChecklist";
 import DraftViewer from "./pages/DraftViewer";
 
@@ -38,7 +37,6 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/discover" element={<DiscoverGrants />} />
-                <Route path="/editor" element={<BusinessPlanEditor />} />
                 <Route path="/progress" element={<ProgressChecklist />} />
                 <Route path="/draft/:draftId" element={<DraftViewer />} />
               </Routes>
