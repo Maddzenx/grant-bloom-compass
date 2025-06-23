@@ -42,7 +42,7 @@ const BusinessPlanEditor = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate('/chat')} className="p-2">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl font-semibold text-gray-900">Business plan editor</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Förhandsgranska</h1>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
