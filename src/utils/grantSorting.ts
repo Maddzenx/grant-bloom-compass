@@ -1,7 +1,7 @@
 
 import { Grant } from "@/types/grant";
 
-export type SortOption = "deadline" | "funding" | "relevance" | "none";
+export type SortOption = "default" | "deadline-asc" | "deadline-desc" | "amount-desc" | "amount-asc" | "created-desc" | "relevance";
 
 // Parse funding amount string to number for comparison
 const parseFundingAmount = (fundingAmount: string): number => {
@@ -92,21 +92,36 @@ const calculateRelevanceScore = (grant: Grant, searchTerm: string): number => {
 };
 
 export const sortGrants = (grants: Grant[], sortBy: SortOption, searchTerm: string = ""): Grant[] => {
-  if (sortBy === "none") {
+  if (sortBy === "default") {
     return grants;
   }
   
   return [...grants].sort((a, b) => {
     switch (sortBy) {
-      case "deadline":
+      case "deadline-asc":
         const dateA = parseDeadline(a.deadline);
         const dateB = parseDeadline(b.deadline);
         return dateA.getTime() - dateB.getTime(); // Earliest deadline first
       
-      case "funding":
+      case "deadline-desc":
+        const dateA2 = parseDeadline(a.deadline);
+        const dateB2 = parseDeadline(b.deadline);
+        return dateB2.getTime() - dateA2.getTime(); // Latest deadline first
+      
+      case "amount-desc":
         const amountA = parseFundingAmount(a.fundingAmount);
         const amountB = parseFundingAmount(b.fundingAmount);
         return amountB - amountA; // Highest funding first
+      
+      case "amount-asc":
+        const amountA2 = parseFundingAmount(a.fundingAmount);
+        const amountB2 = parseFundingAmount(b.fundingAmount);
+        return amountA2 - amountB2; // Lowest funding first
+      
+      case "created-desc":
+        // For now, sort by grant ID as a proxy for creation date
+        // In a real app, you'd have a proper created_at field
+        return b.id.localeCompare(a.id);
       
       case "relevance":
         const scoreA = calculateRelevanceScore(a, searchTerm);

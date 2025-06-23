@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
@@ -26,7 +25,7 @@ const DiscoverGrants = () => {
     isError 
   });
   
-  const [sortBy, setSortBy] = useState<SortOption>("none");
+  const [sortBy, setSortBy] = useState<SortOption>("default");
 
   // Enhanced filter state
   const {
