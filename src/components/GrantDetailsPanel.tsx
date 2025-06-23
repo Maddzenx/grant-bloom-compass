@@ -82,29 +82,29 @@ const GrantDetailsPanel = ({
           </Button>
         </div>
       )}
-
-      {/* Enhanced Sticky Header positioned within the content area */}
-      {selectedGrant && (
-        <div 
-          className={`absolute top-0 left-0 right-0 z-30 transition-all duration-500 ease-out ${
-            showStickyHeader 
-              ? 'opacity-100 transform translate-y-0 shadow-lg' 
-              : 'opacity-0 transform -translate-y-full pointer-events-none'
-          }`}
-        >
-          <GrantStickyHeader
-            grant={selectedGrant}
-            isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
-            onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
-            orgLogo={getOrganizationLogo(selectedGrant.organization)}
-            isMobile={isMobile}
-          />
-        </div>
-      )}
       
       {selectedGrant ? (
         <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
-          <div className="p-2 md:p-4 border-transparent px-0 py-0">
+          <div className="p-2 md:p-4 border-transparent px-0 py-0 relative">
+            {/* Enhanced Sticky Header positioned within the white content area */}
+            {selectedGrant && (
+              <div 
+                className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-500 ease-out ${
+                  showStickyHeader 
+                    ? 'opacity-100 transform translate-y-0 shadow-lg' 
+                    : 'opacity-0 transform -translate-y-full pointer-events-none'
+                }`}
+              >
+                <GrantStickyHeader
+                  grant={selectedGrant}
+                  isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
+                  onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
+                  orgLogo={getOrganizationLogo(selectedGrant.organization)}
+                  isMobile={isMobile}
+                />
+              </div>
+            )}
+            
             <div className="bg-white rounded-lg">
               <GrantDetails
                 grant={selectedGrant}
