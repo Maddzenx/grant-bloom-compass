@@ -57,9 +57,13 @@ export const useGrants = () => {
       const transformedGrants = data
         .map((item, index) => {
           try {
-            console.log(`Transforming grant ${index + 1}:`, item);
+            console.log(`Transforming grant ${index + 1}:`, item.title || 'No title');
             const transformed = transformSupabaseGrant(item);
-            console.log(`Transformed grant ${index + 1}:`, transformed);
+            console.log(`Transformed grant ${index + 1}:`, { 
+              id: transformed.id, 
+              title: transformed.title,
+              organization: transformed.organization 
+            });
             return transformed;
           } catch (transformError) {
             console.error(`Error transforming grant ${index + 1}:`, transformError, item);
@@ -68,8 +72,12 @@ export const useGrants = () => {
         })
         .filter((grant): grant is Grant => grant !== null);
       
-      console.log('Final transformed grants:', transformedGrants);
-      console.log('Number of successfully transformed grants:', transformedGrants.length);
+      console.log('Final transformed grants:', transformedGrants.length);
+      console.log('First few grants:', transformedGrants.slice(0, 3).map(g => ({ 
+        id: g.id, 
+        title: g.title, 
+        organization: g.organization 
+      })));
       
       return transformedGrants;
     },

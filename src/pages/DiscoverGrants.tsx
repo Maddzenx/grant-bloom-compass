@@ -38,7 +38,7 @@ const DiscoverGrants = () => {
 
   console.log('Filter state:', { filters, hasActiveFilters });
 
-  // Apply filters to grants - ALWAYS return all grants when no filters are active
+  // Apply filters to grants - Fix the filtering logic
   const filteredGrants = useMemo(() => {
     console.log('Filtering grants:', { 
       totalGrants: grants.length, 
@@ -46,8 +46,31 @@ const DiscoverGrants = () => {
       filters 
     });
 
+    // If no grants available, return empty array
+    if (!grants || grants.length === 0) {
+      console.log('No grants available');
+      return [];
+    }
+
+    // Check if any filters are actually active by examining their values
+    const hasOrganizationFilter = filters.organizations && filters.organizations.length > 0;
+    const hasFundingFilter = filters.fundingRange && (filters.fundingRange.min !== null || filters.fundingRange.max !== null);
+    const hasDeadlineFilter = filters.deadline && (filters.deadline.preset || filters.deadline.customRange?.start || filters.deadline.customRange?.end);
+    const hasTagsFilter = filters.tags && filters.tags.length > 0;
+    
+    const actuallyHasActiveFilters = hasOrganizationFilter || hasFundingFilter || hasDeadlineFilter || hasTagsFilter;
+    
+    console.log('Actual filter analysis:', {
+      hasOrganizationFilter,
+      hasFundingFilter,
+      hasDeadlineFilter,
+      hasTagsFilter,
+      actuallyHasActiveFilters,
+      hasActiveFiltersFromHook: hasActiveFilters
+    });
+
     // If no active filters, return all grants immediately
-    if (!hasActiveFilters) {
+    if (!actuallyHasActiveFilters) {
       console.log('No active filters, returning all grants:', grants.length);
       return grants;
     }
@@ -55,28 +78,28 @@ const DiscoverGrants = () => {
     // Only apply filtering logic when filters are actually active
     const filtered = grants.filter(grant => {
       // Organization filter
-      if (filters.organizations.length > 0) {
+      if (hasOrganizationFilter) {
         if (!filters.organizations.includes(grant.organization)) {
           return false;
         }
       }
 
       // Funding range filter
-      if (filters.fundingRange.min !== null || filters.fundingRange.max !== null) {
+      if (hasFundingFilter) {
         const amount = parseFundingAmount(grant.fundingAmount);
         if (filters.fundingRange.min && amount < filters.fundingRange.min) return false;
         if (filters.fundingRange.max && amount > filters.fundingRange.max) return false;
       }
 
       // Deadline filter
-      if (filters.deadline.preset || filters.deadline.customRange?.start || filters.deadline.customRange?.end) {
+      if (hasDeadlineFilter) {
         if (!isGrantWithinDeadline(grant, filters.deadline)) {
           return false;
         }
       }
 
       // Tags filter
-      if (filters.tags.length > 0) {
+      if (hasTagsFilter) {
         const hasMatchingTag = filters.tags.some(tag =>
           grant.tags.some(grantTag => grantTag.toLowerCase().includes(tag.toLowerCase()))
         );
