@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,7 @@ import DiscoverGrants from "./pages/DiscoverGrants";
 import ProgressChecklist from "./pages/ProgressChecklist";
 import DraftViewer from "./pages/DraftViewer";
 import ChatInterface from "./pages/ChatInterface";
+import BusinessPlanEditor from "./pages/BusinessPlanEditor";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -41,6 +41,7 @@ const App = () => (
                 <Route path="/progress" element={<ProgressChecklist />} />
                 <Route path="/draft/:draftId" element={<DraftViewer />} />
                 <Route path="/chat" element={<ChatInterface />} />
+                <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
               </Routes>
             </SidebarInset>
           </div>

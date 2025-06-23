@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Send, FileText, Download, ArrowLeft } from 'lucide-react';
@@ -37,6 +36,19 @@ const ChatInterface = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  const handlePreviewClick = () => {
+    if (isDraftReady && applicationDraft) {
+      navigate('/business-plan-editor', {
+        state: {
+          draft: applicationDraft,
+          grant: grant
+        }
+      });
+    } else {
+      setShowPreview(!showPreview);
+    }
+  };
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -85,7 +97,7 @@ const ChatInterface = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowPreview(!showPreview)}
+                    onClick={handlePreviewClick}
                     className="flex items-center gap-2"
                   >
                     <FileText className="w-4 h-4" />
