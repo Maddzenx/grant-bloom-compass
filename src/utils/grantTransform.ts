@@ -32,11 +32,12 @@ type PartialSupabaseGrantRow = Pick<
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
-  console.log('Transforming grant:', supabaseGrant);
+  console.log('🔄 Transforming grant:', supabaseGrant?.id);
   
   // Helper function to safely convert Json to string array
   const jsonToStringArray = (jsonValue: any): string[] => {
     try {
+      if (!jsonValue) return [];
       if (Array.isArray(jsonValue)) {
         return jsonValue.filter(item => typeof item === 'string').slice(0, 10);
       }
@@ -48,7 +49,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       }
       return [];
     } catch (error) {
-      console.warn('Error parsing JSON array:', error, jsonValue);
+      console.warn('⚠️ Error parsing JSON array:', error, jsonValue);
       return [];
     }
   };
@@ -57,9 +58,14 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
   const formatDate = (dateValue: string | null): string => {
     if (!dateValue) return 'Ej specificerat';
     try {
-      return new Date(dateValue).toLocaleDateString('sv-SE');
+      const date = new Date(dateValue);
+      return date.toLocaleDateString('sv-SE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     } catch (error) {
-      console.warn('Error formatting date:', error, dateValue);
+      console.warn('⚠️ Error formatting date:', error, dateValue);
       return 'Ej specificerat';
     }
   };
@@ -92,42 +98,47 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     return 'Ej specificerat';
   };
 
-  const transformed: Grant = {
-    id: supabaseGrant.id,
-    title: supabaseGrant.title || 'Ingen titel',
-    organization: supabaseGrant.organisation || 'Okänd organisation',
-    description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
-    fundingAmount: formatFundingAmount(supabaseGrant),
-    deadline: formatDate(supabaseGrant.application_closing_date),
-    tags: jsonToStringArray(supabaseGrant.keywords),
-    qualifications: supabaseGrant.eligibility || 'Ej specificerat',
-    aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
-    whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
-    importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
-    fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
-    generalInfo: [
-      ...jsonToStringArray(supabaseGrant.application_templates_names),
-      ...jsonToStringArray(supabaseGrant.other_templates_names)
-    ].filter(Boolean),
-    requirements: [
-      ...jsonToStringArray(supabaseGrant.eligible_cost_categories),
-      ...jsonToStringArray(supabaseGrant.eligible_organisations),
-      ...jsonToStringArray(supabaseGrant.industry_sectors)
-    ].filter(Boolean),
-    contact: {
-      name: supabaseGrant.contact_name || '',
-      organization: supabaseGrant.contact_title || '',
-      email: supabaseGrant.contact_email || '',
-      phone: supabaseGrant.contact_phone || ''
-    },
-    templates: [
-      ...jsonToStringArray(supabaseGrant.application_templates_names),
-      ...jsonToStringArray(supabaseGrant.other_templates_names)
-    ].filter(Boolean),
-    evaluationCriteria: supabaseGrant.evaluation_criteria || '',
-    applicationProcess: supabaseGrant.application_process || ''
-  };
+  try {
+    const transformed: Grant = {
+      id: supabaseGrant.id,
+      title: supabaseGrant.title || 'Ingen titel',
+      organization: supabaseGrant.organisation || 'Okänd organisation',
+      description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
+      fundingAmount: formatFundingAmount(supabaseGrant),
+      deadline: formatDate(supabaseGrant.application_closing_date),
+      tags: jsonToStringArray(supabaseGrant.keywords),
+      qualifications: supabaseGrant.eligibility || 'Ej specificerat',
+      aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
+      whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
+      importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
+      fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
+      generalInfo: [
+        ...jsonToStringArray(supabaseGrant.application_templates_names),
+        ...jsonToStringArray(supabaseGrant.other_templates_names)
+      ].filter(Boolean),
+      requirements: [
+        ...jsonToStringArray(supabaseGrant.eligible_cost_categories),
+        ...jsonToStringArray(supabaseGrant.eligible_organisations),
+        ...jsonToStringArray(supabaseGrant.industry_sectors)
+      ].filter(Boolean),
+      contact: {
+        name: supabaseGrant.contact_name || '',
+        organization: supabaseGrant.contact_title || '',
+        email: supabaseGrant.contact_email || '',
+        phone: supabaseGrant.contact_phone || ''
+      },
+      templates: [
+        ...jsonToStringArray(supabaseGrant.application_templates_names),
+        ...jsonToStringArray(supabaseGrant.other_templates_names)
+      ].filter(Boolean),
+      evaluationCriteria: supabaseGrant.evaluation_criteria || '',
+      applicationProcess: supabaseGrant.application_process || ''
+    };
 
-  console.log('Transformation result:', transformed);
-  return transformed;
+    console.log('✅ Transformation successful for:', transformed.id);
+    return transformed;
+  } catch (error) {
+    console.error('❌ Transformation failed for grant:', supabaseGrant?.id, error);
+    throw error;
+  }
 };
