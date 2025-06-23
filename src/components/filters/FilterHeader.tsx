@@ -25,9 +25,7 @@ export const FilterHeader = ({
           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </Button>
         
-        <div className="text-sm text-muted-foreground">
-          {filteredCount} of {totalCount} grants
-        </div>
+        
       </div>
 
       {!isExpanded && hasActiveFilters && <div className="mt-1 text-xs text-gray-500">
