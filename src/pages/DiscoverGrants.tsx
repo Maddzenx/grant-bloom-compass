@@ -17,6 +17,9 @@ const DiscoverGrants = () => {
     console.log('🔥 DiscoverGrants component mounted and useEffect triggered');
   }, []);
 
+  const queryResult = useGrants();
+  console.log('🔥 Raw query result from useGrants:', queryResult);
+  
   const {
     data: grants = [],
     isLoading,
@@ -25,8 +28,10 @@ const DiscoverGrants = () => {
     refetch,
     isFetching,
     isSuccess,
-    dataUpdatedAt
-  } = useGrants();
+    dataUpdatedAt,
+    status,
+    fetchStatus
+  } = queryResult;
   
   console.log('🔥 DiscoverGrants render state:', { 
     grantsCount: grants?.length || 0, 
@@ -35,10 +40,20 @@ const DiscoverGrants = () => {
     isSuccess,
     error: error?.message, 
     isError,
+    status,
+    fetchStatus,
     dataUpdatedAt: new Date(dataUpdatedAt).toISOString(),
     grantsType: typeof grants,
     grantsIsArray: Array.isArray(grants)
   });
+
+  // Force refetch on mount if we have no data
+  useEffect(() => {
+    if (!isLoading && !isFetching && grants.length === 0 && !error) {
+      console.log('🔥 No grants and not loading - forcing refetch');
+      refetch();
+    }
+  }, [isLoading, isFetching, grants.length, error, refetch]);
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
