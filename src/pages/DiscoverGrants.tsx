@@ -16,14 +16,22 @@ const DiscoverGrants = () => {
     isLoading,
     error,
     isError,
-    refetch
+    refetch,
+    isFetching,
+    isSuccess,
+    dataUpdatedAt
   } = useGrants();
   
-  console.log('DiscoverGrants render state:', { 
+  console.log('🔥 DiscoverGrants render state:', { 
     grantsCount: grants?.length || 0, 
     isLoading, 
+    isFetching,
+    isSuccess,
     error: error?.message, 
-    isError 
+    isError,
+    dataUpdatedAt: new Date(dataUpdatedAt).toISOString(),
+    grantsType: typeof grants,
+    grantsIsArray: Array.isArray(grants)
   });
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
@@ -36,11 +44,11 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  console.log('Filter state:', { filters, hasActiveFilters });
+  console.log('🔥 Filter state:', { filters, hasActiveFilters });
 
   // Apply filters to grants - Simplified and fixed logic
   const filteredGrants = useMemo(() => {
-    console.log('Starting filteredGrants calculation:', { 
+    console.log('🔥 Starting filteredGrants calculation:', { 
       totalGrants: grants.length, 
       hasActiveFilters,
       filters 
@@ -48,7 +56,7 @@ const DiscoverGrants = () => {
 
     // If no grants available, return empty array
     if (!grants || grants.length === 0) {
-      console.log('No grants available, returning empty array');
+      console.log('🔥 No grants available, returning empty array');
       return [];
     }
 
@@ -60,7 +68,7 @@ const DiscoverGrants = () => {
     
     const actuallyHasActiveFilters = hasOrganizationFilter || hasFundingFilter || hasDeadlineFilter || hasTagsFilter;
     
-    console.log('Filter analysis:', {
+    console.log('🔥 Filter analysis:', {
       hasOrganizationFilter,
       hasFundingFilter,
       hasDeadlineFilter,
@@ -70,12 +78,12 @@ const DiscoverGrants = () => {
 
     // If no active filters, return all grants
     if (!actuallyHasActiveFilters) {
-      console.log('No active filters detected, returning all grants:', grants.length);
+      console.log('🔥 No active filters detected, returning all grants:', grants.length);
       return grants;
     }
 
     // Apply filtering only when we have active filters
-    console.log('Applying filters to grants...');
+    console.log('🔥 Applying filters to grants...');
     const filtered = grants.filter(grant => {
       // Organization filter
       if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
@@ -105,7 +113,7 @@ const DiscoverGrants = () => {
       return true;
     });
 
-    console.log('Filtered grants result:', filtered.length);
+    console.log('🔥 Filtered grants result:', filtered.length);
     return filtered;
   }, [grants, filters]);
 
@@ -123,7 +131,7 @@ const DiscoverGrants = () => {
     sortBy,
   });
 
-  console.log('Search results:', { 
+  console.log('🔥 Search results:', { 
     searchResultsCount: searchResults.length, 
     filteredGrantsCount: filteredGrants.length 
   });
@@ -143,7 +151,7 @@ const DiscoverGrants = () => {
   }, [toggleBookmark]);
 
   const handleRefresh = useCallback(() => {
-    console.log('Refreshing grants data...');
+    console.log('🔥 Refreshing grants data...');
     refetch();
   }, [refetch]);
 
