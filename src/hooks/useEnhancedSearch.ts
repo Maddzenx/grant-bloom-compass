@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Grant } from '@/types/grant';
 import { calculateRelevanceScore, generateSearchSuggestions } from '@/utils/searchAlgorithms';
@@ -46,7 +47,7 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Generate cache key
+  // Generate cache key - memoized to prevent recreating on every render
   const generateCacheKey = useCallback((term: string, filters: FilterOptions, sortBy: string) => {
     return `${term}|${JSON.stringify(filters)}|${sortBy}`;
   }, []);
@@ -55,17 +56,17 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
   const cleanCache = useCallback(() => {
     const now = Date.now();
     setSearchCache(prev => {
-      const cleaned = { ...prev };
-      Object.keys(cleaned).forEach(key => {
-        if (now - cleaned[key].timestamp > CACHE_DURATION) {
-          delete cleaned[key];
+      const cleaned: SearchCache = {};
+      Object.keys(prev).forEach(key => {
+        if (now - prev[key].timestamp <= CACHE_DURATION) {
+          cleaned[key] = prev[key];
         }
       });
       return cleaned;
     });
   }, []);
 
-  // Enhanced search with caching and metrics
+  // Enhanced search with caching and metrics - separated from state updates
   const searchResults = useMemo(() => {
     const startTime = performance.now();
     const cacheKey = generateCacheKey(debouncedSearchTerm, filters, sortBy);
@@ -73,15 +74,21 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
     // Check cache first
     const cached = searchCache[cacheKey];
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      setCacheHits(prev => prev + 1);
-      setTotalSearches(prev => prev + 1);
-      
-      const endTime = performance.now();
-      setSearchMetrics(prev => ({
-        searchLatency: endTime - startTime,
-        resultsCount: cached.results.length,
-        cacheHitRate: (cacheHits + 1) / (totalSearches + 1),
-      }));
+      // Update metrics separately to avoid dependency loop
+      setTimeout(() => {
+        setCacheHits(prev => prev + 1);
+        setTotalSearches(prev => {
+          const newTotal = prev + 1;
+          const newCacheHits = cacheHits + 1;
+          const endTime = performance.now();
+          setSearchMetrics({
+            searchLatency: endTime - startTime,
+            resultsCount: cached.results.length,
+            cacheHitRate: newCacheHits / newTotal,
+          });
+          return newTotal;
+        });
+      }, 0);
       
       return cached.results;
     }
@@ -107,26 +114,30 @@ export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearch
     // Apply sorting
     results = applySorting(results, sortBy, debouncedSearchTerm);
 
-    // Cache results
-    setSearchCache(prev => ({
-      ...prev,
-      [cacheKey]: {
-        results,
-        timestamp: Date.now()
-      }
-    }));
+    // Cache results and update metrics separately
+    setTimeout(() => {
+      setSearchCache(prev => ({
+        ...prev,
+        [cacheKey]: {
+          results,
+          timestamp: Date.now()
+        }
+      }));
 
-    setTotalSearches(prev => prev + 1);
-    
-    const endTime = performance.now();
-    setSearchMetrics({
-      searchLatency: endTime - startTime,
-      resultsCount: results.length,
-      cacheHitRate: totalSearches > 0 ? cacheHits / totalSearches : 0,
-    });
+      setTotalSearches(prev => {
+        const newTotal = prev + 1;
+        const endTime = performance.now();
+        setSearchMetrics({
+          searchLatency: endTime - startTime,
+          resultsCount: results.length,
+          cacheHitRate: totalSearches > 0 ? cacheHits / newTotal : 0,
+        });
+        return newTotal;
+      });
+    }, 0);
 
     return results;
-  }, [debouncedSearchTerm, grants, filters, sortBy, searchCache, cacheHits, totalSearches, generateCacheKey]);
+  }, [debouncedSearchTerm, grants, filters, sortBy, searchCache, generateCacheKey]);
 
   // Generate search suggestions
   const suggestions = useMemo(() => {
