@@ -29,7 +29,7 @@ const GrantCard = ({
             <img src={orgLogo.src} alt={orgLogo.alt} className="w-10 h-7 object-contain" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 mb-2 leading-snug line-clamp-2 text-lg">{grant.title}</h3>
+            <h3 className="font-semibold text-gray-900 mb-2 leading-snug line-clamp-2 text-base">{grant.title}</h3>
             <div className="text-sm font-bold text-gray-900\n">{grant.fundingAmount}</div>
           </div>
         </div>
