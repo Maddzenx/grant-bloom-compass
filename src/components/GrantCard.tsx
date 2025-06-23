@@ -55,7 +55,7 @@ const GrantCard = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-1">
-            <span className="text-green-600 font-semibold text-sm">Open:</span>
+            <span className="text-green-600 font-semibold text-xs">Open:</span>
             <span className="text-gray-900 font-semibold text-sm sm:text-sm lg:text-lg mx-[3px] md:text-xs">
               {(() => {
               const deadlineDate = new Date(grant.deadline);
@@ -67,11 +67,11 @@ const GrantCard = ({
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-gray-600 font-medium text-sm">Deadline:</span>
+            <span className="text-gray-600 font-medium text-xs">Deadline:</span>
             <span className="text-gray-900 font-semibold text-xs sm:text-sm lg:text-lg mx-[3px] md:text-xs">{grant.deadline}</span>
           </div>
         </div>
-        <div className="text-gray-400 font-medium text-xs sm:text-sm md:text-sm lg:text-lg\\\\n px-0 mx-[3px]">Seen</div>
+        <div className="text-gray-400 font-medium text-xs sm:text-xs md:text-sm lg:text-lg\\\\\\\\n px-0 mx-[3px]">Seen</div>
       </div>
     </div>;
 };
