@@ -8,36 +8,11 @@ export const useGrants = () => {
   return useQuery({
     queryKey: ['grants'],
     queryFn: async (): Promise<Grant[]> => {
-      console.log('🔍 Starting grants fetch...');
+      console.log('🔍 Starting grants fetch from grant_call_details...');
       
       const { data: grantData, error: grantError } = await supabase
         .from('grant_call_details')
-        .select(`
-          id,
-          title,
-          organisation,
-          description,
-          subtitle,
-          eligibility,
-          application_closing_date,
-          max_grant_per_project,
-          min_grant_per_project,
-          total_funding_amount,
-          currency,
-          keywords,
-          contact_name,
-          contact_title,
-          contact_email,
-          contact_phone,
-          eligible_cost_categories,
-          information_webinar_dates,
-          application_templates_names,
-          other_templates_names,
-          evaluation_criteria,
-          application_process,
-          eligible_organisations,
-          industry_sectors
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       console.log('✅ Grant call details query result:', { 
@@ -113,10 +88,10 @@ export const useGrants = () => {
 
       return transformedGrants;
     },
-    retry: 2,
-    retryDelay: 1000,
+    retry: 1,
+    retryDelay: 500,
     refetchOnWindowFocus: false,
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 0, // Don't cache to ensure fresh data
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };

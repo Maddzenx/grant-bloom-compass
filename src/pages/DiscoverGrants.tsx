@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
@@ -21,11 +21,11 @@ const DiscoverGrants = () => {
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
-  // Force a refresh on component mount to ensure fresh data
-  useEffect(() => {
-    console.log('🔄 DiscoverGrants mounted, forcing data refresh...');
-    refetch();
-  }, [refetch]);
+  console.log('🔥 DiscoverGrants render:', { 
+    grantsCount: grants?.length || 0, 
+    isLoading, 
+    isError 
+  });
 
   // Enhanced filter state
   const {

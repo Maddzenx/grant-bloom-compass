@@ -11,32 +11,27 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
-  const [hasInitialized, setHasInitialized] = useState(false);
   const isMobile = useIsMobile();
 
-  // Auto-select first grant when grants are loaded or search changes
+  // Auto-select first grant when results change, but only if we don't have a valid selection
   useEffect(() => {
-    console.log('🔥 useGrantSelection effect triggered:', { 
+    console.log('🔥 useGrantSelection effect:', { 
       searchResultsLength: searchResults.length, 
-      hasInitialized,
-      selectedGrantId: selectedGrant?.id 
+      selectedGrantId: selectedGrant?.id,
+      selectedGrantStillValid: selectedGrant && searchResults.find(g => g.id === selectedGrant.id)
     });
 
-    // Only proceed if we have results and haven't initialized yet, or if the current selection is invalid
     if (searchResults.length > 0) {
-      if (!hasInitialized) {
-        console.log('🔥 First time initialization - selecting first grant:', searchResults[0]);
-        setSelectedGrant(searchResults[0]);
-        setHasInitialized(true);
-      } else if (selectedGrant && !searchResults.find(g => g.id === selectedGrant.id)) {
-        console.log('🔥 Current selection not in filtered results, selecting first filtered grant');
+      // If no selection or current selection is not in results, select first
+      if (!selectedGrant || !searchResults.find(g => g.id === selectedGrant.id)) {
+        console.log('🔥 Selecting first grant from results:', searchResults[0]);
         setSelectedGrant(searchResults[0]);
       }
-    } else if (searchResults.length === 0 && hasInitialized) {
-      console.log('🔥 No grants available after initialization, clearing selection');
+    } else if (searchResults.length === 0) {
+      console.log('🔥 No results, clearing selection');
       setSelectedGrant(null);
     }
-  }, [searchResults, selectedGrant, hasInitialized]);
+  }, [searchResults, selectedGrant]);
 
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('🔥 Grant selected:', grant);
