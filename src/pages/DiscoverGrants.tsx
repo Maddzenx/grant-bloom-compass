@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
@@ -35,8 +36,13 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Apply filters to grants
+  // Apply filters to grants - only filter if there are active filters
   const filteredGrants = useMemo(() => {
+    // If no active filters, return all grants
+    if (!hasActiveFilters) {
+      return grants;
+    }
+
     return grants.filter(grant => {
       // Organization filter
       if (filters.organizations.length > 0) {
@@ -69,7 +75,7 @@ const DiscoverGrants = () => {
 
       return true;
     });
-  }, [grants, filters]);
+  }, [grants, filters, hasActiveFilters]);
 
   // Enhanced search hook
   const {

@@ -61,7 +61,7 @@ export const useFilterState = () => {
       filters.organizations.length > 0 ||
       filters.fundingRange.min !== null ||
       filters.fundingRange.max !== null ||
-      filters.deadline.preset !== '' ||
+      (filters.deadline.preset !== '' && filters.deadline.preset !== undefined) ||
       filters.deadline.customRange?.start !== null ||
       filters.tags.length > 0
     );
@@ -77,29 +77,19 @@ export const useFilterState = () => {
 
 // Helper functions
 const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptions => {
-  const savedFilters = localStorage.getItem('grantFilters');
-  let baseFilters = defaultFilters;
-  
-  if (savedFilters) {
-    try {
-      baseFilters = JSON.parse(savedFilters);
-    } catch (e) {
-      console.warn('Failed to parse saved filters');
-    }
-  }
-
+  // Don't load from localStorage on initial load - start with clean state
   return {
-    organizations: searchParams.get('orgs')?.split(',').filter(Boolean) || baseFilters.organizations,
+    organizations: searchParams.get('orgs')?.split(',').filter(Boolean) || [],
     fundingRange: {
-      min: searchParams.get('minFunding') ? Number(searchParams.get('minFunding')) : baseFilters.fundingRange.min,
-      max: searchParams.get('maxFunding') ? Number(searchParams.get('maxFunding')) : baseFilters.fundingRange.max,
+      min: searchParams.get('minFunding') ? Number(searchParams.get('minFunding')) : null,
+      max: searchParams.get('maxFunding') ? Number(searchParams.get('maxFunding')) : null,
     },
     deadline: {
-      type: (searchParams.get('deadlineType') as 'preset' | 'custom') || baseFilters.deadline.type,
-      preset: searchParams.get('deadlinePreset') || baseFilters.deadline.preset,
-      customRange: baseFilters.deadline.customRange,
+      type: (searchParams.get('deadlineType') as 'preset' | 'custom') || 'preset',
+      preset: searchParams.get('deadlinePreset') || '',
+      customRange: { start: null, end: null },
     },
-    tags: searchParams.get('tags')?.split(',').filter(Boolean) || baseFilters.tags,
+    tags: searchParams.get('tags')?.split(',').filter(Boolean) || [],
   };
 };
 
