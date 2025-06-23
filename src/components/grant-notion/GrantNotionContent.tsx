@@ -29,17 +29,17 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Utvärderingskriterier */}
       {grant.evaluationCriteria && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
-            <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
-            <span className="text-lg font-semibold text-gray-900">Utvärderingskriterier</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
+            <span className="text-base font-semibold text-gray-900">Utvärderingskriterier</span>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 ml-6">
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-gray-700 leading-relaxed">
+          <CollapsibleContent className="mt-3 ml-5">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {grant.evaluationCriteria}
               </p>
             </div>
@@ -51,12 +51,12 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       {grant.applicationProcess && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
-            <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
-            <span className="text-lg font-semibold text-gray-900">Ansökningsprocess</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
+            <span className="text-base font-semibold text-gray-900">Ansökningsprocess</span>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 ml-6">
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-gray-700 leading-relaxed">
+          <CollapsibleContent className="mt-3 ml-5">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {grant.applicationProcess}
               </p>
             </div>
@@ -68,25 +68,25 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
-            <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
-            <span className="text-lg font-semibold text-gray-900">Mallar och dokument</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
+            <span className="text-base font-semibold text-gray-900">Mallar och dokument</span>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 ml-6">
-            <div className="space-y-6">
+          <CollapsibleContent className="mt-3 ml-5">
+            <div className="space-y-4">
               {/* Ansökningsmallar */}
               {grant.templates.length > 0 && (
                 <div>
-                  <h4 className="text-base font-medium text-gray-900 mb-3">Ansökningsmallar</h4>
-                  <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Ansökningsmallar</h4>
+                  <div className="space-y-1">
                     {grant.templates.map((template, index) => (
                       <div 
                         key={index}
-                        className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                         onClick={() => handleFileClick(template)}
                       >
-                        <FileText className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-700 flex-1">{template}</span>
-                        <ChevronDown className="w-4 h-4 text-gray-400 rotate-[-90deg]" />
+                        <FileText className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-700 flex-1">{template}</span>
+                        <ChevronDown className="w-3 h-3 text-gray-400 rotate-[-90deg]" />
                       </div>
                     ))}
                   </div>
@@ -96,17 +96,17 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
               {/* Allmän information och dokument */}
               {grant.generalInfo.length > 0 && (
                 <div>
-                  <h4 className="text-base font-medium text-gray-900 mb-3">Allmän information och dokument</h4>
-                  <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Allmän information och dokument</h4>
+                  <div className="space-y-1">
                     {grant.generalInfo.map((file, index) => (
                       <div 
                         key={index}
-                        className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                         onClick={() => handleFileClick(file)}
                       >
-                        <FileText className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-700 flex-1">{file}</span>
-                        <ChevronDown className="w-4 h-4 text-gray-400 rotate-[-90deg]" />
+                        <FileText className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-700 flex-1">{file}</span>
+                        <ChevronDown className="w-3 h-3 text-gray-400 rotate-[-90deg]" />
                       </div>
                     ))}
                   </div>
@@ -121,15 +121,15 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       {grant.fundingRules.length > 0 && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
-            <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
-            <span className="text-lg font-semibold text-gray-900">Finansieringsregler</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
+            <span className="text-base font-semibold text-gray-900">Finansieringsregler</span>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 ml-6">
-            <div className="space-y-3">
+          <CollapsibleContent className="mt-3 ml-5">
+            <div className="space-y-2">
               {grant.fundingRules.map((rule, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="w-4 h-4 bg-gray-200 rounded-full mt-0.5 flex-shrink-0"></div>
-                  <span className="text-gray-700 text-sm leading-relaxed">{rule}</span>
+                <div key={index} className="flex items-start gap-2">
+                  <div className="w-3 h-3 bg-gray-200 rounded-full mt-0.5 flex-shrink-0"></div>
+                  <span className="text-xs text-gray-700 leading-relaxed">{rule}</span>
                 </div>
               ))}
             </div>
@@ -141,12 +141,12 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       {grant.qualifications && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
-            <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
-            <span className="text-lg font-semibold text-gray-900">Ytterligare information</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
+            <span className="text-base font-semibold text-gray-900">Ytterligare information</span>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4 ml-6">
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-gray-700 leading-relaxed">
+          <CollapsibleContent className="mt-3 ml-5">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {grant.qualifications}
               </p>
             </div>
@@ -155,21 +155,21 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       )}
 
       {/* Contact section in sidebar style */}
-      <div className="mt-12 pt-8 border-t border-gray-200">
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <h3 className="text-base font-semibold text-gray-900 mb-4">Kontakt</h3>
-          <div className="space-y-3">
+      <div className="mt-10 pt-6 border-t border-gray-200">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Kontakt</h3>
+          <div className="space-y-2">
             {grant.contact.name && (
               <div>
-                <span className="text-sm text-gray-600 block">{grant.contact.organization || grant.organization}</span>
-                <span className="text-sm font-medium text-gray-900">{grant.contact.name}</span>
+                <span className="text-xs text-gray-600 block">{grant.contact.organization || grant.organization}</span>
+                <span className="text-xs font-medium text-gray-900">{grant.contact.name}</span>
               </div>
             )}
             {grant.contact.email && (
               <div>
                 <a 
                   href={`mailto:${grant.contact.email}`}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  className="text-xs text-blue-600 hover:text-blue-800 underline"
                 >
                   {grant.contact.email}
                 </a>
@@ -179,7 +179,7 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
               <div>
                 <a 
                   href={`tel:${grant.contact.phone}`}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  className="text-xs text-blue-600 hover:text-blue-800 underline"
                 >
                   {grant.contact.phone}
                 </a>
