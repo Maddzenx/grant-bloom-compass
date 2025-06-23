@@ -21,7 +21,7 @@ const GrantNotionHeader = ({
   const navigate = useNavigate();
 
   const handleApplyClick = () => {
-    navigate('/editor', {
+    navigate('/chat', {
       state: {
         grant
       }
