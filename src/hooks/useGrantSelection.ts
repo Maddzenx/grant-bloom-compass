@@ -5,9 +5,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 interface UseGrantSelectionProps {
   searchResults: Grant[];
+  markGrantAsSeen: (grantId: string) => void;
 }
 
-export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => {
+export const useGrantSelection = ({ searchResults, markGrantAsSeen }: UseGrantSelectionProps) => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
@@ -36,10 +37,11 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('🔥 Grant selected:', grant);
     setSelectedGrant(grant);
+    markGrantAsSeen(grant.id);
     if (isMobile) {
       setShowDetails(true);
     }
-  }, [isMobile]);
+  }, [isMobile, markGrantAsSeen]);
 
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
