@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -45,7 +46,7 @@ const BusinessPlanEditor = () => {
 
   return <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec]">
+      <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec] sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/chat')} className="p-2">
@@ -77,13 +78,17 @@ const BusinessPlanEditor = () => {
           </div>
         </div>
 
-        {/* Right Sidebar - Review suggestions */}
-        <div className="w-80 border-l border-gray-200 p-6 bg-[#f8f4ec]">
-          <ReviewSuggestions 
-            draft={draft}
-            grant={grant}
-            onApplySuggestion={handleApplySuggestion}
-          />
+        {/* Right Sidebar - Review suggestions (sticky) */}
+        <div className="w-80 bg-[#f8f4ec]">
+          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
+            <div className="border-l border-gray-200 p-6 h-full">
+              <ReviewSuggestions 
+                draft={draft}
+                grant={grant}
+                onApplySuggestion={handleApplySuggestion}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>;
