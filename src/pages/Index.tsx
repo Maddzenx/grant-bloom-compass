@@ -17,7 +17,7 @@ const Index = () => {
     // Future voice input functionality
     console.log("Voice input clicked");
   };
-  return <div className="min-h-screen bg-white flex items-center justify-center p-6">
+  return <div className="min-h-screen flex items-center justify-center p-6 bg-[#f8f4ec]">
       <div className="w-full max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-normal text-gray-900 mb-12">What is your project about?</h1>
