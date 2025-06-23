@@ -111,6 +111,7 @@ const DiscoverGrants = () => {
     selectedGrant,
     showDetails,
     bookmarkedGrants,
+    seenGrants,
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
@@ -144,6 +145,7 @@ const DiscoverGrants = () => {
       searchResults={searchResults}
       selectedGrant={selectedGrant}
       bookmarkedGrants={bookmarkedGrants}
+      seenGrants={seenGrants}
       showDetails={showDetails}
       searchTerm={searchTerm}
       sortBy={sortBy}
