@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
@@ -11,6 +11,12 @@ import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
 
 const DiscoverGrants = () => {
+  console.log('🔥 DiscoverGrants component mounting...');
+  
+  useEffect(() => {
+    console.log('🔥 DiscoverGrants component mounted and useEffect triggered');
+  }, []);
+
   const {
     data: grants = [],
     isLoading,
