@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Grant } from '@/types/grant';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useSeenGrants } from '@/hooks/useSeenGrants';
 
 interface UseGrantSelectionProps {
   searchResults: Grant[];
@@ -13,7 +12,6 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   const [showDetails, setShowDetails] = useState(false);
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const isMobile = useIsMobile();
-  const { markAsSeen, isGrantSeen } = useSeenGrants();
 
   // Auto-select first grant when results change, but only if we don't have a valid selection
   useEffect(() => {
@@ -38,11 +36,10 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('🔥 Grant selected:', grant);
     setSelectedGrant(grant);
-    markAsSeen(grant.id); // Mark the grant as seen when selected
     if (isMobile) {
       setShowDetails(true);
     }
-  }, [isMobile, markAsSeen]);
+  }, [isMobile]);
 
   const toggleBookmark = useCallback((grantId: string) => {
     setBookmarkedGrants(prev => {
@@ -60,16 +57,10 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
     setShowDetails(false);
   }, []);
 
-  // Create a Set for seen grants to pass to components
-  const seenGrantsSet = new Set(
-    searchResults.filter(grant => isGrantSeen(grant.id)).map(grant => grant.id)
-  );
-
   return {
     selectedGrant,
     showDetails,
     bookmarkedGrants,
-    seenGrants: seenGrantsSet,
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,

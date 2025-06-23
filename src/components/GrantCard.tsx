@@ -8,7 +8,6 @@ interface GrantCardProps {
   grant: Grant;
   isSelected: boolean;
   isBookmarked: boolean;
-  isSeen: boolean;
   onSelect: () => void;
   onToggleBookmark: () => void;
   isMobile?: boolean;
@@ -17,7 +16,6 @@ const GrantCard = ({
   grant,
   isSelected,
   isBookmarked,
-  isSeen,
   onSelect,
   onToggleBookmark,
   isMobile = false
@@ -32,7 +30,7 @@ const GrantCard = ({
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-gray-900 mb-2 leading-snug line-clamp-2 text-base">{grant.title}</h3>
-            <div className="text-sm font-bold text-gray-900">{grant.fundingAmount}</div>
+            <div className="text-sm font-bold text-gray-900\n">{grant.fundingAmount}</div>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={e => {
@@ -58,7 +56,7 @@ const GrantCard = ({
         <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
             <span className="text-green-600 font-semibold text-xs">Open:</span>
-            <span className="text-gray-900 font-semibold mx-[3px] text-xs sm:text-sm md:text-xs">
+            <span className="text-gray-900 font-semibold mx-[3px] text-xs sm:text-sm md:text-base\n">
               {(() => {
               const deadlineDate = new Date(grant.deadline);
               const today = new Date();
@@ -73,7 +71,7 @@ const GrantCard = ({
             <span className="text-gray-900 font-semibold text-xs sm:text-sm mx-[3px] md:text-xs lg:text-xs">{grant.deadline}</span>
           </div>
         </div>
-        {isSeen && <div className="text-gray-400 font-medium text-[10px] sm:text-xs md:text-xs lg:text-sm px-0 mx-[px]">Seen</div>}
+        <div className="text-gray-400 font-medium text-xs sm:text-xs md:text-sm lg:text-lg\\\\\\\\n px-0 mx-[3px]">Seen</div>
       </div>
     </div>;
 };

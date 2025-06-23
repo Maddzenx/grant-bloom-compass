@@ -14,7 +14,6 @@ interface DiscoverGrantsContentProps {
   searchResults: Grant[];
   selectedGrant: Grant | null;
   bookmarkedGrants: Set<string>;
-  seenGrants: Set<string>;
   showDetails: boolean;
   searchTerm: string;
   sortBy: SortOption;
@@ -37,7 +36,6 @@ export const DiscoverGrantsContent = ({
   searchResults,
   selectedGrant,
   bookmarkedGrants,
-  seenGrants,
   showDetails,
   searchTerm,
   sortBy,
@@ -91,7 +89,6 @@ export const DiscoverGrantsContent = ({
                 grants={searchResults}
                 selectedGrant={selectedGrant}
                 bookmarkedGrants={bookmarkedGrants}
-                seenGrants={seenGrants}
                 onGrantSelect={onGrantSelect}
                 onToggleBookmark={onToggleBookmark}
                 searchTerm={searchTerm}
@@ -118,7 +115,6 @@ export const DiscoverGrantsContent = ({
               grants={searchResults}
               selectedGrant={selectedGrant}
               bookmarkedGrants={bookmarkedGrants}
-              seenGrants={seenGrants}
               onGrantSelect={onGrantSelect}
               onToggleBookmark={onToggleBookmark}
               searchTerm={searchTerm}
