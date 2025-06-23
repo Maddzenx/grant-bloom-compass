@@ -32,21 +32,30 @@ type PartialSupabaseGrantRow = Pick<
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
-  console.log('🔄 Transforming grant:', supabaseGrant?.id);
+  console.log('🔄 Starting transformation for grant:', supabaseGrant?.id);
+  console.log('🔍 Grant data:', JSON.stringify(supabaseGrant, null, 2));
   
   // Helper function to safely convert Json to string array
   const jsonToStringArray = (jsonValue: any): string[] => {
     try {
-      if (!jsonValue) return [];
+      if (!jsonValue) {
+        console.log('🔍 jsonToStringArray: null/undefined value');
+        return [];
+      }
       if (Array.isArray(jsonValue)) {
-        return jsonValue.filter(item => typeof item === 'string').slice(0, 10);
+        const result = jsonValue.filter(item => typeof item === 'string').slice(0, 10);
+        console.log('🔍 jsonToStringArray: array input ->', result);
+        return result;
       }
       if (typeof jsonValue === 'string') {
         const parsed = JSON.parse(jsonValue);
         if (Array.isArray(parsed)) {
-          return parsed.filter(item => typeof item === 'string').slice(0, 10);
+          const result = parsed.filter(item => typeof item === 'string').slice(0, 10);
+          console.log('🔍 jsonToStringArray: string input ->', result);
+          return result;
         }
       }
+      console.log('🔍 jsonToStringArray: unhandled type ->', typeof jsonValue);
       return [];
     } catch (error) {
       console.warn('⚠️ Error parsing JSON array:', error, jsonValue);
@@ -56,14 +65,19 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
 
   // Helper function to format date
   const formatDate = (dateValue: string | null): string => {
-    if (!dateValue) return 'Ej specificerat';
+    if (!dateValue) {
+      console.log('🔍 formatDate: null date');
+      return 'Ej specificerat';
+    }
     try {
       const date = new Date(dateValue);
-      return date.toLocaleDateString('sv-SE', {
+      const formatted = date.toLocaleDateString('sv-SE', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
+      console.log('🔍 formatDate:', dateValue, '->', formatted);
+      return formatted;
     } catch (error) {
       console.warn('⚠️ Error formatting date:', error, dateValue);
       return 'Ej specificerat';
@@ -84,17 +98,24 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     };
     
     if (grant.max_grant_per_project && grant.min_grant_per_project) {
-      return `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
+      const result = `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
+      console.log('🔍 formatFundingAmount: min-max ->', result);
+      return result;
     }
     
     if (grant.max_grant_per_project) {
-      return `Upp till ${formatAmount(grant.max_grant_per_project)}`;
+      const result = `Upp till ${formatAmount(grant.max_grant_per_project)}`;
+      console.log('🔍 formatFundingAmount: max only ->', result);
+      return result;
     }
     
     if (grant.total_funding_amount) {
-      return formatAmount(grant.total_funding_amount);
+      const result = formatAmount(grant.total_funding_amount);
+      console.log('🔍 formatFundingAmount: total ->', result);
+      return result;
     }
     
+    console.log('🔍 formatFundingAmount: no amount specified');
     return 'Ej specificerat';
   };
 
@@ -135,7 +156,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       applicationProcess: supabaseGrant.application_process || ''
     };
 
-    console.log('✅ Transformation successful for:', transformed.id);
+    console.log('✅ Transformation successful for:', transformed.id, transformed.title);
     return transformed;
   } catch (error) {
     console.error('❌ Transformation failed for grant:', supabaseGrant?.id, error);

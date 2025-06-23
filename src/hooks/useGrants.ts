@@ -40,7 +40,12 @@ export const useGrants = () => {
         `)
         .order('created_at', { ascending: false });
 
-      console.log('🔍 Supabase query result:', { data, error, dataLength: data?.length });
+      console.log('🔍 Supabase query result:', { 
+        data, 
+        error, 
+        dataLength: data?.length,
+        firstItem: data?.[0]
+      });
 
       if (error) {
         console.error('❌ Supabase query error:', error);
@@ -52,19 +57,30 @@ export const useGrants = () => {
         return [];
       }
 
-      console.log('🔍 Raw data sample:', data[0]);
+      if (data.length === 0) {
+        console.warn('⚠️ Data array is empty - no grants in database');
+        return [];
+      }
 
-      const transformedGrants = data.map((grant, index) => {
+      console.log('🔍 Raw data sample:', JSON.stringify(data[0], null, 2));
+
+      const transformedGrants: Grant[] = [];
+
+      for (let i = 0; i < data.length; i++) {
+        const grant = data[i];
         try {
+          console.log(`🔄 Transforming grant ${i + 1}/${data.length}:`, grant.id);
           const transformed = transformSupabaseGrant(grant);
-          if (index === 0) {
-            console.log('🔍 Transformation sample:', { original: grant, transformed });
+          transformedGrants.push(transformed);
+          
+          if (i === 0) {
+            console.log('🔍 First transformation result:', JSON.stringify(transformed, null, 2));
           }
-          return transformed;
         } catch (transformError) {
           console.error('❌ Transform error for grant:', grant.id, transformError);
-          // Return a fallback grant object instead of throwing
-          return {
+          
+          // Create a fallback grant object
+          const fallbackGrant: Grant = {
             id: grant.id,
             title: grant.title || 'Untitled Grant',
             organization: grant.organisation || 'Unknown Organization',
@@ -89,10 +105,17 @@ export const useGrants = () => {
             evaluationCriteria: grant.evaluation_criteria || '',
             applicationProcess: grant.application_process || ''
           };
+          
+          transformedGrants.push(fallbackGrant);
         }
+      }
+
+      console.log('✅ Final transformed grants:', {
+        originalCount: data.length,
+        transformedCount: transformedGrants.length,
+        sampleTitles: transformedGrants.slice(0, 3).map(g => g.title)
       });
 
-      console.log('🔍 Final transformed grants count:', transformedGrants.length);
       return transformedGrants;
     },
     retry: 2,
