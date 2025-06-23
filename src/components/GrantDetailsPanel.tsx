@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -33,13 +34,12 @@ const GrantDetailsPanel = ({
       if (!scrollArea) return;
 
       const currentScrollY = scrollArea.scrollTop;
-      const isScrollingDown = currentScrollY > lastScrollY.current;
-      const hasScrolled = currentScrollY > 200; // Show after scrolling 200px
+      const hasScrolled = currentScrollY > 150; // Show after scrolling 150px
 
-      console.log('Scroll data:', { currentScrollY, isScrollingDown, hasScrolled, showStickyHeader });
+      console.log('Scroll data:', { currentScrollY, hasScrolled, showStickyHeader });
 
-      // Show sticky header when scrolling down and has scrolled enough
-      if (hasScrolled && isScrollingDown && !showStickyHeader) {
+      // Show sticky header when scrolled enough
+      if (hasScrolled && !showStickyHeader) {
         setShowStickyHeader(true);
       } else if (currentScrollY < 100) {
         // Hide when scrolled back to near the top
@@ -83,9 +83,15 @@ const GrantDetailsPanel = ({
         </div>
       )}
 
-      {/* Conditional Sticky Header - only render when we have a grant and should show */}
-      {selectedGrant && showStickyHeader && (
-        <div className="animate-fade-in">
+      {/* Enhanced Sticky Header with smooth animation */}
+      {selectedGrant && (
+        <div 
+          className={`sticky top-0 z-10 transition-all duration-500 ease-out ${
+            showStickyHeader 
+              ? 'opacity-100 transform translate-y-0 shadow-lg' 
+              : 'opacity-0 transform -translate-y-full pointer-events-none'
+          }`}
+        >
           <GrantStickyHeader
             grant={selectedGrant}
             isBookmarked={bookmarkedGrants.has(selectedGrant.id)}
