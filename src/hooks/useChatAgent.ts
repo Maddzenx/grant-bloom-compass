@@ -16,7 +16,7 @@ interface ConversationState {
   questions: string[];
 }
 
-export const useChatAgent = (grant: Grant) => {
+export const useChatAgent = (grant: Grant | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [applicationDraft, setApplicationDraft] = useState<ApplicationDraft | null>(null);
@@ -144,7 +144,7 @@ export const useChatAgent = (grant: Grant) => {
   }, []);
 
   const exportDraft = useCallback(() => {
-    if (!applicationDraft) return;
+    if (!applicationDraft || !grant) return;
 
     const draftText = Object.entries(applicationDraft.sections)
       .map(([section, content]) => `${section.toUpperCase()}\n${content}\n\n`)
@@ -164,7 +164,7 @@ export const useChatAgent = (grant: Grant) => {
       title: "Utkast exporterat",
       description: "Din ansökan har laddats ner som en textfil."
     });
-  }, [applicationDraft, grant.title, toast]);
+  }, [applicationDraft, grant, toast]);
 
   return {
     messages,

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Send, FileText, Download, ArrowLeft } from 'lucide-react';
@@ -12,7 +13,7 @@ import { ApplicationPreview } from '@/components/chat/ApplicationPreview';
 const ChatInterface = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const grant = location.state?.grant as Grant;
+  const grant = location.state?.grant as Grant | undefined;
   const [inputValue, setInputValue] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ const ChatInterface = () => {
   }, [messages, isTyping]);
 
   const handlePreviewClick = () => {
-    if (isDraftReady && applicationDraft) {
+    if (isDraftReady && applicationDraft && grant) {
       navigate('/business-plan-editor', {
         state: {
           draft: applicationDraft,
@@ -150,7 +151,7 @@ const ChatInterface = () => {
       </div>
 
       {/* Preview Panel */}
-      {showPreview && isDraftReady && (
+      {showPreview && isDraftReady && applicationDraft && (
         <div className="w-1/2 border-l border-gray-200 bg-gray-50">
           <ApplicationPreview draft={applicationDraft} grant={grant} />
         </div>
