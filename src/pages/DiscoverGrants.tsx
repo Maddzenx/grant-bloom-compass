@@ -38,9 +38,9 @@ const DiscoverGrants = () => {
 
   console.log('Filter state:', { filters, hasActiveFilters });
 
-  // Apply filters to grants - Fix the filtering logic
+  // Apply filters to grants - Simplified and fixed logic
   const filteredGrants = useMemo(() => {
-    console.log('Filtering grants:', { 
+    console.log('Starting filteredGrants calculation:', { 
       totalGrants: grants.length, 
       hasActiveFilters,
       filters 
@@ -48,40 +48,38 @@ const DiscoverGrants = () => {
 
     // If no grants available, return empty array
     if (!grants || grants.length === 0) {
-      console.log('No grants available');
+      console.log('No grants available, returning empty array');
       return [];
     }
 
-    // Check if any filters are actually active by examining their values
+    // Check if we actually have active filters by looking at the values
     const hasOrganizationFilter = filters.organizations && filters.organizations.length > 0;
     const hasFundingFilter = filters.fundingRange && (filters.fundingRange.min !== null || filters.fundingRange.max !== null);
-    const hasDeadlineFilter = filters.deadline && (filters.deadline.preset || filters.deadline.customRange?.start || filters.deadline.customRange?.end);
+    const hasDeadlineFilter = filters.deadline && filters.deadline.preset && filters.deadline.preset !== '';
     const hasTagsFilter = filters.tags && filters.tags.length > 0;
     
     const actuallyHasActiveFilters = hasOrganizationFilter || hasFundingFilter || hasDeadlineFilter || hasTagsFilter;
     
-    console.log('Actual filter analysis:', {
+    console.log('Filter analysis:', {
       hasOrganizationFilter,
       hasFundingFilter,
       hasDeadlineFilter,
       hasTagsFilter,
-      actuallyHasActiveFilters,
-      hasActiveFiltersFromHook: hasActiveFilters
+      actuallyHasActiveFilters
     });
 
-    // If no active filters, return all grants immediately
+    // If no active filters, return all grants
     if (!actuallyHasActiveFilters) {
-      console.log('No active filters, returning all grants:', grants.length);
+      console.log('No active filters detected, returning all grants:', grants.length);
       return grants;
     }
 
-    // Only apply filtering logic when filters are actually active
+    // Apply filtering only when we have active filters
+    console.log('Applying filters to grants...');
     const filtered = grants.filter(grant => {
       // Organization filter
-      if (hasOrganizationFilter) {
-        if (!filters.organizations.includes(grant.organization)) {
-          return false;
-        }
+      if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
+        return false;
       }
 
       // Funding range filter
@@ -92,10 +90,8 @@ const DiscoverGrants = () => {
       }
 
       // Deadline filter
-      if (hasDeadlineFilter) {
-        if (!isGrantWithinDeadline(grant, filters.deadline)) {
-          return false;
-        }
+      if (hasDeadlineFilter && !isGrantWithinDeadline(grant, filters.deadline)) {
+        return false;
       }
 
       // Tags filter
@@ -109,9 +105,9 @@ const DiscoverGrants = () => {
       return true;
     });
 
-    console.log('Filtered grants count:', filtered.length);
+    console.log('Filtered grants result:', filtered.length);
     return filtered;
-  }, [grants, filters, hasActiveFilters]);
+  }, [grants, filters]);
 
   // Enhanced search hook
   const {
