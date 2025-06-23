@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -9,7 +8,6 @@ import { useBusinessPlanEditor } from '@/hooks/useBusinessPlanEditor';
 import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeader';
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
 import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
-
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,7 +18,6 @@ const BusinessPlanEditor = () => {
     draft: ApplicationDraft;
     grant: Grant;
   } || {};
-
   const {
     sections,
     uploadedFiles,
@@ -33,16 +30,13 @@ const BusinessPlanEditor = () => {
     addFiles,
     exportBusinessPlan
   } = useBusinessPlanEditor(grant);
-
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/chat')} className="p-2">
@@ -64,23 +58,17 @@ const BusinessPlanEditor = () => {
 
       <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 bg-[#f8f4ec]">
           <div className="max-w-4xl">
-            <EditableBusinessPlanContent 
-              draft={draft}
-              sections={sections}
-              onUpdateField={updateFieldValue}
-            />
+            <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} />
           </div>
         </div>
 
         {/* Right Sidebar - Review suggestions */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
+        <div className="w-80 border-l border-gray-200 p-6 bg-[#f8f4ec]">
           <ReviewSuggestions />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default BusinessPlanEditor;
