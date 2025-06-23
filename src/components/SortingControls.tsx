@@ -7,9 +7,10 @@ export type SortOption = "deadline" | "funding" | "relevance" | "none";
 interface SortingControlsProps {
   sortBy: SortOption;
   onSortChange: (sortBy: SortOption) => void;
+  hasSearchTerm?: boolean;
 }
 
-const SortingControls = ({ sortBy, onSortChange }: SortingControlsProps) => {
+const SortingControls = ({ sortBy, onSortChange, hasSearchTerm = false }: SortingControlsProps) => {
   return (
     <div className="flex items-center justify-end gap-2">
       <span className="text-sm text-gray-600 font-medium">Sortera:</span>
@@ -19,7 +20,9 @@ const SortingControls = ({ sortBy, onSortChange }: SortingControlsProps) => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="none">Standard</SelectItem>
-          <SelectItem value="relevance">Relevans</SelectItem>
+          {hasSearchTerm && (
+            <SelectItem value="relevance">Relevans</SelectItem>
+          )}
           <SelectItem value="deadline">Ansökningsdeadline</SelectItem>
           <SelectItem value="funding">Bidragsbelopp</SelectItem>
         </SelectContent>
