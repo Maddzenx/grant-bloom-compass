@@ -8,6 +8,7 @@ import { Grant } from '@/types/grant';
 import { useBusinessPlanEditor } from '@/hooks/useBusinessPlanEditor';
 import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeader';
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
+import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
 
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
@@ -73,18 +74,9 @@ const BusinessPlanEditor = () => {
           </div>
         </div>
 
-        {/* Right Sidebar - Review suggestions placeholder */}
+        {/* Right Sidebar - Review suggestions */}
         <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <h3 className="font-semibold text-gray-900">Review suggestions</h3>
-            <span className="text-yellow-500">⚠️</span>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="text-sm text-gray-500">
-              Review suggestions will appear here after analysis.
-            </div>
-          </div>
+          <ReviewSuggestions />
         </div>
       </div>
     </div>
