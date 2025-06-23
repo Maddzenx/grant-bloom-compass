@@ -31,14 +31,21 @@ const GrantNotionHeader = ({
   return (
     <div className="px-6 md:px-12 pt-12 pb-8">
       {/* Title */}
-      <h1 className="text-2xl font-bold text-gray-900 mb-6 leading-tight md:text-xl">
+      <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight md:text-xl">
         {grant.title}
       </h1>
 
-      {/* Description */}
-      <p className="text-base text-gray-700 mb-6 leading-relaxed max-w-4xl">
-        {grant.aboutGrant || grant.description}
+      {/* Description from database */}
+      <p className="text-sm text-gray-700 mb-6 leading-relaxed max-w-4xl">
+        {grant.description}
       </p>
+
+      {/* About Grant section (if different from description) */}
+      {grant.aboutGrant && grant.aboutGrant !== grant.description && (
+        <p className="text-sm text-gray-700 mb-6 leading-relaxed max-w-4xl">
+          {grant.aboutGrant}
+        </p>
+      )}
 
       {/* Action buttons and date */}
       <div className="flex items-center justify-between mb-6">
