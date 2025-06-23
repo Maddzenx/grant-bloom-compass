@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
@@ -21,6 +21,12 @@ const DiscoverGrants = () => {
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
+  // Force a refresh on component mount to ensure fresh data
+  useEffect(() => {
+    console.log('🔄 DiscoverGrants mounted, forcing data refresh...');
+    refetch();
+  }, [refetch]);
+
   // Enhanced filter state
   const {
     filters,
@@ -31,7 +37,10 @@ const DiscoverGrants = () => {
 
   // Apply filters to grants
   const filteredGrants = useMemo(() => {
+    console.log('🔍 Filtering grants:', { totalGrants: grants?.length || 0 });
+    
     if (!grants || grants.length === 0) {
+      console.log('⚠️ No grants to filter');
       return [];
     }
 
@@ -45,11 +54,12 @@ const DiscoverGrants = () => {
 
     // If no active filters, return all grants
     if (!actuallyHasActiveFilters) {
+      console.log('✅ No active filters, returning all grants:', grants.length);
       return grants;
     }
 
     // Apply filtering
-    return grants.filter(grant => {
+    const filtered = grants.filter(grant => {
       // Organization filter
       if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
         return false;
@@ -77,6 +87,9 @@ const DiscoverGrants = () => {
 
       return true;
     });
+
+    console.log('✅ Filtered grants:', filtered.length);
+    return filtered;
   }, [grants, filters]);
 
   // Enhanced search hook
@@ -108,6 +121,7 @@ const DiscoverGrants = () => {
   }, [toggleBookmark]);
 
   const handleRefresh = useCallback(() => {
+    console.log('🔄 Manual refresh triggered');
     refetch();
   }, [refetch]);
 
