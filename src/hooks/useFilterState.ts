@@ -56,22 +56,35 @@ export const useFilterState = () => {
     localStorage.removeItem('grantFilters');
   }, [setSearchParams]);
 
-  const hasActiveFilters = useCallback(() => {
-    return (
+  // Check if any filters are active
+  const hasActiveFilters = useMemo(() => {
+    const isActive = (
       filters.organizations.length > 0 ||
       filters.fundingRange.min !== null ||
       filters.fundingRange.max !== null ||
-      (filters.deadline.preset !== '' && filters.deadline.preset !== undefined) ||
-      filters.deadline.customRange?.start !== null ||
+      (filters.deadline.preset && filters.deadline.preset !== '') ||
+      (filters.deadline.customRange?.start !== null) ||
       filters.tags.length > 0
     );
+    
+    console.log('hasActiveFilters check:', {
+      organizations: filters.organizations.length,
+      fundingMin: filters.fundingRange.min,
+      fundingMax: filters.fundingRange.max,
+      deadlinePreset: filters.deadline.preset,
+      customStart: filters.deadline.customRange?.start,
+      tags: filters.tags.length,
+      result: isActive
+    });
+    
+    return isActive;
   }, [filters]);
 
   return {
     filters,
     updateFilters,
     clearFilters,
-    hasActiveFilters: hasActiveFilters(),
+    hasActiveFilters,
   };
 };
 

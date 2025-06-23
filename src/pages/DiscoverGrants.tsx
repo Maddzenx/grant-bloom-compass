@@ -36,14 +36,23 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Apply filters to grants - only filter if there are active filters
+  console.log('Filter state:', { filters, hasActiveFilters });
+
+  // Apply filters to grants - show all grants when no filters are active
   const filteredGrants = useMemo(() => {
+    console.log('Filtering grants:', { 
+      totalGrants: grants.length, 
+      hasActiveFilters,
+      filters 
+    });
+
     // If no active filters, return all grants
     if (!hasActiveFilters) {
+      console.log('No active filters, returning all grants:', grants.length);
       return grants;
     }
 
-    return grants.filter(grant => {
+    const filtered = grants.filter(grant => {
       // Organization filter
       if (filters.organizations.length > 0) {
         if (!filters.organizations.includes(grant.organization)) {
@@ -75,6 +84,9 @@ const DiscoverGrants = () => {
 
       return true;
     });
+
+    console.log('Filtered grants count:', filtered.length);
+    return filtered;
   }, [grants, filters, hasActiveFilters]);
 
   // Enhanced search hook
@@ -89,6 +101,11 @@ const DiscoverGrants = () => {
     grants: filteredGrants,
     filters: { organization: '', minFunding: '', maxFunding: '', deadline: '' }, // Legacy format for compatibility
     sortBy,
+  });
+
+  console.log('Search results:', { 
+    searchResultsCount: searchResults.length, 
+    filteredGrantsCount: filteredGrants.length 
   });
 
   // Grant selection logic
