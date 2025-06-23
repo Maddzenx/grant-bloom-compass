@@ -8,6 +8,7 @@ import { useGrantSelection } from "@/hooks/useGrantSelection";
 import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
+import { DebugGrants } from "@/components/DebugGrants";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
 
 const DiscoverGrants = () => {
@@ -175,6 +176,23 @@ const DiscoverGrants = () => {
     console.log('🔥 Refreshing grants data...');
     refetch();
   }, [refetch]);
+
+  // Show debug info if no grants and not loading
+  if (!isLoading && !isFetching && grants.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#f8f4ec] p-4">
+        <DebugGrants />
+        <div className="mt-4">
+          <button 
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Refresh Data
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading/error/empty states
   const stateComponent = DiscoverGrantsStates({

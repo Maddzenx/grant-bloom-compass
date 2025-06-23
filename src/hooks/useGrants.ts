@@ -13,7 +13,9 @@ export const useGrants = () => {
       console.log('🔥 useGrants queryFn starting - Fetching grants from Supabase...');
       
       try {
-        const { data, error } = await supabase
+        console.log('🔥 About to call supabase.from("grant_call_details").select()...');
+        
+        const { data, error, count } = await supabase
           .from('grant_call_details')
           .select(`
             id,
@@ -40,12 +42,13 @@ export const useGrants = () => {
             application_process,
             eligible_organisations,
             industry_sectors
-          `)
+          `, { count: 'exact' })
           .order('created_at', { ascending: false });
 
         console.log('🔥 Supabase query completed');
-        console.log('🔥 Supabase error:', error);
-        console.log('🔥 Supabase data:', data);
+        console.log('🔥 Supabase response data:', data);
+        console.log('🔥 Supabase response error:', error);
+        console.log('🔥 Supabase response count:', count);
         console.log('🔥 Data type:', typeof data);
         console.log('🔥 Data is array:', Array.isArray(data));
         console.log('🔥 Data length:', data?.length || 'undefined');
@@ -64,6 +67,8 @@ export const useGrants = () => {
           console.error('🔥 Data is not an array:', data);
           return [];
         }
+
+        console.log('🔥 Raw data from Supabase:', JSON.stringify(data, null, 2));
 
         if (data.length === 0) {
           console.log('🔥 Empty array returned from Supabase - no grants in database');
@@ -100,11 +105,13 @@ export const useGrants = () => {
         throw queryError;
       }
     },
-    enabled: true, // Force the query to be enabled
-    retry: 1,
-    retryDelay: 1000,
+    enabled: true,
+    retry: 2,
+    retryDelay: 2000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0, // Don't cache
   });
 };
