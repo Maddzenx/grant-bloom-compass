@@ -139,7 +139,7 @@ const BusinessPlanEditor = () => {
         </div>
 
         {/* Right Sidebar - Review suggestions (sticky) */}
-        <div className="w-full md:basis-[35%] max-w-80\n           px-[10px] py-[12.5px] sm:px-4 sm:py-4 md:px-6 md:py-6\n           bg-[#f8f4ec]">
+        <div className="w-full md:basis-[35%] max-w-100\\n           px-[10px] py-[12.5px] sm:px-4 sm:py-4 md:px-6 md:py-6\\n           bg-[#f8f4ec]">
           <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
             <div className="p-6 h-full bg-[g] bg-white rounded-xl py-[24px] px-[24px]">
               <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} onHighlightSection={handleHighlightSection} />
