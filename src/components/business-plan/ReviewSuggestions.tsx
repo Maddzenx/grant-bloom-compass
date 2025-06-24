@@ -1,25 +1,24 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDraftEvaluation, EvaluationSuggestion } from '@/hooks/useDraftEvaluation';
 import { ApplicationDraft } from '@/hooks/useChatAgent';
 import { Grant } from '@/types/grant';
-
 interface ReviewSuggestionsProps {
   draft?: ApplicationDraft;
   grant?: Grant;
   onApplySuggestion?: (suggestion: EvaluationSuggestion) => void;
   onHighlightSection?: (sectionKey: string) => void;
 }
-
 export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
   draft,
   grant,
   onApplySuggestion,
   onHighlightSection
 }) => {
-  const { suggestions } = useDraftEvaluation(draft || null, grant || null);
+  const {
+    suggestions
+  } = useDraftEvaluation(draft || null, grant || null);
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
 
   // Group suggestions by type
@@ -30,23 +29,19 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
     acc[suggestion.type].push(suggestion);
     return acc;
   }, {} as Record<string, EvaluationSuggestion[]>);
-
   const handleSuggestionClick = (suggestion: EvaluationSuggestion) => {
     console.log('Highlighting section:', suggestion.sectionKey);
     onHighlightSection?.(suggestion.sectionKey);
   };
-
   const handleAccept = (suggestion: EvaluationSuggestion) => {
     console.log('Accepting suggestion:', suggestion);
     onApplySuggestion?.(suggestion);
     setAppliedSuggestions(prev => new Set([...prev, suggestion.id]));
   };
-
   const handleDismiss = (suggestionId: string) => {
     console.log('Dismissed suggestion:', suggestionId);
     setAppliedSuggestions(prev => new Set([...prev, suggestionId]));
   };
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -59,20 +54,10 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
         return 'border-gray-200 bg-gray-50';
     }
   };
-
-  const renderSuggestionsList = (suggestions: EvaluationSuggestion[]) => (
-    <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-300px)]">
-      {suggestions.length === 0 ? (
-        <div className="text-sm text-gray-500 text-center py-4">
+  const renderSuggestionsList = (suggestions: EvaluationSuggestion[]) => <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-300px)]">
+      {suggestions.length === 0 ? <div className="text-sm text-gray-500 text-center py-4">
           {draft ? 'No suggestions for this category' : 'Generate a draft to see suggestions'}
-        </div>
-      ) : (
-        suggestions.filter(s => !appliedSuggestions.has(s.id)).map(suggestion => (
-          <div 
-            key={suggestion.id} 
-            className={`rounded-lg p-3 border cursor-pointer hover:shadow-md transition-all ${getPriorityColor(suggestion.priority)}`}
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
+        </div> : suggestions.filter(s => !appliedSuggestions.has(s.id)).map(suggestion => <div key={suggestion.id} onClick={() => handleSuggestionClick(suggestion)} className="px-[10px] py-[10px] bg-gray-50 rounded-xl">
             <div className="flex items-start justify-between mb-2">
               <div className="text-xs font-medium text-gray-600 uppercase">
                 {suggestion.priority} priority
@@ -90,42 +75,25 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
               {suggestion.reason}
             </div>
 
-            {suggestion.suggestedText !== suggestion.originalText && (
-              <div className="text-xs mb-3">
+            {suggestion.suggestedText !== suggestion.originalText && <div className="text-xs mb-3">
                 <div className="text-gray-600 mb-1">Suggested improvement:</div>
                 <div className="bg-white p-2 rounded border text-gray-700">
-                  {suggestion.suggestedText.length > 100 
-                    ? `${suggestion.suggestedText.substring(0, 100)}...` 
-                    : suggestion.suggestedText}
+                  {suggestion.suggestedText.length > 100 ? `${suggestion.suggestedText.substring(0, 100)}...` : suggestion.suggestedText}
                 </div>
-              </div>
-            )}
+              </div>}
             
-            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-              <Button 
-                size="sm" 
-                onClick={() => handleAccept(suggestion)} 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 h-8 text-sm rounded-md"
-              >
+            <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+              <Button size="sm" onClick={() => handleAccept(suggestion)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 h-8 text-sm rounded-md">
                 Apply
               </Button>
-              <button 
-                onClick={() => handleDismiss(suggestion.id)} 
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium px-2 py-1.5"
-              >
+              <button onClick={() => handleDismiss(suggestion.id)} className="text-blue-600 hover:text-blue-700 text-sm font-medium px-2 py-1.5">
                 Dismiss
               </button>
             </div>
-          </div>
-        ))
-      )}
-    </div>
-  );
-
+          </div>)}
+    </div>;
   const totalSuggestions = suggestions.filter(s => !appliedSuggestions.has(s.id)).length;
-
-  return (
-    <div className="h-full">
+  return <div className="h-full">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-gray-900 text-base">Review suggestions</h3>
@@ -136,38 +104,30 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
 
       {/* Tabbed Interface */}
       <Tabs defaultValue="Relevans" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-4">
+        <TabsList className="grid w-full grid-cols-4 mb-4 bg-gray-50 rounded-xl">
           <TabsTrigger value="Relevans" className="text-xs">
             Relevans
-            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Relevans'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>
-            )}
+              </span>}
           </TabsTrigger>
           <TabsTrigger value="Originalitet" className="text-xs">
             Originalitet
-            {groupedSuggestions['Originalitet']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {groupedSuggestions['Originalitet']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Originalitet'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>
-            )}
+              </span>}
           </TabsTrigger>
           <TabsTrigger value="Struktur" className="text-xs">
             Struktur
-            {groupedSuggestions['Struktur']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {groupedSuggestions['Struktur']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Struktur'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>
-            )}
+              </span>}
           </TabsTrigger>
           <TabsTrigger value="Övertygelse" className="text-xs">
             Övertygelse
-            {groupedSuggestions['Övertygelse']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {groupedSuggestions['Övertygelse']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Övertygelse'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>
-            )}
+              </span>}
           </TabsTrigger>
         </TabsList>
 
@@ -187,6 +147,5 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
           {renderSuggestionsList(groupedSuggestions['Övertygelse'] || [])}
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };

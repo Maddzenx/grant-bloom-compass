@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -10,13 +9,11 @@ import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeade
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
 import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
 import { EvaluationSuggestion } from '@/hooks/useDraftEvaluation';
-
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [highlightedSection, setHighlightedSection] = useState<string>('');
   const sectionRefsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
-  
   const {
     draft,
     grant
@@ -24,7 +21,6 @@ const BusinessPlanEditor = () => {
     draft: ApplicationDraft;
     grant: Grant;
   } || {};
-  
   const {
     sections,
     uploadedFiles,
@@ -46,14 +42,17 @@ const BusinessPlanEditor = () => {
   // Handle highlighting when suggestion is clicked
   const handleHighlightSection = useCallback((sectionKey: string) => {
     setHighlightedSection(sectionKey);
-    
+
     // Focus and scroll to the section
     const textarea = sectionRefsRef.current[sectionKey];
     if (textarea) {
       textarea.focus();
-      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      textarea.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
     }
-    
+
     // Clear highlight after a few seconds
     setTimeout(() => {
       setHighlightedSection('');
@@ -63,35 +62,55 @@ const BusinessPlanEditor = () => {
   // Handle applying suggestions with proper field mapping
   const handleApplySuggestion = useCallback((suggestion: EvaluationSuggestion) => {
     console.log('Applying suggestion:', suggestion);
-    
-    // Map section keys to the correct field structure
-    const sectionFieldMap: Record<string, { sectionId: string; fieldId: string; draftKey: keyof ApplicationDraft['sections'] }> = {
-      'utmaning': { sectionId: 'utmaning', fieldId: 'utmaning_beskrivning', draftKey: 'problemformulering' },
-      'losning': { sectionId: 'losning', fieldId: 'losning_beskrivning', draftKey: 'mal_och_resultat' },
-      'immaterial': { sectionId: 'immaterial', fieldId: 'immaterial_beskrivning', draftKey: 'immaterial' },
-      'marknad': { sectionId: 'marknad', fieldId: 'marknad_beskrivning', draftKey: 'malgrupp' },
-      'kommersialisering': { sectionId: 'kommersialisering', fieldId: 'kommersiell_strategi', draftKey: 'kommersialisering' },
-    };
 
+    // Map section keys to the correct field structure
+    const sectionFieldMap: Record<string, {
+      sectionId: string;
+      fieldId: string;
+      draftKey: keyof ApplicationDraft['sections'];
+    }> = {
+      'utmaning': {
+        sectionId: 'utmaning',
+        fieldId: 'utmaning_beskrivning',
+        draftKey: 'problemformulering'
+      },
+      'losning': {
+        sectionId: 'losning',
+        fieldId: 'losning_beskrivning',
+        draftKey: 'mal_och_resultat'
+      },
+      'immaterial': {
+        sectionId: 'immaterial',
+        fieldId: 'immaterial_beskrivning',
+        draftKey: 'immaterial'
+      },
+      'marknad': {
+        sectionId: 'marknad',
+        fieldId: 'marknad_beskrivning',
+        draftKey: 'malgrupp'
+      },
+      'kommersialisering': {
+        sectionId: 'kommersialisering',
+        fieldId: 'kommersiell_strategi',
+        draftKey: 'kommersialisering'
+      }
+    };
     const fieldMapping = sectionFieldMap[suggestion.sectionKey];
     if (fieldMapping) {
       // Update the field with the suggested text
       updateFieldValue(fieldMapping.sectionId, fieldMapping.fieldId, suggestion.suggestedText);
-      
+
       // Also update the draft object directly for immediate UI feedback
       if (draft && draft.sections) {
         draft.sections[fieldMapping.draftKey] = suggestion.suggestedText;
       }
     }
   }, [updateFieldValue, draft]);
-
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-[#f8f4ec] sticky top-0 z-50 px-6 py-4">
         <div className="flex items-center justify-between">
@@ -113,34 +132,21 @@ const BusinessPlanEditor = () => {
 
       <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-6 bg-[#f8f4ec]">
+        <div className="flex-1 p-6 bg-[#f8f4ec] my-0 py-[12.5px] px-[10px]">
           <div className="max-w-4xl">
-            <EditableBusinessPlanContent 
-              draft={draft} 
-              sections={sections} 
-              onUpdateField={updateFieldValue}
-              highlightedSection={highlightedSection}
-              onSectionRef={handleSectionRef}
-            />
+            <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} highlightedSection={highlightedSection} onSectionRef={handleSectionRef} />
           </div>
         </div>
 
         {/* Right Sidebar - Review suggestions (sticky) */}
-        <div className="w-80 bg-[#f8f4ec]">
+        <div className="w-80 bg-[#f8f4ec] py-[12.5px]">
           <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
-            <div className="p-6 h-full">
-              <ReviewSuggestions 
-                draft={draft} 
-                grant={grant} 
-                onApplySuggestion={handleApplySuggestion}
-                onHighlightSection={handleHighlightSection}
-              />
+            <div className="p-6 h-full bg-[g] bg-white rounded-xl py-[24px] px-[24px]">
+              <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} onHighlightSection={handleHighlightSection} />
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default BusinessPlanEditor;

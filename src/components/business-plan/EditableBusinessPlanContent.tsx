@@ -1,10 +1,8 @@
-
 import React, { useRef, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ApplicationDraft } from "@/hooks/useChatAgent";
 import { Section } from "@/types/businessPlan";
-
 interface EditableBusinessPlanContentProps {
   draft: ApplicationDraft;
   sections: Section[];
@@ -12,7 +10,6 @@ interface EditableBusinessPlanContentProps {
   highlightedSection?: string;
   onSectionRef?: (sectionKey: string, ref: HTMLTextAreaElement | null) => void;
 }
-
 export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentProps> = ({
   draft,
   sections,
@@ -22,27 +19,17 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
 }) => {
   const getSectionClassName = (sectionKey: string) => {
     const baseClass = "bg-gray-50 border-gray-200 min-h-[100px] focus:ring-2 focus:ring-blue-500 transition-all duration-300";
-    return highlightedSection === sectionKey 
-      ? `${baseClass} ring-2 ring-yellow-400 bg-yellow-50` 
-      : baseClass;
+    return highlightedSection === sectionKey ? `${baseClass} ring-2 ring-yellow-400 bg-yellow-50` : baseClass;
   };
-
-  return (
-    <div className="space-y-8">
+  return <div className="space-y-8">
       {/* Utmaning Section */}
-      <div className="bg-white rounded-lg p-6">
+      <div className="bg-white rounded-lg p-6 py-[24px]">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Utmaning</h2>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Beskriv den utmaning i ditt och omvärld som ni adresserar. Vilka är behoven? Vad har ni gjort för att undersöka behoven?
           </label>
-          <Textarea 
-            ref={(ref) => onSectionRef?.("utmaning", ref)}
-            value={draft.sections.problemformulering || ''} 
-            onChange={e => onUpdateField("utmaning", "utmaning_beskrivning", e.target.value)} 
-            className={getSectionClassName("utmaning")}
-            placeholder="Beskriv utmaningen..." 
-          />
+          <Textarea ref={ref => onSectionRef?.("utmaning", ref)} value={draft.sections.problemformulering || ''} onChange={e => onUpdateField("utmaning", "utmaning_beskrivning", e.target.value)} className={getSectionClassName("utmaning")} placeholder="Beskriv utmaningen..." />
         </div>
       </div>
 
@@ -53,13 +40,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Beskriv den produkt, tjänst eller lösning som ska utvecklas eller förbättras för marknaden i projektet. På vilket sätt är den innovativ? Vad är nytten för kunden? Beskriv hur långt projektet har kommit i sin utveckling. I vilket skede ska produkten befinna sig vid projektets slut?
           </label>
-          <Textarea 
-            ref={(ref) => onSectionRef?.("losning", ref)}
-            value={draft.sections.mal_och_resultat || ''} 
-            onChange={e => onUpdateField("losning", "losning_beskrivning", e.target.value)} 
-            className={getSectionClassName("losning")}
-            placeholder="Beskriv lösningen..." 
-          />
+          <Textarea ref={ref => onSectionRef?.("losning", ref)} value={draft.sections.mal_och_resultat || ''} onChange={e => onUpdateField("losning", "losning_beskrivning", e.target.value)} className={getSectionClassName("losning")} placeholder="Beskriv lösningen..." />
         </div>
       </div>
 
@@ -70,13 +51,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Har det genomförts en nyhetsgranskning? Har ni skyddat eller planerar ni att skydda produkten med ett patent, designskydd eller förvaradt?
           </label>
-          <Textarea 
-            ref={(ref) => onSectionRef?.("immaterial", ref)}
-            value={draft.sections.immaterial || ''} 
-            onChange={e => onUpdateField("immaterial", "immaterial_beskrivning", e.target.value)} 
-            className={getSectionClassName("immaterial")}
-            placeholder="Beskriv immaterialrätt..." 
-          />
+          <Textarea ref={ref => onSectionRef?.("immaterial", ref)} value={draft.sections.immaterial || ''} onChange={e => onUpdateField("immaterial", "immaterial_beskrivning", e.target.value)} className={getSectionClassName("immaterial")} placeholder="Beskriv immaterialrätt..." />
         </div>
       </div>
 
@@ -87,13 +62,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Beskriv den tänkta marknaden (nationell och internationell). Vilka potentiella kundgrupper finns? Vilka andra företag finns som konkurrenter med er produktidé? Har företaget oss er så till framtidsvarande förening? Vad gör er lösning unik?
           </label>
-          <Textarea 
-            ref={(ref) => onSectionRef?.("marknad", ref)}
-            value={draft.sections.malgrupp || ''} 
-            onChange={e => onUpdateField("marknad", "marknad_beskrivning", e.target.value)} 
-            className={getSectionClassName("marknad")}
-            placeholder="Beskriv marknaden..." 
-          />
+          <Textarea ref={ref => onSectionRef?.("marknad", ref)} value={draft.sections.malgrupp || ''} onChange={e => onUpdateField("marknad", "marknad_beskrivning", e.target.value)} className={getSectionClassName("marknad")} placeholder="Beskriv marknaden..." />
         </div>
       </div>
 
@@ -104,15 +73,8 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Beskriv strategin för hur idén ska kommersialiseras, nyttiggöras och implementeras. Vilka nationella och internationella samarbeten kan komma att behövas för att kommersialisera produkten? Har det utvecklats konkreta sätt eller en eventull finansiering från första?
           </label>
-          <Textarea 
-            ref={(ref) => onSectionRef?.("kommersialisering", ref)}
-            value={draft.sections.kommersialisering || ''} 
-            onChange={e => onUpdateField("kommersialisering", "kommersiell_strategi", e.target.value)} 
-            className={getSectionClassName("kommersialisering")}
-            placeholder="Beskriv kommersialisering..." 
-          />
+          <Textarea ref={ref => onSectionRef?.("kommersialisering", ref)} value={draft.sections.kommersialisering || ''} onChange={e => onUpdateField("kommersialisering", "kommersiell_strategi", e.target.value)} className={getSectionClassName("kommersialisering")} placeholder="Beskriv kommersialisering..." />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
