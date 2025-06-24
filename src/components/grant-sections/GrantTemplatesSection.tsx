@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
 import { FileText, Download } from "lucide-react";
@@ -23,16 +22,32 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
       return;
     }
     
-    // Check if it looks like a domain without protocol (contains . and no spaces, reasonable length)
+    // Check if it looks like a domain without protocol
     const possibleUrl = fileName.trim();
-    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100 && (possibleUrl.includes('.se') || possibleUrl.includes('.com') || possibleUrl.includes('.org'))) {
+    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100 && (possibleUrl.includes('.se') || possibleUrl.includes('.com') || possibleUrl.includes('.org') || possibleUrl.includes('.net') || possibleUrl.includes('.gov'))) {
       console.log('Treating as domain:', possibleUrl);
       window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
       return;
     }
     
-    // For files that look like document names, try to construct a search URL or provide helpful guidance
-    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument') || fileName.toLowerCase().includes('rules') || fileName.toLowerCase().includes('villkor')) {
+    // Check if it's a downloadable file by extension
+    const downloadableExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip', '.rar', '.txt', '.csv'];
+    const hasDownloadableExtension = downloadableExtensions.some(ext => fileName.toLowerCase().includes(ext));
+    
+    if (hasDownloadableExtension) {
+      // Try to construct a direct download URL or search for it
+      const searchTerm = encodeURIComponent(fileName);
+      const searchUrl = `https://www.google.com/search?q=${searchTerm}+filetype:${fileName.split('.').pop()?.toLowerCase() || 'pdf'}+site:vinnova.se`;
+      console.log('Searching for downloadable file:', searchUrl);
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // Check for document-related keywords that should trigger a search
+    const documentKeywords = ['beslutslista', 'mall', 'dokument', 'rules', 'villkor', 'intyg', 'formulär', 'ansökan', 'template', 'form', 'application', 'guidelines', 'regler', 'instruktion', 'manual', 'handbok', 'guide'];
+    const containsDocumentKeyword = documentKeywords.some(keyword => fileName.toLowerCase().includes(keyword.toLowerCase()));
+    
+    if (containsDocumentKeyword) {
       // Try to search for the document on the organization's website
       const searchTerm = encodeURIComponent(fileName);
       const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:vinnova.se`;
@@ -41,8 +56,11 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
       return;
     }
     
-    // Fallback: show helpful message
-    alert(`Detta verkar vara en referens till en fil: "${fileName}". Kontakta organisationen för att få tillgång till filen.`);
+    // If nothing else matches, try a general search for the term
+    const searchTerm = encodeURIComponent(fileName);
+    const generalSearchUrl = `https://www.google.com/search?q=${searchTerm}+vinnova`;
+    console.log('Performing general search:', generalSearchUrl);
+    window.open(generalSearchUrl, '_blank', 'noopener,noreferrer');
   };
 
   if (grant.templates.length === 0 && grant.generalInfo.length === 0) return null;
