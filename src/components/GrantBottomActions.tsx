@@ -15,7 +15,7 @@ interface GrantBottomActionsProps {
 
 const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
   const navigate = useNavigate();
-  const { addToSaved, removeFromSaved, startApplication, savedGrants } = useSavedGrantsContext();
+  const { addToSaved, removeFromSaved, startApplication, savedGrants, isGrantSaved } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
     if (grant) {
@@ -32,10 +32,11 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
 
   const handleBookmarkToggle = () => {
     if (grant) {
-      console.log('🔖 Bookmark toggle clicked for grant:', grant.id, 'Currently bookmarked:', isBookmarked);
+      const currentlyBookmarked = isGrantSaved(grant.id);
+      console.log('🔖 Bookmark toggle clicked for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
       console.log('📊 Current saved grants state before toggle:', savedGrants);
       
-      if (isBookmarked) {
+      if (currentlyBookmarked) {
         console.log('🗑️ Removing from saved');
         removeFromSaved(grant.id);
       } else {
@@ -45,6 +46,9 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
       onToggleBookmark();
     }
   };
+
+  // Use the context to determine if grant is actually saved
+  const actuallyBookmarked = grant ? isGrantSaved(grant.id) : false;
 
   return (
     <div className={`border-t border-gray-200 ${isMobile ? 'pt-3 mt-4' : 'pt-6 mt-6'}`}>
@@ -56,10 +60,10 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
         >
           <Bookmark
             className={`w-4 h-4 ${
-              isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
+              actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
             }`}
           />
-          {isBookmarked ? "Sparad" : "Spara bidrag"}
+          {actuallyBookmarked ? "Sparad" : "Spara bidrag"}
         </Button>
         <Button
           onClick={handleApplyClick}

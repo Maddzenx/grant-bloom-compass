@@ -13,10 +13,11 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   const [showDetails, setShowDetails] = useState(false);
   const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const isMobile = useIsMobile();
-  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
+  const { isGrantSaved, addToSaved, removeFromSaved, savedGrants } = useSavedGrantsContext();
 
   // Sync bookmarked grants with saved grants context
   useEffect(() => {
+    console.log('🔄 Syncing bookmarked grants with saved grants context');
     const updateBookmarkedGrants = () => {
       const newBookmarkedGrants = new Set<string>();
       searchResults.forEach(grant => {
@@ -24,11 +25,12 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
           newBookmarkedGrants.add(grant.id);
         }
       });
+      console.log('📊 Updated bookmarked grants:', Array.from(newBookmarkedGrants));
       setBookmarkedGrants(newBookmarkedGrants);
     };
 
     updateBookmarkedGrants();
-  }, [searchResults, isGrantSaved]);
+  }, [searchResults, isGrantSaved, savedGrants]);
 
   // Auto-select first grant when results change, but only if we don't have a valid selection
   useEffect(() => {
@@ -62,18 +64,23 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
     const grant = searchResults.find(g => g.id === grantId);
     if (!grant) return;
 
+    console.log('🔖 Toggle bookmark for grant:', grantId);
+    const currentlyBookmarked = isGrantSaved(grantId);
+    
     setBookmarkedGrants(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(grantId)) {
+      if (currentlyBookmarked) {
         newSet.delete(grantId);
         removeFromSaved(grantId);
+        console.log('🗑️ Removed from bookmarks:', grantId);
       } else {
         newSet.add(grantId);
         addToSaved(grant);
+        console.log('📝 Added to bookmarks:', grantId);
       }
       return newSet;
     });
-  }, [searchResults, addToSaved, removeFromSaved]);
+  }, [searchResults, addToSaved, removeFromSaved, isGrantSaved]);
 
   const handleBackToList = useCallback(() => {
     setShowDetails(false);

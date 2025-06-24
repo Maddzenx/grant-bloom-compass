@@ -20,7 +20,7 @@ const GrantNotionHeader = ({
   isMobile = false
 }: GrantNotionHeaderProps) => {
   const navigate = useNavigate();
-  const { startApplication } = useSavedGrantsContext();
+  const { startApplication, addToSaved, removeFromSaved, isGrantSaved } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
@@ -31,6 +31,23 @@ const GrantNotionHeader = ({
     console.log('🔄 After startApplication call, navigating to chat interface');
     navigate('/chat', { state: { grant } });
   };
+
+  const handleBookmarkToggle = () => {
+    const currentlyBookmarked = isGrantSaved(grant.id);
+    console.log('🔖 Header bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    
+    if (currentlyBookmarked) {
+      console.log('🗑️ Removing from saved');
+      removeFromSaved(grant.id);
+    } else {
+      console.log('📝 Adding to saved');
+      addToSaved(grant);
+    }
+    onToggleBookmark();
+  };
+
+  // Use the context to determine if grant is actually saved
+  const actuallyBookmarked = isGrantSaved(grant.id);
 
   return (
     <div className="w-full px-6 pb-12 rounded-none md:px-[24px] py-[24px] my-0">
@@ -63,15 +80,15 @@ const GrantNotionHeader = ({
         </Button>
         <Button
           variant="outline"
-          onClick={onToggleBookmark}
+          onClick={handleBookmarkToggle}
           className="px-4 py-2 text-sm border-gray-300 rounded-lg flex items-center gap-2"
         >
           <Bookmark
             className={`w-4 h-4 ${
-              isBookmarked ? "fill-current text-blue-600" : "text-gray-500"
+              actuallyBookmarked ? "fill-current text-blue-600" : "text-gray-500"
             }`}
           />
-          {isBookmarked ? "Sparat" : "Spara bidrag"}
+          {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
         </Button>
       </div>
     </div>
