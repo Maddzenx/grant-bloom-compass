@@ -16,6 +16,7 @@ const SavedGrants = () => {
   };
 
   const handleStartApplication = (grant: any) => {
+    // This will move the grant from saved to active applications
     startApplication(grant);
     navigate('/business-plan-editor', { state: { grant } });
   };

@@ -15,11 +15,12 @@ interface GrantBottomActionsProps {
 
 const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
   const navigate = useNavigate();
-  const { addToSaved, removeFromSaved } = useSavedGrantsContext();
+  const { addToSaved, removeFromSaved, startApplication, isGrantSaved } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
     if (grant) {
-      addToSaved(grant);
+      // Start the application process, which moves the grant to active applications
+      startApplication(grant);
       navigate('/business-plan-editor', { state: { grant } });
     }
   };
