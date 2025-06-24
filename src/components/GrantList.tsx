@@ -24,7 +24,7 @@ const GrantList = ({
   return <div className={containerClass}>
       <ScrollArea className="flex-1">
         <div className="px-1 md:px-2 py-0 bg-[#f8f4ec] max-w-[400px] my-[3px]">
-          <div className="space-y-2 md:space-y-3">
+          <div className="space-y-2 md:space-y-2">
             {grants.length === 0 ? <div className="text-center text-gray-500 mt-8 px-4">
                 {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
               </div> : grants.map(grant => <GrantCard key={grant.id} grant={grant} isSelected={selectedGrant?.id === grant.id} isBookmarked={bookmarkedGrants.has(grant.id)} onSelect={() => onGrantSelect(grant)} onToggleBookmark={() => onToggleBookmark(grant.id)} isMobile={isMobile} />)}
