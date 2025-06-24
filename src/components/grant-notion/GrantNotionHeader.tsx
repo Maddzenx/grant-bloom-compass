@@ -23,7 +23,7 @@ const GrantNotionHeader = ({
       }
     });
   };
-  return <div className="w-full px-6 pb-12 rounded-none md:px-[24px]">
+  return <div className="w-full px-6 pb-12 rounded-none md:px-[24px] py-[24px] my-[5px]">
       {/* Title */}
       <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight md:text-xl">
         {grant.title}

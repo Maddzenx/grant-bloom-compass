@@ -87,8 +87,8 @@ const GrantCard = ({
       
       {/* Status and deadline info */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-2">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-1 lg:gap-2">
             <span className={`font-semibold text-xs ${isDeadlinePassed ? 'text-red-600' : 'text-green-600'}`}>
               {isDeadlinePassed ? 'Closed:' : 'Open:'}
             </span>
@@ -105,7 +105,7 @@ const GrantCard = ({
             })()}
             </span>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-1 lg:gap-2">
             <span className="text-gray-600 font-medium text-xs">Deadline:</span>
             <span className="text-gray-900 font-semibold mx-[3px] text-xs sm:text-xs md:text-xs">{grant.deadline}</span>
           </div>
