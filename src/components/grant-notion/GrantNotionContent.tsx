@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ChevronDown, FileText, ExternalLink } from "lucide-react";
 import { Grant } from "@/types/grant";
@@ -15,16 +14,34 @@ const GrantNotionContent = ({
 }: GrantNotionContentProps) => {
   const handleFileClick = (fileName: string) => {
     console.log('Clicking on file:', fileName);
+    
+    // Check if the text contains a direct URL (http/https)
     const urlMatch = fileName.match(/https?:\/\/[^\s]+/);
     if (urlMatch) {
+      console.log('Found direct URL:', urlMatch[0]);
       window.open(urlMatch[0], '_blank', 'noopener,noreferrer');
       return;
     }
+    
+    // Check if it looks like a domain without protocol (contains . and no spaces, reasonable length)
     const possibleUrl = fileName.trim();
-    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100) {
+    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100 && (possibleUrl.includes('.se') || possibleUrl.includes('.com') || possibleUrl.includes('.org'))) {
+      console.log('Treating as domain:', possibleUrl);
       window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
       return;
     }
+    
+    // For files that look like document names, try to construct a search URL or provide helpful guidance
+    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument')) {
+      // Try to search for the document on the organization's website
+      const searchTerm = encodeURIComponent(fileName);
+      const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:formas.se`;
+      console.log('Searching for document:', searchUrl);
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
+    // Fallback: show helpful message
     alert(`Detta verkar vara en referens till en fil: "${fileName}". Kontakta organisationen för att få tillgång till filen.`);
   };
 
