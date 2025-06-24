@@ -132,14 +132,14 @@ const BusinessPlanEditor = () => {
 
       <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-6 bg-[#f8f4ec] my-0 py-[12.5px] px-[10px]">
+        <div className="w-full md:basis-[65%] flex-1\n           px-[10px] py-[12.5px] sm:px-4 sm:py-4 md:px-6 md:py-6\n           bg-[#f8f4ec] my-0">
           <div className="max-w-4xl">
             <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} highlightedSection={highlightedSection} onSectionRef={handleSectionRef} />
           </div>
         </div>
 
         {/* Right Sidebar - Review suggestions (sticky) */}
-        <div className="w-80 bg-[#f8f4ec] py-[12.5px]">
+        <div className="w-full md:basis-[35%] max-w-80\n           px-[10px] py-[12.5px] sm:px-4 sm:py-4 md:px-6 md:py-6\n           bg-[#f8f4ec]">
           <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
             <div className="p-6 h-full bg-[g] bg-white rounded-xl py-[24px] px-[24px]">
               <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} onHighlightSection={handleHighlightSection} />
