@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { SavedGrantsProvider } from "@/contexts/SavedGrantsContext";
 import Index from "./pages/Index";
 import DiscoverGrants from "./pages/DiscoverGrants";
 import SavedGrants from "./pages/SavedGrants";
@@ -31,29 +32,31 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Router>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full">
-            <AppSidebar />
-            <SidebarInset>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/discover" element={<DiscoverGrants />} />
-                <Route path="/saved" element={<SavedGrants />} />
-                <Route path="/ongoing" element={<ProgressChecklist />} />
-                <Route path="/progress" element={<ProgressChecklist />} />
-                <Route path="/draft/:draftId" element={<DraftViewer />} />
-                <Route path="/chat" element={<ChatInterface />} />
-                <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
-              </Routes>
-            </SidebarInset>
-          </div>
-        </SidebarProvider>
-      </Router>
-      <Toaster />
-      <Sonner />
-    </TooltipProvider>
+    <SavedGrantsProvider>
+      <TooltipProvider>
+        <Router>
+          <SidebarProvider>
+            <div className="min-h-screen flex w-full">
+              <AppSidebar />
+              <SidebarInset>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/discover" element={<DiscoverGrants />} />
+                  <Route path="/saved" element={<SavedGrants />} />
+                  <Route path="/ongoing" element={<ProgressChecklist />} />
+                  <Route path="/progress" element={<ProgressChecklist />} />
+                  <Route path="/draft/:draftId" element={<DraftViewer />} />
+                  <Route path="/chat" element={<ChatInterface />} />
+                  <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
+                </Routes>
+              </SidebarInset>
+            </div>
+          </SidebarProvider>
+        </Router>
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </SavedGrantsProvider>
   </QueryClientProvider>
 );
 

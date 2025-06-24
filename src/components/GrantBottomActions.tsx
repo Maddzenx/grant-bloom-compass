@@ -4,6 +4,7 @@ import { Bookmark, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
+import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 
 interface GrantBottomActionsProps {
   grant?: Grant;
@@ -14,9 +15,24 @@ interface GrantBottomActionsProps {
 
 const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
   const navigate = useNavigate();
+  const { addToSaved, removeFromSaved } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
-    navigate('/editor', { state: { grant } });
+    if (grant) {
+      addToSaved(grant);
+      navigate('/business-plan-editor', { state: { grant } });
+    }
+  };
+
+  const handleBookmarkToggle = () => {
+    if (grant) {
+      if (isBookmarked) {
+        removeFromSaved(grant.id);
+      } else {
+        addToSaved(grant);
+      }
+      onToggleBookmark();
+    }
   };
 
   return (
@@ -24,7 +40,7 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
       <div className={`flex gap-3 ${isMobile ? 'flex-col' : 'justify-center'}`}>
         <Button
           variant="outline"
-          onClick={onToggleBookmark}
+          onClick={handleBookmarkToggle}
           className={`${isMobile ? 'w-full justify-center' : ''} flex items-center gap-2`}
         >
           <Bookmark
