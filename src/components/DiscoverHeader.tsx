@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { PanelLeft } from "lucide-react";
@@ -36,7 +35,7 @@ const DiscoverHeader = ({
   } = useSidebar();
   const isMobile = useIsMobile();
   return <div className="w-full bg-[#f8f4ec] flex-shrink-0">
-      <div className="px-[16px] py-0 md:px-4">
+      <div className="px-[16px] md:px-4 py-[10px]">
         {/* Header with toggle button and title */}
         <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
           {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md" title="Expand sidebar">
