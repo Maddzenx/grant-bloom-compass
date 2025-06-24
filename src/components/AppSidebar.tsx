@@ -1,7 +1,9 @@
+
 import { useLocation, Link } from "react-router-dom";
 import { Home, Search, FileText, CheckSquare, User, Bookmark, PanelLeft } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+
 const menuItems = [{
   title: "Hem",
   url: "/",
@@ -11,6 +13,7 @@ const menuItems = [{
   url: "/discover",
   icon: Search
 }];
+
 const applicationItems = [{
   title: "Avslutade / Pågående bidrag",
   url: "/ongoing",
@@ -20,22 +23,25 @@ const applicationItems = [{
   url: "/saved",
   icon: Bookmark
 }];
+
 const accountItems = [{
   title: "Profilinformation",
   url: "/profile",
   icon: User
 }];
+
 export function AppSidebar() {
   const location = useLocation();
   const {
     toggleSidebar,
     state
   } = useSidebar();
+  
   return <>
       {/* Toggle button for collapsed state - positioned better */}
       {state === "collapsed"}
       
-      <Sidebar className="border-r border-gray-200">
+      <Sidebar className="">
         {/* Minimize button positioned at top right of sidebar */}
         <div className="absolute top-4 right-4 z-10">
           <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" title="Dölj sidopanel">
@@ -43,7 +49,7 @@ export function AppSidebar() {
           </Button>
         </div>
 
-        <SidebarContent className="bg-[#f8f4ec] pt-8 sm:pt-12 md:pt-16 border-none sm:py-[5px] md:py-[6px] mx-0">
+        <SidebarContent className="bg-[#f8f4ec] pt-8 sm:pt-12 md:pt-16 sm:py-[5px] md:py-[6px] mx-0">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>

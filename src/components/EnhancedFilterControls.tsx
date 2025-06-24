@@ -107,7 +107,7 @@ export const EnhancedFilterControls = ({
   const activeFilterCount = calculateActiveFilterCount(filters);
 
   return (
-    <div className="border-b border-gray-200" style={{ backgroundColor: '#f8f4ec' }}>
+    <div className="" style={{ backgroundColor: '#f8f4ec' }}>
       {/* Filter chips */}
       {hasActiveFilters && (
         <FilterChips
