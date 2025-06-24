@@ -51,7 +51,7 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
   const actuallyBookmarked = grant ? isGrantSaved(grant.id) : false;
 
   return (
-    <div className={`border-t border-gray-200 ${isMobile ? 'pt-3 mt-4' : 'pt-6 mt-6'}`}>
+    <div className={`border-t border-accent-lavender/30 ${isMobile ? 'pt-3 mt-4' : 'pt-6 mt-6'}`}>
       <div className={`flex gap-3 ${isMobile ? 'flex-col' : 'justify-center'}`}>
         <Button
           variant="outline"
@@ -60,14 +60,14 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
         >
           <Bookmark
             className={`w-4 h-4 ${
-              actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"
+              actuallyBookmarked ? "fill-accent-lavender text-accent-lavender" : "text-ink-obsidian/60"
             }`}
           />
           {actuallyBookmarked ? "Sparad" : "Spara bidrag"}
         </Button>
         <Button
           onClick={handleApplyClick}
-          className={`bg-blue-600 hover:bg-blue-700 text-white ${isMobile ? 'w-full' : ''} flex items-center gap-2`}
+          className={`${isMobile ? 'w-full' : ''} flex items-center gap-2`}
         >
           <ExternalLink className="w-4 h-4" />
           Börja ansökan

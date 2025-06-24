@@ -23,6 +23,13 @@ export default {
 				sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
 			},
 			colors: {
+				// New semantic palette
+				'canvas-cloud': '#F4F5F0',
+				'accent-lavender': '#867ACE',
+				'ink-obsidian': '#131012',
+				'highlight-amber': '#E29D3C',
+				
+				// Design system tokens updated with new palette
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
