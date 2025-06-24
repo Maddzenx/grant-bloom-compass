@@ -23,7 +23,7 @@ const GrantList = ({
   const containerClass = isMobile ? "w-full bg-[#f8f4ec] overflow-hidden flex flex-col" : "w-[35%] bg-[#f8f4ec] overflow-hidden flex flex-col";
   return <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <div className="px-1 md:px-2 py-0 bg-[#f8f4ec] max-w-[400px] my-px">
+        <div className="px-1 md:px-1 py-0 bg-[#f8f4ec] max-w-[400px] my-px">
           <div className="space-y-2 md:space-y-2">
             {grants.length === 0 ? <div className="text-center text-gray-500 mt-8 px-4">
                 {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
