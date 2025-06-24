@@ -1,9 +1,7 @@
-
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import EnhancedSearchBar from "@/components/EnhancedSearchBar";
 import SortingControls, { SortOption } from "@/components/SortingControls";
-
 interface DiscoverHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
@@ -18,7 +16,6 @@ interface DiscoverHeaderProps {
     cacheHitRate: number;
   };
 }
-
 const DiscoverHeader = ({
   searchTerm,
   onSearchChange,
@@ -30,10 +27,8 @@ const DiscoverHeader = ({
   searchMetrics
 }: DiscoverHeaderProps) => {
   const isMobile = useIsMobile();
-
-  return (
-    <div className="w-full bg-[#f8f4ec] flex-shrink-0">
-      <div className="px-[16px] md:px-4 py-[10px]">
+  return <div className="w-full bg-[#f8f4ec] flex-shrink-0">
+      <div className="px-[16px] md:px-[24px] py-[2px]">
         {/* Header with title */}
         <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
           <h1 className={`font-bold text-gray-900 py-[10px] ${isMobile ? 'text-lg' : 'text-xl'}`}>
@@ -46,13 +41,7 @@ const DiscoverHeader = ({
           {/* Centered enhanced search bar */}
           <div className="flex justify-between ">
             <div className="w-full max-w-md">
-              <EnhancedSearchBar 
-                searchTerm={searchTerm} 
-                onSearchChange={onSearchChange} 
-                suggestions={suggestions} 
-                isSearching={isSearching} 
-                searchMetrics={searchMetrics} 
-              />
+              <EnhancedSearchBar searchTerm={searchTerm} onSearchChange={onSearchChange} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} />
             </div>
           </div>
           
@@ -68,8 +57,6 @@ const DiscoverHeader = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default DiscoverHeader;
