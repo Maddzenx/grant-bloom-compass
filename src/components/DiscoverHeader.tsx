@@ -35,7 +35,7 @@ const DiscoverHeader = ({
   } = useSidebar();
   const isMobile = useIsMobile();
   return <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
-      <div className="p-2 md:p-4 border border-transparent py-0 px-[16px]">
+      <div className="px-[16px] py-0 md:px-4 border border-[#f8f4ec]\n">
         {/* Header with toggle button and title */}
         <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
           {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md border border-gray-200" title="Expand sidebar">
