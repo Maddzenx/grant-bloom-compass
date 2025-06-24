@@ -26,7 +26,7 @@ export function TopNavigation() {
     setIsMobileMenuOpen(false);
   };
   return <nav className="bg-canvas-cloud border-b border-accent-lavender/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[F4F5F0] bg-[#f4f5f0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[F4F5F0] bg-[#f4f5f0] border-none ">
         <div className="flex items-center justify-between h-16 border-none ">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
