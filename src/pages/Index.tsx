@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Mic, Upload, ArrowRight, Square } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +10,11 @@ import { useGrants } from "@/hooks/useGrants";
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Hardcoded API key
+  const apiKey = "key_MByf0khg5w7tZlB7";
 
   const { data: grants, isLoading: grantsLoading } = useGrants();
   const { matchGrants, isMatching, matchingError } = useGrantMatching();
@@ -35,12 +35,6 @@ const Index = () => {
   const handleRedirect = async () => {
     if (!inputValue.trim()) {
       navigate("/discover");
-      return;
-    }
-
-    // Check if we need API key for matching
-    if (!apiKey && inputValue.trim()) {
-      setShowApiKeyInput(true);
       return;
     }
 
@@ -97,13 +91,6 @@ const Index = () => {
     // Reset the file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
-    }
-  };
-
-  const handleApiKeySubmit = () => {
-    if (apiKey.trim()) {
-      setShowApiKeyInput(false);
-      handleRedirect();
     }
   };
 
@@ -226,44 +213,6 @@ const Index = () => {
               </div>
             )}
           </div>
-
-          {/* API Key Input Modal */}
-          {showApiKeyInput && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-                <h3 className="text-lg font-semibold mb-4">Enter OpenAI API Key</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  To enable AI-powered grant matching, please enter your OpenAI API key:
-                </p>
-                <Input
-                  type="password"
-                  placeholder="sk-..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="mb-4"
-                />
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleApiKeySubmit}
-                    disabled={!apiKey.trim()}
-                    className="flex-1"
-                  >
-                    Match Grants
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setShowApiKeyInput(false);
-                      navigate("/discover", { state: { searchTerm: inputValue } });
-                    }}
-                    className="flex-1"
-                  >
-                    Skip Matching
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
