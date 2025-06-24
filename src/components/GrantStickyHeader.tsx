@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +32,7 @@ const GrantStickyHeader = ({
   };
 
   return (
-    <div className={`bg-white border-b border-gray-200 ${isMobile ? 'p-2' : 'p-4'} backdrop-blur-sm bg-white/95 hover:bg-white transition-all duration-300 ease-out hover:shadow-md group`}>
+    <div className={`bg-white ${isMobile ? 'p-2' : 'p-4'} backdrop-blur-sm bg-white/95 hover:bg-white transition-all duration-300 ease-out hover:shadow-md group`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
           <img 
@@ -75,3 +76,4 @@ const GrantStickyHeader = ({
 };
 
 export default GrantStickyHeader;
+

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ const GrantDetailsPanel = ({
   const containerClass = isMobile ? "w-full bg-[#f8f4ec] overflow-hidden relative" : "w-[65%] bg-[#f8f4ec] overflow-hidden relative";
   return <div className={containerClass}>
       {/* Mobile Back Button */}
-      {isMobile && selectedGrant && onBackToList && <div className="sticky top-0 z-20 bg-[#f8f4ec] border-b border-gray-200 p-3">
+      {isMobile && selectedGrant && onBackToList && <div className="sticky top-0 z-20 bg-[#f8f4ec] p-3">
           <Button variant="ghost" size="sm" onClick={onBackToList} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Tillbaka till listan
@@ -73,7 +74,7 @@ const GrantDetailsPanel = ({
         </div>}
       
       {selectedGrant ? <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
-          <div className="px-0 py-0 md:p-4 border border-[#f8f4ec] relative\n">
+          <div className="px-0 py-0 md:p-4 bg-[#f8f4ec] relative">
             {/* Enhanced Sticky Header positioned within the white content area */}
             {selectedGrant && <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${showStickyHeader ? 'opacity-100 transform translate-y-0 shadow-lg' : 'opacity-0 transform -translate-y-4 pointer-events-none'}`}>
                 <GrantStickyHeader grant={selectedGrant} isBookmarked={bookmarkedGrants.has(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} isMobile={isMobile} />

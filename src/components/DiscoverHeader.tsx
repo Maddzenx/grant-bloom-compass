@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { PanelLeft } from "lucide-react";
@@ -34,11 +35,11 @@ const DiscoverHeader = ({
     state
   } = useSidebar();
   const isMobile = useIsMobile();
-  return <div className="w-full bg-[#f8f4ec] border-b border-gray-200 flex-shrink-0">
-      <div className="px-[16px] py-0 md:px-4 border border-none">
+  return <div className="w-full bg-[#f8f4ec] flex-shrink-0">
+      <div className="px-[16px] py-0 md:px-4">
         {/* Header with toggle button and title */}
         <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-          {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md border border-gray-200" title="Expand sidebar">
+          {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md" title="Expand sidebar">
               <PanelLeft className="w-4 h-4" />
             </Button>}
           <h1 className={`font-bold text-gray-900 py-[10px] ${isMobile ? 'text-lg' : 'text-xl'}`}>
