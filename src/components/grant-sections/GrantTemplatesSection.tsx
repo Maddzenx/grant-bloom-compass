@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Grant } from "@/types/grant";
 import { FileText, Download } from "lucide-react";
@@ -24,17 +25,17 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
     
     // Check if it looks like a domain without protocol (contains . and no spaces, reasonable length)
     const possibleUrl = fileName.trim();
-    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100 && possibleUrl.includes('.se') || possibleUrl.includes('.com') || possibleUrl.includes('.org')) {
+    if (possibleUrl.includes('.') && !possibleUrl.includes(' ') && possibleUrl.length < 100 && (possibleUrl.includes('.se') || possibleUrl.includes('.com') || possibleUrl.includes('.org'))) {
       console.log('Treating as domain:', possibleUrl);
       window.open(`https://${possibleUrl}`, '_blank', 'noopener,noreferrer');
       return;
     }
     
     // For files that look like document names, try to construct a search URL or provide helpful guidance
-    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument')) {
+    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument') || fileName.toLowerCase().includes('rules') || fileName.toLowerCase().includes('villkor')) {
       // Try to search for the document on the organization's website
       const searchTerm = encodeURIComponent(fileName);
-      const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:formas.se`;
+      const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:vinnova.se`;
       console.log('Searching for document:', searchUrl);
       window.open(searchUrl, '_blank', 'noopener,noreferrer');
       return;

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { ChevronDown, FileText, ExternalLink } from "lucide-react";
 import { Grant } from "@/types/grant";
@@ -32,10 +33,10 @@ const GrantNotionContent = ({
     }
     
     // For files that look like document names, try to construct a search URL or provide helpful guidance
-    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument')) {
+    if (fileName.toLowerCase().includes('beslutslista') || fileName.toLowerCase().includes('.pdf') || fileName.toLowerCase().includes('mall') || fileName.toLowerCase().includes('dokument') || fileName.toLowerCase().includes('rules') || fileName.toLowerCase().includes('villkor')) {
       // Try to search for the document on the organization's website
       const searchTerm = encodeURIComponent(fileName);
-      const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:formas.se`;
+      const searchUrl = `https://www.google.com/search?q=${searchTerm}+site:vinnova.se`;
       console.log('Searching for document:', searchUrl);
       window.open(searchUrl, '_blank', 'noopener,noreferrer');
       return;
