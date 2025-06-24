@@ -43,7 +43,7 @@ export function AppSidebar() {
           </Button>
         </div>
 
-        <SidebarContent className="rounded-lg\\n border\\n shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]\\n pt-8 sm:pt-12 md:pt-1 sm:py-[1px]\\n mx-0\\n bg-[#f8f4ec]\\n text-card-foreground\\n md:py-0 bg-[f8f4ec]">
+        <SidebarContent className="rounded-lg\\\\n border\\\\n shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]\\\\n pt-8 sm:pt-12 md:pt-1 sm:py-[1px]\\\\n mx-0\\\\n bg-[#f8f4ec]\\\\n text-card-foreground\\\\n md:py-0 bg-[f8f4ec] bg-[#f8f4ec]">
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               <SidebarMenu>
