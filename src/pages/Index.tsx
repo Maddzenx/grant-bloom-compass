@@ -6,11 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useGrantMatching } from "@/hooks/useGrantMatching";
+import { useGrants } from "@/hooks/useGrants";
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: grants, isLoading: grantsLoading } = useGrants();
+  const { matchGrants, isMatching, matchingError } = useGrantMatching();
 
   const {
     isRecording,
@@ -25,8 +32,46 @@ const Index = () => {
     handleFileSelect
   } = useFileUpload();
 
-  const handleRedirect = () => {
-    navigate("/discover");
+  const handleRedirect = async () => {
+    if (!inputValue.trim()) {
+      navigate("/discover");
+      return;
+    }
+
+    // Check if we need API key for matching
+    if (!apiKey && inputValue.trim()) {
+      setShowApiKeyInput(true);
+      return;
+    }
+
+    // Perform grant matching if we have grants and input
+    if (grants && grants.length > 0 && inputValue.trim()) {
+      console.log('🚀 Starting grant matching process...');
+      
+      const result = await matchGrants(
+        grants, 
+        { description: inputValue },
+        apiKey
+      );
+
+      if (result) {
+        console.log('✅ Grant matching successful, navigating to discover page...');
+        // Navigate to discover page with matched grants
+        navigate("/discover", { 
+          state: { 
+            matchedGrants: result.sortedGrants,
+            matchResponse: result.matchResponse,
+            searchTerm: inputValue
+          } 
+        });
+      } else {
+        console.log('❌ Grant matching failed, navigating to discover page without matching...');
+        // Navigate without matching if it fails
+        navigate("/discover", { state: { searchTerm: inputValue } });
+      }
+    } else {
+      navigate("/discover");
+    }
   };
 
   const handleVoiceInput = async () => {
@@ -55,6 +100,15 @@ const Index = () => {
     }
   };
 
+  const handleApiKeySubmit = () => {
+    if (apiKey.trim()) {
+      setShowApiKeyInput(false);
+      handleRedirect();
+    }
+  };
+
+  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading;
+
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-6 bg-white">
       <div className="w-full max-w-4xl mx-auto">
@@ -73,7 +127,7 @@ const Index = () => {
                   isRecording ? 'bg-red-100 hover:bg-red-200 text-red-600' : 'hover:bg-gray-100'
                 }`} 
                 onClick={handleVoiceInput} 
-                disabled={isTranscribing || isUploading} 
+                disabled={isProcessing} 
                 title={isRecording ? "Stop recording" : "Start voice recording"}
               >
                 {isRecording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5 text-gray-500" />}
@@ -85,7 +139,7 @@ const Index = () => {
                 size="sm" 
                 className="p-2 rounded-full hover:bg-gray-100 flex-shrink-0" 
                 onClick={handleFileUpload} 
-                disabled={isRecording || isTranscribing || isUploading} 
+                disabled={isProcessing} 
                 title="Upload file"
               >
                 <Upload className="w-5 h-5 text-gray-500" />
@@ -105,12 +159,14 @@ const Index = () => {
                 placeholder={
                   isTranscribing ? "Transcribing audio..." : 
                   isUploading ? "Processing file..." : 
+                  isMatching ? "Matching grants..." :
+                  grantsLoading ? "Loading grants..." :
                   "Describe your project or funding needs..."
                 } 
                 className="flex-1 border-0 bg-transparent text-base placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0" 
                 value={inputValue} 
                 onChange={e => setInputValue(e.target.value)} 
-                disabled={isTranscribing || isUploading} 
+                disabled={isProcessing} 
               />
               
               {/* Redirect Button - Only show when there's input */}
@@ -120,7 +176,7 @@ const Index = () => {
                   size="sm" 
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white" 
                   onClick={handleRedirect} 
-                  disabled={isRecording || isTranscribing || isUploading}
+                  disabled={isProcessing}
                 >
                   <span>Find Grants</span>
                   <ArrowRight className="w-4 h-4" />
@@ -149,7 +205,65 @@ const Index = () => {
                 Processing file...
               </div>
             )}
+
+            {isMatching && (
+              <div className="mt-4 text-sm text-blue-600 flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                Matching grants with your project...
+              </div>
+            )}
+
+            {grantsLoading && (
+              <div className="mt-4 text-sm text-blue-600 flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                Loading available grants...
+              </div>
+            )}
+
+            {matchingError && (
+              <div className="mt-4 text-sm text-red-600 text-center">
+                {matchingError}
+              </div>
+            )}
           </div>
+
+          {/* API Key Input Modal */}
+          {showApiKeyInput && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 className="text-lg font-semibold mb-4">Enter OpenAI API Key</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  To enable AI-powered grant matching, please enter your OpenAI API key:
+                </p>
+                <Input
+                  type="password"
+                  placeholder="sk-..."
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="mb-4"
+                />
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleApiKeySubmit}
+                    disabled={!apiKey.trim()}
+                    className="flex-1"
+                  >
+                    Match Grants
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setShowApiKeyInput(false);
+                      navigate("/discover", { state: { searchTerm: inputValue } });
+                    }}
+                    className="flex-1"
+                  >
+                    Skip Matching
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
