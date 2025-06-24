@@ -21,7 +21,7 @@ export const FilterHeader = ({
       <div className="flex items-center justify-between border-none\n">
         <Button variant="ghost" size="sm" onClick={onToggleExpanded} className="flex items-center gap-2 text-gray-900 hover:text-gray-700 p-0 h-auto text-sm font-normal">
           <Filter className="w-4 h-4" />
-          <h3 className="font-normal text-sm">Advanced filter</h3>
+          <h3 className="font-normal text-sm">Advancerat filter</h3>
           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </Button>
         
