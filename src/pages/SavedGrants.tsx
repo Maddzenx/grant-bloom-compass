@@ -75,13 +75,11 @@ const SavedGrants = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">Innovation Grant Application</h3>
-                  <p className="text-sm text-gray-600 mb-1">Status: Väntar på granskning</p>
+                  
                   <p className="text-xs text-gray-500">Skickad 10 jan 09:15</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="border-gray-300">
-                    Visa status
-                  </Button>
+                  
                   <Button variant="outline" size="icon" className="border-gray-300">
                     <Download className="w-4 h-4" />
                   </Button>
@@ -93,13 +91,11 @@ const SavedGrants = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">Sustainability Project</h3>
-                  <p className="text-sm text-gray-600 mb-1">Status: Under utvärdering</p>
+                  
                   <p className="text-xs text-gray-500">Skickad 8 jan 15:22</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="border-gray-300">
-                    Visa status
-                  </Button>
+                  
                   <Button variant="outline" size="icon" className="border-gray-300">
                     <Download className="w-4 h-4" />
                   </Button>
@@ -111,13 +107,11 @@ const SavedGrants = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">Research Initiative</h3>
-                  <p className="text-sm text-gray-600 mb-1">Status: Komplettering begärd</p>
+                  
                   <p className="text-xs text-gray-500">Skickad 5 jan 11:30</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="border-gray-300">
-                    Komplettera
-                  </Button>
+                  
                   <Button variant="outline" size="icon" className="border-gray-300">
                     <Download className="w-4 h-4" />
                   </Button>
