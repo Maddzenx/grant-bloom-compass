@@ -9,7 +9,7 @@ const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPrimitive.
     <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
       {children}
     </ScrollAreaPrimitive.Viewport>
-    <ScrollBar className="px-[5px]" />
+    <ScrollBar className="px-[5px] " />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>);
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
