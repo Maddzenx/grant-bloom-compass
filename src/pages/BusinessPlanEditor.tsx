@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [highlightedSection, setHighlightedSection] = useState<string>('');
-  const [sectionRefs, setSectionRefs] = useState<Record<string, HTMLTextAreaElement | null>>({});
+  const sectionRefsRef = useRef<Record<string, HTMLTextAreaElement | null>>({});
   
   const {
     draft,
@@ -38,22 +38,30 @@ const BusinessPlanEditor = () => {
     exportBusinessPlan
   } = useBusinessPlanEditor(grant);
 
-  // Handle section reference storage
-  const handleSectionRef = (sectionKey: string, ref: HTMLTextAreaElement | null) => {
-    setSectionRefs(prev => ({ ...prev, [sectionKey]: ref }));
-  };
+  // Handle section reference storage using useCallback to prevent re-renders
+  const handleSectionRef = useCallback((sectionKey: string, ref: HTMLTextAreaElement | null) => {
+    sectionRefsRef.current[sectionKey] = ref;
+  }, []);
 
   // Handle highlighting when suggestion is clicked
-  const handleHighlightSection = (sectionKey: string) => {
+  const handleHighlightSection = useCallback((sectionKey: string) => {
     setHighlightedSection(sectionKey);
+    
+    // Focus and scroll to the section
+    const textarea = sectionRefsRef.current[sectionKey];
+    if (textarea) {
+      textarea.focus();
+      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
     // Clear highlight after a few seconds
     setTimeout(() => {
       setHighlightedSection('');
     }, 3000);
-  };
+  }, []);
 
   // Handle applying suggestions with proper field mapping
-  const handleApplySuggestion = (suggestion: EvaluationSuggestion) => {
+  const handleApplySuggestion = useCallback((suggestion: EvaluationSuggestion) => {
     console.log('Applying suggestion:', suggestion);
     
     // Map section keys to the correct field structure
@@ -75,7 +83,7 @@ const BusinessPlanEditor = () => {
         draft.sections[fieldMapping.draftKey] = suggestion.suggestedText;
       }
     }
-  };
+  }, [updateFieldValue, draft]);
 
   if (!draft || !grant) {
     navigate('/chat');
