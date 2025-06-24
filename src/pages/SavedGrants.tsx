@@ -1,14 +1,15 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, ExternalLink } from 'lucide-react';
+import { Download, ExternalLink, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useSavedGrantsContext } from '@/contexts/SavedGrantsContext';
 import { useNavigate } from 'react-router-dom';
 
 const SavedGrants = () => {
-  const { savedGrants, startApplication, submitForReview } = useSavedGrantsContext();
+  const { savedGrants, startApplication, submitForReview, removeFromActive, removeFromSaved } = useSavedGrantsContext();
   const navigate = useNavigate();
 
   // Add comprehensive debugging
@@ -25,7 +26,18 @@ const SavedGrants = () => {
 
   const handleEditClick = (grantId: string) => {
     console.log('✏️ Edit clicked for grant:', grantId);
-    navigate('/editor', { state: { grantId } });
+    // For now, default to chat interface - could be enhanced to remember last editing context
+    navigate('/chat', { state: { grantId } });
+  };
+
+  const handleDeleteActive = (grantId: string) => {
+    console.log('🗑️ Deleting active application:', grantId);
+    removeFromActive(grantId);
+  };
+
+  const handleDeleteSaved = (grantId: string) => {
+    console.log('🗑️ Deleting saved application:', grantId);
+    removeFromSaved(grantId);
   };
 
   const handleStartApplication = (grant: any) => {
@@ -48,10 +60,6 @@ const SavedGrants = () => {
       minute: '2-digit'
     }).format(date);
   };
-
-  // Move console.log outside JSX
-  console.log('🎯 Rendering active applications tab, count:', savedGrants.activeApplications.length);
-  console.log('📋 Active applications data:', savedGrants.activeApplications);
 
   return (
     <div className="flex-1 bg-[#f8f4ec]">
@@ -104,6 +112,27 @@ const SavedGrants = () => {
                         <Button variant="outline" size="icon" className="border-gray-300">
                           <Download className="w-4 h-4" />
                         </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="icon" className="border-red-300 hover:bg-red-50">
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Ta bort ansökan</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Är du säker på att du vill ta bort denna aktiva ansökan? Denna åtgärd kan inte ångras.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteActive(grant.id)} className="bg-red-600 hover:bg-red-700">
+                                Ta bort
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </Card>
@@ -171,6 +200,27 @@ const SavedGrants = () => {
                       <Button variant="outline" size="icon" className="border-gray-300">
                         <Download className="w-4 h-4" />
                       </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="icon" className="border-red-300 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Ta bort sparad ansökan</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Är du säker på att du vill ta bort denna sparade ansökan? Denna åtgärd kan inte ångras.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteSaved(grant.id)} className="bg-red-600 hover:bg-red-700">
+                              Ta bort
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </Card>

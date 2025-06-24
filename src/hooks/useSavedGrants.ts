@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Grant } from '@/types/grant';
 
@@ -126,6 +125,30 @@ export const useSavedGrants = () => {
     });
   }, []);
 
+  const removeFromActive = useCallback((grantId: string) => {
+    console.log('🗑️ Removing grant from active applications:', grantId);
+    setSavedGrants(prev => {
+      const newState = {
+        ...prev,
+        activeApplications: prev.activeApplications.filter(g => g.id !== grantId)
+      };
+      console.log('✅ New state after removing from active:', newState);
+      return newState;
+    });
+  }, []);
+
+  const removeFromPending = useCallback((grantId: string) => {
+    console.log('🗑️ Removing grant from pending review:', grantId);
+    setSavedGrants(prev => {
+      const newState = {
+        ...prev,
+        pendingReview: prev.pendingReview.filter(g => g.id !== grantId)
+      };
+      console.log('✅ New state after removing from pending:', newState);
+      return newState;
+    });
+  }, []);
+
   const isGrantSaved = useCallback((grantId: string) => {
     const isSaved = savedGrants.savedApplications.some(g => g.id === grantId);
     const isActive = savedGrants.activeApplications.some(g => g.id === grantId);
@@ -147,6 +170,8 @@ export const useSavedGrants = () => {
     savedGrants,
     addToSaved,
     removeFromSaved,
+    removeFromActive,
+    removeFromPending,
     startApplication,
     submitForReview,
     isGrantSaved,

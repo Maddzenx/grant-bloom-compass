@@ -11,6 +11,8 @@ interface SavedGrantsContextType {
   };
   addToSaved: (grant: Grant) => void;
   removeFromSaved: (grantId: string) => void;
+  removeFromActive: (grantId: string) => void;
+  removeFromPending: (grantId: string) => void;
   startApplication: (grant: Grant) => void;
   submitForReview: (grant: Grant) => void;
   isGrantSaved: (grantId: string) => boolean;
