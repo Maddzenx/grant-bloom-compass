@@ -1,10 +1,9 @@
+
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { PanelLeft } from "lucide-react";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import EnhancedSearchBar from "@/components/EnhancedSearchBar";
 import SortingControls, { SortOption } from "@/components/SortingControls";
+
 interface DiscoverHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
@@ -19,6 +18,7 @@ interface DiscoverHeaderProps {
     cacheHitRate: number;
   };
 }
+
 const DiscoverHeader = ({
   searchTerm,
   onSearchChange,
@@ -29,18 +29,13 @@ const DiscoverHeader = ({
   isSearching = false,
   searchMetrics
 }: DiscoverHeaderProps) => {
-  const {
-    toggleSidebar,
-    state
-  } = useSidebar();
   const isMobile = useIsMobile();
-  return <div className="w-full bg-[#f8f4ec] flex-shrink-0">
+
+  return (
+    <div className="w-full bg-[#f8f4ec] flex-shrink-0">
       <div className="px-[16px] md:px-4 py-[10px]">
-        {/* Header with toggle button and title */}
+        {/* Header with title */}
         <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-          {state === "collapsed" && <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors bg-white shadow-md" title="Expand sidebar">
-              <PanelLeft className="w-4 h-4" />
-            </Button>}
           <h1 className={`font-bold text-gray-900 py-[10px] ${isMobile ? 'text-lg' : 'text-xl'}`}>
             Upptäck bidrag
           </h1>
@@ -51,7 +46,13 @@ const DiscoverHeader = ({
           {/* Centered enhanced search bar */}
           <div className="flex justify-between ">
             <div className="w-full max-w-md">
-              <EnhancedSearchBar searchTerm={searchTerm} onSearchChange={onSearchChange} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} />
+              <EnhancedSearchBar 
+                searchTerm={searchTerm} 
+                onSearchChange={onSearchChange} 
+                suggestions={suggestions} 
+                isSearching={isSearching} 
+                searchMetrics={searchMetrics} 
+              />
             </div>
           </div>
           
@@ -67,6 +68,8 @@ const DiscoverHeader = ({
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default DiscoverHeader;
