@@ -15,23 +15,31 @@ interface GrantBottomActionsProps {
 
 const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = false }: GrantBottomActionsProps) => {
   const navigate = useNavigate();
-  const { addToSaved, removeFromSaved, startApplication, isGrantSaved } = useSavedGrantsContext();
+  const { addToSaved, removeFromSaved, startApplication, savedGrants } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
     if (grant) {
-      console.log('Starting application for grant:', grant.id, grant.title);
+      console.log('🎯 Apply button clicked for grant:', grant.id, grant.title);
+      console.log('📊 Current saved grants state before starting application:', savedGrants);
+      
       // Start the application process, which moves the grant to active applications
       startApplication(grant);
+      
+      console.log('🔄 After startApplication call, navigating to business plan editor');
       navigate('/business-plan-editor', { state: { grant } });
     }
   };
 
   const handleBookmarkToggle = () => {
     if (grant) {
-      console.log('Toggling bookmark for grant:', grant.id, 'Currently bookmarked:', isBookmarked);
+      console.log('🔖 Bookmark toggle clicked for grant:', grant.id, 'Currently bookmarked:', isBookmarked);
+      console.log('📊 Current saved grants state before toggle:', savedGrants);
+      
       if (isBookmarked) {
+        console.log('🗑️ Removing from saved');
         removeFromSaved(grant.id);
       } else {
+        console.log('📝 Adding to saved');
         addToSaved(grant);
       }
       onToggleBookmark();

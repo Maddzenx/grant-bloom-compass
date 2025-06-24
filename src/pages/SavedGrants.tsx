@@ -11,17 +11,25 @@ const SavedGrants = () => {
   const { savedGrants, startApplication, submitForReview } = useSavedGrantsContext();
   const navigate = useNavigate();
 
-  // Add debugging
-  console.log('SavedGrants component - Current saved grants state:', savedGrants);
-  console.log('SavedGrants component - Active applications count:', savedGrants.activeApplications.length);
-  console.log('SavedGrants component - Active applications:', savedGrants.activeApplications);
+  // Add comprehensive debugging
+  console.log('🎯 SavedGrants component render - Full state:', {
+    savedApplications: savedGrants.savedApplications,
+    activeApplications: savedGrants.activeApplications,
+    pendingReview: savedGrants.pendingReview,
+    counts: {
+      saved: savedGrants.savedApplications.length,
+      active: savedGrants.activeApplications.length,
+      pending: savedGrants.pendingReview.length
+    }
+  });
 
   const handleEditClick = (grantId: string) => {
+    console.log('✏️ Edit clicked for grant:', grantId);
     navigate('/editor', { state: { grantId } });
   };
 
   const handleStartApplication = (grant: any) => {
-    console.log('Starting application from saved grants page:', grant.id, grant.title);
+    console.log('🚀 Starting application from saved grants page:', grant.id, grant.title);
     // This will move the grant from saved to active applications
     startApplication(grant);
     navigate('/business-plan-editor', { state: { grant } });
@@ -35,9 +43,6 @@ const SavedGrants = () => {
       minute: '2-digit'
     }).format(date);
   };
-
-  // Move console.log outside of JSX
-  console.log('Rendering active applications:', savedGrants.activeApplications);
 
   return (
     <div className="flex-1 bg-[#f8f4ec]">
@@ -63,35 +68,43 @@ const SavedGrants = () => {
 
           {/* Active Applications Tab */}
           <TabsContent value="active" className="space-y-4">
+            {(() => {
+              console.log('🎯 Rendering active applications tab, count:', savedGrants.activeApplications.length);
+              console.log('📋 Active applications data:', savedGrants.activeApplications);
+              return null;
+            })()}
             {savedGrants.activeApplications.length === 0 ? (
               <Card className="p-8 bg-white border border-gray-200 shadow-sm text-center">
                 <p className="text-gray-500">Inga aktiva ansökningar ännu.</p>
                 <p className="text-sm text-gray-400 mt-2">Börja ansöka om bidrag för att se dem här.</p>
               </Card>
             ) : (
-              savedGrants.activeApplications.map((grant) => (
-                <Card key={grant.id} className="p-6 bg-white border border-gray-200 shadow-sm">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{grant.title}</h3>
-                      <p className="text-sm text-gray-600 mb-1">Senaste ändring: Uppdaterade "Problem" avsnitt</p>
-                      <p className="text-xs text-gray-500">Senast redigerad {formatDate(new Date())}</p>
+              savedGrants.activeApplications.map((grant) => {
+                console.log('🎯 Rendering active grant:', grant.id, grant.title);
+                return (
+                  <Card key={grant.id} className="p-6 bg-white border border-gray-200 shadow-sm">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{grant.title}</h3>
+                        <p className="text-sm text-gray-600 mb-1">Senaste ändring: Uppdaterade "Problem" avsnitt</p>
+                        <p className="text-xs text-gray-500">Senast redigerad {formatDate(new Date())}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="default" 
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                          onClick={() => handleEditClick(grant.id)}
+                        >
+                          Redigera
+                        </Button>
+                        <Button variant="outline" size="icon" className="border-gray-300">
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="default" 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6"
-                        onClick={() => handleEditClick(grant.id)}
-                      >
-                        Redigera
-                      </Button>
-                      <Button variant="outline" size="icon" className="border-gray-300">
-                        <Download className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              ))
+                  </Card>
+                );
+              })
             )}
           </TabsContent>
 

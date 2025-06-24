@@ -29,10 +29,10 @@ export const useSavedGrants = () => {
           pendingReview: pending ? JSON.parse(pending) : [],
         };
 
-        console.log('Loading saved grants from localStorage:', loadedState);
+        console.log('🔄 Loading saved grants from localStorage:', loadedState);
         setSavedGrants(loadedState);
       } catch (error) {
-        console.error('Error loading saved grants:', error);
+        console.error('❌ Error loading saved grants:', error);
       }
     };
 
@@ -41,55 +41,78 @@ export const useSavedGrants = () => {
 
   // Save to localStorage whenever state changes
   useEffect(() => {
-    console.log('Saving grants to localStorage:', savedGrants);
-    localStorage.setItem('savedGrants', JSON.stringify(savedGrants.savedApplications));
-    localStorage.setItem('activeApplications', JSON.stringify(savedGrants.activeApplications));
-    localStorage.setItem('pendingReview', JSON.stringify(savedGrants.pendingReview));
+    console.log('💾 Saving grants to localStorage:', savedGrants);
+    try {
+      localStorage.setItem('savedGrants', JSON.stringify(savedGrants.savedApplications));
+      localStorage.setItem('activeApplications', JSON.stringify(savedGrants.activeApplications));
+      localStorage.setItem('pendingReview', JSON.stringify(savedGrants.pendingReview));
+      console.log('✅ Successfully saved to localStorage');
+    } catch (error) {
+      console.error('❌ Error saving to localStorage:', error);
+    }
   }, [savedGrants]);
 
   const addToSaved = useCallback((grant: Grant) => {
-    console.log('Adding grant to saved:', grant.id, grant.title);
+    console.log('📝 Adding grant to saved:', grant.id, grant.title);
     setSavedGrants(prev => {
+      // Check if grant already exists in any category
+      const existsInSaved = prev.savedApplications.some(g => g.id === grant.id);
+      const existsInActive = prev.activeApplications.some(g => g.id === grant.id);
+      const existsInPending = prev.pendingReview.some(g => g.id === grant.id);
+      
+      if (existsInSaved || existsInActive || existsInPending) {
+        console.log('⚠️ Grant already exists, not adding again');
+        return prev;
+      }
+
       const newState = {
         ...prev,
-        savedApplications: prev.savedApplications.some(g => g.id === grant.id) 
-          ? prev.savedApplications 
-          : [...prev.savedApplications, grant]
+        savedApplications: [...prev.savedApplications, grant]
       };
-      console.log('New state after adding to saved:', newState);
+      console.log('✅ New state after adding to saved:', newState);
       return newState;
     });
   }, []);
 
   const removeFromSaved = useCallback((grantId: string) => {
-    console.log('Removing grant from saved:', grantId);
+    console.log('🗑️ Removing grant from saved:', grantId);
     setSavedGrants(prev => {
       const newState = {
         ...prev,
         savedApplications: prev.savedApplications.filter(g => g.id !== grantId)
       };
-      console.log('New state after removing from saved:', newState);
+      console.log('✅ New state after removing from saved:', newState);
       return newState;
     });
   }, []);
 
   const startApplication = useCallback((grant: Grant) => {
-    console.log('Starting application for grant:', grant.id, grant.title);
+    console.log('🚀 Starting application for grant:', grant.id, grant.title);
     setSavedGrants(prev => {
+      console.log('📊 Current state before starting application:', prev);
+      
+      // Remove from saved applications and add to active applications
+      const newSavedApplications = prev.savedApplications.filter(g => g.id !== grant.id);
+      const existsInActive = prev.activeApplications.some(g => g.id === grant.id);
+      
+      const newActiveApplications = existsInActive 
+        ? prev.activeApplications 
+        : [...prev.activeApplications, grant];
+
       const newState = {
         ...prev,
-        savedApplications: prev.savedApplications.filter(g => g.id !== grant.id),
-        activeApplications: prev.activeApplications.some(g => g.id === grant.id)
-          ? prev.activeApplications
-          : [...prev.activeApplications, grant]
+        savedApplications: newSavedApplications,
+        activeApplications: newActiveApplications
       };
-      console.log('New state after starting application:', newState);
+      
+      console.log('✅ New state after starting application:', newState);
+      console.log('📈 Active applications count:', newState.activeApplications.length);
       return newState;
     });
   }, []);
 
   const submitForReview = useCallback((grant: Grant) => {
-    console.log('Submitting grant for review:', grant.id, grant.title);
+    console.log('📤 Submitting grant for review:', grant.id, grant.title);
     setSavedGrants(prev => {
       const newState = {
         ...prev,
@@ -98,17 +121,26 @@ export const useSavedGrants = () => {
           ? prev.pendingReview
           : [...prev.pendingReview, grant]
       };
-      console.log('New state after submitting for review:', newState);
+      console.log('✅ New state after submitting for review:', newState);
       return newState;
     });
   }, []);
 
   const isGrantSaved = useCallback((grantId: string) => {
-    const isSaved = savedGrants.savedApplications.some(g => g.id === grantId) ||
-           savedGrants.activeApplications.some(g => g.id === grantId) ||
-           savedGrants.pendingReview.some(g => g.id === grantId);
-    console.log('Checking if grant is saved:', grantId, 'Result:', isSaved);
-    return isSaved;
+    const isSaved = savedGrants.savedApplications.some(g => g.id === grantId);
+    const isActive = savedGrants.activeApplications.some(g => g.id === grantId);
+    const isPending = savedGrants.pendingReview.some(g => g.id === grantId);
+    const result = isSaved || isActive || isPending;
+    
+    console.log('🔍 Checking if grant is saved:', {
+      grantId,
+      isSaved,
+      isActive,
+      isPending,
+      result
+    });
+    
+    return result;
   }, [savedGrants]);
 
   return {
