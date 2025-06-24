@@ -15,6 +15,7 @@ export const useBusinessPlanActions = ({
   setAutoSaved
 }: UseBusinessPlanActionsProps) => {
   const updateFieldValue = useCallback((sectionId: string, fieldId: string, value: string) => {
+    console.log('Updating field:', sectionId, fieldId, value);
     setSections(prevSections => prevSections.map(section => {
       if (section.id === sectionId) {
         return {
@@ -44,7 +45,8 @@ export const useBusinessPlanActions = ({
         isCompleted: !section.isCompleted
       } : section
     ));
-  }, [setSections]);
+    setAutoSaved(false);
+  }, [setSections, setAutoSaved]);
   
   const removeFile = useCallback((fileId: string) => {
     setUploadedFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));

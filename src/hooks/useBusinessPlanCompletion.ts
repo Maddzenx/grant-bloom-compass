@@ -16,12 +16,22 @@ export const useBusinessPlanCompletion = ({
 }: UseBusinessPlanCompletionProps) => {
   // Calculate completion percentages
   useEffect(() => {
-    const updatedSections = sections.map(section => ({
-      ...section,
-      completionPercentage: calculateSectionCompletion(section)
-    }));
+    let hasChanges = false;
+    const updatedSections = sections.map(section => {
+      const newCompletion = calculateSectionCompletion(section);
+      if (section.completionPercentage !== newCompletion) {
+        hasChanges = true;
+        return {
+          ...section,
+          completionPercentage: newCompletion
+        };
+      }
+      return section;
+    });
     
-    setSections(updatedSections);
-    setOverallCompletion(calculateOverallCompletion(updatedSections));
-  }, [sections.map(s => s.fields.map(f => f.value).join(',')).join('|'), setSections, setOverallCompletion]);
+    if (hasChanges) {
+      setSections(updatedSections);
+      setOverallCompletion(calculateOverallCompletion(updatedSections));
+    }
+  }, [sections.map(s => s.fields.map(f => f.value).join(',')).join('|')]);
 };
