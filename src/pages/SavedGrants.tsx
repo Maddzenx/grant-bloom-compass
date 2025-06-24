@@ -1,29 +1,26 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-
 const SavedGrants = () => {
-  return (
-    <div className="flex-1 bg-white">
+  return <div className="flex-1 bg-[#f8f4ec]">
       <div className="p-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Översikt över pågående ansökningar och redigeringar</p>
+          <p className="text-gray-600">Översikt över pågående ansökningar</p>
         </div>
 
         {/* Correctness Badges */}
         <div className="flex gap-4 mb-8">
           <div className="flex items-center gap-2 bg-white rounded-lg px-4 py-2 shadow-sm border">
-            <span className="text-sm font-medium text-gray-700">Correctness</span>
+            <span className="text-sm font-medium text-gray-700">Aktiva ansökningar</span>
             <div className="bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
               2
             </div>
           </div>
           <div className="flex items-center gap-2 bg-white rounded-lg px-4 py-2 shadow-sm border">
-            <span className="text-sm font-medium text-gray-700">Correctness</span>
+            <span className="text-sm font-medium text-gray-700">Väntande granskning</span>
             <div className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
               3
             </div>
@@ -75,8 +72,6 @@ const SavedGrants = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default SavedGrants;
