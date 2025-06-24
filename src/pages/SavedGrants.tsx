@@ -13,6 +13,8 @@ const SavedGrants = () => {
 
   // Add debugging
   console.log('SavedGrants component - Current saved grants state:', savedGrants);
+  console.log('SavedGrants component - Active applications count:', savedGrants.activeApplications.length);
+  console.log('SavedGrants component - Active applications:', savedGrants.activeApplications);
 
   const handleEditClick = (grantId: string) => {
     navigate('/editor', { state: { grantId } });
@@ -33,6 +35,9 @@ const SavedGrants = () => {
       minute: '2-digit'
     }).format(date);
   };
+
+  // Move console.log outside of JSX
+  console.log('Rendering active applications:', savedGrants.activeApplications);
 
   return (
     <div className="flex-1 bg-[#f8f4ec]">
@@ -58,7 +63,6 @@ const SavedGrants = () => {
 
           {/* Active Applications Tab */}
           <TabsContent value="active" className="space-y-4">
-            {console.log('Rendering active applications:', savedGrants.activeApplications)}
             {savedGrants.activeApplications.length === 0 ? (
               <Card className="p-8 bg-white border border-gray-200 shadow-sm text-center">
                 <p className="text-gray-500">Inga aktiva ansökningar ännu.</p>
