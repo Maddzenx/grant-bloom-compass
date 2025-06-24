@@ -1,40 +1,111 @@
-// GrantsContainer.tsx
-import React, { useState } from "react";
-import GrantCard from "./GrantCard";
-import { Grant } from "@/types/grant";
 
-interface GrantsContainerProps {
-  grants: Grant[];
+import React from "react";
+import { Grant } from "@/types/grant";
+import { Calendar, Bookmark, Building } from "lucide-react";
+import { Card } from "@/components/ui/card";
+
+interface GrantCardProps {
+  grant: Grant;
+  isSelected: boolean;
+  isBookmarked: boolean;
+  onSelect: () => void;
+  onToggleBookmark: () => void;
+  isMobile?: boolean;
 }
 
-const GrantsContainer = ({ grants }: GrantsContainerProps) => {
-  // Track the currently selected grant’s ID
-  const [selectedGrantId, setSelectedGrantId] = useState<string | null>(null);
+const GrantCard = ({
+  grant,
+  isSelected,
+  isBookmarked,
+  onSelect,
+  onToggleBookmark,
+  isMobile = false
+}: GrantCardProps) => {
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('sv-SE', {
+        day: 'numeric',
+        month: 'short'
+      });
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <aside className="w-full md:w-[300px] p-4 space-y-4">
-        {grants.map((grant) => (
-          <GrantCard
-            key={grant.id}
-            grant={grant}
-            isSelected={grant.id === selectedGrantId}
-            isBookmarked={false}              // wire up your own bookmark state
-            onSelect={() => setSelectedGrantId(grant.id)}
-            onToggleBookmark={() => {/* … */}}
-          />
-        ))}
-      </aside>
+    <Card 
+      className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${
+        isSelected 
+          ? 'bg-blue-50 border-l-blue-500 shadow-md' 
+          : 'bg-white border-l-transparent hover:bg-gray-50 hover:shadow-sm'
+      } ${isMobile ? 'mx-2' : 'mx-1'}`}
+      onClick={onSelect}
+    >
+      <div className="space-y-3">
+        {/* Header with organization */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2 text-xs text-gray-600">
+            <Building className="w-3 h-3" />
+            <span className="font-medium">{grant.organization}</span>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleBookmark();
+            }}
+            className="p-1 hover:bg-gray-100 rounded transition-colors"
+          >
+            <Bookmark 
+              className={`w-4 h-4 ${
+                isBookmarked ? 'fill-blue-600 text-blue-600' : 'text-gray-400'
+              }`} 
+            />
+          </button>
+        </div>
 
-      <section className="flex-1 p-6">
-        {selectedGrantId ? (
-          <GrantDetail grant={grants.find(g => g.id === selectedGrantId)!} />
-        ) : (
-          <div className="text-gray-500">Select a grant to see details</div>
+        {/* Title */}
+        <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">
+          {grant.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+          {grant.description}
+        </p>
+
+        {/* Footer with funding and deadline */}
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-green-600">
+            {grant.fundingAmount}
+          </span>
+          <div className="flex items-center gap-1 text-gray-500">
+            <Calendar className="w-3 h-3" />
+            <span>{formatDate(grant.deadline)}</span>
+          </div>
+        </div>
+
+        {/* Tags */}
+        {grant.tags && grant.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {grant.tags.slice(0, 2).map((tag, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
+              >
+                {tag}
+              </span>
+            ))}
+            {grant.tags.length > 2 && (
+              <span className="text-xs text-gray-400">
+                +{grant.tags.length - 2} mer
+              </span>
+            )}
+          </div>
         )}
-      </section>
-    </div>
+      </div>
+    </Card>
   );
 };
 
-export default GrantsContainer;
+export default GrantCard;
