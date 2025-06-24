@@ -134,10 +134,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
       importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
       fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
-      generalInfo: [
-        ...jsonToStringArray(supabaseGrant.application_templates_names),
-        ...jsonToStringArray(supabaseGrant.other_templates_names)
-      ].filter(Boolean),
+      generalInfo: jsonToStringArray(supabaseGrant.other_templates_names), // Only other_templates_names
       requirements: [
         ...jsonToStringArray(supabaseGrant.eligible_cost_categories),
         ...jsonToStringArray(supabaseGrant.eligible_organisations),
@@ -149,10 +146,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         email: supabaseGrant.contact_email || '',
         phone: supabaseGrant.contact_phone || ''
       },
-      templates: [
-        ...jsonToStringArray(supabaseGrant.application_templates_names),
-        ...jsonToStringArray(supabaseGrant.other_templates_names)
-      ].filter(Boolean),
+      templates: jsonToStringArray(supabaseGrant.application_templates_names), // Only application_templates_names
       evaluationCriteria: supabaseGrant.evaluation_criteria || '',
       applicationProcess: supabaseGrant.application_process || '',
       originalUrl: supabaseGrant.original_url || ''
