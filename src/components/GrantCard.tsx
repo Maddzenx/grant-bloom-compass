@@ -68,7 +68,7 @@ const GrantCard = ({
           </div>
           <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-40">
             <span className="text-gray-600 font-medium text-xs">Deadline:</span>
-            <span className="text-gray-900 font-semibold text-xs sm:text-sm mx-[3px] md:text-xs lg:text-xs">{grant.deadline}</span>
+            <span className="text-gray-900 font-semibold mx-[3px] text-xs md:text-base\\\\n sm:text-xs">{grant.deadline}</span>
           </div>
         </div>
         
