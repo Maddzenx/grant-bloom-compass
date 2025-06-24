@@ -25,7 +25,7 @@ const GrantCard = ({
       {/* Header with logo, title, and bookmark */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-start gap-4 flex-1">
-          <div className="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 flex-shrink-0">
+          <div className="w-14 h-14 flex items-center justify-center border border-gray-100 flex-shrink-0 max-w-14 rounded-2xl">
             <img src={orgLogo.src} alt={orgLogo.alt} className="w-10 h-7 object-contain" />
           </div>
           <div className="flex-1 min-w-0">
@@ -53,10 +53,10 @@ const GrantCard = ({
       
       {/* Status and deadline info */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
             <span className="text-green-600 font-semibold text-xs">Open:</span>
-            <span className="text-gray-900 font-semibold mx-[3px] text-xs md:text-base\\n sm:text-xs">
+            <span className="font-semibold mx-[3px] text-xs md:text-base\\\\n sm:text-xs text-gray-900">
               {(() => {
               const deadlineDate = new Date(grant.deadline);
               const today = new Date();
@@ -66,7 +66,7 @@ const GrantCard = ({
             })()}
             </span>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-40">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
             <span className="text-gray-600 font-medium text-xs">Deadline:</span>
             <span className="text-gray-900 font-semibold mx-[3px] text-xs md:text-base\\\\n sm:text-xs">{grant.deadline}</span>
           </div>
