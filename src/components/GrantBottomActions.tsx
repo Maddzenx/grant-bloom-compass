@@ -25,8 +25,8 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
       // Start the application process, which moves the grant to active applications
       startApplication(grant);
       
-      console.log('🔄 After startApplication call, navigating to business plan editor');
-      navigate('/business-plan-editor', { state: { grant } });
+      console.log('🔄 After startApplication call, navigating to chat interface');
+      navigate('/chat', { state: { grant } });
     }
   };
 

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, ExternalLink } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSavedGrantsContext } from '@/contexts/SavedGrantsContext';
@@ -32,7 +32,12 @@ const SavedGrants = () => {
     console.log('🚀 Starting application from saved grants page:', grant.id, grant.title);
     // This will move the grant from saved to active applications
     startApplication(grant);
-    navigate('/business-plan-editor', { state: { grant } });
+    navigate('/chat', { state: { grant } });
+  };
+
+  const handleReadMore = (grant: any) => {
+    console.log('📖 Read more clicked for grant:', grant.id, grant.title);
+    navigate('/discover', { state: { selectedGrantId: grant.id } });
   };
 
   const formatDate = (date: Date) => {
@@ -43,6 +48,10 @@ const SavedGrants = () => {
       minute: '2-digit'
     }).format(date);
   };
+
+  // Move console.log outside JSX
+  console.log('🎯 Rendering active applications tab, count:', savedGrants.activeApplications.length);
+  console.log('📋 Active applications data:', savedGrants.activeApplications);
 
   return (
     <div className="flex-1 bg-[#f8f4ec]">
@@ -68,11 +77,6 @@ const SavedGrants = () => {
 
           {/* Active Applications Tab */}
           <TabsContent value="active" className="space-y-4">
-            {(() => {
-              console.log('🎯 Rendering active applications tab, count:', savedGrants.activeApplications.length);
-              console.log('📋 Active applications data:', savedGrants.activeApplications);
-              return null;
-            })()}
             {savedGrants.activeApplications.length === 0 ? (
               <Card className="p-8 bg-white border border-gray-200 shadow-sm text-center">
                 <p className="text-gray-500">Inga aktiva ansökningar ännu.</p>
@@ -149,7 +153,14 @@ const SavedGrants = () => {
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">{grant.title}</h3>
                       <p className="text-xs text-gray-500">Sparad {formatDate(new Date())}</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
+                      <Button 
+                        variant="outline" 
+                        className="px-4"
+                        onClick={() => handleReadMore(grant)}
+                      >
+                        Läs mer
+                      </Button>
                       <Button 
                         variant="default" 
                         className="bg-blue-600 hover:bg-blue-700 text-white px-6"
