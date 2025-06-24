@@ -26,7 +26,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
       <div className="bg-white rounded-lg p-6 py-[24px]">
         <h2 className="font-semibold text-gray-900 mb-4 text-base">Utmaning</h2>
         <div>
-          <label className="block text-s font-normal text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Beskriv den utmaning i ditt och omvärld som ni adresserar. Vilka är behoven? Vad har ni gjort för att undersöka behoven?
           </label>
           <Textarea ref={ref => onSectionRef?.("utmaning", ref)} value={draft.sections.problemformulering || ''} onChange={e => onUpdateField("utmaning", "utmaning_beskrivning", e.target.value)} className={getSectionClassName("utmaning")} placeholder="Beskriv utmaningen..." />
@@ -37,7 +37,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
       <div className="bg-white rounded-lg p-6">
         <h2 className="font-semibold text-gray-900 mb-4 text-base">Lösning och produktidé</h2>
         <div>
-          <label className="block text-s font-normal text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Beskriv den produkt, tjänst eller lösning som ska utvecklas eller förbättras för marknaden i projektet. På vilket sätt är den innovativ? Vad är nytten för kunden? Beskriv hur långt projektet har kommit i sin utveckling. I vilket skede ska produkten befinna sig vid projektets slut?
           </label>
           <Textarea ref={ref => onSectionRef?.("losning", ref)} value={draft.sections.mal_och_resultat || ''} onChange={e => onUpdateField("losning", "losning_beskrivning", e.target.value)} className={getSectionClassName("losning")} placeholder="Beskriv lösningen..." />
@@ -48,7 +48,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
       <div className="bg-white rounded-lg p-6">
         <h2 className="font-semibold text-gray-900 mb-4 text-base">Immaterialrätt</h2>
         <div>
-          <label className="block text-s font-normal text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Har det genomförts en nyhetsgranskning? Har ni skyddat eller planerar ni att skydda produkten med ett patent, designskydd eller förvaradt?
           </label>
           <Textarea ref={ref => onSectionRef?.("immaterial", ref)} value={draft.sections.immaterial || ''} onChange={e => onUpdateField("immaterial", "immaterial_beskrivning", e.target.value)} className={getSectionClassName("immaterial")} placeholder="Beskriv immaterialrätt..." />
@@ -59,7 +59,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
       <div className="bg-white rounded-lg p-6">
         <h2 className="font-semibold text-gray-900 mb-4 text-base">Marknadspotential</h2>
         <div>
-          <label className="block text-s font-normal text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Beskriv den tänkta marknaden (nationell och internationell). Vilka potentiella kundgrupper finns? Vilka andra företag finns som konkurrenter med er produktidé? Har företaget oss er så till framtidsvarande förening? Vad gör er lösning unik?
           </label>
           <Textarea ref={ref => onSectionRef?.("marknad", ref)} value={draft.sections.malgrupp || ''} onChange={e => onUpdateField("marknad", "marknad_beskrivning", e.target.value)} className={getSectionClassName("marknad")} placeholder="Beskriv marknaden..." />
@@ -70,7 +70,7 @@ export const EditableBusinessPlanContent: React.FC<EditableBusinessPlanContentPr
       <div className="bg-white rounded-lg p-6">
         <h2 className="font-semibold text-gray-900 mb-4 text-base">Kommersialisering och nyttiggörande</h2>
         <div>
-          <label className="block text-s font-normal text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Beskriv strategin för hur idén ska kommersialiseras, nyttiggöras och implementeras. Vilka nationella och internationella samarbeten kan komma att behövas för att kommersialisera produkten? Har det utvecklats konkreta sätt eller en eventull finansiering från första?
           </label>
           <Textarea ref={ref => onSectionRef?.("kommersialisering", ref)} value={draft.sections.kommersialisering || ''} onChange={e => onUpdateField("kommersialisering", "kommersiell_strategi", e.target.value)} className={getSectionClassName("kommersialisering")} placeholder="Beskriv kommersialisering..." />
