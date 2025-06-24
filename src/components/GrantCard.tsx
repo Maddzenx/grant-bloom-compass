@@ -1,8 +1,9 @@
 
 import React from "react";
 import { Grant } from "@/types/grant";
-import { Calendar, Bookmark, Building } from "lucide-react";
+import { Calendar, Bookmark } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { getOrganizationLogo } from "@/utils/organizationLogos";
 
 interface GrantCardProps {
   grant: Grant;
@@ -33,6 +34,8 @@ const GrantCard = ({
     }
   };
 
+  const orgLogo = getOrganizationLogo(grant.organization);
+
   return (
     <Card 
       className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${
@@ -46,7 +49,11 @@ const GrantCard = ({
         {/* Header with organization */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-600">
-            <Building className="w-3 h-3" />
+            <img 
+              src={orgLogo.src} 
+              alt={orgLogo.alt} 
+              className={orgLogo.className}
+            />
             <span className="font-medium">{grant.organization}</span>
           </div>
           <button
