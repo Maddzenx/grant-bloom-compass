@@ -23,4 +23,5 @@ export interface Grant {
   templates: string[];
   evaluationCriteria?: string;
   applicationProcess?: string;
+  originalUrl?: string;
 }

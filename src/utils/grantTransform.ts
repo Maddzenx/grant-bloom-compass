@@ -29,6 +29,7 @@ type PartialSupabaseGrantRow = Pick<
   | 'application_process'
   | 'eligible_organisations'
   | 'industry_sectors'
+  | 'original_url'
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
@@ -153,7 +154,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         ...jsonToStringArray(supabaseGrant.other_templates_names)
       ].filter(Boolean),
       evaluationCriteria: supabaseGrant.evaluation_criteria || '',
-      applicationProcess: supabaseGrant.application_process || ''
+      applicationProcess: supabaseGrant.application_process || '',
+      originalUrl: supabaseGrant.original_url || ''
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);

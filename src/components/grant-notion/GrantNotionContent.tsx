@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ChevronDown, FileText } from "lucide-react";
+import { ChevronDown, FileText, ExternalLink } from "lucide-react";
 import { Grant } from "@/types/grant";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -138,17 +138,37 @@ const GrantNotionContent = ({ grant, isMobile = false }: GrantNotionContentProps
       )}
 
       {/* Ytterligare information */}
-      {grant.qualifications && (
+      {(grant.qualifications || grant.originalUrl) && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
             <ChevronDown className="w-3 h-3 text-gray-400 transition-transform group-data-[state=closed]:rotate-[-90deg]" />
             <span className="text-base font-semibold text-gray-900">Ytterligare information</span>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 ml-5">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {grant.qualifications}
-              </p>
+            <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+              {grant.qualifications && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Kvalifikationer</h4>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {grant.qualifications}
+                  </p>
+                </div>
+              )}
+              
+              {grant.originalUrl && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Ursprunglig källa</h4>
+                  <a 
+                    href={grant.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 underline break-all"
+                  >
+                    <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                    {grant.originalUrl}
+                  </a>
+                </div>
+              )}
             </div>
           </CollapsibleContent>
         </Collapsible>
