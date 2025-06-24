@@ -55,7 +55,7 @@ const GrantCard = ({
 
     return deadlineDate < today;
   })();
-  return <div className={`bg-white rounded-xl border p-6 cursor-pointer transition-all hover:shadow-lg ${isSelected ? "ring-2 ring-blue-500 border-blue-200 shadow-lg" : "border-gray-100 shadow-sm"}`} onClick={onSelect}>
+  return <div onClick={onSelect} className="w-full bg-white rounded-xl p-4">
       {/* Header with logo, title, and bookmark */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-start gap-4 flex-1">
