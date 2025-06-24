@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,21 +19,21 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       retryDelay: 1000,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: 5 * 60 * 1000,
+      // 5 minutes
+      gcTime: 10 * 60 * 1000,
+      // 10 minutes
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      refetchOnReconnect: false,
-    },
-  },
+      refetchOnReconnect: false
+    }
+  }
 });
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => <QueryClientProvider client={queryClient}>
     <SavedGrantsProvider>
       <TooltipProvider>
         <Router>
-          <div className="min-h-screen w-full">
+          <div className="min-h-screen w-full bg-[#f8f4ec]">
             <TopNavigation />
             <main className="w-full">
               <Routes>
@@ -54,7 +53,5 @@ const App = () => (
         <Sonner />
       </TooltipProvider>
     </SavedGrantsProvider>
-  </QueryClientProvider>
-);
-
+  </QueryClientProvider>;
 export default App;
