@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,9 +9,14 @@ import { useBusinessPlanEditor } from '@/hooks/useBusinessPlanEditor';
 import { BusinessPlanHeader } from '@/components/business-plan/BusinessPlanHeader';
 import { EditableBusinessPlanContent } from '@/components/business-plan/EditableBusinessPlanContent';
 import { ReviewSuggestions } from '@/components/business-plan/ReviewSuggestions';
+import { EvaluationSuggestion } from '@/hooks/useDraftEvaluation';
+
 const BusinessPlanEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [highlightedSection, setHighlightedSection] = useState<string>('');
+  const [sectionRefs, setSectionRefs] = useState<Record<string, HTMLTextAreaElement | null>>({});
+  
   const {
     draft,
     grant
@@ -18,6 +24,7 @@ const BusinessPlanEditor = () => {
     draft: ApplicationDraft;
     grant: Grant;
   } || {};
+  
   const {
     sections,
     uploadedFiles,
@@ -31,18 +38,54 @@ const BusinessPlanEditor = () => {
     exportBusinessPlan
   } = useBusinessPlanEditor(grant);
 
-  // Handle applying suggestions from the review section
-  const handleApplySuggestion = (suggestion: any) => {
-    // Apply the suggestion to the corresponding field
-    updateFieldValue(suggestion.sectionKey, suggestion.fieldId, suggestion.suggestedText);
+  // Handle section reference storage
+  const handleSectionRef = (sectionKey: string, ref: HTMLTextAreaElement | null) => {
+    setSectionRefs(prev => ({ ...prev, [sectionKey]: ref }));
   };
+
+  // Handle highlighting when suggestion is clicked
+  const handleHighlightSection = (sectionKey: string) => {
+    setHighlightedSection(sectionKey);
+    // Clear highlight after a few seconds
+    setTimeout(() => {
+      setHighlightedSection('');
+    }, 3000);
+  };
+
+  // Handle applying suggestions with proper field mapping
+  const handleApplySuggestion = (suggestion: EvaluationSuggestion) => {
+    console.log('Applying suggestion:', suggestion);
+    
+    // Map section keys to the correct field structure
+    const sectionFieldMap: Record<string, { sectionId: string; fieldId: string; draftKey: keyof ApplicationDraft['sections'] }> = {
+      'utmaning': { sectionId: 'utmaning', fieldId: 'utmaning_beskrivning', draftKey: 'problemformulering' },
+      'losning': { sectionId: 'losning', fieldId: 'losning_beskrivning', draftKey: 'mal_och_resultat' },
+      'immaterial': { sectionId: 'immaterial', fieldId: 'immaterial_beskrivning', draftKey: 'immaterial' },
+      'marknad': { sectionId: 'marknad', fieldId: 'marknad_beskrivning', draftKey: 'malgrupp' },
+      'kommersialisering': { sectionId: 'kommersialisering', fieldId: 'kommersiell_strategi', draftKey: 'kommersialisering' },
+    };
+
+    const fieldMapping = sectionFieldMap[suggestion.sectionKey];
+    if (fieldMapping) {
+      // Update the field with the suggested text
+      updateFieldValue(fieldMapping.sectionId, fieldMapping.fieldId, suggestion.suggestedText);
+      
+      // Also update the draft object directly for immediate UI feedback
+      if (draft && draft.sections) {
+        draft.sections[fieldMapping.draftKey] = suggestion.suggestedText;
+      }
+    }
+  };
+
   if (!draft || !grant) {
     navigate('/chat');
     return null;
   }
-  return <div className="min-h-screen bg-gray-50">
+
+  return (
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="border-b border-gray-200 px-6 py-4 bg-[#f8f4ec] sticky top-0 z-50">
+      <div className="bg-[#f8f4ec] sticky top-0 z-50 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate('/chat')} className="p-2">
@@ -64,19 +107,32 @@ const BusinessPlanEditor = () => {
         {/* Main Content */}
         <div className="flex-1 p-6 bg-[#f8f4ec]">
           <div className="max-w-4xl">
-            <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} />
+            <EditableBusinessPlanContent 
+              draft={draft} 
+              sections={sections} 
+              onUpdateField={updateFieldValue}
+              highlightedSection={highlightedSection}
+              onSectionRef={handleSectionRef}
+            />
           </div>
         </div>
 
         {/* Right Sidebar - Review suggestions (sticky) */}
         <div className="w-80 bg-[#f8f4ec]">
           <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
-            <div className="border-l border-gray-200 p-6 h-full">
-              <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} />
+            <div className="p-6 h-full">
+              <ReviewSuggestions 
+                draft={draft} 
+                grant={grant} 
+                onApplySuggestion={handleApplySuggestion}
+                onHighlightSection={handleHighlightSection}
+              />
             </div>
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default BusinessPlanEditor;

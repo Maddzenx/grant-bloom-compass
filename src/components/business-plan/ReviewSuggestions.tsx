@@ -10,16 +10,16 @@ interface ReviewSuggestionsProps {
   draft?: ApplicationDraft;
   grant?: Grant;
   onApplySuggestion?: (suggestion: EvaluationSuggestion) => void;
+  onHighlightSection?: (sectionKey: string) => void;
 }
 
 export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
   draft,
   grant,
-  onApplySuggestion
+  onApplySuggestion,
+  onHighlightSection
 }) => {
-  const {
-    suggestions
-  } = useDraftEvaluation(draft || null, grant || null);
+  const { suggestions } = useDraftEvaluation(draft || null, grant || null);
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
 
   // Group suggestions by type
@@ -30,6 +30,11 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
     acc[suggestion.type].push(suggestion);
     return acc;
   }, {} as Record<string, EvaluationSuggestion[]>);
+
+  const handleSuggestionClick = (suggestion: EvaluationSuggestion) => {
+    console.log('Highlighting section:', suggestion.sectionKey);
+    onHighlightSection?.(suggestion.sectionKey);
+  };
 
   const handleAccept = (suggestion: EvaluationSuggestion) => {
     console.log('Accepting suggestion:', suggestion);
@@ -63,12 +68,16 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
         </div>
       ) : (
         suggestions.filter(s => !appliedSuggestions.has(s.id)).map(suggestion => (
-          <div key={suggestion.id} className={`rounded-lg p-3 border ${getPriorityColor(suggestion.priority)}`}>
+          <div 
+            key={suggestion.id} 
+            className={`rounded-lg p-3 border cursor-pointer hover:shadow-md transition-all ${getPriorityColor(suggestion.priority)}`}
+            onClick={() => handleSuggestionClick(suggestion)}
+          >
             <div className="flex items-start justify-between mb-2">
               <div className="text-xs font-medium text-gray-600 uppercase">
                 {suggestion.priority} priority
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
                 {suggestion.sectionKey}
               </div>
             </div>
@@ -92,7 +101,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
               </div>
             )}
             
-            <div className="flex gap-2">
+            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
               <Button 
                 size="sm" 
                 onClick={() => handleAccept(suggestion)} 
