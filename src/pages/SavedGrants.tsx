@@ -11,11 +11,15 @@ const SavedGrants = () => {
   const { savedGrants, startApplication, submitForReview } = useSavedGrantsContext();
   const navigate = useNavigate();
 
+  // Add debugging
+  console.log('SavedGrants component - Current saved grants state:', savedGrants);
+
   const handleEditClick = (grantId: string) => {
     navigate('/editor', { state: { grantId } });
   };
 
   const handleStartApplication = (grant: any) => {
+    console.log('Starting application from saved grants page:', grant.id, grant.title);
     // This will move the grant from saved to active applications
     startApplication(grant);
     navigate('/business-plan-editor', { state: { grant } });
@@ -54,6 +58,7 @@ const SavedGrants = () => {
 
           {/* Active Applications Tab */}
           <TabsContent value="active" className="space-y-4">
+            {console.log('Rendering active applications:', savedGrants.activeApplications)}
             {savedGrants.activeApplications.length === 0 ? (
               <Card className="p-8 bg-white border border-gray-200 shadow-sm text-center">
                 <p className="text-gray-500">Inga aktiva ansökningar ännu.</p>

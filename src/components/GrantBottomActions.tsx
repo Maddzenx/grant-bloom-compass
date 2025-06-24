@@ -19,6 +19,7 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
 
   const handleApplyClick = () => {
     if (grant) {
+      console.log('Starting application for grant:', grant.id, grant.title);
       // Start the application process, which moves the grant to active applications
       startApplication(grant);
       navigate('/business-plan-editor', { state: { grant } });
@@ -27,6 +28,7 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
 
   const handleBookmarkToggle = () => {
     if (grant) {
+      console.log('Toggling bookmark for grant:', grant.id, 'Currently bookmarked:', isBookmarked);
       if (isBookmarked) {
         removeFromSaved(grant.id);
       } else {
