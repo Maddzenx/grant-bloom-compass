@@ -13,7 +13,7 @@ const SavedGrants = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-bold text-gray-900 mb-2 text-2xl">Dashboard</h1>
-          <p className="text-gray-600">Översikt över pågående ansökningar</p>
+          
         </div>
 
         {/* Enhanced Tabs */}
