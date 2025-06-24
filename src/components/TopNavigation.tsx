@@ -1,6 +1,6 @@
 
 import { useLocation, Link } from "react-router-dom";
-import { Home, Search, Bookmark, User, Menu, X } from "lucide-react";
+import { Home, Search, Bookmark, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -17,16 +17,6 @@ const menuItems = [{
   title: "Sparade bidrag",
   url: "/saved",
   icon: Bookmark
-}];
-
-const accountItems = [{
-  title: "Dashboard",
-  url: "/dashboard",
-  icon: User
-}, {
-  title: "Profilinformation",
-  url: "/profile",
-  icon: User
 }];
 
 export function TopNavigation() {
@@ -68,31 +58,8 @@ export function TopNavigation() {
             })}
           </div>
 
-          {/* Desktop Account Items */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-            {accountItems.map(item => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.url;
-              return (
-                <Link
-                  key={item.title}
-                  to={item.url}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 text-sm transition-colors rounded-md",
-                    isActive 
-                      ? 'bg-white text-gray-900 font-medium shadow-sm' 
-                      : 'text-gray-700 hover:bg-white hover:shadow-sm'
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden lg:inline">{item.title}</span>
-                </Link>
-              );
-            })}
-          </div>
-
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden ml-auto">
             <Button variant="ghost" size="sm" onClick={toggleMobileMenu} className="p-2">
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6 text-gray-700" />
@@ -107,56 +74,26 @@ export function TopNavigation() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-[#f8f4ec]">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* Main menu items */}
-              <div className="space-y-1">
-                {menuItems.map(item => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.url;
-                  return (
-                    <Link
-                      key={item.title}
-                      to={item.url}
-                      onClick={closeMobileMenu}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-3 text-base font-medium transition-colors rounded-md",
-                        isActive 
-                          ? 'bg-white text-gray-900 shadow-sm' 
-                          : 'text-gray-700 hover:bg-white hover:shadow-sm'
-                      )}
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span>{item.title}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-gray-200 my-3"></div>
-
-              {/* Account items */}
-              <div className="space-y-1">
-                {accountItems.map(item => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.url;
-                  return (
-                    <Link
-                      key={item.title}
-                      to={item.url}
-                      onClick={closeMobileMenu}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-3 text-base font-medium transition-colors rounded-md",
-                        isActive 
-                          ? 'bg-white text-gray-900 shadow-sm' 
-                          : 'text-gray-700 hover:bg-white hover:shadow-sm'
-                      )}
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span>{item.title}</span>
-                    </Link>
-                  );
-                })}
-              </div>
+              {menuItems.map(item => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.url;
+                return (
+                  <Link
+                    key={item.title}
+                    to={item.url}
+                    onClick={closeMobileMenu}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-3 text-base font-medium transition-colors rounded-md",
+                      isActive 
+                        ? 'bg-white text-gray-900 shadow-sm' 
+                        : 'text-gray-700 hover:bg-white hover:shadow-sm'
+                    )}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span>{item.title}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
