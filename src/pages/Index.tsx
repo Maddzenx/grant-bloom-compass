@@ -96,9 +96,7 @@ const Index = () => {
   return <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-6 bg-[#f4f5f0]">
       <div className="w-full max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="font-normal text-gray-900 mb-12 text-lg text-center">
-            Drop your files, speak or write a bit about your project to get matched with relevant grants.
-          </h1>
+          <h1 className="font-normal text-gray-900 mb-12 text-lg text-center">Looking for funding? Just upload your materials and a short project summary. We’ll handle the grant matching.</h1>
           
           <div className="relative max-w-3xl mx-auto">
             <div className="flex items-center border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow px-6 py-4 gap-4 bg-white">
