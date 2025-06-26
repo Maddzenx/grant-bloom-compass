@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 export type SortOption = "default" | "deadline-asc" | "deadline-desc" | "amount-desc" | "amount-asc" | "created-desc" | "relevance";
@@ -14,7 +15,7 @@ const SortingControls = ({
   return <div className="flex items-center justify-end gap-2">
       <span className="text-gray-600 font-medium text-sm">Sortera:</span>
       <Select value={sortBy} onValueChange={onSortChange}>
-        <SelectTrigger className="w-48">
+        <SelectTrigger className="w-48 bg-white border-accent-lavender">
           <SelectValue placeholder="Välj sortering" />
         </SelectTrigger>
         <SelectContent>
