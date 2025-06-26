@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import ChatInput from "@/components/home/ChatInput";
 import OrganizationTabs from "@/components/home/OrganizationTabs";
 import StatusMessages from "@/components/home/StatusMessages";
 import VideoDemo from "@/components/home/VideoDemo";
-import TopNavigation from "@/components/home/TopNavigation";
 import MetricsSection from "@/components/home/MetricsSection";
 import SecurityTrustSection from "@/components/home/SecurityTrustSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
@@ -121,9 +119,6 @@ const HomePage = () => {
           backgroundPosition: 'center 40%'
         }}
       />
-      
-      {/* Top Navigation */}
-      <TopNavigation />
 
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
