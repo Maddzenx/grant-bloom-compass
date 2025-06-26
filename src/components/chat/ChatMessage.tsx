@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { User, Bot } from 'lucide-react';
 export interface Message {
@@ -24,7 +25,7 @@ export const ChatMessage = ({
             {message.content}
           </p>
         </div>
-        <div className={`text-xs text-gray-500 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
+        <div className={`text-xs mt-1 ${isUser ? 'text-right' : 'text-left'}`} style={{ color: '#CEC5F9' }}>
           {message.timestamp.toLocaleTimeString('sv-SE', {
           hour: '2-digit',
           minute: '2-digit'
