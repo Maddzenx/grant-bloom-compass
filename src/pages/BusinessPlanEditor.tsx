@@ -146,7 +146,7 @@ const BusinessPlanEditor = () => {
 
       <div className="flex">
         {/* Main Content */}
-        <div className="w-full md:basis-[65%] flex-1 py-[12.5px] sm:px-4 sm:py-4 my-0 px-[5px] bg-[#f0f1f3] md:px-[50px] md:py-[22px]">
+        <div className="w-full md:basis-[65%] flex-1 py-[12.5px] sm:px-4 sm:py-4 my-0 px-[5px] bg-[#f0f1f3] md:py-[22px] md:px-[24px]">
           <div className="max-w-4xl">
             <EditableBusinessPlanContent draft={draft} sections={sections} onUpdateField={updateFieldValue} highlightedSection={highlightedSection} onSectionRef={handleSectionRef} />
           </div>
