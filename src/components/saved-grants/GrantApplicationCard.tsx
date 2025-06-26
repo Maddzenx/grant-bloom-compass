@@ -4,7 +4,6 @@ import { Download, Trash2, Save, Info, Bookmark } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
-
 interface GrantApplicationCardProps {
   grant: Grant;
   type: 'active' | 'pending' | 'saved';
@@ -14,7 +13,6 @@ interface GrantApplicationCardProps {
   onStartApplication?: (grant: Grant) => void;
   onToggleSave?: (grantId: string) => void;
 }
-
 const GrantApplicationCard = ({
   grant,
   type,
@@ -32,7 +30,6 @@ const GrantApplicationCard = ({
       minute: '2-digit'
     }).format(date);
   };
-
   const renderActions = () => {
     switch (type) {
       case 'active':
@@ -71,15 +68,9 @@ const GrantApplicationCard = ({
           </div>;
       case 'saved':
         return <div className="flex gap-3">
-            <Button variant="outline" size="icon" onClick={() => onToggleSave?.(grant.id)} className="border-accent-lavender bg-white hover:bg-accent-lavender/10">
-              <Save className="w-4 h-4" fill="#CEC5F9" />
-            </Button>
-            <Button variant="outline" onClick={() => onReadMore?.(grant)} className="px-4 border-accent-lavender text-black bg-[#f0f1f3]">
-              Läs mer
-            </Button>
-            <Button variant="default" onClick={() => onStartApplication?.(grant)} className="bg-accent-lime hover:bg-accent-lime/90 text-ink-obsidian px-6 bg-[#cec5f9]">
-              Börja ansöka
-            </Button>
+            
+            
+            
             <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
@@ -91,7 +82,6 @@ const GrantApplicationCard = ({
         return null;
     }
   };
-
   const getStatusText = () => {
     switch (type) {
       case 'active':
@@ -104,7 +94,6 @@ const GrantApplicationCard = ({
         return null;
     }
   };
-
   const getDateText = () => {
     switch (type) {
       case 'active':
@@ -117,7 +106,6 @@ const GrantApplicationCard = ({
         return '';
     }
   };
-
   return <Card className="p-6 bg-white border border-accent-lavender shadow-sm">
       <div className="flex justify-between items-start">
         <div className="flex-1">
@@ -129,5 +117,4 @@ const GrantApplicationCard = ({
       </div>
     </Card>;
 };
-
 export default GrantApplicationCard;
