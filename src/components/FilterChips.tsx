@@ -1,27 +1,26 @@
-
 import React from 'react';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
-
 interface FilterChipsProps {
   filters: EnhancedFilterOptions;
   onRemoveFilter: (filterType: string, value?: string) => void;
   onClearAll: () => void;
-  organizations: { value: string; label: string }[];
+  organizations: {
+    value: string;
+    label: string;
+  }[];
 }
-
 export const FilterChips = ({
   filters,
   onRemoveFilter,
   onClearAll,
-  organizations,
+  organizations
 }: FilterChipsProps) => {
   const getOrganizationLabel = (value: string) => {
     return organizations.find(org => org.value === value)?.label || value;
   };
-
   const formatCurrency = (amount: number) => {
     if (amount >= 1000000) {
       return `${(amount / 1000000).toFixed(1)}M SEK`;
@@ -30,7 +29,6 @@ export const FilterChips = ({
     }
     return `${amount} SEK`;
   };
-
   const chips = [];
 
   // Organization chips
@@ -38,7 +36,7 @@ export const FilterChips = ({
     chips.push({
       key: `org-${org}`,
       label: getOrganizationLabel(org),
-      onRemove: () => onRemoveFilter('organizations', org),
+      onRemove: () => onRemoveFilter('organizations', org)
     });
   });
 
@@ -49,7 +47,7 @@ export const FilterChips = ({
     chips.push({
       key: 'funding-range',
       label: `${minText} - ${maxText}`,
-      onRemove: () => onRemoveFilter('fundingRange'),
+      onRemove: () => onRemoveFilter('fundingRange')
     });
   }
 
@@ -57,24 +55,25 @@ export const FilterChips = ({
   if (filters.deadline.preset || filters.deadline.customRange?.start || filters.deadline.customRange?.end) {
     let deadlineLabel = '';
     if (filters.deadline.type === 'preset' && filters.deadline.preset) {
-      const presetLabels: { [key: string]: string } = {
+      const presetLabels: {
+        [key: string]: string;
+      } = {
         'urgent': 'Urgent (7 days)',
         '2weeks': 'Next 2 weeks',
         '1month': 'Next month',
         '3months': 'Next 3 months',
         '6months': 'Next 6 months',
-        '1year': 'Next year',
+        '1year': 'Next year'
       };
       deadlineLabel = presetLabels[filters.deadline.preset] || 'Custom deadline';
     } else if (filters.deadline.type === 'custom') {
       deadlineLabel = 'Custom deadline';
     }
-    
     if (deadlineLabel) {
       chips.push({
         key: 'deadline',
         label: deadlineLabel,
-        onRemove: () => onRemoveFilter('deadline'),
+        onRemove: () => onRemoveFilter('deadline')
       });
     }
   }
@@ -84,42 +83,24 @@ export const FilterChips = ({
     chips.push({
       key: `tag-${tag}`,
       label: `#${tag}`,
-      onRemove: () => onRemoveFilter('tags', tag),
+      onRemove: () => onRemoveFilter('tags', tag)
     });
   });
-
   if (chips.length === 0) {
     return null;
   }
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 p-3 bg-white border-b border-gray-200">
+  return <div className="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200 bg-[f0f1f3] bg-[#f0f1f3]">
       <span className="text-sm text-muted-foreground font-medium">Active filters:</span>
       
-      {chips.map(chip => (
-        <Badge
-          key={chip.key}
-          variant="secondary"
-          className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-900"
-        >
+      {chips.map(chip => <Badge key={chip.key} variant="secondary" className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-900">
           <span className="text-xs">{chip.label}</span>
-          <button
-            onClick={chip.onRemove}
-            className="ml-1 hover:bg-gray-100 rounded-full p-0.5"
-          >
+          <button onClick={chip.onRemove} className="ml-1 hover:bg-gray-100 rounded-full p-0.5">
             <X className="w-3 h-3" />
           </button>
-        </Badge>
-      ))}
+        </Badge>)}
       
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClearAll}
-        className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-gray-50"
-      >
+      <Button variant="ghost" size="sm" onClick={onClearAll} className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-gray-50">
         Clear all
       </Button>
-    </div>
-  );
+    </div>;
 };
