@@ -15,15 +15,15 @@ const GrantEvaluationSection = ({ grant, isMobile = false }: GrantEvaluationSect
   if (!grant.evaluationCriteria) return null;
 
   return (
-    <section className="bg-yellow-50 p-4 md:p-6 rounded-lg border-2 border-yellow-200">
+    <section className="bg-accent-lavender-10 p-4 md:p-6 rounded-lg border border-accent-lavender">
       <div className="flex items-center gap-2 mb-3 md:mb-4">
-        <CheckCircle className="w-5 h-5 text-yellow-600" />
-        <h2 className={`font-bold text-yellow-900 ${titleClass}`}>
+        <CheckCircle className="w-5 h-5 text-ink-obsidian" />
+        <h2 className={`font-bold text-ink-obsidian ${titleClass}`}>
           Utvärderingskriterier
         </h2>
       </div>
       <div className="bg-white p-4 rounded-lg">
-        <p className={`text-gray-800 leading-relaxed ${textClass}`}>{grant.evaluationCriteria}</p>
+        <p className={`text-ink-obsidian leading-relaxed ${textClass}`}>{grant.evaluationCriteria}</p>
       </div>
     </section>
   );

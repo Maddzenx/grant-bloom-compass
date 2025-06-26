@@ -195,7 +195,7 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Highlight utility class */
+  /* Highlight utility class - using Accent 1 for highlights */
   .highlight {
     @apply bg-accent-lime px-2 py-1 rounded-sm;
   }
