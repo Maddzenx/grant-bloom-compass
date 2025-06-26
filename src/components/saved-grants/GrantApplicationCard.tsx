@@ -52,7 +52,7 @@ const GrantApplicationCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian">Avbryt</AlertDialogCancel>
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3]">Avbryt</AlertDialogCancel>
                   <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
                     Ta bort
                   </AlertDialogAction>
@@ -91,7 +91,7 @@ const GrantApplicationCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian">Avbryt</AlertDialogCancel>
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3]">Avbryt</AlertDialogCancel>
                   <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
                     Ta bort
                   </AlertDialogAction>
