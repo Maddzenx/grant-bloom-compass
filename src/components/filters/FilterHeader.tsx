@@ -18,7 +18,7 @@ export const FilterHeader = ({
   activeFilterCount
 }: FilterHeaderProps) => {
   return <div className="px-4 rounded-none bg-[#f8f4ec] py-[2px]">
-      <div className="flex items-center justify-between py-px bg-[#f4f5f0]">
+      <div className="flex items-center justify-between py-px bg-[#f0f1f3]">
         <Button variant="ghost" size="sm" onClick={onToggleExpanded} className="flex items-center gap-2 text-gray-900 hover:text-gray-700 p-0 h-auto font-normal text-xs">
           <Filter className="w-4 h-4" />
           <h3 className="font-normal text-xs">Advancerat filter</h3>
