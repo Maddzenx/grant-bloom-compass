@@ -92,6 +92,10 @@
     --sidebar-border: 134 122 206;
     --sidebar-ring: 134 122 206;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer base {

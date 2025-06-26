@@ -12,6 +12,7 @@ import OrganizationTabs from "@/components/home/OrganizationTabs";
 import StatusMessages from "@/components/home/StatusMessages";
 import VideoDemo from "@/components/home/VideoDemo";
 import TopNavigation from "@/components/home/TopNavigation";
+import MetricsSection from "@/components/home/MetricsSection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -164,6 +165,9 @@ const HomePage = () => {
 
       {/* Video Demo Section */}
       <VideoDemo />
+
+      {/* Metrics Section */}
+      <MetricsSection />
     </div>
   );
 };
