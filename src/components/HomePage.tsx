@@ -17,11 +17,12 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
-
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
 
   // Hardcoded API key
   const apiKey = "key_MByf0khg5w7tZlB7";
@@ -45,7 +46,6 @@ const HomePage = () => {
     isUploading,
     handleFileSelect
   } = useFileUpload();
-
   const handleRedirect = async () => {
     if (!inputValue.trim()) {
       navigate("/discover");
@@ -81,7 +81,6 @@ const HomePage = () => {
       navigate("/discover");
     }
   };
-
   const handleVoiceInput = async () => {
     if (isRecording) {
       const transcribedText = await stopRecording();
@@ -92,11 +91,9 @@ const HomePage = () => {
       await startRecording();
     }
   };
-
   const handleFileUpload = () => {
     // This will be handled by ChatInput component
   };
-
   const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const extractedText = await handleFileSelect(event);
     if (extractedText) {
@@ -107,20 +104,14 @@ const HomePage = () => {
       event.target.value = '';
     }
   };
-
   const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading;
-
-  return (
-    <div className="min-h-screen bg-[#F0F1F3] relative">
+  return <div className="min-h-screen bg-[#F0F1F3] relative">
       {/* Purple cloud background overlay */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-screen bg-no-repeat bg-center bg-contain opacity-30 pointer-events-none"
-        style={{
-          backgroundImage: `url('/lovable-uploads/6e050f8a-703a-48a5-96e5-1c1f60977e6b.png')`,
-          backgroundSize: '800px 600px',
-          backgroundPosition: 'center 40%'
-        }}
-      />
+      <div className="absolute top-0 left-0 right-0 h-screen bg-no-repeat bg-center bg-contain opacity-30 pointer-events-none" style={{
+      backgroundImage: `url('/lovable-uploads/6e050f8a-703a-48a5-96e5-1c1f60977e6b.png')`,
+      backgroundSize: '800px 600px',
+      backgroundPosition: 'center 40%'
+    }} />
 
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
@@ -129,23 +120,11 @@ const HomePage = () => {
           <HeroSection />
 
           {/* Chat Input Section */}
-          <ChatInput 
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            isRecording={isRecording}
-            isProcessing={isProcessing}
-            handleVoiceInput={handleVoiceInput}
-            handleFileUpload={handleFileUpload}
-            onFileSelect={onFileSelect}
-          />
+          <ChatInput inputValue={inputValue} setInputValue={setInputValue} isRecording={isRecording} isProcessing={isProcessing} handleVoiceInput={handleVoiceInput} handleFileUpload={handleFileUpload} onFileSelect={onFileSelect} />
 
           {/* Primary CTA */}
           <div className="mb-12">
-            <Button 
-              onClick={handleRedirect}
-              disabled={isProcessing}
-              className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-newsreader font-semibold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg"
-            >
+            <Button onClick={handleRedirect} disabled={isProcessing} className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-newsreader font-semibold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg\n">
               {t('hero.findGrants')}
             </Button>
           </div>
@@ -154,14 +133,7 @@ const HomePage = () => {
           <OrganizationTabs />
 
           {/* Status Messages */}
-          <StatusMessages 
-            isRecording={isRecording}
-            isTranscribing={isTranscribing}
-            isUploading={isUploading}
-            isMatching={isMatching}
-            grantsLoading={grantsLoading}
-            matchingError={matchingError}
-          />
+          <StatusMessages isRecording={isRecording} isTranscribing={isTranscribing} isUploading={isUploading} isMatching={isMatching} grantsLoading={grantsLoading} matchingError={matchingError} />
         </div>
       </div>
 
@@ -185,8 +157,6 @@ const HomePage = () => {
 
       {/* CTA Section */}
       <CTASection />
-    </div>
-  );
+    </div>;
 };
-
 export default HomePage;
