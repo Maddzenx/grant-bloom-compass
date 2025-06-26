@@ -29,43 +29,17 @@ export function TopNavigation() {
   };
 
   return (
-    <nav className="bg-canvas-cloud border-b border-accent-lavender shadow-sm">
+    <nav className="bg-canvas-cloud border-b shadow-sm" style={{ borderColor: '#F0F1F3' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <svg 
-                viewBox="0 0 160 40" 
-                className="h-10 w-auto"
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <text 
-                  x="0" 
-                  y="28" 
-                  className="text-2xl font-newsreader font-normal" 
-                  fill="#000000"
-                >
-                  gr
-                </text>
-                <text 
-                  x="32" 
-                  y="28" 
-                  className="text-2xl font-newsreader font-normal" 
-                  fill="#CEC5F9"
-                >
-                  ai
-                </text>
-                <text 
-                  x="58" 
-                  y="28" 
-                  className="text-2xl font-newsreader font-normal" 
-                  fill="#000000"
-                >
-                  gent
-                </text>
-              </svg>
+              <span className="text-2xl font-newsreader font-normal">
+                <span style={{ color: '#000000' }}>gr</span>
+                <span style={{ color: '#8162F4' }}>ai</span>
+                <span style={{ color: '#000000' }}>gent</span>
+              </span>
             </Link>
           </div>
 
@@ -109,7 +83,7 @@ export function TopNavigation() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-accent-lavender bg-canvas-cloud">
+          <div className="md:hidden border-t bg-canvas-cloud" style={{ borderColor: '#F0F1F3' }}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               {menuItems.map(item => {
                 const isActive = location.pathname === item.url;
