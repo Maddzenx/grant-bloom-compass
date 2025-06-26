@@ -1,22 +1,24 @@
-
 import React from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const MetricsSection = () => {
+  const { t } = useLanguage();
+  
   const metrics = [
     {
-      caption: "Your data is never shared with third parties",
+      caption: t('metrics.dataPrivacy'),
       stat: "40%"
     },
     {
-      caption: "Save time up to",
+      caption: t('metrics.timeSave'),
       stat: "8h"
     },
     {
-      caption: "Your data is never shared with third parties", 
+      caption: t('metrics.dataPrivacy'), 
       stat: "50%"
     },
     {
-      caption: "Save time up to",
+      caption: t('metrics.timeSave'),
       stat: "2x"
     }
   ];
@@ -27,20 +29,7 @@ const MetricsSection = () => {
         {/* Headline with highlighted "baby" */}
         <div className="text-center mb-16">
           <h2 className="font-newsreader font-normal text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-[1.15]">
-            It's like AI agents and Grants had a{" "}
-            <span className="relative inline-block">
-              <span 
-                className="absolute bg-[#D1F364] -z-10"
-                style={{
-                  width: '110%',
-                  height: '70%',
-                  bottom: '10%',
-                  left: '2px',
-                  transform: 'translateY(2px)'
-                }}
-              />
-              <span className="relative z-10">baby</span>
-            </span>
+            {t('metrics.title')}
           </h2>
         </div>
 

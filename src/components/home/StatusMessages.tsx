@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface StatusMessagesProps {
   isRecording: boolean;
@@ -18,50 +19,57 @@ const StatusMessages = ({
   grantsLoading,
   matchingError
 }: StatusMessagesProps) => {
-  return (
-    <>
-      {isRecording && (
-        <div className="mt-6 text-sm text-red-600 flex items-center justify-center gap-2 font-newsreader">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          Recording... Click the microphone to stop
-        </div>
-      )}
-      
-      {isTranscribing && (
-        <div className="mt-6 text-sm text-blue-600 flex items-center justify-center gap-2 font-newsreader">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-          Transcribing audio...
-        </div>
-      )}
-      
-      {isUploading && (
-        <div className="mt-6 text-sm text-blue-600 flex items-center justify-center gap-2 font-newsreader">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-          Processing file...
-        </div>
-      )}
+  const { t } = useLanguage();
 
-      {isMatching && (
-        <div className="mt-6 text-sm text-blue-600 flex items-center justify-center gap-2 font-newsreader">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-          Matching grants with your project...
-        </div>
-      )}
+  if (matchingError) {
+    return (
+      <div className="text-center text-red-600 mt-4">
+        <p>{t('status.error')}: {matchingError}</p>
+      </div>
+    );
+  }
 
-      {grantsLoading && (
-        <div className="mt-6 text-sm text-blue-600 flex items-center justify-center gap-2 font-newsreader">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-          Loading available grants...
-        </div>
-      )}
+  if (isRecording) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>{t('status.recording')}</p>
+      </div>
+    );
+  }
 
-      {matchingError && (
-        <div className="mt-6 text-sm text-red-600 text-center font-newsreader">
-          {matchingError}
-        </div>
-      )}
-    </>
-  );
+  if (isTranscribing) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>{t('status.transcribing')}</p>
+      </div>
+    );
+  }
+
+  if (isUploading) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>{t('status.uploading')}</p>
+      </div>
+    );
+  }
+
+  if (isMatching) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>{t('status.matching')}</p>
+      </div>
+    );
+  }
+
+  if (grantsLoading) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>{t('status.loading')}</p>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default StatusMessages;

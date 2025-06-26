@@ -1,10 +1,13 @@
 
 import React from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const OrganizationTabs = () => {
+  const { t } = useLanguage();
+  
   const organizationTabs = [
-    "Vinnova", "Formas", "Tillväxtverket", "Energimyndigheten", 
-    "VGR", "EU", "Vetenskapsrådet"
+    t('org.vinnova'), t('org.formas'), t('org.tillvaxtverket'), 
+    t('org.energimyndigheten'), t('org.vgr'), t('org.eu'), t('org.vetenskapsradet')
   ];
 
   return (

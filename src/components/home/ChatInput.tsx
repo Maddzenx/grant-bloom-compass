@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { Mic, Upload, Square } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ChatInputProps {
   inputValue: string;
@@ -24,6 +25,7 @@ const ChatInput = ({
   onFileSelect
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -44,7 +46,7 @@ const ChatInput = ({
             }`}
             onClick={handleVoiceInput} 
             disabled={isProcessing}
-            title={isRecording ? "Stop recording" : "Start voice recording"}
+            title={isRecording ? t('chat.stopRecording') : t('chat.startRecording')}
           >
             {isRecording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
           </Button>
@@ -56,7 +58,7 @@ const ChatInput = ({
             className="p-3 rounded-full hover:bg-gray-100 flex-shrink-0 text-gray-500" 
             onClick={handleFileUploadClick} 
             disabled={isProcessing}
-            title="Upload file"
+            title={t('chat.uploadFile')}
           >
             <Upload className="w-5 h-5" />
           </Button>
@@ -72,7 +74,7 @@ const ChatInput = ({
           
           {/* Text Input Field */}
           <Input 
-            placeholder="Type your question..."
+            placeholder={t('chat.placeholder')}
             className="flex-1 border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 font-newsreader"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

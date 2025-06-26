@@ -4,21 +4,28 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-
-const menuItems = [{
-  title: "Hem",
-  url: "/"
-}, {
-  title: "Upptäck bidrag",
-  url: "/discover"
-}, {
-  title: "Sparade bidrag",
-  url: "/saved"
-}];
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export function TopNavigation() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const menuItems = [
+    {
+      title: t('nav.home'),
+      url: "/"
+    },
+    {
+      title: t('nav.discover'),
+      url: "/discover"
+    },
+    {
+      title: t('nav.saved'),
+      url: "/saved"
+    }
+  ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -62,10 +69,14 @@ export function TopNavigation() {
                 </Link>
               );
             })}
+            
+            {/* Language Selector */}
+            <LanguageSelector />
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSelector />
             <Button
               variant="ghost"
               size="sm"

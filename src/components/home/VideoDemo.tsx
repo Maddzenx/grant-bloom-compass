@@ -1,7 +1,10 @@
 
 import React from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const VideoDemo = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="relative z-10 w-full bg-[#F0F1F3] py-16 px-6">
       <div className="w-full max-w-6xl mx-auto">
@@ -10,7 +13,7 @@ const VideoDemo = () => {
           <div className="absolute inset-0 border-4 border-dashed border-gray-400 rounded-lg bg-gray-100 flex items-center justify-center">
             <div className="text-center">
               <p className="font-newsreader font-medium text-gray-600 text-lg md:text-xl">
-                Video på hur verktyget fungerar
+                {t('demo.title')}
               </p>
             </div>
           </div>

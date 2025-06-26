@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantMatching } from "@/hooks/useGrantMatching";
 import { useGrants } from "@/hooks/useGrants";
+import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
 import OrganizationTabs from "@/components/home/OrganizationTabs";
@@ -21,6 +21,7 @@ import CTASection from "@/components/home/CTASection";
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // Hardcoded API key
   const apiKey = "key_MByf0khg5w7tZlB7";
@@ -145,7 +146,7 @@ const HomePage = () => {
               disabled={isProcessing}
               className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-newsreader font-semibold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg"
             >
-              Find grants
+              {t('hero.findGrants')}
             </Button>
           </div>
 
