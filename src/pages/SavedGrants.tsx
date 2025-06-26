@@ -106,7 +106,7 @@ const SavedGrants = () => {
                         <p className="text-xs text-ink-secondary">Senast redigerad {formatDate(new Date())}</p>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="default" onClick={() => handleEditClick(grant.id)} className="bg-accent-lime hover:bg-accent-lime/90 text-ink-obsidian px-6 bg-[#cec5f9]">
+                        <Button variant="default" onClick={() => handleEditClick(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian px-6 bg-[#cec5f9]">
                           Redigera
                         </Button>
                         <Button variant="outline" size="icon" className=" bg-slate-50">
