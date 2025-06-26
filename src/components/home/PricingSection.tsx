@@ -43,10 +43,10 @@ const PricingSection = () => {
               <span 
                 className="absolute bg-[#D1F364] -z-10"
                 style={{
-                  width: '110%',
+                  width: '120%',
                   height: '70%',
                   bottom: '10%',
-                  left: '4px',
+                  left: '-2px',
                   transform: 'translateY(4px)'
                 }}
                 aria-hidden="true"
