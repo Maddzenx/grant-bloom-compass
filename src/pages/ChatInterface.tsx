@@ -80,11 +80,11 @@ const ChatInterface = () => {
             </div>
             <div className="flex items-center gap-2">
               {isDraftReady && <>
-                  <Button variant="outline" size="sm" onClick={handlePreviewClick} className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={handlePreviewClick} className="flex items-center gap-2 bg-[#cec5f9]">
                     <FileText className="w-4 h-4" />
                     {showPreview ? 'Dölj förhandsvisning' : 'Visa förhandsvisning'}
                   </Button>
-                  <Button size="sm" onClick={exportDraft} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+                  <Button size="sm" onClick={exportDraft} className="flex items-center gap-2 bg-[0000000] bg-white">
                     <Download className="w-4 h-4" />
                     Exportera utkast
                   </Button>
