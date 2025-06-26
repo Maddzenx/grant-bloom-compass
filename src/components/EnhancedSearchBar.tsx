@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Search, X, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -98,8 +99,8 @@ const EnhancedSearchBar = ({
   const allSuggestions = [...suggestions, ...recentSearches].filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm);
   return <div className="relative w-full">
       <div className="relative">
-        <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isSearching ? 'text-blue-500 animate-pulse' : 'text-gray-400'}`} />
-        <Input ref={inputRef} placeholder="Sök efter bidrag, organisation eller område..." value={searchTerm} onChange={e => handleInputChange(e.target.value)} onFocus={handleInputFocus} onBlur={handleInputBlur} onKeyDown={handleKeyDown} className="pl-12 pr-10 py-3 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full" />
+        <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isSearching ? 'text-gray-500 animate-pulse' : 'text-gray-400'}`} />
+        <Input ref={inputRef} placeholder="Sök efter bidrag, organisation eller område..." value={searchTerm} onChange={e => handleInputChange(e.target.value)} onFocus={handleInputFocus} onBlur={handleInputBlur} onKeyDown={handleKeyDown} className="pl-12 pr-10 py-3 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full text-black" />
         {searchTerm && <Button variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
             <X className="w-4 h-4" />
           </Button>}
@@ -110,18 +111,18 @@ const EnhancedSearchBar = ({
           {/* Current suggestions */}
           {suggestions.length > 0 && <div className="p-2">
               <div className="text-xs text-gray-500 mb-2 px-2">Förslag</div>
-              {suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm).map((suggestion, index) => <button key={`suggestion-${suggestion}`} onClick={() => handleSuggestionClick(suggestion)} className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2 ${index === selectedSuggestionIndex ? 'bg-blue-50 text-blue-700' : ''}`}>
+              {suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm).map((suggestion, index) => <button key={`suggestion-${suggestion}`} onClick={() => handleSuggestionClick(suggestion)} className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2 ${index === selectedSuggestionIndex ? 'bg-gray-50 text-black' : ''}`}>
                     <Search className="w-4 h-4 text-gray-400" />
-                    <span className="truncate">{suggestion}</span>
+                    <span className="truncate text-black">{suggestion}</span>
                   </button>)}
             </div>}
 
           {/* Recent searches */}
           {recentSearches.length > 0 && <div className="p-2 border-t border-gray-100">
               <div className="text-xs text-gray-500 mb-2 px-2">Senaste sökningar</div>
-              {recentSearches.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm).slice(0, 3).map((recent, index) => <button key={`recent-${recent}`} onClick={() => handleSuggestionClick(recent)} className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2 ${index + suggestions.length === selectedSuggestionIndex ? 'bg-blue-50 text-blue-700' : ''}`}>
+              {recentSearches.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm).slice(0, 3).map((recent, index) => <button key={`recent-${recent}`} onClick={() => handleSuggestionClick(recent)} className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 flex items-center gap-2 ${index + suggestions.length === selectedSuggestionIndex ? 'bg-gray-50 text-black' : ''}`}>
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="truncate">{recent}</span>
+                    <span className="truncate text-black">{recent}</span>
                   </button>)}
             </div>}
         </div>}
