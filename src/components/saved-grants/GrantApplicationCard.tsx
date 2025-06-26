@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Trash2, Save } from 'lucide-react';
+import { Download, Trash2, Save, Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
@@ -80,8 +80,8 @@ const GrantApplicationCard = ({
             <Button variant="default" onClick={() => onStartApplication?.(grant)} className="bg-accent-lime hover:bg-accent-lime/90 text-ink-obsidian px-6 bg-[#cec5f9]">
               Börja ansöka
             </Button>
-            <Button variant="outline" size="icon" className="border-accent-white bg-[#fefefe]">
-              <Download className="w-4 h-4" />
+            <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
+              <Info className="w-4 h-4" />
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
