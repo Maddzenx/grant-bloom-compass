@@ -105,7 +105,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       {/* Tabbed Interface */}
       <Tabs defaultValue="Relevans" className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-4 bg-gray-50 rounded-xl">
-          <TabsTrigger value="Relevans" className="text-xs">
+          <TabsTrigger value="Relevans" className="text-xs bg-[#cec5f9]">
             Relevans
             {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Relevans'].filter(s => !appliedSuggestions.has(s.id)).length}
