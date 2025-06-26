@@ -80,7 +80,7 @@ export const FundingRangeSlider = ({
             onClick={() => handleRangeSelect(range)}
             className={`text-xs h-7 ${
               isRangeActive(range) 
-                ? "bg-white text-black border-gray-300" 
+                ? "bg-white text-black border-gray-400 shadow-sm" 
                 : "bg-white hover:bg-gray-50 border-gray-300"
             }`}
           >

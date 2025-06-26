@@ -93,19 +93,19 @@ export const FilterChips = ({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-3 bg-gray-50 border-b">
+    <div className="flex flex-wrap items-center gap-2 p-3 bg-white border-b border-gray-200">
       <span className="text-sm text-muted-foreground font-medium">Active filters:</span>
       
       {chips.map(chip => (
         <Badge
           key={chip.key}
           variant="secondary"
-          className="flex items-center gap-1 px-2 py-1"
+          className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-900"
         >
           <span className="text-xs">{chip.label}</span>
           <button
             onClick={chip.onRemove}
-            className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+            className="ml-1 hover:bg-gray-100 rounded-full p-0.5"
           >
             <X className="w-3 h-3" />
           </button>
@@ -116,7 +116,7 @@ export const FilterChips = ({
         variant="ghost"
         size="sm"
         onClick={onClearAll}
-        className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+        className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-gray-50"
       >
         Clear all
       </Button>

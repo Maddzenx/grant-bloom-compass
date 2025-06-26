@@ -72,8 +72,8 @@ export const EnhancedDeadlineFilter = ({
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-between h-8 px-3",
-              isFilterActive && "border-blue-500 bg-blue-50"
+              "w-full justify-between h-8 px-3 bg-white border-gray-300",
+              isFilterActive && "border-gray-400 bg-white shadow-sm"
             )}
           >
             <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ export const EnhancedDeadlineFilter = ({
             <CalendarIcon className="h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="start">
+        <PopoverContent className="w-80 p-0 bg-white border border-gray-200" align="start">
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Filter by deadline</h4>
@@ -92,7 +92,7 @@ export const EnhancedDeadlineFilter = ({
                   variant="ghost"
                   size="sm"
                   onClick={clearFilter}
-                  className="h-6 px-2 text-xs"
+                  className="h-6 px-2 text-xs hover:bg-gray-50"
                 >
                   Clear
                 </Button>

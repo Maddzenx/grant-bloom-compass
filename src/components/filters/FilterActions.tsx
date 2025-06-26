@@ -29,11 +29,11 @@ export const FilterActions = ({
         size="sm"
         onClick={onApplyFilters}
         disabled={!hasPendingChanges}
-        className="flex items-center gap-2 bg-accent-lime hover:bg-accent-lime/90 text-black"
+        className="flex items-center gap-2 bg-white hover:bg-gray-50 text-black border border-gray-300"
       >
         Apply Filters
         {hasPendingChanges && (
-          <span className="ml-1 text-xs bg-white text-black px-1.5 py-0.5 rounded-full">
+          <span className="ml-1 text-xs bg-gray-100 text-black px-1.5 py-0.5 rounded-full border border-gray-300">
             New
           </span>
         )}
