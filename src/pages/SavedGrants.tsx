@@ -109,12 +109,10 @@ const SavedGrants = () => {
                         <Button variant="default" onClick={() => handleEditClick(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian px-6 bg-[#cec5f9]">
                           Redigera
                         </Button>
-                        <Button variant="outline" size="icon" className=" bg-slate-50">
-                          <Download className="w-4 h-4" />
-                        </Button>
+                        
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="icon" className="border-red-300 hover:bg-red-50">
+                            <Button variant="outline" size="icon" className="border-[F0F1F3]-300 hover:[#F0F1F3]">
                               <Trash2 className="w-4 h-4 text-red-500" />
                             </Button>
                           </AlertDialogTrigger>
