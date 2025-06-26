@@ -70,7 +70,7 @@ export const OrganizationMultiSelect = ({
           <Button
             variant="outline"
             role="combobox"
-            className="w-full justify-between h-auto min-h-8 p-2"
+            className="w-full justify-between h-auto min-h-8 p-2 bg-white border-gray-300 hover:bg-gray-50"
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedOrganizations.length === 0 ? (
@@ -79,11 +79,11 @@ export const OrganizationMultiSelect = ({
                 selectedLabels.slice(0, 2).map((label, index) => {
                   const orgValue = organizations.find(org => org.label === label)?.value;
                   return (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge key={index} variant="secondary" className="text-xs bg-white border border-gray-300 text-gray-900">
                       {label}
                       <button
                         onClick={(e) => orgValue && handleRemoveOrganization(orgValue, e)}
-                        className="ml-1 hover:bg-gray-300 rounded-full"
+                        className="ml-1 hover:bg-gray-100 rounded-full"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -92,7 +92,7 @@ export const OrganizationMultiSelect = ({
                 })
               )}
               {selectedOrganizations.length > 2 && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs bg-white border border-gray-300 text-gray-900">
                   +{selectedOrganizations.length - 2} more
                 </Badge>
               )}
@@ -100,33 +100,33 @@ export const OrganizationMultiSelect = ({
             <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <div className="p-2 border-b">
+        <PopoverContent className="w-full p-0 bg-white border border-gray-200 shadow-lg" align="start">
+          <div className="p-2 border-b border-gray-200">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search organizations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8 h-8"
+                className="pl-8 h-8 bg-white border-gray-300"
               />
             </div>
           </div>
           
           {selectedOrganizations.length > 0 && (
-            <div className="p-2 border-b">
+            <div className="p-2 border-b border-gray-200 bg-white">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearAll}
-                className="h-6 text-xs"
+                className="h-6 text-xs hover:bg-gray-50 text-gray-600"
               >
                 Clear all ({selectedOrganizations.length})
               </Button>
             </div>
           )}
 
-          <div className="max-h-60 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto bg-white">
             {filteredOrganizations.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
                 No organizations found
@@ -135,7 +135,7 @@ export const OrganizationMultiSelect = ({
               filteredOrganizations.map((org) => (
                 <div
                   key={org.value}
-                  className="flex items-center space-x-2 p-2 hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center space-x-2 p-2 hover:bg-gray-50 cursor-pointer bg-white border-b border-gray-100"
                   onClick={() => handleToggleOrganization(org.value)}
                 >
                   <div className="flex items-center justify-center w-4 h-4">
@@ -145,8 +145,8 @@ export const OrganizationMultiSelect = ({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm truncate">{org.label}</span>
-                      <Badge variant="outline" className="text-xs ml-2">
+                      <span className="text-sm truncate text-gray-900">{org.label}</span>
+                      <Badge variant="outline" className="text-xs ml-2 bg-white border-gray-300 text-gray-600">
                         {org.count}
                       </Badge>
                     </div>
