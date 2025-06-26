@@ -83,10 +83,10 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
               </div>}
             
             <div className="flex gap-2" onClick={e => e.stopPropagation()}>
-              <Button size="sm" onClick={() => handleAccept(suggestion)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 h-8 text-sm rounded-md">
+              <Button size="sm" onClick={() => handleAccept(suggestion)} className="px-4 py-1.5 h-8 text-sm rounded-md bg-[#d7cffc] text-black">
                 Apply
               </Button>
-              <button onClick={() => handleDismiss(suggestion.id)} className="text-blue-600 hover:text-blue-700 text-sm font-medium px-2 py-1.5">
+              <button onClick={() => handleDismiss(suggestion.id)} className="text-sm font-medium px-2 py-1.5 text-black">
                 Dismiss
               </button>
             </div>
@@ -97,7 +97,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-gray-900 text-base">Review suggestions</h3>
-        <div className="bg-yellow-400 text-black text-xs font-medium px-2 py-0.5 rounded-full min-w-[24px] h-5 flex items-center justify-center">
+        <div className="text-black text-xs font-medium px-2 py-0.5 rounded-full min-w-[24px] h-5 flex items-center justify-center bg-[#d1f364]">
           {totalSuggestions}
         </div>
       </div>
@@ -107,7 +107,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
         <TabsList className="grid w-full grid-cols-4 mb-4 bg-gray-50 rounded-xl">
           <TabsTrigger value="Relevans" className="text-xs bg-[#cec5f9]">
             Relevans
-            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-[D1F364]-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Relevans'].filter(s => !appliedSuggestions.has(s.id)).length}
               </span>}
           </TabsTrigger>
