@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import MetricsSection from "@/components/home/MetricsSection";
 import SecurityTrustSection from "@/components/home/SecurityTrustSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PricingSection from "@/components/home/PricingSection";
+import FAQSection from "@/components/home/FAQSection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -179,6 +181,9 @@ const HomePage = () => {
 
       {/* Pricing Section */}
       <PricingSection />
+
+      {/* FAQ Section */}
+      <FAQSection />
     </div>
   );
 };
