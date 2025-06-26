@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Check, ChevronDown, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -74,7 +73,7 @@ export const OrganizationMultiSelect = ({
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedOrganizations.length === 0 ? (
-                <span className="text-muted-foreground text-sm">{placeholder}</span>
+                <span className="text-black text-sm">{placeholder}</span>
               ) : (
                 selectedLabels.slice(0, 2).map((label, index) => {
                   const orgValue = organizations.find(org => org.label === label)?.value;
