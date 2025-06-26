@@ -105,29 +105,23 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       {/* Tabbed Interface */}
       <Tabs defaultValue="Relevans" className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-4 bg-gray-50 rounded-xl">
-          <TabsTrigger value="Relevans" className="text-xs bg-[#cec5f9]">
+          <TabsTrigger value="Relevans" className="text-xs bg-[#f0f1f3]">
             Relevans
-            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-[D1F364]-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                {groupedSuggestions['Relevans'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>}
+            {groupedSuggestions['Relevans']?.filter(s => !appliedSuggestions.has(s.id)).length > 0}
           </TabsTrigger>
-          <TabsTrigger value="Originalitet" className="text-xs">
+          <TabsTrigger value="Originalitet" className="text-xs bg-[#f0f1f3]">
             Originalitet
             {groupedSuggestions['Originalitet']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {groupedSuggestions['Originalitet'].filter(s => !appliedSuggestions.has(s.id)).length}
               </span>}
           </TabsTrigger>
-          <TabsTrigger value="Struktur" className="text-xs">
+          <TabsTrigger value="Struktur" className="text-xs bg-[#f0f1f3]">
             Struktur
-            {groupedSuggestions['Struktur']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                {groupedSuggestions['Struktur'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>}
+            {groupedSuggestions['Struktur']?.filter(s => !appliedSuggestions.has(s.id)).length > 0}
           </TabsTrigger>
-          <TabsTrigger value="Övertygelse" className="text-xs">
+          <TabsTrigger value="Övertygelse" className="text-xs bg-[#f0f1f3]">
             Övertygelse
-            {groupedSuggestions['Övertygelse']?.filter(s => !appliedSuggestions.has(s.id)).length > 0 && <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                {groupedSuggestions['Övertygelse'].filter(s => !appliedSuggestions.has(s.id)).length}
-              </span>}
+            {groupedSuggestions['Övertygelse']?.filter(s => !appliedSuggestions.has(s.id)).length > 0}
           </TabsTrigger>
         </TabsList>
 
