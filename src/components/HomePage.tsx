@@ -107,10 +107,10 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F0F1F3] relative overflow-hidden">
+    <div className="min-h-screen bg-[#F0F1F3] relative">
       {/* Purple cloud background overlay */}
       <div 
-        className="absolute inset-0 bg-no-repeat bg-center bg-contain opacity-30"
+        className="absolute top-0 left-0 right-0 h-screen bg-no-repeat bg-center bg-contain opacity-30 pointer-events-none"
         style={{
           backgroundImage: `url('/lovable-uploads/6e050f8a-703a-48a5-96e5-1c1f60977e6b.png')`,
           backgroundSize: '800px 600px',
@@ -226,7 +226,7 @@ const HomePage = () => {
           </div>
 
           {/* Organization Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto mb-16">
             {organizationTabs.map((org, index) => (
               <button
                 key={index}
@@ -278,6 +278,22 @@ const HomePage = () => {
               {matchingError}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Video Demo Section */}
+      <div className="relative z-10 w-full bg-[#F0F1F3] py-16 px-6">
+        <div className="w-full max-w-6xl mx-auto">
+          {/* Video Container with 16:9 aspect ratio */}
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+            <div className="absolute inset-0 border-4 border-dashed border-gray-400 rounded-lg bg-gray-100 flex items-center justify-center">
+              <div className="text-center">
+                <p className="font-newsreader font-medium text-gray-600 text-lg md:text-xl">
+                  Video på hur verktyget fungerar
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
