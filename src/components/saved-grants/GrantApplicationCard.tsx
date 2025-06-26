@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Trash2, Save, Info } from 'lucide-react';
+import { Download, Trash2, Save, Info, Bookmark } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
@@ -83,27 +83,9 @@ const GrantApplicationCard = ({
             <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" size="icon" className="border-white-300 bg-white">
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Ta bort sparad ansökan</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Är du säker på att du vill ta bort denna sparade ansökan? Denna åtgärd kan inte ångras.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3]">Avbryt</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
-                    Ta bort
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button variant="outline" size="icon" onClick={() => onToggleSave?.(grant.id)} className="border-white-300 bg-white">
+              <Bookmark className="w-4 h-4 text-[#CEC5F9]" fill="#CEC5F9" />
+            </Button>
           </div>;
       default:
         return null;
