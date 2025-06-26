@@ -74,18 +74,18 @@ const GrantNotionHeader = ({
       <div className="flex items-center gap-3 mb-6">
         <Button
           onClick={handleApplyClick}
-          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg"
+          className="px-6 py-2 bg-[#8162F4] hover:bg-[#7555E8] text-white text-sm font-medium rounded-lg"
         >
           Ansök om bidrag
         </Button>
         <Button
           variant="outline"
           onClick={handleBookmarkToggle}
-          className="px-4 py-2 text-sm border-gray-300 rounded-lg flex items-center gap-2"
+          className="px-4 py-2 text-sm border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50"
         >
           <Bookmark
             className={`w-4 h-4 ${
-              actuallyBookmarked ? "fill-current text-blue-600" : "text-gray-500"
+              actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"
             }`}
           />
           {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
