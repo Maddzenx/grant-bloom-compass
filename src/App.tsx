@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,7 +30,9 @@ const queryClient = new QueryClient({
     }
   }
 });
-const App = () => <QueryClientProvider client={queryClient}>
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
     <SavedGrantsProvider>
       <TooltipProvider>
         <Router>
@@ -53,5 +56,7 @@ const App = () => <QueryClientProvider client={queryClient}>
         <Sonner />
       </TooltipProvider>
     </SavedGrantsProvider>
-  </QueryClientProvider>;
+  </QueryClientProvider>
+);
+
 export default App;
