@@ -32,6 +32,43 @@ export function TopNavigation() {
     <nav className="bg-[#F0F1F3] border-b" style={{ borderColor: '#F0F1F3' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#F0F1F3] border-none">
         <div className="flex items-center justify-between h-16 border-none">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="flex items-center">
+              <svg 
+                viewBox="0 0 120 30" 
+                className="h-8 w-auto"
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <text 
+                  x="0" 
+                  y="22" 
+                  className="text-xl font-newsreader" 
+                  fill="#131012"
+                >
+                  gr
+                </text>
+                <text 
+                  x="25" 
+                  y="22" 
+                  className="text-xl font-newsreader" 
+                  fill="#867ACE"
+                >
+                  ai
+                </text>
+                <text 
+                  x="45" 
+                  y="22" 
+                  className="text-xl font-newsreader" 
+                  fill="#131012"
+                >
+                  gent
+                </text>
+              </svg>
+            </Link>
+          </div>
+
           {/* Desktop Navigation - moved to right side */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6 ml-auto">
             {menuItems.map(item => {
