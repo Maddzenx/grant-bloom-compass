@@ -42,7 +42,7 @@ const GrantApplicationCard = ({
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-white">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Ta bort ansökan</AlertDialogTitle>
                   <AlertDialogDescription>
