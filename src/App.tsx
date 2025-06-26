@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { TopNavigation } from "@/components/TopNavigation";
 import { SavedGrantsProvider } from "@/contexts/SavedGrantsContext";
 import Index from "./pages/Index";
@@ -30,42 +29,29 @@ const queryClient = new QueryClient({
     }
   }
 });
-
-const AppContent = () => {
-  const location = useLocation();
-  const isHomePage = location.pathname === '/';
-
-  return (
-    <div className="min-h-screen w-full bg-[#f8f4ec]">
-      {!isHomePage && <TopNavigation />}
-      <main className="w-full">
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/discover" element={<DiscoverGrants />} />
-          <Route path="/saved" element={<SavedGrants />} />
-          <Route path="/ongoing" element={<ProgressChecklist />} />
-          <Route path="/progress" element={<ProgressChecklist />} />
-          <Route path="/draft/:draftId" element={<DraftViewer />} />
-          <Route path="/chat" element={<ChatInterface />} />
-          <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
-        </Routes>
-      </main>
-    </div>
-  );
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => <QueryClientProvider client={queryClient}>
     <SavedGrantsProvider>
       <TooltipProvider>
         <Router>
-          <AppContent />
+          <div className="min-h-screen w-full bg-[#f8f4ec]">
+            <TopNavigation />
+            <main className="w-full">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/discover" element={<DiscoverGrants />} />
+                <Route path="/saved" element={<SavedGrants />} />
+                <Route path="/ongoing" element={<ProgressChecklist />} />
+                <Route path="/progress" element={<ProgressChecklist />} />
+                <Route path="/draft/:draftId" element={<DraftViewer />} />
+                <Route path="/chat" element={<ChatInterface />} />
+                <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
+              </Routes>
+            </main>
+          </div>
         </Router>
         <Toaster />
         <Sonner />
       </TooltipProvider>
     </SavedGrantsProvider>
-  </QueryClientProvider>
-);
-
+  </QueryClientProvider>;
 export default App;
