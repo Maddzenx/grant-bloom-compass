@@ -112,7 +112,7 @@ const SavedGrants = () => {
                         
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="icon" className="border-[F0F1F3]-300 hover:[#F0F1F3]">
+                            <Button variant="outline" size="icon" className="border-[FFFFFF]-300 hover:[#F0F1F3] bg-[\"#F0F1F3] bg-white">
                               <Trash2 className="w-4 h-4 text-red-500" />
                             </Button>
                           </AlertDialogTrigger>
