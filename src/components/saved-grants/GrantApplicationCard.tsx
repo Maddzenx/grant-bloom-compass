@@ -40,7 +40,7 @@ const GrantApplicationCard = ({
             
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" size="icon" className="border-white hover:bg-white bg-white">
+                <Button variant="outline" size="icon" className="border-accent-white bg-[#fefefe]">
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
               </AlertDialogTrigger>
