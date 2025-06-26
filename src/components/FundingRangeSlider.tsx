@@ -98,7 +98,7 @@ export const FundingRangeSlider = ({
             placeholder="0"
             value={localMin}
             onChange={(e) => handleMinChange(e.target.value)}
-            className="h-8 bg-white border-gray-300"
+            className="h-8 bg-white border-gray-300 text-black placeholder:text-gray-400"
           />
         </div>
         <div>
@@ -108,7 +108,7 @@ export const FundingRangeSlider = ({
             placeholder="No limit"
             value={localMax}
             onChange={(e) => handleMaxChange(e.target.value)}
-            className="h-8 bg-white border-gray-300"
+            className="h-8 bg-white border-gray-300 text-black placeholder:text-gray-400"
           />
         </div>
       </div>
