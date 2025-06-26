@@ -13,6 +13,7 @@ import VideoDemo from "@/components/home/VideoDemo";
 import TopNavigation from "@/components/home/TopNavigation";
 import MetricsSection from "@/components/home/MetricsSection";
 import SecurityTrustSection from "@/components/home/SecurityTrustSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -171,6 +172,9 @@ const HomePage = () => {
 
       {/* Security & Trust Section */}
       <SecurityTrustSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
     </div>
   );
 };
