@@ -25,16 +25,18 @@ const GrantList = ({
 }: GrantListProps) => {
   const containerClass = isMobile 
     ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" 
-    : "w-[35%] bg-canvas-cloud overflow-hidden flex flex-col";
+    : "w-[35%] bg-canvas-cloud overflow-hidden flex flex-col border-r border-accent-lavender";
 
   return (
     <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <div className="px-1 md:px-1 py-0 bg-canvas-cloud w-full my-px">
-          <div className="space-y-2 md:space-y-2 py-0">
+        <div className="px-4 py-4 bg-canvas-cloud w-full">
+          <div className="space-y-3">
             {grants.length === 0 ? (
-              <div className="text-center text-ink-obsidian/70 mt-8 px-4">
-                {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+              <div className="text-center text-ink-secondary mt-12 px-4">
+                <div className="body-text">
+                  {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+                </div>
               </div>
             ) : (
               grants.map(grant => (

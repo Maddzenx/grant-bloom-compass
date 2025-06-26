@@ -29,39 +29,39 @@ export function TopNavigation() {
   };
 
   return (
-    <nav className="bg-[#F0F1F3] border-b" style={{ borderColor: '#F0F1F3' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#F0F1F3] border-none">
-        <div className="flex items-center justify-between h-16 border-none">
+    <nav className="bg-canvas-cloud border-b border-accent-lavender shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
               <svg 
-                viewBox="0 0 120 30" 
-                className="h-8 w-auto"
+                viewBox="0 0 160 40" 
+                className="h-10 w-auto"
                 fill="none" 
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <text 
                   x="0" 
-                  y="22" 
-                  className="text-xl font-newsreader" 
-                  fill="#131012"
+                  y="28" 
+                  className="text-2xl font-newsreader font-normal" 
+                  fill="#000000"
                 >
                   gr
                 </text>
                 <text 
-                  x="25" 
-                  y="22" 
-                  className="text-xl font-newsreader" 
-                  fill="#867ACE"
+                  x="32" 
+                  y="28" 
+                  className="text-2xl font-newsreader font-normal" 
+                  fill="#CEC5F9"
                 >
                   ai
                 </text>
                 <text 
-                  x="45" 
-                  y="22" 
-                  className="text-xl font-newsreader" 
-                  fill="#131012"
+                  x="58" 
+                  y="28" 
+                  className="text-2xl font-newsreader font-normal" 
+                  fill="#000000"
                 >
                   gent
                 </text>
@@ -69,8 +69,8 @@ export function TopNavigation() {
             </Link>
           </div>
 
-          {/* Desktop Navigation - moved to right side */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-6 ml-auto">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
             {menuItems.map(item => {
               const isActive = location.pathname === item.url;
               return (
@@ -78,20 +78,20 @@ export function TopNavigation() {
                   key={item.title}
                   to={item.url}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors rounded-md font-newsreader",
+                    "px-4 py-2 text-lg font-newsreader font-medium transition-colors rounded-md",
                     isActive
-                      ? 'bg-white text-ink-obsidian shadow-sm'
-                      : 'text-ink-obsidian/80 hover:bg-white hover:shadow-sm'
+                      ? 'bg-white text-ink-obsidian shadow-sm border border-accent-lavender'
+                      : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border hover:border-accent-lavender'
                   )}
                 >
-                  <span className="font-newsreader">{item.title}</span>
+                  {item.title}
                 </Link>
               );
             })}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden ml-auto">
+          <div className="md:hidden">
             <Button
               variant="ghost"
               size="sm"
@@ -109,7 +109,7 @@ export function TopNavigation() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t bg-[#F0F1F3]" style={{ borderColor: '#F0F1F3' }}>
+          <div className="md:hidden border-t border-accent-lavender bg-canvas-cloud">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {menuItems.map(item => {
                 const isActive = location.pathname === item.url;
@@ -119,13 +119,13 @@ export function TopNavigation() {
                     to={item.url}
                     onClick={closeMobileMenu}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-3 text-base font-medium transition-colors rounded-md font-newsreader",
+                      "block px-3 py-3 text-lg font-newsreader font-medium transition-colors rounded-md",
                       isActive
-                        ? 'bg-white text-ink-obsidian shadow-sm'
-                        : 'text-ink-obsidian/80 hover:bg-white hover:shadow-sm'
+                        ? 'bg-white text-ink-obsidian shadow-sm border border-accent-lavender'
+                        : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border hover:border-accent-lavender'
                     )}
                   >
-                    <span className="font-newsreader">{item.title}</span>
+                    {item.title}
                   </Link>
                 );
               })}

@@ -55,7 +55,7 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="h-screen bg-[#f8f4ec] flex flex-col w-full overflow-hidden">
+    <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden">
       {/* Enhanced Search Header */}
       <DiscoverHeader
         searchTerm={searchTerm}
@@ -69,14 +69,16 @@ export const DiscoverGrantsContent = ({
       />
 
       {/* Enhanced Filter Controls */}
-      <EnhancedFilterControls
-        filters={filters}
-        onFiltersChange={onFiltersChange}
-        onClearAll={onClearFilters}
-        grants={grants}
-        filteredGrants={searchResults}
-        hasActiveFilters={hasActiveFilters}
-      />
+      <div className="bg-accent-lavender-10 border-b border-accent-lavender">
+        <EnhancedFilterControls
+          filters={filters}
+          onFiltersChange={onFiltersChange}
+          onClearAll={onClearFilters}
+          grants={grants}
+          filteredGrants={searchResults}
+          hasActiveFilters={hasActiveFilters}
+        />
+      </div>
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">

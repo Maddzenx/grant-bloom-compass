@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,15 +20,22 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
-				newsreader: ['Newsreader', 'serif'],
+				sans: ['Newsreader', 'ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+				newsreader: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
+			},
+			fontSize: {
+				'headline': ['clamp(34px, 4vw, 60px)', { lineHeight: '1.2' }],
+				'subheadline': ['clamp(28px, 3.5vw, 48px)', { lineHeight: '1.25' }],
+				'body': ['18px', { lineHeight: '1.55' }],
+				'btn': ['20px', { lineHeight: '1.2' }],
 			},
 			colors: {
 				// New semantic palette
-				'canvas-cloud': '#F4F5F0',
-				'accent-lavender': '#867ACE',
-				'ink-obsidian': '#131012',
-				'highlight-amber': '#E29D3C',
+				'canvas-cloud': '#F0F1F3',
+				'accent-lime': '#D1F364',
+				'accent-lavender': '#CEC5F9',
+				'ink-obsidian': '#000000',
+				'ink-secondary': '#333333',
 				
 				// Design system tokens updated with new palette
 				border: 'hsl(var(--border))',
@@ -73,6 +81,10 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			spacing: {
+				'section-y': '7rem',
+				'section-y-bottom': '6rem',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

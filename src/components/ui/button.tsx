@@ -6,24 +6,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-newsreader font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-highlight-amber text-ink-obsidian hover:bg-highlight-amber/90 focus-visible:ring-highlight-amber",
+        default: "bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-accent-lavender bg-background text-accent-lavender hover:bg-accent-lavender/10 hover:text-ink-obsidian focus-visible:ring-accent-lavender",
+          "border border-accent-lavender bg-background text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender",
         secondary:
-          "border border-accent-lavender text-accent-lavender hover:bg-accent-lavender/10 hover:text-ink-obsidian focus-visible:ring-accent-lavender",
-        ghost: "hover:bg-accent-lavender/10 hover:text-accent-lavender",
-        link: "text-accent-lavender underline-offset-4 hover:underline hover:text-ink-obsidian",
+          "border border-accent-lavender text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender",
+        ghost: "hover:bg-accent-lavender/10 hover:text-ink-obsidian",
+        link: "text-ink-obsidian underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        default: "h-12 px-6 py-3 text-xl",
+        sm: "h-9 rounded-md px-3 text-base",
+        lg: "h-14 rounded-lg px-8 text-2xl",
         icon: "h-10 w-10",
       },
     },

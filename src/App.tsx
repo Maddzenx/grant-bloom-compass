@@ -21,9 +21,7 @@ const queryClient = new QueryClient({
       retry: 1,
       retryDelay: 1000,
       staleTime: 5 * 60 * 1000,
-      // 5 minutes
       gcTime: 10 * 60 * 1000,
-      // 10 minutes
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false
@@ -36,7 +34,7 @@ const App = () => (
     <SavedGrantsProvider>
       <TooltipProvider>
         <Router>
-          <div className="min-h-screen w-full bg-[#f8f4ec]">
+          <div className="min-h-screen w-full bg-canvas-cloud">
             <TopNavigation />
             <main className="w-full">
               <Routes>
