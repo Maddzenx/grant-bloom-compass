@@ -4,6 +4,7 @@ import { Download, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
+
 interface GrantApplicationCardProps {
   grant: Grant;
   type: 'active' | 'pending' | 'saved';
@@ -12,6 +13,7 @@ interface GrantApplicationCardProps {
   onReadMore?: (grant: Grant) => void;
   onStartApplication?: (grant: Grant) => void;
 }
+
 const GrantApplicationCard = ({
   grant,
   type,
@@ -50,7 +52,7 @@ const GrantApplicationCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian">Avbryt</AlertDialogCancel>
                   <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
                     Ta bort
                   </AlertDialogAction>
@@ -89,7 +91,7 @@ const GrantApplicationCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian">Avbryt</AlertDialogCancel>
                   <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
                     Ta bort
                   </AlertDialogAction>
@@ -136,4 +138,5 @@ const GrantApplicationCard = ({
       </div>
     </Card>;
 };
+
 export default GrantApplicationCard;
