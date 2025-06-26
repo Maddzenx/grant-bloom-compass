@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { User, Bot } from 'lucide-react';
 export interface Message {
@@ -15,7 +14,7 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const isUser = message.type === 'user';
   return <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      {!isUser && <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-[#979aa1]">
+      {!isUser && <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-[#cec5f9]">
           <Bot className="w-4 h-4 text-white" />
         </div>}
       
@@ -25,7 +24,9 @@ export const ChatMessage = ({
             {message.content}
           </p>
         </div>
-        <div className={`text-xs mt-1 ${isUser ? 'text-right' : 'text-left'}`} style={{ color: '#CEC5F9' }}>
+        <div className={`text-xs mt-1 ${isUser ? 'text-right' : 'text-left'}`} style={{
+        color: '#CEC5F9'
+      }}>
           {message.timestamp.toLocaleTimeString('sv-SE', {
           hour: '2-digit',
           minute: '2-digit'
