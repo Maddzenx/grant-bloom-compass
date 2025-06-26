@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -93,7 +94,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
           </div>)}
     </div>;
   const totalSuggestions = suggestions.filter(s => !appliedSuggestions.has(s.id)).length;
-  return <div className="absolute inset-x-5 bottom-0 py-[24px]">
+  return <div className="absolute inset-x-5 top-0 bottom-0 py-[24px]">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-gray-900 text-base">Review suggestions</h3>
