@@ -32,7 +32,7 @@ const DiscoverHeader = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="w-full bg-canvas-cloud flex-shrink-0 border-b border-accent-lavender">
+    <div className="w-full bg-canvas-cloud flex-shrink-0">
       <div className="page-container py-6">
         {/* Header with title */}
         <div className="flex items-center gap-3 mb-6">
@@ -60,7 +60,7 @@ const DiscoverHeader = ({
           <div className={`flex items-center ${isMobile ? 'flex-col gap-4' : 'justify-between'}`}>
             <div className={`text-ink-secondary body-text ${isMobile ? 'order-2' : ''}`}>
               {totalGrants} bidrag hittade
-              {isSearching && <span className="ml-2 text-accent-lavender">• Söker...</span>}
+              {isSearching && <span className="ml-2 text-ink-secondary">• Söker...</span>}
             </div>
             <div className={isMobile ? 'order-1 w-full flex justify-center' : ''}>
               <SortingControls 
