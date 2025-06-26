@@ -20,7 +20,7 @@ export const FilterActions = ({
         variant="outline"
         size="sm"
         onClick={onClearFilters}
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-white hover:bg-gray-50 border-gray-300"
       >
         <RotateCcw className="w-4 h-4" />
         Clear Filters
@@ -29,11 +29,11 @@ export const FilterActions = ({
         size="sm"
         onClick={onApplyFilters}
         disabled={!hasPendingChanges}
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-accent-lime hover:bg-accent-lime/90 text-black"
       >
         Apply Filters
         {hasPendingChanges && (
-          <span className="ml-1 text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full">
+          <span className="ml-1 text-xs bg-white text-black px-1.5 py-0.5 rounded-full">
             New
           </span>
         )}
