@@ -14,6 +14,7 @@ import TopNavigation from "@/components/home/TopNavigation";
 import MetricsSection from "@/components/home/MetricsSection";
 import SecurityTrustSection from "@/components/home/SecurityTrustSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import PricingSection from "@/components/home/PricingSection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -175,6 +176,9 @@ const HomePage = () => {
 
       {/* Testimonials Section */}
       <TestimonialsSection />
+
+      {/* Pricing Section */}
+      <PricingSection />
     </div>
   );
 };
