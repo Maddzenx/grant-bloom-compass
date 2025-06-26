@@ -18,14 +18,14 @@ const SortingControls = ({
         <SelectTrigger className="w-48 bg-white border-accent-lavender">
           <SelectValue placeholder="Välj sortering" />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="default">Rekommenderade</SelectItem>
-          {hasSearchTerm && <SelectItem value="relevance">Relevans</SelectItem>}
-          <SelectItem value="deadline-asc">Närmast deadline först</SelectItem>
-          <SelectItem value="deadline-desc">Senast deadline först</SelectItem>
-          <SelectItem value="amount-desc">Störst belopp först</SelectItem>
-          <SelectItem value="amount-asc">Minst belopp först</SelectItem>
-          <SelectItem value="created-desc">Nyast publicerat</SelectItem>
+        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+          <SelectItem value="default" className="bg-white hover:bg-gray-50 text-black">Rekommenderade</SelectItem>
+          {hasSearchTerm && <SelectItem value="relevance" className="bg-white hover:bg-gray-50 text-black">Relevans</SelectItem>}
+          <SelectItem value="deadline-asc" className="bg-white hover:bg-gray-50 text-black">Närmast deadline först</SelectItem>
+          <SelectItem value="deadline-desc" className="bg-white hover:bg-gray-50 text-black">Senast deadline först</SelectItem>
+          <SelectItem value="amount-desc" className="bg-white hover:bg-gray-50 text-black">Störst belopp först</SelectItem>
+          <SelectItem value="amount-asc" className="bg-white hover:bg-gray-50 text-black">Minst belopp först</SelectItem>
+          <SelectItem value="created-desc" className="bg-white hover:bg-gray-50 text-black">Nyast publicerat</SelectItem>
         </SelectContent>
       </Select>
     </div>;
