@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import StatusMessages from "@/components/home/StatusMessages";
 import VideoDemo from "@/components/home/VideoDemo";
 import TopNavigation from "@/components/home/TopNavigation";
 import MetricsSection from "@/components/home/MetricsSection";
+import SecurityTrustSection from "@/components/home/SecurityTrustSection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -168,6 +168,9 @@ const HomePage = () => {
 
       {/* Metrics Section */}
       <MetricsSection />
+
+      {/* Security & Trust Section */}
+      <SecurityTrustSection />
     </div>
   );
 };
