@@ -65,7 +65,7 @@ const ChatInterface = () => {
       {/* Main Chat Area */}
       <div className={`flex flex-col ${showPreview ? 'w-1/2' : 'w-full'} bg-white`}>
         {/* Header */}
-        <div className="p-4 sticky top-0 z-10 bg-[#f8f4ec]">
+        <div className="p-4 sticky top-0 z-10 bg-[#f0f1f3]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" onClick={() => navigate('/discover')} className="p-2">
