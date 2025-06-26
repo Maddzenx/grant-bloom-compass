@@ -34,7 +34,7 @@ const GrantApplicationCard = ({
     switch (type) {
       case 'active':
         return <div className="flex gap-2">
-            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian px-6 bg-[#cec5f9]">
+            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian bg-[#cec5f9] py-0 px-[10px]">
               Redigera
             </Button>
             
