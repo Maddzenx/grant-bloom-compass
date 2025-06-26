@@ -4,7 +4,6 @@ import { Download, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
-
 interface GrantApplicationCardProps {
   grant: Grant;
   type: 'active' | 'pending' | 'saved';
@@ -13,7 +12,6 @@ interface GrantApplicationCardProps {
   onReadMore?: (grant: Grant) => void;
   onStartApplication?: (grant: Grant) => void;
 }
-
 const GrantApplicationCard = ({
   grant,
   type,
@@ -68,18 +66,18 @@ const GrantApplicationCard = ({
           </div>;
       case 'saved':
         return <div className="flex gap-3">
-            <Button variant="outline" className="px-4 border-accent-lavender" onClick={() => onReadMore?.(grant)}>
+            <Button variant="outline" onClick={() => onReadMore?.(grant)} className="px-4 border-accent-lavender text-black bg-[#f0f1f3]">
               Läs mer
             </Button>
-            <Button variant="default" className="bg-accent-lime hover:bg-accent-lime/90 text-ink-obsidian px-6" onClick={() => onStartApplication?.(grant)}>
+            <Button variant="default" onClick={() => onStartApplication?.(grant)} className="bg-accent-lime hover:bg-accent-lime/90 text-ink-obsidian px-6 bg-[#cec5f9]">
               Börja ansöka
             </Button>
-            <Button variant="outline" size="icon" className="border-accent-lavender">
+            <Button variant="outline" size="icon" className="border-accent-white bg-[#fefefe]">
               <Download className="w-4 h-4" />
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" size="icon" className="border-red-300 hover:bg-red-50">
+                <Button variant="outline" size="icon" className="border-white-300 bg-white">
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
               </AlertDialogTrigger>
@@ -138,5 +136,4 @@ const GrantApplicationCard = ({
       </div>
     </Card>;
 };
-
 export default GrantApplicationCard;
