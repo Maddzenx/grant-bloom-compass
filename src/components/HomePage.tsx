@@ -17,6 +17,7 @@ import SecurityTrustSection from "@/components/home/SecurityTrustSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
+import CTASection from "@/components/home/CTASection";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -184,6 +185,9 @@ const HomePage = () => {
 
       {/* FAQ Section */}
       <FAQSection />
+
+      {/* CTA Section */}
+      <CTASection />
     </div>
   );
 };
