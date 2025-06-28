@@ -23,7 +23,7 @@ const GrantList = ({
   const containerClass = isMobile ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" : "w-[35%] bg-canvas-cloud overflow-hidden flex flex-col border-r border-accent-lavender";
   return <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <div className="px-4 py-4 bg-canvas-cloud w-full bg-[#f0f1f3]">
+        <div className="px-4 bg-canvas-cloud w-full bg-[#f0f1f3] py-px">
           <div className="space-y-3">
             {grants.length === 0 ? <div className="text-center text-ink-secondary mt-12 px-4">
                 <div className="body-text">
