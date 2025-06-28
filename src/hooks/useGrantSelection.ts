@@ -67,19 +67,23 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
     console.log('🔖 Toggle bookmark for grant:', grantId);
     const currentlyBookmarked = isGrantSaved(grantId);
     
-    setBookmarkedGrants(prev => {
-      const newSet = new Set(prev);
-      if (currentlyBookmarked) {
+    if (currentlyBookmarked) {
+      removeFromSaved(grantId);
+      console.log('🗑️ Removed from bookmarks:', grantId);
+      setBookmarkedGrants(prev => {
+        const newSet = new Set(prev);
         newSet.delete(grantId);
-        removeFromSaved(grantId);
-        console.log('🗑️ Removed from bookmarks:', grantId);
-      } else {
+        return newSet;
+      });
+    } else {
+      addToSaved(grant);
+      console.log('📝 Added to bookmarks:', grantId);
+      setBookmarkedGrants(prev => {
+        const newSet = new Set(prev);
         newSet.add(grantId);
-        addToSaved(grant);
-        console.log('📝 Added to bookmarks:', grantId);
-      }
-      return newSet;
-    });
+        return newSet;
+      });
+    }
   }, [searchResults, addToSaved, removeFromSaved, isGrantSaved]);
 
   const handleBackToList = useCallback(() => {

@@ -53,11 +53,11 @@ const GrantCard = ({
       addToSaved(grant);
     }
     
-    // Also call the parent's toggle function for UI consistency
+    // Call the parent's toggle function for UI updates
     onToggleBookmark();
   };
 
-  // Use the context to determine if grant is actually saved
+  // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
   return (
