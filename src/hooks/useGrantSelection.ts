@@ -8,7 +8,15 @@ interface UseGrantSelectionProps {
   searchResults: Grant[];
 }
 
-export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => {
+interface UseGrantSelectionReturn {
+  selectedGrant: Grant | null;
+  showDetails: boolean;
+  handleGrantSelect: (grant: Grant) => void;
+  toggleBookmark: (grantId: string) => void;
+  handleBackToList: () => void;
+}
+
+export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): UseGrantSelectionReturn => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const isMobile = useIsMobile();

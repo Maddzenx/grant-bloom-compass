@@ -106,7 +106,7 @@ const DiscoverGrants = () => {
     sortBy,
   });
 
-  // Grant selection logic - removed bookmarkedGrants since we use context directly
+  // Grant selection logic - uses context directly for bookmark state
   const {
     selectedGrant,
     showDetails,
