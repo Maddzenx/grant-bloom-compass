@@ -11,26 +11,8 @@ interface UseGrantSelectionProps {
 export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => {
   const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-  const [bookmarkedGrants, setBookmarkedGrants] = useState<Set<string>>(new Set());
   const isMobile = useIsMobile();
-  const { isGrantSaved, addToSaved, removeFromSaved, savedGrants } = useSavedGrantsContext();
-
-  // Sync bookmarked grants with saved grants context
-  useEffect(() => {
-    console.log('🔄 Syncing bookmarked grants with saved grants context');
-    const updateBookmarkedGrants = () => {
-      const newBookmarkedGrants = new Set<string>();
-      searchResults.forEach(grant => {
-        if (isGrantSaved(grant.id)) {
-          newBookmarkedGrants.add(grant.id);
-        }
-      });
-      console.log('📊 Updated bookmarked grants:', Array.from(newBookmarkedGrants));
-      setBookmarkedGrants(newBookmarkedGrants);
-    };
-
-    updateBookmarkedGrants();
-  }, [searchResults, isGrantSaved, savedGrants]);
+  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
 
   // Auto-select first grant when results change, but only if we don't have a valid selection
   useEffect(() => {
@@ -70,19 +52,9 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
     if (currentlyBookmarked) {
       removeFromSaved(grantId);
       console.log('🗑️ Removed from bookmarks:', grantId);
-      setBookmarkedGrants(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(grantId);
-        return newSet;
-      });
     } else {
       addToSaved(grant);
       console.log('📝 Added to bookmarks:', grantId);
-      setBookmarkedGrants(prev => {
-        const newSet = new Set(prev);
-        newSet.add(grantId);
-        return newSet;
-      });
     }
   }, [searchResults, addToSaved, removeFromSaved, isGrantSaved]);
 
@@ -93,7 +65,6 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps) => 
   return {
     selectedGrant,
     showDetails,
-    bookmarkedGrants,
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
