@@ -1,10 +1,10 @@
 
-
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
+import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 
 interface GrantStickyHeaderProps {
   grant: Grant;
@@ -26,10 +26,32 @@ const GrantStickyHeader = ({
   isMobile = false
 }: GrantStickyHeaderProps) => {
   const navigate = useNavigate();
+  const { isGrantSaved, addToSaved, removeFromSaved, startApplication } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
-    navigate('/editor', { state: { grant } });
+    console.log('🎯 Apply button clicked in sticky header for grant:', grant.id, grant.title);
+    startApplication(grant);
+    navigate('/chat', { state: { grant } });
   };
+
+  const handleBookmarkToggle = () => {
+    const currentlyBookmarked = isGrantSaved(grant.id);
+    console.log('🔖 GrantStickyHeader bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    
+    if (currentlyBookmarked) {
+      console.log('🗑️ Removing from saved');
+      removeFromSaved(grant.id);
+    } else {
+      console.log('📝 Adding to saved');
+      addToSaved(grant);
+    }
+    
+    // Also call the parent's toggle function for UI consistency
+    onToggleBookmark();
+  };
+
+  // Use the context to determine if grant is actually saved
+  const actuallyBookmarked = isGrantSaved(grant.id);
 
   return (
     <div className={`bg-white ${isMobile ? 'p-2' : 'p-4'} backdrop-blur-sm bg-white/95 hover:bg-white transition-all duration-300 ease-out hover:shadow-md group`}>
@@ -53,12 +75,12 @@ const GrantStickyHeader = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={onToggleBookmark}
+            onClick={handleBookmarkToggle}
             className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-300 hover:scale-105"
           >
             <Bookmark
               className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-all duration-300 hover:scale-110 ${
-                isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400 hover:text-blue-500"
+                actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400 hover:text-blue-500"
               }`}
             />
           </Button>
@@ -76,4 +98,3 @@ const GrantStickyHeader = ({
 };
 
 export default GrantStickyHeader;
-

@@ -1,8 +1,10 @@
+
 import React from "react";
 import { Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
+import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 
 interface GrantHeaderProps {
   grant: Grant;
@@ -24,10 +26,32 @@ const GrantHeader = ({
   isMobile = false
 }: GrantHeaderProps) => {
   const navigate = useNavigate();
+  const { isGrantSaved, addToSaved, removeFromSaved, startApplication } = useSavedGrantsContext();
 
   const handleApplyClick = () => {
-    navigate('/editor', { state: { grant } });
+    console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
+    startApplication(grant);
+    navigate('/chat', { state: { grant } });
   };
+
+  const handleBookmarkToggle = () => {
+    const currentlyBookmarked = isGrantSaved(grant.id);
+    console.log('🔖 GrantHeader bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    
+    if (currentlyBookmarked) {
+      console.log('🗑️ Removing from saved');
+      removeFromSaved(grant.id);
+    } else {
+      console.log('📝 Adding to saved');
+      addToSaved(grant);
+    }
+    
+    // Also call the parent's toggle function for UI consistency
+    onToggleBookmark();
+  };
+
+  // Use the context to determine if grant is actually saved
+  const actuallyBookmarked = isGrantSaved(grant.id);
 
   return (
     <div className={`flex items-start ${isMobile ? 'flex-col gap-3' : 'justify-between'} mb-4 md:mb-5`}>
@@ -50,10 +74,10 @@ const GrantHeader = ({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={onToggleBookmark} 
+          onClick={handleBookmarkToggle} 
           className={`p-2 hover:bg-gray-100 rounded-lg ${isMobile ? 'flex-1' : ''}`}
         >
-          <Bookmark className={`w-5 h-5 ${isBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"}`} />
+          <Bookmark className={`w-5 h-5 ${actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"}`} />
           {isMobile && <span className="ml-2">Spara</span>}
         </Button>
         <Button 

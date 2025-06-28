@@ -30,7 +30,7 @@ const SavedApplicationsTab = ({ grants, onReadMore, onStartApplication, onDelete
           type="saved"
           onReadMore={onReadMore}
           onStartApplication={onStartApplication}
-          onDelete={onDelete}
+          onToggleSave={onDelete}
         />
       ))}
     </div>

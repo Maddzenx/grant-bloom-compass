@@ -4,6 +4,7 @@ import { Grant } from "@/types/grant";
 import { Calendar, Bookmark } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
+import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 
 interface GrantCardProps {
   grant: Grant;
@@ -22,6 +23,8 @@ const GrantCard = ({
   onToggleBookmark,
   isMobile = false
 }: GrantCardProps) => {
+  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
+  
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -35,6 +38,27 @@ const GrantCard = ({
   };
 
   const orgLogo = getOrganizationLogo(grant.organization);
+
+  const handleBookmarkToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const currentlyBookmarked = isGrantSaved(grant.id);
+    console.log('🔖 GrantCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    
+    if (currentlyBookmarked) {
+      console.log('🗑️ Removing from saved');
+      removeFromSaved(grant.id);
+    } else {
+      console.log('📝 Adding to saved');
+      addToSaved(grant);
+    }
+    
+    // Also call the parent's toggle function for UI consistency
+    onToggleBookmark();
+  };
+
+  // Use the context to determine if grant is actually saved
+  const actuallyBookmarked = isGrantSaved(grant.id);
 
   return (
     <Card 
@@ -52,15 +76,12 @@ const GrantCard = ({
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
           <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleBookmark();
-            }} 
+            onClick={handleBookmarkToggle}
             className="p-1 hover:bg-accent-2/10 rounded transition-colors"
           >
             <Bookmark 
               className={`w-4 h-4 ${
-                isBookmarked 
+                actuallyBookmarked 
                   ? 'fill-accent-2 text-accent-2' 
                   : 'text-ink-obsidian/40'
               }`} 
