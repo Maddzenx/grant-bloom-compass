@@ -61,9 +61,10 @@ export function TopNavigation() {
                   className={cn(
                     "px-4 py-2 text-lg font-newsreader font-medium transition-colors rounded-md",
                     isActive
-                      ? 'bg-white text-ink-obsidian shadow-sm border border-accent-lavender'
-                      : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border hover:border-accent-lavender'
+                      ? 'bg-white text-ink-obsidian shadow-sm border' 
+                      : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border'
                   )}
+                  style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                 >
                   {item.title}
                 </Link>
@@ -106,9 +107,10 @@ export function TopNavigation() {
                     className={cn(
                       "block px-3 py-3 text-lg font-newsreader font-medium transition-colors rounded-md",
                       isActive
-                        ? 'bg-white text-ink-obsidian shadow-sm border border-accent-lavender'
-                        : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border hover:border-accent-lavender'
+                        ? 'bg-white text-ink-obsidian shadow-sm border'
+                        : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border'
                     )}
+                    style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                   >
                     {item.title}
                   </Link>
