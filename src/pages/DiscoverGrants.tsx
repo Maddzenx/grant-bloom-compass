@@ -106,11 +106,10 @@ const DiscoverGrants = () => {
     sortBy,
   });
 
-  // Grant selection logic
+  // Grant selection logic - removed bookmarkedGrants since we use context directly
   const {
     selectedGrant,
     showDetails,
-    bookmarkedGrants,
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
@@ -143,7 +142,6 @@ const DiscoverGrants = () => {
       grants={grants}
       searchResults={searchResults}
       selectedGrant={selectedGrant}
-      bookmarkedGrants={bookmarkedGrants}
       showDetails={showDetails}
       searchTerm={searchTerm}
       sortBy={sortBy}
