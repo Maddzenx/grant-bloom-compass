@@ -73,14 +73,14 @@ const GrantApplicationCard = ({
               </AlertDialogTrigger>
               <AlertDialogContent className="bg-white">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Ta bort ansökan</AlertDialogTitle>
-                  <AlertDialogDescription>
+                  <AlertDialogTitle>Ta bort ansökan?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-black">
                     Är du säker på att du vill ta bort denna aktiva ansökan? Denna åtgärd kan inte ångras.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3]">Avbryt</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700">
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3] text-sm">Avbryt</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700 text-sm">
                     Ta bort
                   </AlertDialogAction>
                 </AlertDialogFooter>
