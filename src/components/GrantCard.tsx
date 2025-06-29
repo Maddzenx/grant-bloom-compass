@@ -80,10 +80,10 @@ const GrantCard = ({
             className="p-1 hover:bg-accent-2/10 rounded transition-colors"
           >
             <Bookmark 
-              className={`w-4 h-4 ${
+              className={`w-4 h-4 transition-colors ${
                 actuallyBookmarked 
-                  ? 'fill-accent-2 text-accent-2' 
-                  : 'text-ink-obsidian/40'
+                  ? 'fill-accent-lavender text-accent-lavender' 
+                  : 'text-white stroke-ink-obsidian/40 fill-none'
               }`} 
             />
           </button>
