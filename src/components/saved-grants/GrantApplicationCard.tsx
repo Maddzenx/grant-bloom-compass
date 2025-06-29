@@ -102,7 +102,7 @@ const GrantApplicationCard = ({
             <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\\n               text-sm leading-none h-10">
               Börja ansökan
             </Button>
-            <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white-300 bg-white">
+            <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white bg-white">
               <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? 'text-[#CEC5F9] fill-[#CEC5F9]' : 'text-gray-400'}`} />
             </Button>
           </div>;
