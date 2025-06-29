@@ -54,6 +54,12 @@ const GrantApplicationCard = ({
     }
   };
 
+  const handleStartApplication = () => {
+    if (onStartApplication) {
+      onStartApplication(grant);
+    }
+  };
+
   const renderActions = () => {
     switch (type) {
       case 'active':
@@ -96,6 +102,9 @@ const GrantApplicationCard = ({
             <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
+            <Button variant="default" onClick={handleStartApplication} className="bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian px-4">
+              Börja ansökan
+            </Button>
             <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white-300 bg-white">
               <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? 'text-[#CEC5F9] fill-[#CEC5F9]' : 'text-gray-400'}`} />
             </Button>
@@ -104,6 +113,7 @@ const GrantApplicationCard = ({
         return null;
     }
   };
+
   const getStatusText = () => {
     switch (type) {
       case 'active':
@@ -116,6 +126,7 @@ const GrantApplicationCard = ({
         return null;
     }
   };
+
   const getDateText = () => {
     switch (type) {
       case 'active':
@@ -128,6 +139,7 @@ const GrantApplicationCard = ({
         return '';
     }
   };
+
   return <Card className="p-6 bg-white border border-accent-lavender shadow-sm">
       <div className="flex justify-between items-start">
         <div className="flex-1">

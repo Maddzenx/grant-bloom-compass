@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { Grant } from '@/types/grant';
 
@@ -54,13 +55,11 @@ export const useSavedGrants = () => {
   const addToSaved = useCallback((grant: Grant) => {
     console.log('📝 Adding grant to saved:', grant.id, grant.title);
     setSavedGrants(prev => {
-      // Check if grant already exists in any category
+      // Check if grant already exists in saved applications
       const existsInSaved = prev.savedApplications.some(g => g.id === grant.id);
-      const existsInActive = prev.activeApplications.some(g => g.id === grant.id);
-      const existsInPending = prev.pendingReview.some(g => g.id === grant.id);
       
-      if (existsInSaved || existsInActive || existsInPending) {
-        console.log('⚠️ Grant already exists, not adding again');
+      if (existsInSaved) {
+        console.log('⚠️ Grant already exists in saved, not adding again');
         return prev;
       }
 
@@ -149,22 +148,18 @@ export const useSavedGrants = () => {
     });
   }, []);
 
+  // FIXED: Only check if grant is in savedApplications for bookmark state
   const isGrantSaved = useCallback((grantId: string) => {
     const isSaved = savedGrants.savedApplications.some(g => g.id === grantId);
-    const isActive = savedGrants.activeApplications.some(g => g.id === grantId);
-    const isPending = savedGrants.pendingReview.some(g => g.id === grantId);
-    const result = isSaved || isActive || isPending;
     
-    console.log('🔍 Checking if grant is saved:', {
+    console.log('🔍 Checking if grant is saved (bookmark state):', {
       grantId,
       isSaved,
-      isActive,
-      isPending,
-      result
+      savedCount: savedGrants.savedApplications.length
     });
     
-    return result;
-  }, [savedGrants]);
+    return isSaved;
+  }, [savedGrants.savedApplications]);
 
   return {
     savedGrants,
