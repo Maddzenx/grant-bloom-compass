@@ -8,6 +8,7 @@ import { ChatMessage } from '@/components/chat/ChatMessage';
 import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import { useChatAgent } from '@/hooks/useChatAgent';
 import { ApplicationPreview } from '@/components/chat/ApplicationPreview';
+
 const ChatInterface = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,17 +24,20 @@ const ChatInterface = () => {
     sendMessage,
     exportDraft
   } = useChatAgent(grant);
+
   useEffect(() => {
     if (!grant) {
       navigate('/discover');
       return;
     }
   }, [grant, navigate]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: 'smooth'
     });
   }, [messages, isTyping]);
+
   const handlePreviewClick = () => {
     if (isDraftReady && applicationDraft && grant) {
       navigate('/business-plan-editor', {
@@ -46,21 +50,25 @@ const ChatInterface = () => {
       setShowPreview(!showPreview);
     }
   };
+
   const handleSendMessage = () => {
     if (inputValue.trim()) {
       sendMessage(inputValue);
       setInputValue('');
     }
   };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
+
   if (!grant) {
     return null;
   }
+
   return <div className="min-h-screen bg-gray-50 flex">
       {/* Main Chat Area */}
       <div className={`flex flex-col ${showPreview ? 'w-1/2' : 'w-full'} bg-white`}>
@@ -101,9 +109,9 @@ const ChatInterface = () => {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 p-4 bg-white text-black whitespace-normal break-words">
+        <div className="border-t border-gray-200 p-4 bg-white">
           <div className="flex items-center gap-2">
-            <Input value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={handleKeyPress} placeholder="Skriv ditt svar här..." disabled={isTyping} className="flex-1 bg-[#f0f1f3]" />
+            <Input value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={handleKeyPress} placeholder="Skriv ditt svar här..." disabled={isTyping} className="flex-1 bg-[#f0f1f3] text-black" />
             <Button onClick={handleSendMessage} disabled={!inputValue.trim() || isTyping} size="sm" className="px-4">
               <Send className="w-4 h-4" />
             </Button>
@@ -117,4 +125,5 @@ const ChatInterface = () => {
         </div>}
     </div>;
 };
+
 export default ChatInterface;
