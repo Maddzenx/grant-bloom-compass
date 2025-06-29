@@ -99,7 +99,7 @@ const GrantApplicationCard = ({
             <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
-            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\n               text-sm leading-none h-9">
+            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\\n               text-sm leading-none h-10">
               Börja ansökan
             </Button>
             <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white-300 bg-white">
