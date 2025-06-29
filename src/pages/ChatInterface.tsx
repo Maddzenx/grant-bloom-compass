@@ -101,7 +101,7 @@ const ChatInterface = () => {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 p-4 bg-white">
+        <div className="border-t border-gray-200 p-4 bg-white text-black whitespace-normal break-words">
           <div className="flex items-center gap-2">
             <Input value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={handleKeyPress} placeholder="Skriv ditt svar här..." disabled={isTyping} className="flex-1 bg-[#f0f1f3]" />
             <Button onClick={handleSendMessage} disabled={!inputValue.trim() || isTyping} size="sm" className="px-4">
