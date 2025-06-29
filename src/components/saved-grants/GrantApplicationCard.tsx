@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Grant } from '@/types/grant';
 import { useSavedGrantsContext } from '@/contexts/SavedGrantsContext';
-
 interface GrantApplicationCardProps {
   grant: Grant;
   type: 'active' | 'pending' | 'saved';
@@ -15,7 +14,6 @@ interface GrantApplicationCardProps {
   onStartApplication?: (grant: Grant) => void;
   onToggleSave?: (grantId: string) => void;
 }
-
 const GrantApplicationCard = ({
   grant,
   type,
@@ -25,8 +23,11 @@ const GrantApplicationCard = ({
   onStartApplication,
   onToggleSave
 }: GrantApplicationCardProps) => {
-  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
-  
+  const {
+    isGrantSaved,
+    addToSaved,
+    removeFromSaved
+  } = useSavedGrantsContext();
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('sv-SE', {
       day: 'numeric',
@@ -35,11 +36,9 @@ const GrantApplicationCard = ({
       minute: '2-digit'
     }).format(date);
   };
-
   const handleToggleSave = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 GrantApplicationCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
-    
     if (currentlyBookmarked) {
       console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
@@ -47,19 +46,17 @@ const GrantApplicationCard = ({
       console.log('📝 Adding to saved');
       addToSaved(grant);
     }
-    
+
     // Call the parent's toggle function if provided
     if (onToggleSave) {
       onToggleSave(grant.id);
     }
   };
-
   const handleStartApplication = () => {
     if (onStartApplication) {
       onStartApplication(grant);
     }
   };
-
   const renderActions = () => {
     switch (type) {
       case 'active':
@@ -102,7 +99,7 @@ const GrantApplicationCard = ({
             <Button variant="outline" size="icon" onClick={() => onReadMore?.(grant)} className="border-accent-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
-            <Button variant="default" onClick={handleStartApplication} className="bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian px-4">
+            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\n               text-sm leading-none h-9">
               Börja ansökan
             </Button>
             <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white-300 bg-white">
@@ -113,7 +110,6 @@ const GrantApplicationCard = ({
         return null;
     }
   };
-
   const getStatusText = () => {
     switch (type) {
       case 'active':
@@ -126,7 +122,6 @@ const GrantApplicationCard = ({
         return null;
     }
   };
-
   const getDateText = () => {
     switch (type) {
       case 'active':
@@ -139,7 +134,6 @@ const GrantApplicationCard = ({
         return '';
     }
   };
-
   return <Card className="p-6 bg-white border border-accent-lavender shadow-sm">
       <div className="flex justify-between items-start">
         <div className="flex-1">
@@ -151,5 +145,4 @@ const GrantApplicationCard = ({
       </div>
     </Card>;
 };
-
 export default GrantApplicationCard;
