@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
+
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
 }
+
 const GrantNotionHeader = ({
   grant,
   isBookmarked,
@@ -23,6 +25,7 @@ const GrantNotionHeader = ({
     removeFromSaved,
     isGrantSaved
   } = useSavedGrantsContext();
+
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
     startApplication(grant);
@@ -33,6 +36,7 @@ const GrantNotionHeader = ({
       }
     });
   };
+
   const handleBookmarkToggle = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 Header bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
@@ -72,10 +76,17 @@ const GrantNotionHeader = ({
           Ansök om bidrag
         </Button>
         <Button variant="outline" onClick={handleBookmarkToggle} className="px-4 py-2 text-sm border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50">
-          <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"}`} />
+          <Bookmark 
+            className={`w-4 h-4 transition-colors ${
+              actuallyBookmarked 
+                ? 'fill-[#D7CFFC] text-[#D7CFFC]' 
+                : 'fill-white text-gray-500 stroke-gray-500'
+            }`} 
+          />
           {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
         </Button>
       </div>
     </div>;
 };
+
 export default GrantNotionHeader;
