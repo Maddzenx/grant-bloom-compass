@@ -30,7 +30,7 @@ const ChatInput = ({
   };
   return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
-        <div className="flex items-start bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow px-4 py-20 gap-3">
+        <div className="flex items-start bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow px-4 py-12 gap-3">
           {/* Voice Recording Button */}
           <Button variant="ghost" size="sm" className={`p-3 rounded-full flex-shrink-0 transition-colors ${isRecording ? 'bg-red-100 hover:bg-red-200 text-red-600' : 'hover:bg-gray-100 text-gray-500'}`} onClick={handleVoiceInput} disabled={isProcessing} title={isRecording ? t('chat.stopRecording') : t('chat.startRecording')}>
             {isRecording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
