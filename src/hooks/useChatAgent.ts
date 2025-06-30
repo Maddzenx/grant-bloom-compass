@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { Grant } from '@/types/grant';
 import { Message } from '@/components/chat/ChatMessage';
@@ -52,28 +51,29 @@ export const useChatAgent = (grant: Grant | undefined) => {
   }, [grant, messages.length]);
 
   const analyzeGrantAndInitiate = useCallback((grantData: Grant) => {
-    // Extract hard constraints
+    // Extract hard constraints - mapping to correct Grant properties
     const hardConstraints = {
-      eligibility: grantData.eligibility,
-      closingDate: grantData.applicationClosingDate,
-      maxGrant: grantData.maxGrantPerProject,
-      currency: grantData.currency,
-      duration: grantData.projectDurationMonths
+      qualifications: grantData.qualifications, // using qualifications instead of eligibility
+      closingDate: grantData.deadline, // using deadline instead of applicationClosingDate
+      fundingAmount: grantData.fundingAmount, // using fundingAmount instead of maxGrantPerProject
+      // Note: currency and projectDurationMonths don't exist in current Grant type
     };
 
-    // Extract soft preferences
+    // Extract soft preferences - mapping to correct Grant properties
     const softPreferences = {
       description: grantData.description,
       evaluationCriteria: grantData.evaluationCriteria,
-      keywords: grantData.keywords,
-      organization: grantData.organization
+      tags: grantData.tags, // using tags instead of keywords
+      organization: grantData.organization,
+      aboutGrant: grantData.aboutGrant,
+      whoCanApply: grantData.whoCanApply
     };
 
     // Determine language (Swedish if description contains Swedish words)
     const language = detectLanguage(grantData.description || '');
 
-    // Check for deadline pressure
-    const isDeadlineImminent = checkDeadlineUrgency(grantData.applicationClosingDate);
+    // Check for deadline pressure - using deadline property
+    const isDeadlineImminent = checkDeadlineUrgency(grantData.deadline);
 
     // Generate initial welcome message
     const welcomeContent = language === 'sv' 
@@ -113,11 +113,11 @@ export const useChatAgent = (grant: Grant | undefined) => {
     return swedishCount > words.length * 0.1 ? 'sv' : 'en';
   };
 
-  const checkDeadlineUrgency = (closingDate?: string): boolean => {
-    if (!closingDate) return false;
-    const deadline = new Date(closingDate);
+  const checkDeadlineUrgency = (deadline?: string): boolean => {
+    if (!deadline) return false;
+    const deadlineDate = new Date(deadline);
     const now = new Date();
-    const hoursUntilDeadline = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
+    const hoursUntilDeadline = (deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60);
     return hoursUntilDeadline <= 48;
   };
 
