@@ -1,4 +1,6 @@
 
+import { Grant } from '@/types/grant';
+
 export interface ApplicationDraft {
   sections: Record<string, string>;
   wordCount: number;
