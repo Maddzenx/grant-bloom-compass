@@ -3,12 +3,18 @@ import { useState, useCallback, useEffect } from 'react';
 import { Grant } from '@/types/grant';
 import { Message } from '@/components/chat/ChatMessage';
 import { useToast } from '@/hooks/use-toast';
-import { ApplicationDraft, ConversationState, QuestionObject } from './chat/types';
-import { detectLanguage, checkDeadlineUrgency } from './chat/utils';
-import { analyzeMissingInformation, formatQuestionsForUser } from './chat/questionGenerator';
-import { generateApplicationDraft } from './chat/draftGenerator';
 
-export type { ApplicationDraft } from './chat/types';
+export interface ApplicationDraft {
+  sections: Record<string, string>;
+  wordCount: number;
+  completionStatus: number;
+}
+
+interface ConversationState {
+  currentStep: number;
+  collectedInfo: Record<string, any>;
+  questions: string[];
+}
 
 export const useChatAgent = (grant: Grant | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,147 +22,40 @@ export const useChatAgent = (grant: Grant | undefined) => {
   const [applicationDraft, setApplicationDraft] = useState<ApplicationDraft | null>(null);
   const [isDraftReady, setIsDraftReady] = useState(false);
   const [conversationState, setConversationState] = useState<ConversationState>({
-    grantData: null,
-    userMaterials: [],
-    hardConstraints: {},
-    softPreferences: {},
-    collectedAnswers: {},
-    currentQuestions: [],
-    isComplete: false,
-    language: 'sv'
+    currentStep: 0,
+    collectedInfo: {},
+    questions: []
   });
   const { toast } = useToast();
 
-  // Initialize conversation with grant analysis
+  // Initialize conversation with welcome message
   useEffect(() => {
     if (grant && messages.length === 0) {
-      analyzeGrantAndInitiate(grant);
+      const welcomeMessage: Message = {
+        id: Date.now().toString(),
+        type: 'assistant',
+        content: `Hej! Jag är din AI-assistent som hjälper dig att skriva en ansökan för "${grant.title}" från ${grant.organization}.\n\nJag kommer att ställa några frågor för att samla in den information som behövs för din ansökan. Vi börjar med grundläggande information om ditt projekt.\n\nKan du berätta kort om ditt projekt och vad du vill uppnå?`,
+        timestamp: new Date()
+      };
+      
+      setMessages([welcomeMessage]);
+      
+      // Set up the conversation flow
+      setConversationState({
+        currentStep: 0,
+        collectedInfo: { grant: grant },
+        questions: [
+          "Kan du berätta kort om ditt projekt och vad du vill uppnå?",
+          "Vilken utmaning eller problem löser ditt projekt?",
+          "Vad är målet med projektet och vilka resultat förväntar du dig?",
+          "Vilken är din målgrupp och hur kommer de att gynnas?",
+          "Vilka resurser och kompetenser har ni för att genomföra projektet?",
+          "Hur passar ert projekt in i bidragets syfte och kriterier?",
+          "Vilken är er budget och hur planerar ni att använda medlen?"
+        ]
+      });
     }
   }, [grant, messages.length]);
-
-  const analyzeGrantAndInitiate = useCallback((grantData: Grant) => {
-    // Extract hard constraints - mapping to correct Grant properties
-    const hardConstraints = {
-      qualifications: grantData.qualifications, // using qualifications instead of eligibility
-      closingDate: grantData.deadline, // using deadline instead of applicationClosingDate
-      fundingAmount: grantData.fundingAmount, // using fundingAmount instead of maxGrantPerProject
-      // Note: currency and projectDurationMonths don't exist in current Grant type
-    };
-
-    // Extract soft preferences - mapping to correct Grant properties
-    const softPreferences = {
-      description: grantData.description,
-      evaluationCriteria: grantData.evaluationCriteria,
-      tags: grantData.tags, // using tags instead of keywords
-      organization: grantData.organization,
-      aboutGrant: grantData.aboutGrant,
-      whoCanApply: grantData.whoCanApply
-    };
-
-    // Determine language (Swedish if description contains Swedish words)
-    const language = detectLanguage(grantData.description || '');
-
-    // Check for deadline pressure - using deadline property
-    const isDeadlineImminent = checkDeadlineUrgency(grantData.deadline);
-
-    // Generate initial welcome message
-    const welcomeContent = language === 'sv' 
-      ? `Hej! Jag är din Grant Application Copilot för "${grantData.title}" från ${grantData.organization}.\n\n${isDeadlineImminent ? '⚠️ **Deadline nära - endast kritiska frågor kommer att ställas.**\n\n' : ''}Jag kommer att ställa några riktade frågor för att samla in nödvändig information för din ansökan. Låt oss börja!`
-      : `Hello! I'm your Grant Application Copilot for "${grantData.title}" from ${grantData.organization}.\n\n${isDeadlineImminent ? '⚠️ **Deadline imminent—only critical questions will be asked.**\n\n' : ''}I'll ask targeted questions to gather the necessary information for your application. Let's begin!`;
-
-    const welcomeMessage: Message = {
-      id: Date.now().toString(),
-      type: 'assistant',
-      content: welcomeContent,
-      timestamp: new Date()
-    };
-
-    setMessages([welcomeMessage]);
-    
-    setConversationState({
-      grantData,
-      userMaterials: [],
-      hardConstraints,
-      softPreferences,
-      collectedAnswers: {},
-      currentQuestions: [],
-      isComplete: false,
-      language
-    });
-
-    // Generate first set of questions
-    setTimeout(() => {
-      generateNextQuestions(grantData, hardConstraints, softPreferences, {}, []);
-    }, 1000);
-  }, []);
-
-  const generateNextQuestions = useCallback((
-    grantData: Grant,
-    hardConstraints: Record<string, any>,
-    softPreferences: Record<string, any>,
-    collectedAnswers: Record<string, any>,
-    userMaterials: string[]
-  ) => {
-    const questions: QuestionObject[] = [];
-    const language = conversationState.language;
-
-    // Check what's still needed based on grant requirements
-    const missingInfo = analyzeMissingInformation(grantData, collectedAnswers, userMaterials, language);
-
-    if (missingInfo.length === 0) {
-      // All information collected, proceed to draft
-      setConversationState(prev => ({ ...prev, isComplete: true }));
-      generateCompletionMessage(language);
-      return;
-    }
-
-    // Generate up to 3 questions, prioritizing mandatory ones
-    const prioritizedMissing = missingInfo
-      .sort((a, b) => Number(b.mandatory) - Number(a.mandatory))
-      .slice(0, 3);
-
-    prioritizedMissing.forEach(item => {
-      questions.push({
-        criterion: item.criterion,
-        question: item.question,
-        mandatory: item.mandatory
-      });
-    });
-
-    setConversationState(prev => ({ ...prev, currentQuestions: questions }));
-    
-    // Send questions to user
-    const questionText = formatQuestionsForUser(questions, language);
-    const assistantMessage: Message = {
-      id: Date.now().toString(),
-      type: 'assistant',
-      content: questionText,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, assistantMessage]);
-    setIsTyping(false);
-  }, [conversationState.language]);
-
-  const generateCompletionMessage = useCallback((language: 'sv' | 'en') => {
-    const completionText = language === 'sv'
-      ? 'Perfekt! Jag har nu all nödvändig information. Låt mig skapa ett första utkast av din ansökan...'
-      : 'Perfect! I now have all the necessary information. Let me create a first draft of your application...';
-
-    const completionMessage: Message = {
-      id: Date.now().toString(),
-      type: 'assistant',
-      content: completionText,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, completionMessage]);
-    
-    // Generate application draft
-    setTimeout(() => {
-      handleGenerateApplicationDraft();
-    }, 2000);
-  }, []);
 
   const sendMessage = useCallback(async (content: string) => {
     const userMessage: Message = {
@@ -169,60 +68,83 @@ export const useChatAgent = (grant: Grant | undefined) => {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    // Add user response to materials and answers
-    const updatedMaterials = [...conversationState.userMaterials, content];
-    const updatedAnswers = {
-      ...conversationState.collectedAnswers,
-      [`response_${Date.now()}`]: content
+    // Store user input
+    const updatedInfo = {
+      ...conversationState.collectedInfo,
+      [`step_${conversationState.currentStep}`]: content
     };
 
-    setConversationState(prev => ({
-      ...prev,
-      userMaterials: updatedMaterials,
-      collectedAnswers: updatedAnswers
-    }));
+    // Simulate AI thinking time
+    setTimeout(async () => {
+      const nextStep = conversationState.currentStep + 1;
+      let assistantResponse = '';
 
-    // Analyze response and generate next questions or complete
-    setTimeout(() => {
-      if (conversationState.grantData) {
-        generateNextQuestions(
-          conversationState.grantData,
-          conversationState.hardConstraints,
-          conversationState.softPreferences,
-          updatedAnswers,
-          updatedMaterials
-        );
+      if (nextStep < conversationState.questions.length) {
+        // Continue with next question
+        assistantResponse = `Tack för den informationen! ${conversationState.questions[nextStep]}`;
+        
+        setConversationState(prev => ({
+          ...prev,
+          currentStep: nextStep,
+          collectedInfo: updatedInfo
+        }));
+      } else {
+        // All questions answered, generate draft
+        assistantResponse = "Fantastiskt! Jag har nu all information jag behöver. Låt mig skapa ett utkast av din ansökan baserat på vårt samtal. Detta kan ta en stund...";
+        
+        // Generate application draft
+        setTimeout(() => {
+          generateApplicationDraft(updatedInfo);
+        }, 2000);
       }
-    }, 1000 + Math.random() * 1500);
-  }, [conversationState, generateNextQuestions]);
 
-  const handleGenerateApplicationDraft = useCallback(() => {
-    if (!conversationState.grantData) return;
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: assistantResponse,
+        timestamp: new Date()
+      };
 
-    try {
-      const draft = generateApplicationDraft(conversationState);
+      setMessages(prev => [...prev, assistantMessage]);
+      setIsTyping(false);
+    }, 1000 + Math.random() * 2000); // Random delay for realistic feel
+
+  }, [conversationState]);
+
+  const generateApplicationDraft = useCallback((collectedInfo: Record<string, any>) => {
+    // Simulate draft generation
+    setTimeout(() => {
+      const draft: ApplicationDraft = {
+        sections: {
+          projektbeskrivning: collectedInfo.step_0 || '',
+          problemformulering: collectedInfo.step_1 || '',
+          mal_och_resultat: collectedInfo.step_2 || '',
+          malgrupp: collectedInfo.step_3 || '',
+          resurser_och_kompetens: collectedInfo.step_4 || '',
+          relevans: collectedInfo.step_5 || '',
+          budget: collectedInfo.step_6 || ''
+        },
+        wordCount: Object.values(collectedInfo).join(' ').split(' ').length,
+        completionStatus: 85
+      };
+
       setApplicationDraft(draft);
       setIsDraftReady(true);
 
       const draftReadyMessage: Message = {
         id: Date.now().toString(),
         type: 'assistant',
-        content: conversationState.language === 'sv' 
-          ? '🎉 Ditt ansökningsutkast är klart! Du kan nu förhandsgranska det eller exportera det. Behöver du göra några ändringar?'
-          : '🎉 Your application draft is ready! You can now preview it or export it. Do you need any changes?',
+        content: "🎉 Ditt ansökningsutkast är klart! Du kan nu förhandsgranska det i panelen till höger eller exportera det som en fil. Behöver du göra några ändringar eller har du frågor om innehållet?",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, draftReadyMessage]);
       setIsTyping(false);
-    } catch (error) {
-      console.error('Error generating application draft:', error);
-      setIsTyping(false);
-    }
-  }, [conversationState]);
+    }, 3000);
+  }, []);
 
   const exportDraft = useCallback(() => {
-    if (!applicationDraft || !conversationState.grantData) return;
+    if (!applicationDraft || !grant) return;
 
     const draftText = Object.entries(applicationDraft.sections)
       .map(([section, content]) => `${section.toUpperCase()}\n${content}\n\n`)
@@ -232,19 +154,17 @@ export const useChatAgent = (grant: Grant | undefined) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `application_${conversationState.grantData.title.replace(/\s+/g, '_')}.txt`;
+    link.download = `ansökan_${grant.title.replace(/\s+/g, '_')}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
     toast({
-      title: conversationState.language === 'sv' ? "Utkast exporterat" : "Draft exported",
-      description: conversationState.language === 'sv' 
-        ? "Din ansökan har laddats ner som en textfil." 
-        : "Your application has been downloaded as a text file."
+      title: "Utkast exporterat",
+      description: "Din ansökan har laddats ner som en textfil."
     });
-  }, [applicationDraft, conversationState, toast]);
+  }, [applicationDraft, grant, toast]);
 
   return {
     messages,
