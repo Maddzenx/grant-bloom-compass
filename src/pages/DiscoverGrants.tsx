@@ -1,5 +1,6 @@
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
 import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
@@ -11,6 +12,7 @@ import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
 
 const DiscoverGrants = () => {
+  const location = useLocation();
   const {
     data: grants = [],
     isLoading,
@@ -24,7 +26,8 @@ const DiscoverGrants = () => {
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
     isLoading, 
-    isError 
+    isError,
+    locationState: location.state
   });
 
   // Enhanced filter state
@@ -113,7 +116,21 @@ const DiscoverGrants = () => {
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
+    setSelectedGrant,
   } = useGrantSelection({ searchResults });
+
+  // Handle pre-selected grant from navigation state
+  useEffect(() => {
+    if (location.state?.selectedGrant && grants.length > 0) {
+      const preSelectedGrant = location.state.selectedGrant as Grant;
+      // Find the grant in our current grants list
+      const matchingGrant = grants.find(g => g.id === preSelectedGrant.id);
+      if (matchingGrant) {
+        console.log('🎯 Pre-selecting grant from navigation state:', matchingGrant.id);
+        setSelectedGrant(matchingGrant);
+      }
+    }
+  }, [location.state, grants, setSelectedGrant]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);

@@ -14,6 +14,7 @@ interface UseGrantSelectionReturn {
   handleGrantSelect: (grant: Grant) => void;
   toggleBookmark: (grantId: string) => void;
   handleBackToList: () => void;
+  setSelectedGrant: (grant: Grant | null) => void;
 }
 
 export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): UseGrantSelectionReturn => {
@@ -76,5 +77,6 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
     handleGrantSelect,
     toggleBookmark,
     handleBackToList,
+    setSelectedGrant,
   };
 };

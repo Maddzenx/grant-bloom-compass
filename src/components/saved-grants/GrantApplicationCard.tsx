@@ -69,6 +69,7 @@ const GrantApplicationCard = ({
     console.log('📖 Info button clicked for grant:', grant.id, grant.title);
     navigate('/discover', {
       state: {
+        selectedGrant: grant,
         selectedGrantId: grant.id
       }
     });
