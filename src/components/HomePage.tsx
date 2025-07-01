@@ -1,11 +1,9 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrants } from "@/hooks/useGrants";
-import { useAIGrantSearch } from "@/hooks/useAIGrantSearch";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
@@ -18,6 +16,7 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
+import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -25,7 +24,7 @@ const HomePage = () => {
   const { t } = useLanguage();
 
   const { data: grants, isLoading: grantsLoading } = useGrants();
-  const { searchGrants, isSearching, searchError } = useAIGrantSearch();
+  const { matchGrants, isMatching, matchingError } = useGrantsMatchingEngine();
   const {
     isRecording,
     isTranscribing,
@@ -41,13 +40,13 @@ const HomePage = () => {
       return;
     }
 
-    // Use AI search when there's input
-    console.log('🚀 Starting AI-powered grant search...');
-    const aiResult = await searchGrants(inputValue);
+    // Use structured grants matching when there's input
+    console.log('🚀 Starting structured grants matching...');
+    const matchingResult = await matchGrants(inputValue);
     
-    if (aiResult && aiResult.rankedGrants.length > 0 && grants) {
-      // Sort grants based on AI ranking
-      const rankedGrantIds = aiResult.rankedGrants
+    if (matchingResult && matchingResult.rankedGrants.length > 0 && grants) {
+      // Sort grants based on structured matching results
+      const rankedGrantIds = matchingResult.rankedGrants
         .sort((a, b) => b.relevanceScore - a.relevanceScore)
         .map(match => match.grantId);
       
@@ -55,27 +54,27 @@ const HomePage = () => {
         .map(id => grants.find(grant => grant.id === id))
         .filter(Boolean);
       
-      // Add any remaining grants not ranked by AI
+      // Add any remaining grants not ranked by the matching engine
       const unrankedGrants = grants.filter(grant => 
         !rankedGrantIds.includes(grant.id)
       );
       
       const finalSortedGrants = [...sortedGrants, ...unrankedGrants];
 
-      console.log('✅ AI search successful, navigating with sorted results...');
+      console.log('✅ Structured matching successful, navigating with sorted results...');
       navigate("/discover", {
         state: {
           matchedGrants: finalSortedGrants,
-          aiSearchResult: aiResult,
+          aiSearchResult: matchingResult,
           searchTerm: inputValue
         }
       });
     } else {
-      console.log('❌ AI search failed or no results, navigating to discover page...');
+      console.log('❌ Structured matching failed or no results, navigating to discover page...');
       navigate("/discover", {
         state: {
           searchTerm: inputValue,
-          searchError: searchError
+          searchError: matchingError
         }
       });
     }
@@ -106,7 +105,7 @@ const HomePage = () => {
     }
   };
 
-  const isProcessing = isTranscribing || isUploading || isSearching || grantsLoading;
+  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading;
 
   return (
     <div className="min-h-screen bg-[#F0F1F3] relative">
@@ -153,9 +152,9 @@ const HomePage = () => {
             isRecording={isRecording}
             isTranscribing={isTranscribing}
             isUploading={isUploading}
-            isMatching={isSearching}
+            isMatching={isMatching}
             grantsLoading={grantsLoading}
-            matchingError={searchError}
+            matchingError={matchingError}
           />
         </div>
       </div>

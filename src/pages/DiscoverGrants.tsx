@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
@@ -11,6 +10,7 @@ import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
 import { AISearchResult } from "@/hooks/useAIGrantSearch";
+import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
 
 const DiscoverGrants = () => {
   const location = useLocation();
@@ -31,16 +31,16 @@ const DiscoverGrants = () => {
     locationState: location.state
   });
 
-  // Check if we have AI search results from navigation state
-  const aiSearchResult = location.state?.aiSearchResult as AISearchResult | undefined;
+  // Check if we have structured matching results from navigation state
+  const matchingResult = location.state?.aiSearchResult;
   const matchedGrants = location.state?.matchedGrants as Grant[] | undefined;
 
-  console.log('🤖 AI Search Data from location state:', {
-    hasAiSearchResult: !!aiSearchResult,
+  console.log('🤖 Structured matching data from location state:', {
+    hasMatchingResult: !!matchingResult,
     hasMatchedGrants: !!matchedGrants,
-    aiMatchesCount: aiSearchResult?.rankedGrants?.length || 0,
+    rankedGrantsCount: matchingResult?.rankedGrants?.length || 0,
     matchedGrantsCount: matchedGrants?.length || 0,
-    actualAiMatches: aiSearchResult?.rankedGrants
+    actualRankedGrants: matchingResult?.rankedGrants
   });
 
   // Enhanced filter state
@@ -155,22 +155,22 @@ const DiscoverGrants = () => {
     }
   }, [location.state?.searchTerm, searchTerm, setSearchTerm]);
 
-  // Log AI search results if available
+  // Log structured matching results if available
   useEffect(() => {
-    if (aiSearchResult) {
-      console.log('🤖 AI Search Results available:', {
-        explanation: aiSearchResult.explanation,
-        totalMatches: aiSearchResult.rankedGrants.length,
-        topMatches: aiSearchResult.rankedGrants.slice(0, 5).map(match => ({
+    if (matchingResult) {
+      console.log('🤖 Structured matching results available:', {
+        explanation: matchingResult.explanation,
+        totalMatches: matchingResult.rankedGrants.length,
+        topMatches: matchingResult.rankedGrants.slice(0, 5).map(match => ({
           grantId: match.grantId,
           score: match.relevanceScore,
           reasons: match.matchingReasons
         }))
       });
     } else {
-      console.log('❌ No AI search results in location state');
+      console.log('❌ No structured matching results in location state');
     }
-  }, [aiSearchResult]);
+  }, [matchingResult]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
@@ -207,7 +207,7 @@ const DiscoverGrants = () => {
       suggestions={suggestions}
       isSearching={isSearching}
       searchMetrics={searchMetrics}
-      aiMatches={aiSearchResult?.rankedGrants}
+      aiMatches={matchingResult?.rankedGrants}
       onSearchChange={setSearchTerm}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}
