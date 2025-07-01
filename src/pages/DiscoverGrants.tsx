@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
@@ -23,12 +24,14 @@ const DiscoverGrants = () => {
   } = useGrants();
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
+  const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
     isLoading, 
     isError,
-    locationState: location.state
+    locationState: location.state,
+    initialSearchTerm
   });
 
   // Check if we have structured matching results from navigation state
@@ -111,7 +114,7 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseGrants, filters]);
 
-  // Enhanced search hook
+  // Enhanced search hook with initial search term
   const {
     searchTerm,
     setSearchTerm,
@@ -123,6 +126,7 @@ const DiscoverGrants = () => {
     grants: filteredGrants,
     filters: { organization: '', minFunding: '', maxFunding: '', deadline: '' },
     sortBy,
+    initialSearchTerm,
   });
 
   // Grant selection logic - uses context directly for bookmark state
@@ -147,13 +151,6 @@ const DiscoverGrants = () => {
       }
     }
   }, [location.state, grants, setSelectedGrant]);
-
-  // Set initial search term from navigation state
-  useEffect(() => {
-    if (location.state?.searchTerm && !searchTerm) {
-      setSearchTerm(location.state.searchTerm);
-    }
-  }, [location.state?.searchTerm, searchTerm, setSearchTerm]);
 
   // Log structured matching results if available
   useEffect(() => {

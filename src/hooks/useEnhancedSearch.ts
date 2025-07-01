@@ -16,10 +16,11 @@ interface UseEnhancedSearchProps {
   grants: Grant[];
   filters: FilterOptions;
   sortBy: string;
+  initialSearchTerm?: string;
 }
 
-export const useEnhancedSearch = ({ grants, filters, sortBy }: UseEnhancedSearchProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
+export const useEnhancedSearch = ({ grants, filters, sortBy, initialSearchTerm = '' }: UseEnhancedSearchProps) => {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   
   const { debouncedSearchTerm, isSearching } = useDebouncedSearch(searchTerm);
   const { searchMetrics, updateMetrics } = useSearchMetrics();
