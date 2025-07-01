@@ -29,6 +29,15 @@ serve(async (req) => {
       });
     }
 
+    if (!openAIApiKey) {
+      return new Response(JSON.stringify({ error: 'OpenAI API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('🔍 AI Grant Search - Query:', query);
+
     // Fetch all grants from the database
     const { data: grants, error: grantsError } = await supabase
       .from('grant_call_details')
@@ -46,6 +55,8 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    console.log('📊 Processing grants:', grants.length);
 
     // Prepare grants data for AI analysis
     const grantsForAI = grants.map(grant => ({
@@ -92,6 +103,8 @@ Rules:
 - Factor in eligibility, funding amounts, deadlines, and industry sectors
 - Be thorough in your analysis`;
 
+    console.log('🤖 Sending request to OpenAI...');
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -113,11 +126,15 @@ Rules:
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const aiData = await response.json();
     const aiResponse = aiData.choices[0].message.content;
+
+    console.log('🤖 OpenAI response received');
 
     let parsedResponse;
     try {
@@ -135,6 +152,7 @@ Rules:
       };
     }
 
+    console.log('✅ AI search completed successfully');
     return new Response(JSON.stringify(parsedResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
