@@ -112,7 +112,7 @@ Rules:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'o3-mini',
+        model: 'gpt-4o-mini',
         messages: [
           { 
             role: 'system', 
