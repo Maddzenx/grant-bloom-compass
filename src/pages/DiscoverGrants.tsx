@@ -32,7 +32,8 @@ const DiscoverGrants = () => {
     isLoading, 
     isError,
     locationState: location.state,
-    initialSearchTerm
+    initialSearchTerm,
+    aiMatchesCount: aiMatches?.length || 0
   });
 
   // Check if we have structured matching results from navigation state
@@ -43,15 +44,14 @@ const DiscoverGrants = () => {
     hasMatchingResult: !!matchingResult,
     hasMatchedGrants: !!matchedGrants,
     rankedGrantsCount: matchingResult?.rankedGrants?.length || 0,
-    matchedGrantsCount: matchedGrants?.length || 0,
-    actualRankedGrants: matchingResult?.rankedGrants
+    matchedGrantsCount: matchedGrants?.length || 0
   });
 
   // Set AI matches from location state when available
   useEffect(() => {
     if (matchingResult?.rankedGrants) {
+      console.log('🎯 Setting AI matches from location state:', matchingResult.rankedGrants.length);
       setAiMatches(matchingResult.rankedGrants);
-      // Set sorting to "default" (which is "Rekommenderade") when AI search results are available
       setSortBy("default");
     }
   }, [matchingResult]);
@@ -139,29 +139,42 @@ const DiscoverGrants = () => {
     initialSearchTerm,
   });
 
-  // Clear AI matches when search term is cleared
+  // Clear AI matches when search term is cleared manually (not from navigation)
   useEffect(() => {
-    if (!searchTerm.trim()) {
+    if (!searchTerm.trim() && !location.state?.searchTerm) {
       setAiMatches(undefined);
       console.log('🧹 Cleared AI matches due to empty search term');
     }
-  }, [searchTerm]);
+  }, [searchTerm, location.state?.searchTerm]);
 
   // Apply AI-based sorting when we have AI matches and using default sorting
   const sortedSearchResults = useMemo(() => {
+    console.log('🎯 Sorting results:', {
+      hasAiMatches: !!aiMatches,
+      aiMatchesCount: aiMatches?.length || 0,
+      sortBy,
+      searchResultsCount: searchResults.length
+    });
+
     if (aiMatches && aiMatches.length > 0 && sortBy === "default") {
       console.log('🤖 Applying AI-based sorting for default sort');
       
       // Create a map of grant IDs to their AI scores
       const scoreMap = new Map<string, number>();
       aiMatches.forEach(match => {
-        scoreMap.set(match.grantId, match.relevanceScore);
+        // Ensure we have a valid score
+        const score = match.relevanceScore !== null && match.relevanceScore !== undefined 
+          ? match.relevanceScore 
+          : 0.25; // Fallback score
+        scoreMap.set(match.grantId, score);
+        
+        console.log(`📊 Grant ${match.grantId} -> Score: ${score}`);
       });
       
       // Sort grants by AI relevance score (highest first)
       const sorted = [...searchResults].sort((a, b) => {
-        const scoreA = scoreMap.get(a.id) || 0;
-        const scoreB = scoreMap.get(b.id) || 0;
+        const scoreA = scoreMap.get(a.id) ?? 0.1; // Fallback for missing scores
+        const scoreB = scoreMap.get(b.id) ?? 0.1;
         return scoreB - scoreA;
       });
       
@@ -169,7 +182,7 @@ const DiscoverGrants = () => {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 5).map(g => ({
           id: g.id,
-          title: g.title,
+          title: g.title.substring(0, 30) + '...',
           score: scoreMap.get(g.id)
         }))
       });

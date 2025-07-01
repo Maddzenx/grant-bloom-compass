@@ -47,7 +47,11 @@ const GrantCard = ({
   const getMatchBadge = (score: number) => {
     const percentage = Math.round(score * 100);
     
-    console.log('🎯 Rendering match badge for grant:', grant.id, 'Score:', score, 'Percentage:', percentage);
+    console.log('🎯 Creating match badge for grant:', grant.id, {
+      rawScore: score,
+      percentage,
+      grantTitle: grant.title.substring(0, 30) + '...'
+    });
     
     if (percentage >= 75) {
       return (
@@ -91,14 +95,19 @@ const GrantCard = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
-  // Only show match score if it's actually provided (from AI search)
-  const shouldShowMatchScore = matchScore !== undefined && matchScore !== null;
+  // Show match score if it's a valid number (not null, undefined, or NaN)
+  const shouldShowMatchScore = matchScore !== undefined && 
+                              matchScore !== null && 
+                              !isNaN(matchScore) && 
+                              typeof matchScore === 'number';
 
-  console.log('🔍 GrantCard render:', {
+  console.log('🔍 GrantCard render decision:', {
     grantId: grant.id,
-    grantTitle: grant.title,
+    grantTitle: grant.title.substring(0, 30) + '...',
     matchScore,
     shouldShowMatchScore,
+    matchScoreType: typeof matchScore,
+    isNaN: isNaN(matchScore as number),
     percentage: shouldShowMatchScore ? Math.round(matchScore * 100) : 'N/A'
   });
 
@@ -111,7 +120,7 @@ const GrantCard = ({
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Match score badge - only show when AI search has been used */}
+            {/* Match score badge - only show when AI search has been used and score is valid */}
             {shouldShowMatchScore && (
               <div className="flex-shrink-0">
                 {getMatchBadge(matchScore)}

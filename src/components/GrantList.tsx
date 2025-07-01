@@ -38,17 +38,26 @@ const GrantList = ({
     
     console.log('📊 Creating match score map from AI matches:', {
       aiMatchesCount: aiMatches.length,
-      aiMatches: aiMatches.map(m => ({ grantId: m.grantId, score: m.relevanceScore }))
+      firstFewMatches: aiMatches.slice(0, 3).map(m => ({ 
+        grantId: m.grantId, 
+        score: m.relevanceScore,
+        reasons: m.matchingReasons 
+      }))
     });
     
     const map = new Map<string, number>();
     aiMatches.forEach(match => {
-      map.set(match.grantId, match.relevanceScore);
+      // Ensure valid score - no null or undefined values
+      const validScore = match.relevanceScore !== null && match.relevanceScore !== undefined 
+        ? match.relevanceScore 
+        : 0.25; // Fallback score
+      
+      map.set(match.grantId, validScore);
     });
     
     console.log('📊 Final matchScoreMap:', {
       mapSize: map.size,
-      allEntries: Array.from(map.entries())
+      sampleEntries: Array.from(map.entries()).slice(0, 3)
     });
     
     return map;
@@ -68,6 +77,14 @@ const GrantList = ({
             ) : (
               grants.map(grant => {
                 const matchScore = matchScoreMap.get(grant.id);
+                
+                console.log('🎯 Rendering grant card:', {
+                  grantId: grant.id,
+                  grantTitle: grant.title.substring(0, 30) + '...',
+                  matchScore,
+                  hasValidScore: matchScore !== null && matchScore !== undefined,
+                  scoreAsPercentage: matchScore ? Math.round(matchScore * 100) : 'N/A'
+                });
                 
                 return (
                   <GrantCard 
