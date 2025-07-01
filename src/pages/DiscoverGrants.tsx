@@ -49,11 +49,17 @@ const DiscoverGrants = () => {
   // Set AI matches from location state when available
   useEffect(() => {
     if (matchingResult?.rankedGrants) {
+      console.log('🎯 Setting AI matches from location state:', {
+        rankedGrantsCount: matchingResult.rankedGrants.length,
+        allGrantsCount: grants.length,
+        willCoverAllGrants: matchingResult.rankedGrants.length >= grants.length
+      });
+      
       setAiMatches(matchingResult.rankedGrants);
       // Set sorting to "default" (which is "Rekommenderade") when AI search results are available
       setSortBy("default");
     }
-  }, [matchingResult]);
+  }, [matchingResult, grants.length]);
 
   // Enhanced filter state
   const {
@@ -167,6 +173,8 @@ const DiscoverGrants = () => {
       console.log('🎯 AI-sorted results:', {
         totalResults: sorted.length,
         aiMatchesCount: aiMatches.length,
+        grantsWithScores: sorted.filter(g => scoreMap.has(g.id)).length,
+        grantsWithoutScores: sorted.filter(g => !scoreMap.has(g.id)).length,
         topScores: sorted.slice(0, 5).map(g => ({
           id: g.id,
           title: g.title,
@@ -206,9 +214,11 @@ const DiscoverGrants = () => {
   // Log AI matches for debugging
   useEffect(() => {
     if (aiMatches && aiMatches.length > 0) {
-      console.log('🤖 AI matches available for all grants:', {
+      console.log('🤖 AI matches available:', {
         totalMatches: aiMatches.length,
-        hasScoreForAllGrants: aiMatches.length === grants.length,
+        totalGrants: grants.length,
+        hasScoreForAllGrants: aiMatches.length >= grants.length,
+        coveragePercentage: Math.round((aiMatches.length / grants.length) * 100),
         sampleScores: aiMatches.slice(0, 5).map(match => ({
           grantId: match.grantId,
           score: match.relevanceScore,
