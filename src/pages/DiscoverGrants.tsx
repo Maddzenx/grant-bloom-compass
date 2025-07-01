@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
@@ -64,8 +63,8 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Use matched grants if available, otherwise use all grants
-  const baseGrants = matchedGrants || grants;
+  // Always use all grants as the base - AI matches will provide scoring for all grants
+  const baseGrants = grants;
 
   // Apply filters to grants
   const filteredGrants = useMemo(() => {
@@ -167,6 +166,7 @@ const DiscoverGrants = () => {
       
       console.log('🎯 AI-sorted results:', {
         totalResults: sorted.length,
+        aiMatchesCount: aiMatches.length,
         topScores: sorted.slice(0, 5).map(g => ({
           id: g.id,
           title: g.title,
@@ -203,22 +203,20 @@ const DiscoverGrants = () => {
     }
   }, [location.state, grants, setSelectedGrant]);
 
-  // Log structured matching results if available
+  // Log AI matches for debugging
   useEffect(() => {
-    if (matchingResult) {
-      console.log('🤖 Structured matching results available:', {
-        explanation: matchingResult.explanation,
-        totalMatches: matchingResult.rankedGrants.length,
-        topMatches: matchingResult.rankedGrants.slice(0, 5).map(match => ({
+    if (aiMatches && aiMatches.length > 0) {
+      console.log('🤖 AI matches available for all grants:', {
+        totalMatches: aiMatches.length,
+        hasScoreForAllGrants: aiMatches.length === grants.length,
+        sampleScores: aiMatches.slice(0, 5).map(match => ({
           grantId: match.grantId,
           score: match.relevanceScore,
-          reasons: match.matchingReasons
+          percentage: Math.round(match.relevanceScore * 100)
         }))
       });
-    } else {
-      console.log('❌ No structured matching results in location state');
     }
-  }, [matchingResult]);
+  }, [aiMatches, grants.length]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);

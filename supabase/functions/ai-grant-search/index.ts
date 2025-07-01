@@ -38,7 +38,7 @@ serve(async (req) => {
 
     console.log('🔍 AI Grant Search - Query:', query);
 
-    // Fetch all grants from the database
+    // Fetch ALL grants from the database
     const { data: grants, error: grantsError } = await supabase
       .from('grant_call_details')
       .select('*');
@@ -56,104 +56,129 @@ serve(async (req) => {
       });
     }
 
-    console.log('📊 Processing grants:', grants.length);
+    console.log('📊 Processing ALL grants for AI scoring:', grants.length);
 
-    // Prepare grants data for AI analysis
-    const grantsForAI = grants.map(grant => ({
-      id: grant.id,
-      title: grant.title,
-      organisation: grant.organisation,
-      description: grant.description,
-      subtitle: grant.subtitle,
-      eligibility: grant.eligibility,
-      keywords: grant.keywords,
-      industry_sectors: grant.industry_sectors,
-      eligible_organisations: grant.eligible_organisations,
-      max_grant_per_project: grant.max_grant_per_project,
-      min_grant_per_project: grant.min_grant_per_project,
-      application_closing_date: grant.application_closing_date,
-      evaluation_criteria: grant.evaluation_criteria
-    }));
+    // Score ALL grants individually for better control and accuracy
+    const scoredGrants = [];
+    
+    for (const grant of grants) {
+      try {
+        const grantData = {
+          id: grant.id,
+          title: grant.title || 'N/A',
+          organisation: grant.organisation || 'N/A',
+          description: grant.description || 'N/A',
+          subtitle: grant.subtitle || 'N/A',
+          eligibility: grant.eligibility || 'N/A',
+          keywords: Array.isArray(grant.keywords) ? grant.keywords.join(', ') : 'N/A',
+          industry_sectors: Array.isArray(grant.industry_sectors) ? grant.industry_sectors.join(', ') : 'N/A',
+          eligible_organisations: Array.isArray(grant.eligible_organisations) ? grant.eligible_organisations.join(', ') : 'N/A',
+          max_grant_per_project: grant.max_grant_per_project || 'N/A',
+          min_grant_per_project: grant.min_grant_per_project || 'N/A',
+          application_closing_date: grant.application_closing_date || 'N/A',
+          evaluation_criteria: grant.evaluation_criteria || 'N/A'
+        };
 
-    const prompt = `You are an expert grant matching system. Given a user query and a list of available grants, analyze which grants best match the user's needs and rank them by relevance.
+        const prompt = `You are an expert Swedish grant matching system. Score how well this grant matches the user's query on a scale of 0-100.
 
 User Query: "${query}"
 
-Available Grants:
-${JSON.stringify(grantsForAI, null, 2)}
+Grant Details:
+Title: ${grantData.title}
+Organisation: ${grantData.organisation}
+Description: ${grantData.description}
+Subtitle: ${grantData.subtitle}
+Eligibility: ${grantData.eligibility}
+Keywords: ${grantData.keywords}
+Industry Sectors: ${grantData.industry_sectors}
+Eligible Organisations: ${grantData.eligible_organisations}
+Funding Range: ${grantData.min_grant_per_project} - ${grantData.max_grant_per_project}
+Closing Date: ${grantData.application_closing_date}
+Evaluation Criteria: ${grantData.evaluation_criteria}
 
-Please analyze the user query against all grant information including title, description, eligibility criteria, keywords, industry sectors, and other relevant fields. 
+Consider:
+- Relevance to user's project/need
+- Eligibility match
+- Industry/sector alignment
+- Funding purpose match
+- Keywords relevance
 
-Return a JSON response with the following structure:
-{
-  "rankedGrants": [
-    {
-      "grantId": "grant_id_here",
-      "relevanceScore": 0.95,
-      "matchingReasons": ["reason 1", "reason 2"]
-    }
-  ],
-  "explanation": "Brief explanation of the matching process"
-}
+Return ONLY a number between 0-100. Higher scores for better matches.`;
 
-Rules:
-- Rank ALL grants by relevance (0.0 to 1.0 score)
-- Include specific reasons why each grant matches
-- Consider semantic similarity, not just keyword matching
-- Factor in eligibility, funding amounts, deadlines, and industry sectors
-- Be thorough in your analysis`;
-
-    console.log('🤖 Sending request to OpenAI...');
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'You are an expert grant matching assistant. Always respond with valid JSON only.' 
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAIApiKey}`,
+            'Content-Type': 'application/json',
           },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 2000,
-      }),
-    });
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { 
+                role: 'system', 
+                content: 'You are an expert grant matching assistant. Always respond with only a number between 0-100.' 
+              },
+              { role: 'user', content: prompt }
+            ],
+            temperature: 0.1,
+            max_tokens: 10,
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
+        if (!response.ok) {
+          console.error(`OpenAI API error for grant ${grant.id}:`, response.status);
+          // Use fallback score for failed requests
+          scoredGrants.push({
+            grantId: grant.id,
+            relevanceScore: 0.5,
+            matchingReasons: ['API error - fallback score applied']
+          });
+          continue;
+        }
 
-    const aiData = await response.json();
-    const aiResponse = aiData.choices[0].message.content;
+        const aiData = await response.json();
+        const scoreText = aiData.choices[0].message.content.trim();
+        
+        // Parse the score
+        let score = 50; // Default fallback
+        try {
+          const parsedScore = parseInt(scoreText);
+          if (!isNaN(parsedScore) && parsedScore >= 0 && parsedScore <= 100) {
+            score = parsedScore;
+          }
+        } catch (parseError) {
+          console.error(`Failed to parse score for grant ${grant.id}:`, scoreText);
+        }
 
-    console.log('🤖 OpenAI response received');
+        scoredGrants.push({
+          grantId: grant.id,
+          relevanceScore: score / 100, // Convert to 0-1 scale for frontend compatibility
+          matchingReasons: [`AI match score: ${score}/100`]
+        });
 
-    let parsedResponse;
-    try {
-      parsedResponse = JSON.parse(aiResponse);
-    } catch (parseError) {
-      console.error('Failed to parse AI response:', aiResponse);
-      // Fallback: return grants in original order with basic scoring
-      parsedResponse = {
-        rankedGrants: grantsForAI.map(grant => ({
+        console.log(`✅ Scored grant ${grant.id}: ${score}/100`);
+
+      } catch (error) {
+        console.error(`Error scoring grant ${grant.id}:`, error);
+        // Add fallback score for failed grants
+        scoredGrants.push({
           grantId: grant.id,
           relevanceScore: 0.5,
-          matchingReasons: ['AI analysis temporarily unavailable']
-        })),
-        explanation: 'Using fallback matching due to AI response parsing error'
-      };
+          matchingReasons: ['Scoring error - fallback score applied']
+        });
+      }
     }
 
-    console.log('✅ AI search completed successfully');
-    return new Response(JSON.stringify(parsedResponse), {
+    // Sort by relevance score (highest first)
+    scoredGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
+
+    const response = {
+      rankedGrants: scoredGrants,
+      explanation: `AI evaluated all ${scoredGrants.length} grants and ranked them by relevance to your query.`
+    };
+
+    console.log('✅ AI search completed successfully - scored all grants');
+    return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
