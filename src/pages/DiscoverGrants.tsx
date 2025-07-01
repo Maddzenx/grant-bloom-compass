@@ -3,12 +3,13 @@ import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
-import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
+import { useEnhancedSearchEngine } from "@/hooks/useEnhancedSearchEngine";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useGrantSelection } from "@/hooks/useGrantSelection";
 import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
+import { EnhancedSearchResults } from "@/components/EnhancedSearchResults";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
 import { AISearchResult, AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
@@ -26,32 +27,37 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [aiMatches, setAiMatches] = useState<AIGrantMatch[] | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [useEnhancedSearch, setUseEnhancedSearch] = useState(false);
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
     isLoading, 
     isError,
     locationState: location.state,
-    initialSearchTerm
+    initialSearchTerm,
+    useEnhancedSearch
   });
 
   // Check if we have structured matching results from navigation state
   const matchingResult = location.state?.aiSearchResult;
   const matchedGrants = location.state?.matchedGrants as Grant[] | undefined;
 
-  console.log('🤖 Structured matching data from location state:', {
-    hasMatchingResult: !!matchingResult,
-    hasMatchedGrants: !!matchedGrants,
-    rankedGrantsCount: matchingResult?.rankedGrants?.length || 0,
-    matchedGrantsCount: matchedGrants?.length || 0,
-    actualRankedGrants: matchingResult?.rankedGrants
-  });
+  // Enhanced search engine
+  const {
+    search: enhancedSearch,
+    isSearching: isEnhancedSearching,
+    searchResults: enhancedSearchResults,
+    searchError,
+    currentQuery,
+    recordFeedback,
+    getSuggestions
+  } = useEnhancedSearchEngine(grants);
 
   // Set AI matches from location state when available
   useEffect(() => {
     if (matchingResult?.rankedGrants) {
       setAiMatches(matchingResult.rankedGrants);
-      // Set sorting to "default" (which is "Rekommenderade") when AI search results are available
       setSortBy("default");
     }
   }, [matchingResult]);
@@ -76,7 +82,6 @@ const DiscoverGrants = () => {
       return [];
     }
 
-    // Check if we actually have active filters
     const hasOrganizationFilter = filters.organizations && filters.organizations.length > 0;
     const hasFundingFilter = filters.fundingRange && (filters.fundingRange.min !== null || filters.fundingRange.max !== null);
     const hasDeadlineFilter = filters.deadline && filters.deadline.preset && filters.deadline.preset !== '';
@@ -84,32 +89,26 @@ const DiscoverGrants = () => {
     
     const actuallyHasActiveFilters = hasOrganizationFilter || hasFundingFilter || hasDeadlineFilter || hasTagsFilter;
 
-    // If no active filters, return all grants
     if (!actuallyHasActiveFilters) {
       console.log('✅ No active filters, returning all grants:', baseGrants.length);
       return baseGrants;
     }
 
-    // Apply filtering
     const filtered = baseGrants.filter(grant => {
-      // Organization filter
       if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
         return false;
       }
 
-      // Funding range filter
       if (hasFundingFilter) {
         const amount = parseFundingAmount(grant.fundingAmount);
         if (filters.fundingRange.min && amount < filters.fundingRange.min) return false;
         if (filters.fundingRange.max && amount > filters.fundingRange.max) return false;
       }
 
-      // Deadline filter
       if (hasDeadlineFilter && !isGrantWithinDeadline(grant, filters.deadline)) {
         return false;
       }
 
-      // Tags filter
       if (hasTagsFilter) {
         const hasMatchingTag = filters.tags.some(tag =>
           grant.tags.some(grantTag => grantTag.toLowerCase().includes(tag.toLowerCase()))
@@ -124,41 +123,73 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseGrants, filters]);
 
-  // Enhanced search hook with initial search term
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchResults,
-    suggestions,
-    searchMetrics,
-    isSearching,
-  } = useEnhancedSearch({
-    grants: filteredGrants,
-    filters: { organization: '', minFunding: '', maxFunding: '', deadline: '' },
-    sortBy,
-    initialSearchTerm,
-  });
-
-  // Clear AI matches when search term is cleared
-  useEffect(() => {
-    if (!searchTerm.trim()) {
+  // Handle search with enhanced search engine
+  const handleSearch = useCallback(async (query: string) => {
+    setSearchTerm(query);
+    
+    if (!query.trim()) {
       setAiMatches(undefined);
-      console.log('🧹 Cleared AI matches due to empty search term');
+      setUseEnhancedSearch(false);
+      console.log('🧹 Cleared search and AI matches');
+      return;
     }
-  }, [searchTerm]);
+
+    // Trigger enhanced search for complex queries
+    if (query.length > 10 || /[^\w\s]/.test(query) || query.includes('?')) {
+      console.log('🚀 Using enhanced search for complex query:', query);
+      setUseEnhancedSearch(true);
+      await enhancedSearch(query);
+    } else {
+      setUseEnhancedSearch(false);
+    }
+  }, [enhancedSearch]);
+
+  // Get suggestions for search
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchTerm.length > 1) {
+        const newSuggestions = await getSuggestions(searchTerm);
+        setSuggestions(newSuggestions);
+      } else {
+        setSuggestions([]);
+      }
+    };
+    
+    fetchSuggestions();
+  }, [searchTerm, getSuggestions]);
+
+  // Determine which results to show
+  const searchResults = useMemo(() => {
+    if (useEnhancedSearch && enhancedSearchResults) {
+      return enhancedSearchResults.items.map(item => item.grant);
+    }
+    
+    // Fallback to simple text search
+    if (!searchTerm.trim()) {
+      return filteredGrants;
+    }
+
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return filteredGrants.filter(grant => 
+      grant.title?.toLowerCase().includes(lowerSearchTerm) ||
+      grant.description?.toLowerCase().includes(lowerSearchTerm) ||
+      grant.organization?.toLowerCase().includes(lowerSearchTerm) ||
+      grant.tags?.some(tag => tag.toLowerCase().includes(lowerSearchTerm))
+    );
+  }, [useEnhancedSearch, enhancedSearchResults, searchTerm, filteredGrants]);
 
   // Apply AI-based sorting when we have AI matches and using default sorting
   const sortedSearchResults = useMemo(() => {
     if (aiMatches && aiMatches.length > 0 && sortBy === "default") {
       console.log('🤖 Applying AI-based sorting for default sort');
       
-      // Create a map of grant IDs to their AI scores
       const scoreMap = new Map<string, number>();
       aiMatches.forEach(match => {
         scoreMap.set(match.grantId, match.relevanceScore);
       });
       
-      // Sort grants by AI relevance score (highest first)
       const sorted = [...searchResults].sort((a, b) => {
         const scoreA = scoreMap.get(a.id) || 0;
         const scoreB = scoreMap.get(b.id) || 0;
@@ -180,7 +211,7 @@ const DiscoverGrants = () => {
     return searchResults;
   }, [searchResults, aiMatches, sortBy]);
 
-  // Grant selection logic - uses context directly for bookmark state
+  // Grant selection logic
   const {
     selectedGrant,
     showDetails,
@@ -194,7 +225,6 @@ const DiscoverGrants = () => {
   useEffect(() => {
     if (location.state?.selectedGrant && grants.length > 0) {
       const preSelectedGrant = location.state.selectedGrant as Grant;
-      // Find the grant in our current grants list
       const matchingGrant = grants.find(g => g.id === preSelectedGrant.id);
       if (matchingGrant) {
         console.log('🎯 Pre-selecting grant from navigation state:', matchingGrant.id);
@@ -202,23 +232,6 @@ const DiscoverGrants = () => {
       }
     }
   }, [location.state, grants, setSelectedGrant]);
-
-  // Log structured matching results if available
-  useEffect(() => {
-    if (matchingResult) {
-      console.log('🤖 Structured matching results available:', {
-        explanation: matchingResult.explanation,
-        totalMatches: matchingResult.rankedGrants.length,
-        topMatches: matchingResult.rankedGrants.slice(0, 5).map(match => ({
-          grantId: match.grantId,
-          score: match.relevanceScore,
-          reasons: match.matchingReasons
-        }))
-      });
-    } else {
-      console.log('❌ No structured matching results in location state');
-    }
-  }, [matchingResult]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
@@ -228,6 +241,16 @@ const DiscoverGrants = () => {
     console.log('🔄 Manual refresh triggered');
     refetch();
   }, [refetch]);
+
+  // Handle enhanced search result selection
+  const handleEnhancedGrantSelect = useCallback((grant: Grant) => {
+    recordFeedback({
+      type: 'click',
+      target: grant.id,
+      rating: 1
+    });
+    handleGrantSelect(grant);
+  }, [recordFeedback, handleGrantSelect]);
 
   // Show loading/error/empty states
   const stateComponent = DiscoverGrantsStates({
@@ -242,6 +265,54 @@ const DiscoverGrants = () => {
     return stateComponent;
   }
 
+  // Show enhanced search results if using enhanced search
+  if (useEnhancedSearch && enhancedSearchResults && searchTerm.trim()) {
+    return (
+      <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden">
+        <div className="w-full bg-canvas-cloud flex-shrink-0">
+          <div className="page-container py-6">
+            <div className="flex items-center gap-3 mb-6">
+              <h1 className="headline text-ink-obsidian">Upptäck bidrag</h1>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex justify-between">
+                <div className="w-full max-w-md">
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Sök efter bidrag, organisation eller område..."
+                      value={searchTerm}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      className="w-full pl-12 pr-10 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-black placeholder:text-black py-3 px-12"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="text-ink-secondary body-text">
+                  {enhancedSearchResults.items.length} bidrag hittade
+                  {isEnhancedSearching && <span className="ml-2 text-ink-secondary">• Söker...</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-auto">
+          <div className="page-container py-6">
+            <EnhancedSearchResults
+              searchResult={enhancedSearchResults}
+              onGrantSelect={handleEnhancedGrantSelect}
+              onFeedback={recordFeedback}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DiscoverGrantsContent
       grants={baseGrants}
@@ -253,10 +324,14 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={suggestions}
-      isSearching={isSearching}
-      searchMetrics={searchMetrics}
+      isSearching={isEnhancedSearching}
+      searchMetrics={{
+        resultsCount: sortedSearchResults.length,
+        searchLatency: 0,
+        cacheHitRate: 0
+      }}
       aiMatches={aiMatches}
-      onSearchChange={setSearchTerm}
+      onSearchChange={handleSearch}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}
       onClearFilters={clearFilters}
