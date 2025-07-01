@@ -10,7 +10,7 @@ import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
-import { AISearchResult } from "@/hooks/useAIGrantSearch";
+import { AISearchResult, AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
 
 const DiscoverGrants = () => {
@@ -25,6 +25,7 @@ const DiscoverGrants = () => {
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
+  const [aiMatches, setAiMatches] = useState<AIGrantMatch[] | undefined>(undefined);
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
@@ -45,6 +46,15 @@ const DiscoverGrants = () => {
     matchedGrantsCount: matchedGrants?.length || 0,
     actualRankedGrants: matchingResult?.rankedGrants
   });
+
+  // Set AI matches from location state when available
+  useEffect(() => {
+    if (matchingResult?.rankedGrants) {
+      setAiMatches(matchingResult.rankedGrants);
+      // Set sorting to "default" (which is "Rekommenderade") when AI search results are available
+      setSortBy("default");
+    }
+  }, [matchingResult]);
 
   // Enhanced filter state
   const {
@@ -129,6 +139,47 @@ const DiscoverGrants = () => {
     initialSearchTerm,
   });
 
+  // Clear AI matches when search term is cleared
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setAiMatches(undefined);
+      console.log('🧹 Cleared AI matches due to empty search term');
+    }
+  }, [searchTerm]);
+
+  // Apply AI-based sorting when we have AI matches and using default sorting
+  const sortedSearchResults = useMemo(() => {
+    if (aiMatches && aiMatches.length > 0 && sortBy === "default") {
+      console.log('🤖 Applying AI-based sorting for default sort');
+      
+      // Create a map of grant IDs to their AI scores
+      const scoreMap = new Map<string, number>();
+      aiMatches.forEach(match => {
+        scoreMap.set(match.grantId, match.relevanceScore);
+      });
+      
+      // Sort grants by AI relevance score (highest first)
+      const sorted = [...searchResults].sort((a, b) => {
+        const scoreA = scoreMap.get(a.id) || 0;
+        const scoreB = scoreMap.get(b.id) || 0;
+        return scoreB - scoreA;
+      });
+      
+      console.log('🎯 AI-sorted results:', {
+        totalResults: sorted.length,
+        topScores: sorted.slice(0, 5).map(g => ({
+          id: g.id,
+          title: g.title,
+          score: scoreMap.get(g.id)
+        }))
+      });
+      
+      return sorted;
+    }
+    
+    return searchResults;
+  }, [searchResults, aiMatches, sortBy]);
+
   // Grant selection logic - uses context directly for bookmark state
   const {
     selectedGrant,
@@ -137,7 +188,7 @@ const DiscoverGrants = () => {
     toggleBookmark,
     handleBackToList,
     setSelectedGrant,
-  } = useGrantSelection({ searchResults });
+  } = useGrantSelection({ searchResults: sortedSearchResults });
 
   // Handle pre-selected grant from navigation state
   useEffect(() => {
@@ -194,7 +245,7 @@ const DiscoverGrants = () => {
   return (
     <DiscoverGrantsContent
       grants={baseGrants}
-      searchResults={searchResults}
+      searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}
       searchTerm={searchTerm}
@@ -204,7 +255,7 @@ const DiscoverGrants = () => {
       suggestions={suggestions}
       isSearching={isSearching}
       searchMetrics={searchMetrics}
-      aiMatches={matchingResult?.rankedGrants}
+      aiMatches={aiMatches}
       onSearchChange={setSearchTerm}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}

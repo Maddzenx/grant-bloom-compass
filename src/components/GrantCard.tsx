@@ -70,15 +70,6 @@ const GrantCard = ({
     }
   };
 
-  // TEMPORARY: Add mock match scores for testing since AI search is failing
-  const getMockMatchScore = () => {
-    if (grant.id === "9b46f9d6-a680-40f2-8e47-bf1ab7e2dad6") return 0.85; // 85% match
-    if (grant.id === "178451f0-3534-4a94-9f3f-a1a9758156df") return 0.65; // 65% match
-    if (grant.title.toLowerCase().includes('innovation')) return 0.75; // 75% match for innovation grants
-    if (grant.title.toLowerCase().includes('green') || grant.title.toLowerCase().includes('hållbar')) return 0.80; // 80% match for green grants
-    return 0.55; // Default mock score for visibility testing
-  };
-
   const orgLogo = getOrganizationLogo(grant.organization);
 
   const handleBookmarkToggle = (e: React.MouseEvent) => {
@@ -100,17 +91,15 @@ const GrantCard = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
-  // Use actual match score or mock score for testing - always show a mock score for debugging
-  const finalMatchScore = matchScore ?? getMockMatchScore();
+  // Only show match score if it's actually provided (from AI search)
+  const shouldShowMatchScore = matchScore !== undefined && matchScore !== null;
 
   console.log('🔍 GrantCard render:', {
     grantId: grant.id,
     grantTitle: grant.title,
     matchScore,
-    mockScore: getMockMatchScore(),
-    finalMatchScore,
-    hasMatchScore: finalMatchScore !== undefined,
-    percentage: finalMatchScore ? Math.round(finalMatchScore * 100) : 'N/A'
+    shouldShowMatchScore,
+    percentage: shouldShowMatchScore ? Math.round(matchScore * 100) : 'N/A'
   });
 
   return (
@@ -122,10 +111,12 @@ const GrantCard = ({
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Match score badge - always show for debugging */}
-            <div className="flex-shrink-0">
-              {getMatchBadge(finalMatchScore)}
-            </div>
+            {/* Match score badge - only show when AI search has been used */}
+            {shouldShowMatchScore && (
+              <div className="flex-shrink-0">
+                {getMatchBadge(matchScore)}
+              </div>
+            )}
             {/* Bookmark button */}
             <button 
               onClick={handleBookmarkToggle} 

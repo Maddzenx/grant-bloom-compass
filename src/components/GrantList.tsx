@@ -44,7 +44,6 @@ const GrantList = ({
     const map = new Map<string, number>();
     aiMatches.forEach(match => {
       map.set(match.grantId, match.relevanceScore);
-      console.log(`📊 Mapped grant ${match.grantId} to score ${match.relevanceScore}`);
     });
     
     console.log('📊 Final matchScoreMap:', {
@@ -69,12 +68,6 @@ const GrantList = ({
             ) : (
               grants.map(grant => {
                 const matchScore = matchScoreMap.get(grant.id);
-                console.log('🎯 Rendering grant card:', {
-                  grantId: grant.id,
-                  matchScore,
-                  hasScore: matchScore !== undefined,
-                  percentage: matchScore ? Math.round(matchScore * 100) : 'No score'
-                });
                 
                 return (
                   <GrantCard 
