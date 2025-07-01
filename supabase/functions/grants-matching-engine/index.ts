@@ -2,6 +2,8 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+import { GrantScorer } from './grantScorer.ts';
+import { MatchingResponse } from './types.ts';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -13,47 +15,6 @@ const corsHeaders = {
 };
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-interface GrantCandidate {
-  id: string;
-  title: string;
-  subtitle: string;
-  organisation: string;
-  description: string;
-  keywords: string[];
-  industry_sectors: string[];
-  eligibility: string;
-  geographic_scope: string;
-  min_grant_per_project: number;
-  max_grant_per_project: number;
-  application_opening_date: string;
-  application_closing_date: string;
-}
-
-const buildPrompt = (userInput: string, grant: GrantCandidate): string => {
-  return `You are a Swedish/English grant matching expert. Score how well this grant matches the user's project/need on a scale of 0-100.
-
-Consider:
-- Relevance to the user's project description
-- Eligibility match for their organization type  
-- Focus area alignment
-- Funding purpose match
-
-Return ONLY a number between 0-100. Higher scores for better matches.
-
-USER PROJECT/NEED:
-${userInput}
-
-GRANT DETAILS:
-Title: ${grant.title || 'N/A'}
-Organisation: ${grant.organisation || 'N/A'}
-Description: ${grant.description || 'N/A'}
-Keywords: ${Array.isArray(grant.keywords) ? grant.keywords.join(', ') : 'N/A'}
-Industry sectors: ${Array.isArray(grant.industry_sectors) ? grant.industry_sectors.join(', ') : 'N/A'}
-Eligibility: ${grant.eligibility || 'N/A'}
-Geographic scope: ${grant.geographic_scope || 'N/A'}
-Funding range: ${grant.min_grant_per_project || 'N/A'}–${grant.max_grant_per_project || 'N/A'}`;
-};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -90,93 +51,40 @@ serve(async (req) => {
     }
 
     if (!grants || grants.length === 0) {
-      return new Response(JSON.stringify({ 
+      const emptyResponse: MatchingResponse = {
         rankedGrants: [],
         explanation: 'No grants found in database'
-      }), {
+      };
+      return new Response(JSON.stringify(emptyResponse), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     console.log('📊 Processing grants:', grants.length);
 
-    // Score each grant individually
-    const scoredGrants = [];
-    
-    for (const grant of grants) {
-      const prompt = buildPrompt(query, grant);
-      
-      console.log(`🤖 Scoring grant: ${grant.id}`);
-      
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openAIApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { 
-              role: 'system', 
-              content: 'You are a grant matching expert. Always respond with only a number between 0-100.' 
-            },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.1,
-          max_tokens: 10,
-        }),
-      });
+    // Score all grants using the GrantScorer
+    const scorer = new GrantScorer(openAIApiKey);
+    const scoredGrants = await scorer.scoreAllGrants(query, grants);
 
-      if (!response.ok) {
-        console.error(`OpenAI API error for grant ${grant.id}:`, response.status);
-        // Use fallback score if API fails
-        scoredGrants.push({
-          grantId: grant.id,
-          relevanceScore: 0.5, // 50% fallback score
-          matchingReasons: ['API error - fallback score applied']
-        });
-        continue;
-      }
-
-      const aiData = await response.json();
-      const scoreText = aiData.choices[0].message.content.trim();
-      
-      // Parse the score, fallback to 50 if parsing fails
-      let score = 50;
-      try {
-        const parsedScore = parseInt(scoreText);
-        if (!isNaN(parsedScore) && parsedScore >= 0 && parsedScore <= 100) {
-          score = parsedScore;
-        }
-      } catch (parseError) {
-        console.error(`Failed to parse score for grant ${grant.id}:`, scoreText);
-      }
-
-      scoredGrants.push({
-        grantId: grant.id,
-        relevanceScore: score / 100, // Convert to 0-1 scale for frontend compatibility
-        matchingReasons: [`AI match score: ${score}/100`]
-      });
-    }
-
-    // Sort by relevance score descending
-    scoredGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-    console.log('✅ Grants matching completed successfully');
-    return new Response(JSON.stringify({
+    const response: MatchingResponse = {
       rankedGrants: scoredGrants,
       explanation: `Matched ${scoredGrants.length} grants using 0-100 scoring system`
-    }), {
+    };
+
+    console.log('✅ Grants matching completed successfully');
+    return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('Error in grants-matching-engine function:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message,
+    const errorResponse: MatchingResponse = {
       rankedGrants: [],
       explanation: 'Matching temporarily unavailable'
+    };
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      ...errorResponse
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
