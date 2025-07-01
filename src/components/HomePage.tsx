@@ -1,10 +1,11 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { useGrantMatching } from "@/hooks/useGrantMatching";
 import { useGrants } from "@/hooks/useGrants";
+import { useAIGrantSearch } from "@/hooks/useAIGrantSearch";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
@@ -23,11 +24,8 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  // Hardcoded API key
-  const apiKey = "key_MByf0khg5w7tZlB7";
-
   const { data: grants, isLoading: grantsLoading } = useGrants();
-  const { matchGrants, isMatching, matchingError } = useGrantMatching();
+  const { searchGrants, isSearching, searchError } = useAIGrantSearch();
   const {
     isRecording,
     isTranscribing,
@@ -43,30 +41,43 @@ const HomePage = () => {
       return;
     }
 
-    if (grants && grants.length > 0 && inputValue.trim()) {
-      console.log('🚀 Starting grant matching process...');
-      const result = await matchGrants(grants, {
-        description: inputValue
-      }, apiKey);
-      if (result) {
-        console.log('✅ Grant matching successful, navigating to discover page...');
-        navigate("/discover", {
-          state: {
-            matchedGrants: result.sortedGrants,
-            matchResponse: result.matchResponse,
-            searchTerm: inputValue
-          }
-        });
-      } else {
-        console.log('❌ Grant matching failed, navigating to discover page without matching...');
-        navigate("/discover", {
-          state: {
-            searchTerm: inputValue
-          }
-        });
-      }
+    // Use AI search when there's input
+    console.log('🚀 Starting AI-powered grant search...');
+    const aiResult = await searchGrants(inputValue);
+    
+    if (aiResult && aiResult.rankedGrants.length > 0 && grants) {
+      // Sort grants based on AI ranking
+      const rankedGrantIds = aiResult.rankedGrants
+        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        .map(match => match.grantId);
+      
+      const sortedGrants = rankedGrantIds
+        .map(id => grants.find(grant => grant.id === id))
+        .filter(Boolean);
+      
+      // Add any remaining grants not ranked by AI
+      const unrankedGrants = grants.filter(grant => 
+        !rankedGrantIds.includes(grant.id)
+      );
+      
+      const finalSortedGrants = [...sortedGrants, ...unrankedGrants];
+
+      console.log('✅ AI search successful, navigating with sorted results...');
+      navigate("/discover", {
+        state: {
+          matchedGrants: finalSortedGrants,
+          aiSearchResult: aiResult,
+          searchTerm: inputValue
+        }
+      });
     } else {
-      navigate("/discover");
+      console.log('❌ AI search failed or no results, navigating to discover page...');
+      navigate("/discover", {
+        state: {
+          searchTerm: inputValue,
+          searchError: searchError
+        }
+      });
     }
   };
 
@@ -95,7 +106,7 @@ const HomePage = () => {
     }
   };
 
-  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading;
+  const isProcessing = isTranscribing || isUploading || isSearching || grantsLoading;
 
   return (
     <div className="min-h-screen bg-[#F0F1F3] relative">
@@ -142,9 +153,9 @@ const HomePage = () => {
             isRecording={isRecording}
             isTranscribing={isTranscribing}
             isUploading={isUploading}
-            isMatching={isMatching}
+            isMatching={isSearching}
             grantsLoading={grantsLoading}
-            matchingError={matchingError}
+            matchingError={searchError}
           />
         </div>
       </div>

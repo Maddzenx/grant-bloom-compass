@@ -10,6 +10,7 @@ import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
+import { AISearchResult } from "@/hooks/useAIGrantSearch";
 
 const DiscoverGrants = () => {
   const location = useLocation();
@@ -30,6 +31,10 @@ const DiscoverGrants = () => {
     locationState: location.state
   });
 
+  // Check if we have AI search results from navigation state
+  const aiSearchResult = location.state?.aiSearchResult as AISearchResult | undefined;
+  const matchedGrants = location.state?.matchedGrants as Grant[] | undefined;
+
   // Enhanced filter state
   const {
     filters,
@@ -38,11 +43,14 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
+  // Use matched grants if available, otherwise use all grants
+  const baseGrants = matchedGrants || grants;
+
   // Apply filters to grants
   const filteredGrants = useMemo(() => {
-    console.log('🔍 Filtering grants:', { totalGrants: grants?.length || 0 });
+    console.log('🔍 Filtering grants:', { totalGrants: baseGrants?.length || 0 });
     
-    if (!grants || grants.length === 0) {
+    if (!baseGrants || baseGrants.length === 0) {
       console.log('⚠️ No grants to filter');
       return [];
     }
@@ -57,12 +65,12 @@ const DiscoverGrants = () => {
 
     // If no active filters, return all grants
     if (!actuallyHasActiveFilters) {
-      console.log('✅ No active filters, returning all grants:', grants.length);
-      return grants;
+      console.log('✅ No active filters, returning all grants:', baseGrants.length);
+      return baseGrants;
     }
 
     // Apply filtering
-    const filtered = grants.filter(grant => {
+    const filtered = baseGrants.filter(grant => {
       // Organization filter
       if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
         return false;
@@ -93,7 +101,7 @@ const DiscoverGrants = () => {
 
     console.log('✅ Filtered grants:', filtered.length);
     return filtered;
-  }, [grants, filters]);
+  }, [baseGrants, filters]);
 
   // Enhanced search hook
   const {
@@ -132,6 +140,27 @@ const DiscoverGrants = () => {
     }
   }, [location.state, grants, setSelectedGrant]);
 
+  // Set initial search term from navigation state
+  useEffect(() => {
+    if (location.state?.searchTerm && !searchTerm) {
+      setSearchTerm(location.state.searchTerm);
+    }
+  }, [location.state?.searchTerm, searchTerm, setSearchTerm]);
+
+  // Log AI search results if available
+  useEffect(() => {
+    if (aiSearchResult) {
+      console.log('🤖 AI Search Results:', {
+        explanation: aiSearchResult.explanation,
+        topMatches: aiSearchResult.rankedGrants.slice(0, 5).map(match => ({
+          grantId: match.grantId,
+          score: match.relevanceScore,
+          reasons: match.matchingReasons
+        }))
+      });
+    }
+  }, [aiSearchResult]);
+
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
   }, [toggleBookmark]);
@@ -156,7 +185,7 @@ const DiscoverGrants = () => {
 
   return (
     <DiscoverGrantsContent
-      grants={grants}
+      grants={baseGrants}
       searchResults={searchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}
