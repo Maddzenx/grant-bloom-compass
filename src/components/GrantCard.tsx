@@ -1,11 +1,9 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
 import { Calendar, Bookmark } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
-
 interface GrantCardProps {
   grant: Grant;
   isSelected: boolean;
@@ -14,7 +12,6 @@ interface GrantCardProps {
   onToggleBookmark: () => void;
   isMobile?: boolean;
 }
-
 const GrantCard = ({
   grant,
   isSelected,
@@ -23,8 +20,11 @@ const GrantCard = ({
   onToggleBookmark,
   isMobile = false
 }: GrantCardProps) => {
-  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
-  
+  const {
+    isGrantSaved,
+    addToSaved,
+    removeFromSaved
+  } = useSavedGrantsContext();
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -36,15 +36,11 @@ const GrantCard = ({
       return dateString;
     }
   };
-
   const orgLogo = getOrganizationLogo(grant.organization);
-
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 GrantCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
-    
     if (currentlyBookmarked) {
       console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
@@ -52,40 +48,22 @@ const GrantCard = ({
       console.log('📝 Adding to saved');
       addToSaved(grant);
     }
-    
+
     // Call the parent's toggle function for UI updates
     onToggleBookmark();
   };
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-
-  return (
-    <Card 
-      className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${
-        isSelected 
-          ? 'bg-accent-2/10 border-l-accent-2 shadow-md' 
-          : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'
-      } ${isMobile ? 'mx-2' : 'mx-1'}`} 
-      onClick={onSelect}
-    >
+  return <Card className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2 shadow-md' : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
         {/* Header with organization */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70">
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
-          <button 
-            onClick={handleBookmarkToggle}
-            className="p-1 hover:bg-accent-2/10 rounded transition-colors"
-          >
-            <Bookmark 
-              className={`w-4 h-4 transition-colors ${
-                actuallyBookmarked 
-                  ? 'fill-accent-lavender text-accent-lavender' 
-                  : 'text-white stroke-ink-obsidian/40 fill-none'
-              }`} 
-            />
+          <button onClick={handleBookmarkToggle} className="p-1 hover:bg-accent-2/10 rounded transition-colors">
+            <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'fill-accent-lavender text-accent-lavender' : 'text-white stroke-ink-obsidian/40 fill-none'}`} />
           </button>
         </div>
 
@@ -111,26 +89,8 @@ const GrantCard = ({
         </div>
 
         {/* Tags */}
-        {grant.tags && grant.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {grant.tags.slice(0, 2).map((tag, index) => (
-              <span 
-                key={index}
-                className="px-2 py-1 bg-accent-2/20 text-accent-2 text-xs rounded-full border border-accent-2/30"
-              >
-                {tag}
-              </span>
-            ))}
-            {grant.tags.length > 2 && (
-              <span className="px-2 py-1 bg-accent-2/10 text-ink-obsidian/60 text-xs rounded-full">
-                +{grant.tags.length - 2}
-              </span>
-            )}
-          </div>
-        )}
+        {grant.tags && grant.tags.length > 0}
       </div>
-    </Card>
-  );
+    </Card>;
 };
-
 export default GrantCard;
