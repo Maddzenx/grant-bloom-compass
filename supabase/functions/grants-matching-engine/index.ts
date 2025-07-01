@@ -40,10 +40,11 @@ serve(async (req) => {
 
     console.log('🔍 Grants Matching Engine - Query:', query);
 
-    // Fetch ALL grants from the database - remove the limit to process all grants
+    // Fetch all grants from the database
     const { data: grants, error: grantsError } = await supabase
       .from('grant_call_details')
-      .select('*');
+      .select('*')
+      .limit(10); // For now, limit to 10 for testing
 
     if (grantsError) {
       throw new Error(`Failed to fetch grants: ${grantsError.message}`);
@@ -59,42 +60,18 @@ serve(async (req) => {
       });
     }
 
-    console.log('📊 Processing ALL grants for AI scoring:', grants.length);
+    console.log('📊 Processing grants:', grants.length);
 
     // Score all grants using the GrantScorer
     const scorer = new GrantScorer(openAIApiKey);
     const scoredGrants = await scorer.scoreAllGrants(query, grants);
 
-    // Ensure we have scores for ALL grants - add fallback scores for any missing
-    const allGrantIds = grants.map(g => g.id);
-    const scoredGrantIds = scoredGrants.map(sg => sg.grantId);
-    const missingGrantIds = allGrantIds.filter(id => !scoredGrantIds.includes(id));
-    
-    console.log('📊 Scoring summary:', {
-      totalGrants: grants.length,
-      scoredGrants: scoredGrants.length,
-      missingGrants: missingGrantIds.length,
-      missingGrantIds: missingGrantIds.slice(0, 5) // Log first 5 for debugging
-    });
-
-    // Add fallback scores for any missing grants
-    missingGrantIds.forEach(grantId => {
-      scoredGrants.push({
-        grantId,
-        relevanceScore: 0.3, // Lower fallback score
-        matchingReasons: ['Fallback score - processing error']
-      });
-    });
-
-    // Sort by relevance score descending
-    scoredGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
     const response: MatchingResponse = {
       rankedGrants: scoredGrants,
-      explanation: `AI evaluated all ${scoredGrants.length} grants and ranked them by relevance to your query.`
+      explanation: `Matched ${scoredGrants.length} grants using 0-100 scoring system`
     };
 
-    console.log('✅ Grants matching completed successfully - scored all grants:', scoredGrants.length);
+    console.log('✅ Grants matching completed successfully');
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

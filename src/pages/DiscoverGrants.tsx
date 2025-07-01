@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
@@ -49,17 +50,11 @@ const DiscoverGrants = () => {
   // Set AI matches from location state when available
   useEffect(() => {
     if (matchingResult?.rankedGrants) {
-      console.log('🎯 Setting AI matches from location state:', {
-        rankedGrantsCount: matchingResult.rankedGrants.length,
-        allGrantsCount: grants.length,
-        willCoverAllGrants: matchingResult.rankedGrants.length >= grants.length
-      });
-      
       setAiMatches(matchingResult.rankedGrants);
       // Set sorting to "default" (which is "Rekommenderade") when AI search results are available
       setSortBy("default");
     }
-  }, [matchingResult, grants.length]);
+  }, [matchingResult]);
 
   // Enhanced filter state
   const {
@@ -69,8 +64,8 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Always use all grants as the base - AI matches will provide scoring for all grants
-  const baseGrants = grants;
+  // Use matched grants if available, otherwise use all grants
+  const baseGrants = matchedGrants || grants;
 
   // Apply filters to grants
   const filteredGrants = useMemo(() => {
@@ -172,9 +167,6 @@ const DiscoverGrants = () => {
       
       console.log('🎯 AI-sorted results:', {
         totalResults: sorted.length,
-        aiMatchesCount: aiMatches.length,
-        grantsWithScores: sorted.filter(g => scoreMap.has(g.id)).length,
-        grantsWithoutScores: sorted.filter(g => !scoreMap.has(g.id)).length,
         topScores: sorted.slice(0, 5).map(g => ({
           id: g.id,
           title: g.title,
@@ -211,22 +203,22 @@ const DiscoverGrants = () => {
     }
   }, [location.state, grants, setSelectedGrant]);
 
-  // Log AI matches for debugging
+  // Log structured matching results if available
   useEffect(() => {
-    if (aiMatches && aiMatches.length > 0) {
-      console.log('🤖 AI matches available:', {
-        totalMatches: aiMatches.length,
-        totalGrants: grants.length,
-        hasScoreForAllGrants: aiMatches.length >= grants.length,
-        coveragePercentage: Math.round((aiMatches.length / grants.length) * 100),
-        sampleScores: aiMatches.slice(0, 5).map(match => ({
+    if (matchingResult) {
+      console.log('🤖 Structured matching results available:', {
+        explanation: matchingResult.explanation,
+        totalMatches: matchingResult.rankedGrants.length,
+        topMatches: matchingResult.rankedGrants.slice(0, 5).map(match => ({
           grantId: match.grantId,
           score: match.relevanceScore,
-          percentage: Math.round(match.relevanceScore * 100)
+          reasons: match.matchingReasons
         }))
       });
+    } else {
+      console.log('❌ No structured matching results in location state');
     }
-  }, [aiMatches, grants.length]);
+  }, [matchingResult]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
