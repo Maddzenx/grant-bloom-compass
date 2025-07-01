@@ -89,7 +89,7 @@ Return a JSON response with the following structure:
   "rankedGrants": [
     {
       "grantId": "grant_id_here",
-      "relevanceScore": 0.95,
+      "relevanceScore": 0.72,
       "matchingReasons": ["reason 1", "reason 2"]
     }
   ],
@@ -101,7 +101,15 @@ Rules:
 - Include specific reasons why each grant matches
 - Consider semantic similarity, not just keyword matching
 - Factor in eligibility, funding amounts, deadlines, and industry sectors
-- Be thorough in your analysis`;
+- Be thorough in your analysis
+
+Consider:
+- Relevance to the user's project description
+- Eligibility match for their organization type
+- Focus area alignment
+- Funding purpose match`;
+
+
 
     console.log('🤖 Sending request to OpenAI...');
 
