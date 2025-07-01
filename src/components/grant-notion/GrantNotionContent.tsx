@@ -67,7 +67,7 @@ const GrantNotionContent = ({
 
   return (
     <div className="space-y-6">
-      {/* Utvärderingskriterier */}
+      {/* Utvärderingskriterier - only show if exists */}
       {grant.evaluationCriteria && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
@@ -84,7 +84,7 @@ const GrantNotionContent = ({
         </Collapsible>
       )}
 
-      {/* Ansökningsprocess */}
+      {/* Ansökningsprocess - only show if exists */}
       {grant.applicationProcess && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
@@ -101,7 +101,7 @@ const GrantNotionContent = ({
         </Collapsible>
       )}
 
-      {/* Mallar och dokument */}
+      {/* Mallar och dokument - only show if templates or generalInfo exist */}
       {(grant.templates.length > 0 || grant.generalInfo.length > 0) && (
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
@@ -152,7 +152,7 @@ const GrantNotionContent = ({
         </Collapsible>
       )}
 
-      {/* Finansieringsregler */}
+      {/* Finansieringsregler - only show if exists */}
       {grant.fundingRules.length > 0 && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
@@ -172,7 +172,7 @@ const GrantNotionContent = ({
         </Collapsible>
       )}
 
-      {/* Ytterligare information */}
+      {/* Ytterligare information - only show if qualifications or originalUrl exist */}
       {(grant.qualifications || grant.originalUrl) && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-2 w-full text-left group">
@@ -209,34 +209,40 @@ const GrantNotionContent = ({
         </Collapsible>
       )}
 
-      {/* Contact section in sidebar style */}
-      <div className="mt-10 pt-6 border-t border-gray-200">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Kontakt</h3>
-          <div className="space-y-2">
-            {grant.contact.name && (
-              <div>
-                <span className="text-xs text-gray-600 block">{grant.contact.organization || grant.organization}</span>
-                <span className="text-xs font-medium text-gray-900">{grant.contact.name}</span>
-              </div>
-            )}
-            {grant.contact.email && (
-              <div>
-                <a href={`mailto:${grant.contact.email}`} className="text-xs text-blue-600 hover:text-blue-800 underline">
-                  {grant.contact.email}
-                </a>
-              </div>
-            )}
-            {grant.contact.phone && (
-              <div>
-                <a href={`tel:${grant.contact.phone}`} className="text-xs text-blue-600 hover:text-blue-800 underline">
-                  {grant.contact.phone}
-                </a>
-              </div>
-            )}
+      {/* Contact section - only show if contact info exists */}
+      {(grant.contact.name || grant.contact.email || grant.contact.phone || grant.contact.organization) && (
+        <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Kontakt</h3>
+            <div className="space-y-2">
+              {(grant.contact.name || grant.contact.organization) && (
+                <div>
+                  {grant.contact.organization && (
+                    <span className="text-xs text-gray-600 block">{grant.contact.organization}</span>
+                  )}
+                  {grant.contact.name && (
+                    <span className="text-xs font-medium text-gray-900">{grant.contact.name}</span>
+                  )}
+                </div>
+              )}
+              {grant.contact.email && (
+                <div>
+                  <a href={`mailto:${grant.contact.email}`} className="text-xs text-blue-600 hover:text-blue-800 underline">
+                    {grant.contact.email}
+                  </a>
+                </div>
+              )}
+              {grant.contact.phone && (
+                <div>
+                  <a href={`tel:${grant.contact.phone}`} className="text-xs text-blue-600 hover:text-blue-800 underline">
+                    {grant.contact.phone}
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -12,16 +12,29 @@ interface GrantSidebarProps {
 const GrantSidebar = ({ grant, isMobile = false }: GrantSidebarProps) => {
   const spacingClass = isMobile ? 'space-y-4' : 'space-y-6';
 
+  // Check if we have any content to show
+  const hasImportantDates = grant.importantDates.length > 0;
+  const hasContactInfo = grant.contact.name || grant.contact.email || grant.contact.phone || grant.contact.organization;
+
+  // If no content to show, return null
+  if (!hasImportantDates && !hasContactInfo) {
+    return null;
+  }
+
   return (
     <div className={spacingClass}>
-      <ImportantDatesSection 
-        importantDates={grant.importantDates} 
-        isMobile={isMobile} 
-      />
-      <ContactSection 
-        contact={grant.contact} 
-        isMobile={isMobile} 
-      />
+      {hasImportantDates && (
+        <ImportantDatesSection 
+          importantDates={grant.importantDates} 
+          isMobile={isMobile} 
+        />
+      )}
+      {hasContactInfo && (
+        <ContactSection 
+          contact={grant.contact} 
+          isMobile={isMobile} 
+        />
+      )}
     </div>
   );
 };

@@ -18,6 +18,7 @@ const GrantAdditionalInfoSection = ({ grant, isMobile = false }: GrantAdditional
   const titleClass = isMobile ? 'text-lg' : 'text-xl';
   const textClass = isMobile ? 'text-sm' : 'text-sm';
 
+  // Only render if we have additional information
   if (!grant.qualifications) return null;
 
   return (

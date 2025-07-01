@@ -13,6 +13,13 @@ const ContactSection = ({ contact, isMobile = false }: ContactSectionProps) => {
   const textClass = isMobile ? 'text-xs' : 'text-xs';
   const titleClass = isMobile ? 'text-sm' : 'text-sm';
 
+  // Check if we have any contact information to display
+  const hasContactInfo = contact.name || contact.email || contact.phone || contact.organization;
+  
+  if (!hasContactInfo) {
+    return null;
+  }
+
   return (
     <section className={`bg-gray-50 ${paddingClass} rounded-lg border border-gray-200`}>
       <h3 className={`font-bold text-gray-900 mb-2 md:mb-3 ${titleClass}`}>Kontakt</h3>
