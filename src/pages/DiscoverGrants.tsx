@@ -196,6 +196,7 @@ const DiscoverGrants = () => {
       suggestions={suggestions}
       isSearching={isSearching}
       searchMetrics={searchMetrics}
+      aiMatches={aiSearchResult?.rankedGrants}
       onSearchChange={setSearchTerm}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}

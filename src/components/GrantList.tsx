@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import GrantCard from "@/components/GrantCard";
 import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
+import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 
 interface GrantListProps {
   grants: Grant[];
@@ -12,6 +13,7 @@ interface GrantListProps {
   onToggleBookmark: (grantId: string) => void;
   searchTerm: string;
   isMobile: boolean;
+  aiMatches?: AIGrantMatch[];
 }
 
 const GrantList = ({
@@ -20,11 +22,23 @@ const GrantList = ({
   onGrantSelect,
   onToggleBookmark,
   searchTerm,
-  isMobile
+  isMobile,
+  aiMatches
 }: GrantListProps) => {
   const { isGrantSaved } = useSavedGrantsContext();
   
   const containerClass = isMobile ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" : "w-[35%] bg-canvas-cloud overflow-hidden flex flex-col border-r" + " border-[#F0F1F3]";
+  
+  // Create a map of grant IDs to match scores for quick lookup
+  const matchScoreMap = React.useMemo(() => {
+    if (!aiMatches) return new Map();
+    
+    const map = new Map<string, number>();
+    aiMatches.forEach(match => {
+      map.set(match.grantId, match.relevanceScore);
+    });
+    return map;
+  }, [aiMatches]);
   
   return (
     <div className={containerClass}>
@@ -46,7 +60,8 @@ const GrantList = ({
                   isBookmarked={isGrantSaved(grant.id)}
                   onSelect={() => onGrantSelect(grant)} 
                   onToggleBookmark={() => onToggleBookmark(grant.id)} 
-                  isMobile={isMobile} 
+                  isMobile={isMobile}
+                  matchScore={matchScoreMap.get(grant.id)}
                 />
               ))
             )}

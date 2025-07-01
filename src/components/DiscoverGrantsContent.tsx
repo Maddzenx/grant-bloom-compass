@@ -8,6 +8,7 @@ import { EnhancedFilterControls } from '@/components/EnhancedFilterControls';
 import GrantList from '@/components/GrantList';
 import GrantDetailsPanel from '@/components/GrantDetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -21,6 +22,7 @@ interface DiscoverGrantsContentProps {
   suggestions: string[];
   isSearching: boolean;
   searchMetrics: any;
+  aiMatches?: AIGrantMatch[];
   onSearchChange: (value: string) => void;
   onSortChange: (sortBy: SortOption) => void;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
@@ -42,6 +44,7 @@ export const DiscoverGrantsContent = ({
   suggestions,
   isSearching,
   searchMetrics,
+  aiMatches,
   onSearchChange,
   onSortChange,
   onFiltersChange,
@@ -92,6 +95,7 @@ export const DiscoverGrantsContent = ({
                 onToggleBookmark={onToggleBookmark}
                 searchTerm={searchTerm}
                 isMobile={true}
+                aiMatches={aiMatches}
               />
             )}
 
@@ -116,6 +120,7 @@ export const DiscoverGrantsContent = ({
               onToggleBookmark={onToggleBookmark}
               searchTerm={searchTerm}
               isMobile={false}
+              aiMatches={aiMatches}
             />
 
             {/* Right Panel - Grant Details */}

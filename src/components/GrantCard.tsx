@@ -1,9 +1,12 @@
+
 import React from "react";
 import { Grant } from "@/types/grant";
 import { Calendar, Bookmark } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
+
 interface GrantCardProps {
   grant: Grant;
   isSelected: boolean;
@@ -11,20 +14,24 @@ interface GrantCardProps {
   onSelect: () => void;
   onToggleBookmark: () => void;
   isMobile?: boolean;
+  matchScore?: number;
 }
+
 const GrantCard = ({
   grant,
   isSelected,
   isBookmarked,
   onSelect,
   onToggleBookmark,
-  isMobile = false
+  isMobile = false,
+  matchScore
 }: GrantCardProps) => {
   const {
     isGrantSaved,
     addToSaved,
     removeFromSaved
   } = useSavedGrantsContext();
+
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -36,7 +43,33 @@ const GrantCard = ({
       return dateString;
     }
   };
+
+  const getMatchBadge = (score: number) => {
+    const percentage = Math.round(score * 100);
+    
+    if (percentage >= 75) {
+      return (
+        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100">
+          {percentage}% match
+        </Badge>
+      );
+    } else if (percentage >= 40) {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100">
+          {percentage}% match
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100">
+          {percentage}% match
+        </Badge>
+      );
+    }
+  };
+
   const orgLogo = getOrganizationLogo(grant.organization);
+
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     const currentlyBookmarked = isGrantSaved(grant.id);
@@ -55,16 +88,23 @@ const GrantCard = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-  return <Card className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2 shadow-md' : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
+
+  return (
+    <Card className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2 shadow-md' : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
-        {/* Header with organization */}
+        {/* Header with organization and match score */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70">
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
-          <button onClick={handleBookmarkToggle} className="p-1 hover:bg-accent-2/10 rounded transition-colors">
-            <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'fill-accent-lavender text-accent-lavender' : 'text-white stroke-ink-obsidian/40 fill-none'}`} />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Match score badge */}
+            {matchScore !== undefined && getMatchBadge(matchScore)}
+            {/* Bookmark button */}
+            <button onClick={handleBookmarkToggle} className="p-1 hover:bg-accent-2/10 rounded transition-colors">
+              <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'fill-accent-lavender text-accent-lavender' : 'text-white stroke-ink-obsidian/40 fill-none'}`} />
+            </button>
+          </div>
         </div>
 
         {/* Title */}
@@ -91,6 +131,8 @@ const GrantCard = ({
         {/* Tags */}
         {grant.tags && grant.tags.length > 0}
       </div>
-    </Card>;
+    </Card>
+  );
 };
+
 export default GrantCard;
