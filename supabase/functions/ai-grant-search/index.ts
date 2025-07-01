@@ -97,7 +97,7 @@ Return a JSON response with the following structure:
 }
 
 Rules:
-- Rank ALL grants by relevance (0.0 to 1.0 score)
+- Rank ALL grants by relevance (0.00 to 1.00 score, with 2 digits precision)
 - Include specific reasons why each grant matches
 - Consider semantic similarity, not just keyword matching
 - Factor in eligibility, funding amounts, deadlines, and industry sectors
