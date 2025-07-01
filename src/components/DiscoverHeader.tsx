@@ -33,7 +33,7 @@ const DiscoverHeader = ({
   
   return (
     <div className="w-full bg-canvas-cloud flex-shrink-0">
-      <div className="page-container py-6">
+      <div className="py-6">
         {/* Header with title */}
         <div className="flex items-center gap-3 mb-6">
           <h1 className="headline text-ink-obsidian">
