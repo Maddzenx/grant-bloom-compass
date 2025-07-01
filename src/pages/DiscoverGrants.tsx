@@ -35,11 +35,12 @@ const DiscoverGrants = () => {
   const aiSearchResult = location.state?.aiSearchResult as AISearchResult | undefined;
   const matchedGrants = location.state?.matchedGrants as Grant[] | undefined;
 
-  console.log('🤖 AI Search Data:', {
+  console.log('🤖 AI Search Data from location state:', {
     hasAiSearchResult: !!aiSearchResult,
     hasMatchedGrants: !!matchedGrants,
     aiMatchesCount: aiSearchResult?.rankedGrants?.length || 0,
-    matchedGrantsCount: matchedGrants?.length || 0
+    matchedGrantsCount: matchedGrants?.length || 0,
+    actualAiMatches: aiSearchResult?.rankedGrants
   });
 
   // Enhanced filter state
@@ -157,14 +158,17 @@ const DiscoverGrants = () => {
   // Log AI search results if available
   useEffect(() => {
     if (aiSearchResult) {
-      console.log('🤖 AI Search Results:', {
+      console.log('🤖 AI Search Results available:', {
         explanation: aiSearchResult.explanation,
+        totalMatches: aiSearchResult.rankedGrants.length,
         topMatches: aiSearchResult.rankedGrants.slice(0, 5).map(match => ({
           grantId: match.grantId,
           score: match.relevanceScore,
           reasons: match.matchingReasons
         }))
       });
+    } else {
+      console.log('❌ No AI search results in location state');
     }
   }, [aiSearchResult]);
 

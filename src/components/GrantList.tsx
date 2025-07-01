@@ -31,17 +31,25 @@ const GrantList = ({
   
   // Create a map of grant IDs to match scores for quick lookup
   const matchScoreMap = React.useMemo(() => {
-    if (!aiMatches) return new Map();
+    if (!aiMatches || aiMatches.length === 0) {
+      console.log('📊 No AI matches available for mapping');
+      return new Map();
+    }
+    
+    console.log('📊 Creating match score map from AI matches:', {
+      aiMatchesCount: aiMatches.length,
+      aiMatches: aiMatches.map(m => ({ grantId: m.grantId, score: m.relevanceScore }))
+    });
     
     const map = new Map<string, number>();
     aiMatches.forEach(match => {
       map.set(match.grantId, match.relevanceScore);
+      console.log(`📊 Mapped grant ${match.grantId} to score ${match.relevanceScore}`);
     });
     
-    console.log('📊 GrantList matchScoreMap:', {
-      aiMatchesCount: aiMatches.length,
+    console.log('📊 Final matchScoreMap:', {
       mapSize: map.size,
-      sampleEntries: Array.from(map.entries()).slice(0, 3)
+      allEntries: Array.from(map.entries())
     });
     
     return map;
@@ -64,7 +72,8 @@ const GrantList = ({
                 console.log('🎯 Rendering grant card:', {
                   grantId: grant.id,
                   matchScore,
-                  hasScore: matchScore !== undefined
+                  hasScore: matchScore !== undefined,
+                  percentage: matchScore ? Math.round(matchScore * 100) : 'No score'
                 });
                 
                 return (

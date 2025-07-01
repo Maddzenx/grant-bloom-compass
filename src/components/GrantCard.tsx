@@ -51,23 +51,30 @@ const GrantCard = ({
     
     if (percentage >= 75) {
       return (
-        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100 font-semibold">
+        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100 font-semibold text-xs px-2 py-1">
           {percentage}% match
         </Badge>
       );
     } else if (percentage >= 40) {
       return (
-        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100 font-semibold">
+        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100 font-semibold text-xs px-2 py-1">
           {percentage}% match
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100 font-semibold">
+        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100 font-semibold text-xs px-2 py-1">
           {percentage}% match
         </Badge>
       );
     }
+  };
+
+  // TEMPORARY: Add mock match scores for testing since AI search is failing
+  const getMockMatchScore = () => {
+    if (grant.id === "9b46f9d6-a680-40f2-8e47-bf1ab7e2dad6") return 0.85; // 85% match
+    if (grant.id === "178451f0-3534-4a94-9f3f-a1a9758156df") return 0.65; // 65% match
+    return undefined;
   };
 
   const orgLogo = getOrganizationLogo(grant.organization);
@@ -91,11 +98,16 @@ const GrantCard = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
+  // Use actual match score or mock score for testing
+  const finalMatchScore = matchScore ?? getMockMatchScore();
+
   console.log('🔍 GrantCard render:', {
     grantId: grant.id,
     matchScore,
-    hasMatchScore: matchScore !== undefined,
-    percentage: matchScore ? Math.round(matchScore * 100) : 'N/A'
+    mockScore: getMockMatchScore(),
+    finalMatchScore,
+    hasMatchScore: finalMatchScore !== undefined,
+    percentage: finalMatchScore ? Math.round(finalMatchScore * 100) : 'N/A'
   });
 
   return (
@@ -108,9 +120,9 @@ const GrantCard = ({
           </div>
           <div className="flex items-center gap-2">
             {/* Match score badge - show if we have a match score */}
-            {matchScore !== undefined && (
+            {finalMatchScore !== undefined && (
               <div className="flex-shrink-0">
-                {getMatchBadge(matchScore)}
+                {getMatchBadge(finalMatchScore)}
               </div>
             )}
             {/* Bookmark button */}
