@@ -56,81 +56,92 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden px-4 md:px-8">
-      {/* Enhanced Search Header */}
-      <DiscoverHeader
-        searchTerm={searchTerm}
-        onSearchChange={onSearchChange}
-        sortBy={sortBy}
-        onSortChange={onSortChange}
-        totalGrants={searchResults.length}
-        suggestions={suggestions}
-        isSearching={isSearching}
-        searchMetrics={searchMetrics}
-      />
-
-      {/* Enhanced Filter Controls */}
-      <div className="bg-accent-lavender-10 border-b border-accent-lavender -mx-4 md:-mx-8 px-4 md:px-8">
-        <EnhancedFilterControls
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-          onClearAll={onClearFilters}
-          grants={grants}
-          filteredGrants={searchResults}
-          hasActiveFilters={hasActiveFilters}
+    <div className="min-h-screen bg-white">
+      {/* Main container with proper padding */}
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        {/* Enhanced Search Header */}
+        <DiscoverHeader
+          searchTerm={searchTerm}
+          onSearchChange={onSearchChange}
+          sortBy={sortBy}
+          onSortChange={onSortChange}
+          totalGrants={searchResults.length}
+          suggestions={suggestions}
+          isSearching={isSearching}
+          searchMetrics={searchMetrics}
         />
-      </div>
 
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden -mx-4 md:-mx-8">
-        {/* Mobile Layout */}
-        {isMobile ? (
-          <>
-            {/* Show list when not viewing details */}
-            {!showDetails && (
-              <GrantList
-                grants={searchResults}
-                selectedGrant={selectedGrant}
-                onGrantSelect={onGrantSelect}
-                onToggleBookmark={onToggleBookmark}
-                searchTerm={searchTerm}
-                isMobile={true}
-                aiMatches={aiMatches}
-              />
-            )}
+        {/* Enhanced Filter Controls */}
+        <div className="mb-6">
+          <EnhancedFilterControls
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            onClearAll={onClearFilters}
+            grants={grants}
+            filteredGrants={searchResults}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </div>
 
-            {/* Show details when viewing a grant */}
-            {showDetails && selectedGrant && (
-              <GrantDetailsPanel
-                selectedGrant={selectedGrant}
-                onToggleBookmark={onToggleBookmark}
-                isMobile={true}
-                onBackToList={onBackToList}
-              />
-            )}
-          </>
-        ) : (
-          /* Desktop Layout */
-          <>
-            {/* Left Panel - Grant List */}
-            <GrantList
-              grants={searchResults}
-              selectedGrant={selectedGrant}
-              onGrantSelect={onGrantSelect}
-              onToggleBookmark={onToggleBookmark}
-              searchTerm={searchTerm}
-              isMobile={false}
-              aiMatches={aiMatches}
-            />
+        {/* Main Content Area */}
+        <div className="flex gap-6">
+          {/* Mobile Layout */}
+          {isMobile ? (
+            <>
+              {/* Show list when not viewing details */}
+              {!showDetails && (
+                <div className="w-full">
+                  <GrantList
+                    grants={searchResults}
+                    selectedGrant={selectedGrant}
+                    onGrantSelect={onGrantSelect}
+                    onToggleBookmark={onToggleBookmark}
+                    searchTerm={searchTerm}
+                    isMobile={true}
+                    aiMatches={aiMatches}
+                  />
+                </div>
+              )}
 
-            {/* Right Panel - Grant Details */}
-            <GrantDetailsPanel
-              selectedGrant={selectedGrant}
-              onToggleBookmark={onToggleBookmark}
-              isMobile={false}
-            />
-          </>
-        )}
+              {/* Show details when viewing a grant */}
+              {showDetails && selectedGrant && (
+                <div className="w-full">
+                  <GrantDetailsPanel
+                    selectedGrant={selectedGrant}
+                    onToggleBookmark={onToggleBookmark}
+                    isMobile={true}
+                    onBackToList={onBackToList}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            /* Desktop Layout */
+            <>
+              {/* Left Panel - Grant List */}
+              <div className="w-[400px] flex-shrink-0">
+                <GrantList
+                  grants={searchResults}
+                  selectedGrant={selectedGrant}
+                  onGrantSelect={onGrantSelect}
+                  onToggleBookmark={onToggleBookmark}
+                  searchTerm={searchTerm}
+                  isMobile={false}
+                  aiMatches={aiMatches}
+                />
+              </div>
+
+              {/* Right Panel - Grant Details */}
+              <div className="flex-1">
+                <GrantDetailsPanel
+                  selectedGrant={selectedGrant}
+                  onToggleBookmark={onToggleBookmark}
+                  isMobile={false}
+                />
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
