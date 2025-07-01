@@ -37,6 +37,13 @@ const GrantList = ({
     aiMatches.forEach(match => {
       map.set(match.grantId, match.relevanceScore);
     });
+    
+    console.log('📊 GrantList matchScoreMap:', {
+      aiMatchesCount: aiMatches.length,
+      mapSize: map.size,
+      sampleEntries: Array.from(map.entries()).slice(0, 3)
+    });
+    
     return map;
   }, [aiMatches]);
   
@@ -52,18 +59,27 @@ const GrantList = ({
                 </div>
               </div>
             ) : (
-              grants.map(grant => (
-                <GrantCard 
-                  key={grant.id} 
-                  grant={grant} 
-                  isSelected={selectedGrant?.id === grant.id} 
-                  isBookmarked={isGrantSaved(grant.id)}
-                  onSelect={() => onGrantSelect(grant)} 
-                  onToggleBookmark={() => onToggleBookmark(grant.id)} 
-                  isMobile={isMobile}
-                  matchScore={matchScoreMap.get(grant.id)}
-                />
-              ))
+              grants.map(grant => {
+                const matchScore = matchScoreMap.get(grant.id);
+                console.log('🎯 Rendering grant card:', {
+                  grantId: grant.id,
+                  matchScore,
+                  hasScore: matchScore !== undefined
+                });
+                
+                return (
+                  <GrantCard 
+                    key={grant.id} 
+                    grant={grant} 
+                    isSelected={selectedGrant?.id === grant.id} 
+                    isBookmarked={isGrantSaved(grant.id)}
+                    onSelect={() => onGrantSelect(grant)} 
+                    onToggleBookmark={() => onToggleBookmark(grant.id)} 
+                    isMobile={isMobile}
+                    matchScore={matchScore}
+                  />
+                );
+              })
             )}
           </div>
         </div>

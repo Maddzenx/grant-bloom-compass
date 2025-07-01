@@ -35,6 +35,13 @@ const DiscoverGrants = () => {
   const aiSearchResult = location.state?.aiSearchResult as AISearchResult | undefined;
   const matchedGrants = location.state?.matchedGrants as Grant[] | undefined;
 
+  console.log('🤖 AI Search Data:', {
+    hasAiSearchResult: !!aiSearchResult,
+    hasMatchedGrants: !!matchedGrants,
+    aiMatchesCount: aiSearchResult?.rankedGrants?.length || 0,
+    matchedGrantsCount: matchedGrants?.length || 0
+  });
+
   // Enhanced filter state
   const {
     filters,

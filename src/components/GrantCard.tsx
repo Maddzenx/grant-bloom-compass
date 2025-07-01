@@ -47,21 +47,23 @@ const GrantCard = ({
   const getMatchBadge = (score: number) => {
     const percentage = Math.round(score * 100);
     
+    console.log('🎯 Rendering match badge for grant:', grant.id, 'Score:', score, 'Percentage:', percentage);
+    
     if (percentage >= 75) {
       return (
-        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100">
+        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100 font-semibold">
           {percentage}% match
         </Badge>
       );
     } else if (percentage >= 40) {
       return (
-        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100">
+        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100 font-semibold">
           {percentage}% match
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100">
+        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100 font-semibold">
           {percentage}% match
         </Badge>
       );
@@ -89,6 +91,13 @@ const GrantCard = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
+  console.log('🔍 GrantCard render:', {
+    grantId: grant.id,
+    matchScore,
+    hasMatchScore: matchScore !== undefined,
+    percentage: matchScore ? Math.round(matchScore * 100) : 'N/A'
+  });
+
   return (
     <Card className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2 shadow-md' : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
@@ -98,10 +107,14 @@ const GrantCard = ({
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
           <div className="flex items-center gap-2">
-            {/* Match score badge */}
-            {matchScore !== undefined && getMatchBadge(matchScore)}
+            {/* Match score badge - show if we have a match score */}
+            {matchScore !== undefined && (
+              <div className="flex-shrink-0">
+                {getMatchBadge(matchScore)}
+              </div>
+            )}
             {/* Bookmark button */}
-            <button onClick={handleBookmarkToggle} className="p-1 hover:bg-accent-2/10 rounded transition-colors">
+            <button onClick={handleBookmarkToggle} className="p-1 hover:bg-accent-2/10 rounded transition-colors flex-shrink-0">
               <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'fill-accent-lavender text-accent-lavender' : 'text-white stroke-ink-obsidian/40 fill-none'}`} />
             </button>
           </div>
