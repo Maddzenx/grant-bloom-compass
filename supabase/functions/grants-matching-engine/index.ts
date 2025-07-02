@@ -22,7 +22,7 @@ serve(async (req) => {
   }
 
   try {
-    const { query } = await req.json();
+    const { query, relevantSectors } = await req.json();
 
     if (!query || typeof query !== 'string') {
       return new Response(JSON.stringify({ error: 'Query is required' }), {
@@ -44,11 +44,21 @@ serve(async (req) => {
     }
 
     console.log('🔍 AI Grants Matching Engine - Query:', query);
+    console.log('🎯 Filtering by sectors:', relevantSectors);
 
-    // Fetch ALL grants from the database
-    const { data: grants, error: grantsError } = await supabase
-      .from('grant_call_details')
-      .select('*');
+    // Build the query to filter by relevant sectors
+    let grantsQuery = supabase.from('grant_call_details').select('*');
+    
+    if (relevantSectors && relevantSectors.length > 0) {
+      // Filter grants that have at least one matching sector
+      grantsQuery = grantsQuery.or(
+        relevantSectors.map((sector: string) => 
+          `industry_sectors.cs.["${sector}"]`
+        ).join(',')
+      );
+    }
+
+    const { data: grants, error: grantsError } = await grantsQuery;
 
     if (grantsError) {
       throw new Error(`Failed to fetch grants: ${grantsError.message}`);
@@ -57,16 +67,16 @@ serve(async (req) => {
     if (!grants || grants.length === 0) {
       const emptyResponse: MatchingResponse = {
         rankedGrants: [],
-        explanation: 'No grants found in database'
+        explanation: 'No grants found matching the selected sectors'
       };
       return new Response(JSON.stringify(emptyResponse), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    console.log('📊 Processing grants with AI:', grants.length);
+    console.log('📊 Processing filtered grants with AI:', grants.length);
 
-    // Use AI scorer for all grants
+    // Use AI scorer for filtered grants
     const scorer = new EnhancedGrantScorer(openAIApiKey);
     const scoredGrants = await scorer.scoreAllGrants(query, grants);
 
@@ -75,7 +85,7 @@ serve(async (req) => {
 
     const response: MatchingResponse = {
       rankedGrants: finalSortedGrants,
-      explanation: `AI analysis completed - analyzed ${finalSortedGrants.length} grants using contextual understanding and semantic matching`
+      explanation: `AI analysis completed - analyzed ${finalSortedGrants.length} grants from ${relevantSectors?.length || 0} relevant sectors`
     };
 
     console.log(`✅ AI grants matching completed - scored grants: ${finalSortedGrants.length}`);

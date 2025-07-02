@@ -13,6 +13,11 @@ export interface GrantsMatchingResult {
   explanation: string;
 }
 
+export interface SectorMatchingResult {
+  relevantSectors: string[];
+  explanation: string;
+}
+
 export const useGrantsMatchingEngine = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [matchingError, setMatchingError] = useState<string | null>(null);
@@ -26,26 +31,49 @@ export const useGrantsMatchingEngine = () => {
     setMatchingError(null);
 
     try {
-      console.log('🔍 Starting grants matching for query:', query);
+      console.log('🔍 Starting two-step grants matching for query:', query);
 
-      const { data, error } = await supabase.functions.invoke('grants-matching-engine', {
+      // Step 1: Get relevant sectors
+      console.log('📋 Step 1: Identifying relevant sectors...');
+      const { data: sectorData, error: sectorError } = await supabase.functions.invoke('sector-matching', {
         body: { query: query.trim() }
       });
 
-      if (error) {
-        throw new Error(error.message);
+      if (sectorError) {
+        throw new Error(`Sector matching failed: ${sectorError.message}`);
       }
 
-      if (!data) {
-        throw new Error('No response from grants matching service');
+      if (!sectorData || !sectorData.relevantSectors) {
+        throw new Error('No sector data received');
       }
 
-      console.log('✅ Grants matching completed:', {
-        rankedCount: data.rankedGrants?.length || 0,
-        explanation: data.explanation
+      const relevantSectors = sectorData.relevantSectors;
+      console.log('✅ Step 1 completed - relevant sectors:', relevantSectors);
+
+      // Step 2: Match grants within relevant sectors
+      console.log('🎯 Step 2: Matching grants within relevant sectors...');
+      const { data: matchingData, error: matchingError } = await supabase.functions.invoke('grants-matching-engine', {
+        body: { 
+          query: query.trim(),
+          relevantSectors: relevantSectors
+        }
       });
 
-      return data as GrantsMatchingResult;
+      if (matchingError) {
+        throw new Error(`Grant matching failed: ${matchingError.message}`);
+      }
+
+      if (!matchingData) {
+        throw new Error('No matching data received');
+      }
+
+      console.log('✅ Two-step grants matching completed:', {
+        sectorsCount: relevantSectors.length,
+        rankedCount: matchingData.rankedGrants?.length || 0,
+        explanation: matchingData.explanation
+      });
+
+      return matchingData as GrantsMatchingResult;
 
     } catch (error) {
       console.error('❌ AI search failed:', error);
