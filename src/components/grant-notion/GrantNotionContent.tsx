@@ -1,4 +1,3 @@
-
 import React from "react";
 import { FileText, ExternalLink } from "lucide-react";
 import { Grant } from "@/types/grant";
@@ -19,7 +18,22 @@ const GrantNotionContent = ({
     const urlMatch = fileName.match(/https?:\/\/[^\s]+/);
     if (urlMatch) {
       console.log('Found direct URL:', urlMatch[0]);
-      window.open(urlMatch[0], '_blank', 'noopener,noreferrer');
+      // For direct URLs, try to download if it's a file, otherwise open
+      const url = urlMatch[0];
+      const downloadableExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip', '.rar', '.txt', '.csv'];
+      const hasDownloadableExtension = downloadableExtensions.some(ext => url.toLowerCase().includes(ext));
+      
+      if (hasDownloadableExtension) {
+        // Create a temporary link to trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName.split('/').pop() || 'document';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
     
@@ -31,16 +45,49 @@ const GrantNotionContent = ({
       return;
     }
     
-    // Check if it's a downloadable file by extension
+    // Check if it's a downloadable file by extension - try direct download first
     const downloadableExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.zip', '.rar', '.txt', '.csv'];
     const hasDownloadableExtension = downloadableExtensions.some(ext => fileName.toLowerCase().includes(ext));
     
     if (hasDownloadableExtension) {
-      // Try to construct a direct download URL or search for it
-      const searchTerm = encodeURIComponent(fileName);
-      const searchUrl = `https://www.google.com/search?q=${searchTerm}+filetype:${fileName.split('.').pop()?.toLowerCase() || 'pdf'}+site:vinnova.se`;
-      console.log('Searching for downloadable file:', searchUrl);
-      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      // Try to construct potential direct download URLs from common Swedish grant organizations
+      const potentialUrls = [
+        `https://www.vinnova.se/contentassets/${fileName}`,
+        `https://www.vinnova.se/globalassets/${fileName}`,
+        `https://www.vinnova.se/upload/${fileName}`,
+        `https://www.energimyndigheten.se/contentassets/${fileName}`,
+        `https://www.tillvaxtverket.se/download/${fileName}`,
+        `https://www.formas.se/contentassets/${fileName}`
+      ];
+      
+      // Try each potential URL
+      let downloadAttempted = false;
+      for (const url of potentialUrls) {
+        try {
+          // Create a temporary link to trigger download
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          downloadAttempted = true;
+          console.log('Attempted download from:', url);
+          break;
+        } catch (error) {
+          console.log('Failed to download from:', url);
+          continue;
+        }
+      }
+      
+      // If direct download attempts fail, fall back to search
+      if (!downloadAttempted) {
+        const searchTerm = encodeURIComponent(fileName);
+        const searchUrl = `https://www.google.com/search?q=${searchTerm}+filetype:${fileName.split('.').pop()?.toLowerCase() || 'pdf'}+site:vinnova.se`;
+        console.log('Fallback: Searching for downloadable file:', searchUrl);
+        window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
     
