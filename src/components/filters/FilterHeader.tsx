@@ -19,7 +19,7 @@ export const FilterHeader = ({
 }: FilterHeaderProps) => {
   return <div style={{
     borderColor: '#F0F1F3'
-  }} className="rounded-none py-[2px] bg-[F0F1F3] border bg-[#f0f1f3] px-[30px]">
+  }} className="rounded-none py-[2px] bg-[F0F1F3] border bg-[#f0f1f3] pl-30 pr-0 ">
       <div className="flex items-center justify-between py-px bg-[#f0f1f3] rounded-none">
         <Button variant="ghost" size="sm" onClick={onToggleExpanded} className="flex items-center gap-2 text-gray-900 hover:text-gray-700 hover:bg-gray-50 p-0 h-auto font-normal text-xs">
           <Filter className="w-4 h-4" />
