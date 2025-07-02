@@ -20,8 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Newsreader', 'ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-				newsreader: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
+				sans: ['Poppins', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
+				poppins: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
 			},
 			fontSize: {
 				'headline': ['clamp(34px, 4vw, 60px)', { lineHeight: '1.2' }],

@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { Mic, Upload, Square, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -52,12 +53,12 @@ const ChatInput = ({
           <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" onChange={onFileSelect} className="hidden" />
           
           {/* Text Input Field */}
-          <Input placeholder="Beskriv ditt projekt eller verksamhet för att hitta passande bidrag..." className="flex-1 border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 font-newsreader" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={handleKeyPress} disabled={isProcessing || isAISearching} />
+          <Input placeholder="Beskriv ditt projekt eller verksamhet för att hitta passande bidrag..." className="flex-1 border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 font-poppins" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={handleKeyPress} disabled={isProcessing || isAISearching} />
 
           {/* AI Search Indicator */}
           {(isProcessing || isAISearching) && <div className="flex items-center gap-2 text-blue-600 flex-shrink-0">
               <Sparkles className="w-5 h-5 animate-pulse" />
-              <span className="text-sm font-medium">
+              <span className="text-sm font-medium font-poppins">
                 {isAISearching ? 'AI analyserar...' : 'Bearbetar...'}
               </span>
             </div>}

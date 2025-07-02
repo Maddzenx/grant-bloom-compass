@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -103,15 +103,13 @@
 
 @layer base {
   body {
-    @apply bg-canvas-cloud text-ink-obsidian font-newsreader;
+    @apply bg-canvas-cloud text-ink-obsidian font-poppins;
     font-size: 18px;
     line-height: 1.55;
-    font-optical-sizing: auto;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-newsreader font-normal;
-    font-optical-sizing: auto;
+    @apply font-poppins font-normal;
   }
 
   h1 {
@@ -130,9 +128,8 @@
   }
 
   button {
-    @apply font-newsreader font-medium;
+    @apply font-poppins font-medium;
     font-size: 20px;
-    font-optical-sizing: auto;
   }
 }
 
@@ -204,19 +201,19 @@
   .headline {
     font-size: clamp(34px, 4vw, 60px);
     line-height: 1.2;
-    @apply font-newsreader font-normal;
+    @apply font-poppins font-normal;
   }
 
   .body-text {
-    @apply text-lg leading-relaxed font-newsreader;
+    @apply text-lg leading-relaxed font-poppins;
   }
 
   .btn-primary {
-    @apply bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime font-newsreader font-medium text-xl px-6 py-3 rounded-lg transition-colors;
+    @apply bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime font-poppins font-medium text-xl px-6 py-3 rounded-lg transition-colors;
   }
 
   .btn-secondary {
-    @apply border border-accent-lavender bg-transparent text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender font-newsreader font-medium text-xl px-6 py-3 rounded-lg transition-colors;
+    @apply border border-accent-lavender bg-transparent text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender font-poppins font-medium text-xl px-6 py-3 rounded-lg transition-colors;
   }
 
   /* Motion preferences */
