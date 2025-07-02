@@ -1,91 +1,67 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,opsz,wght@0,6..72,100..900;1,6..72,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
+/* Design System & Color Palette */
 @layer base {
   :root {
-    /* New 4-color semantic palette with updated accents */
     --canvas-cloud: #F0F1F3;
     --accent-lime: #D1F364;
     --accent-lavender: #CEC5F9;
     --ink-obsidian: #000000;
     --ink-secondary: #333333;
-
-    /* Updated design tokens using the new palette */
-    --background: 240 241 243; /* canvas-cloud */
-    --foreground: 0 0 0; /* ink-obsidian */
-
-    --card: 255 255 255; /* keep white for cards */
-    --card-foreground: 0 0 0; /* ink-obsidian */
-
-    --popover: 255 255 255; /* keep white for popovers */
-    --popover-foreground: 0 0 0; /* ink-obsidian */
-
-    --primary: 209 243 100; /* accent-lime */
-    --primary-foreground: 0 0 0; /* ink-obsidian */
-
-    --secondary: 206 197 249; /* accent-lavender */
-    --secondary-foreground: 0 0 0; /* ink-obsidian */
-
-    --muted: 240 241 243; /* canvas-cloud */
-    --muted-foreground: 51 51 51; /* ink-secondary */
-
-    --accent: 209 243 100; /* accent-lime */
-    --accent-foreground: 0 0 0; /* ink-obsidian */
-
-    --destructive: 0 84.2% 60.2%; /* keep existing error colors */
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 206 197 249; /* accent-lavender */
-    --input: 206 197 249; /* accent-lavender */
-    --ring: 209 243 100; /* accent-lime */
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 255 255 255; /* keep white for sidebar */
-    --sidebar-foreground: 0 0 0; /* ink-obsidian */
-    --sidebar-primary: 206 197 249; /* accent-lavender */
-    --sidebar-primary-foreground: 0 0 0; /* ink-obsidian */
-    --sidebar-accent: 240 241 243; /* canvas-cloud */
-    --sidebar-accent-foreground: 0 0 0; /* ink-obsidian */
-    --sidebar-border: 206 197 249; /* accent-lavender */
-    --sidebar-ring: 209 243 100; /* accent-lime */
-  }
-
-  .dark {
-    --background: 0 0 0; /* ink-obsidian for dark mode */
-    --foreground: 240 241 243; /* canvas-cloud for dark mode */
-
-    --card: 0 0 0;
-    --card-foreground: 240 241 243;
-
-    --popover: 0 0 0;
-    --popover-foreground: 240 241 243;
-
-    --primary: 209 243 100; /* accent-lime */
-    --primary-foreground: 0 0 0; /* ink-obsidian */
-
-    --secondary: 206 197 249; /* accent-lavender */
-    --secondary-foreground: 240 241 243;
-
-    --muted: 0 0 0;
-    --muted-foreground: 240 241 243;
-
+    --background: 240 241 243;
+    --foreground: 0 0 0;
+    --card: 255 255 255;
+    --card-foreground: 0 0 0;
+    --popover: 255 255 255;
+    --popover-foreground: 0 0 0;
+    --primary: 209 243 100;
+    --primary-foreground: 0 0 0;
+    --secondary: 206 197 249;
+    --secondary-foreground: 0 0 0;
+    --muted: 240 241 243;
+    --muted-foreground: 51 51 51;
     --accent: 209 243 100;
     --accent-foreground: 0 0 0;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 240 241 243;
-
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
     --border: 206 197 249;
     --input: 206 197 249;
     --ring: 209 243 100;
+    --radius: 0.5rem;
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 0 0 0;
+    --sidebar-primary: 206 197 249;
+    --sidebar-primary-foreground: 0 0 0;
+    --sidebar-accent: 240 241 243;
+    --sidebar-accent-foreground: 0 0 0;
+    --sidebar-border: 206 197 249;
+    --sidebar-ring: 209 243 100;
+  }
 
+  .dark {
+    --background: 0 0 0;
+    --foreground: 240 241 243;
+    --card: 0 0 0;
+    --card-foreground: 240 241 243;
+    --popover: 0 0 0;
+    --popover-foreground: 240 241 243;
+    --primary: 209 243 100;
+    --primary-foreground: 0 0 0;
+    --secondary: 206 197 249;
+    --secondary-foreground: 240 241 243;
+    --muted: 0 0 0;
+    --muted-foreground: 240 241 243;
+    --accent: 209 243 100;
+    --accent-foreground: 0 0 0;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 240 241 243;
+    --border: 206 197 249;
+    --input: 206 197 249;
+    --ring: 209 243 100;
     --sidebar-background: 0 0 0;
     --sidebar-foreground: 240 241 243;
     --sidebar-primary: 206 197 249;
@@ -103,14 +79,15 @@
 
 @layer base {
   body {
-    @apply bg-canvas-cloud text-ink-obsidian font-poppins;
+    @apply bg-canvas-cloud text-ink-obsidian font-newsreader;
     font-size: 18px;
     line-height: 1.55;
     font-optical-sizing: auto;
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-poppins font-normal;
+    @apply font-newsreader font-normal;
     font-optical-sizing: auto;
   }
 
@@ -130,69 +107,46 @@
   }
 
   button {
-    @apply font-poppins font-medium;
+    @apply font-newsreader font-medium;
     font-size: 20px;
     font-optical-sizing: auto;
   }
 }
 
-/* Custom utility classes for the new palette */
+/* Utility Classes */
 @layer utilities {
-  .bg-canvas-cloud {
-    background-color: #F0F1F3;
+  .bg-canvas-cloud { background-color: #F0F1F3; }
+  .bg-accent-lime { background-color: #D1F364; }
+  .bg-accent-lavender { background-color: #CEC5F9; }
+  .bg-accent-lavender-10 { background-color: rgba(206, 197, 249, 0.1); }
+  .bg-ink-obsidian { background-color: #000000; }
+  .text-canvas-cloud { color: #F0F1F3; }
+  .text-accent-lime { color: #D1F364; }
+  .text-accent-lavender { color: #CEC5F9; }
+  .text-ink-obsidian { color: #000000; }
+  .text-ink-secondary { color: #333333; }
+  .border-accent-lime { border-color: #D1F364; }
+  .border-accent-lavender { border-color: #CEC5F9; }
+
+  /* --- CONTAINER FOR WHITESPACE --- */
+  .page-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: 100%;
+    box-sizing: border-box;
   }
-  
-  .bg-accent-lime {
-    background-color: #D1F364;
-  }
-  
-  .bg-accent-lavender {
-    background-color: #CEC5F9;
-  }
-  
-  .bg-accent-lavender-10 {
-    background-color: rgba(206, 197, 249, 0.1);
-  }
-  
-  .bg-ink-obsidian {
-    background-color: #000000;
-  }
-  
-  .text-canvas-cloud {
-    color: #F0F1F3;
-  }
-  
-  .text-accent-lime {
-    color: #D1F364;
-  }
-  
-  .text-accent-lavender {
-    color: #CEC5F9;
-  }
-  
-  .text-ink-obsidian {
-    color: #000000;
-  }
-  
-  .text-ink-secondary {
-    color: #333333;
-  }
-  
-  .border-accent-lime {
-    border-color: #D1F364;
-  }
-  
-  .border-accent-lavender {
-    border-color: #CEC5F9;
+  @media (max-width: 768px) {
+    .page-container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
   }
 
-  /* Page layout utilities */
   .page-section {
     @apply pt-28 pb-24;
-  }
-
-  .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   /* Highlight utility class - using Accent 1 for highlights */
@@ -200,26 +154,24 @@
     @apply bg-accent-lime px-2 py-1 rounded-sm;
   }
 
-  /* Typography utilities */
   .headline {
     font-size: clamp(34px, 4vw, 60px);
     line-height: 1.2;
-    @apply font-poppins font-normal;
+    @apply font-newsreader font-normal;
   }
 
   .body-text {
-    @apply text-lg leading-relaxed font-poppins;
+    @apply text-lg leading-relaxed font-newsreader;
   }
 
   .btn-primary {
-    @apply bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime font-poppins font-medium text-xl px-6 py-3 rounded-lg transition-colors;
+    @apply bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime font-newsreader font-medium text-xl px-6 py-3 rounded-lg transition-colors;
   }
 
   .btn-secondary {
-    @apply border border-accent-lavender bg-transparent text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender font-poppins font-medium text-xl px-6 py-3 rounded-lg transition-colors;
+    @apply border border-accent-lavender bg-transparent text-ink-obsidian hover:bg-accent-lavender/10 focus-visible:ring-accent-lavender font-newsreader font-medium text-xl px-6 py-3 rounded-lg transition-colors;
   }
 
-  /* Motion preferences */
   @media (prefers-reduced-motion: reduce) {
     * {
       animation-duration: 0.01ms !important;
@@ -229,7 +181,7 @@
   }
 }
 
-/* Cloud background pattern (if used on home) */
+/* Optional: Cloud background pattern */
 @layer components {
   .cloud-bg {
     background: 
