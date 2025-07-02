@@ -59,21 +59,23 @@ export const DiscoverGrantsContent = ({
 
   return (
     <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden">
-      {/* Enhanced Search Header */}
-      <DiscoverHeader
-        searchTerm={searchTerm}
-        onSearchChange={onSearchChange}
-        onSearch={onSearch}
-        sortBy={sortBy}
-        onSortChange={onSortChange}
-        totalGrants={searchResults.length}
-        suggestions={suggestions}
-        isSearching={isSearching}
-        searchMetrics={searchMetrics}
-      />
+      {/* Enhanced Search Header with horizontal padding */}
+      <div className="px-4 sm:px-6 lg:px-8">
+        <DiscoverHeader
+          searchTerm={searchTerm}
+          onSearchChange={onSearchChange}
+          onSearch={onSearch}
+          sortBy={sortBy}
+          onSortChange={onSortChange}
+          totalGrants={searchResults.length}
+          suggestions={suggestions}
+          isSearching={isSearching}
+          searchMetrics={searchMetrics}
+        />
+      </div>
 
-      {/* Enhanced Filter Controls */}
-      <div className="bg-accent-lavender-10 border-b border-accent-lavender">
+      {/* Enhanced Filter Controls with horizontal padding */}
+      <div className="bg-accent-lavender-10 border-b border-accent-lavender px-4 sm:px-6 lg:px-8">
         <EnhancedFilterControls
           filters={filters}
           onFiltersChange={onFiltersChange}
@@ -84,54 +86,62 @@ export const DiscoverGrantsContent = ({
         />
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Main Content Area with horizontal padding */}
+      <div className="flex flex-1 overflow-hidden px-4 sm:px-6 lg:px-8">
         {/* Mobile Layout */}
         {isMobile ? (
           <>
             {/* Show list when not viewing details */}
             {!showDetails && (
-              <GrantList
-                grants={searchResults}
-                selectedGrant={selectedGrant}
-                onGrantSelect={onGrantSelect}
-                onToggleBookmark={onToggleBookmark}
-                searchTerm={searchTerm}
-                isMobile={true}
-                aiMatches={aiMatches}
-              />
+              <div className="w-full">
+                <GrantList
+                  grants={searchResults}
+                  selectedGrant={selectedGrant}
+                  onGrantSelect={onGrantSelect}
+                  onToggleBookmark={onToggleBookmark}
+                  searchTerm={searchTerm}
+                  isMobile={true}
+                  aiMatches={aiMatches}
+                />
+              </div>
             )}
 
             {/* Show details when viewing a grant */}
             {showDetails && selectedGrant && (
-              <GrantDetailsPanel
-                selectedGrant={selectedGrant}
-                onToggleBookmark={onToggleBookmark}
-                isMobile={true}
-                onBackToList={onBackToList}
-              />
+              <div className="w-full">
+                <GrantDetailsPanel
+                  selectedGrant={selectedGrant}
+                  onToggleBookmark={onToggleBookmark}
+                  isMobile={true}
+                  onBackToList={onBackToList}
+                />
+              </div>
             )}
           </>
         ) : (
           /* Desktop Layout */
           <>
             {/* Left Panel - Grant List */}
-            <GrantList
-              grants={searchResults}
-              selectedGrant={selectedGrant}
-              onGrantSelect={onGrantSelect}
-              onToggleBookmark={onToggleBookmark}
-              searchTerm={searchTerm}
-              isMobile={false}
-              aiMatches={aiMatches}
-            />
+            <div className="flex-1">
+              <GrantList
+                grants={searchResults}
+                selectedGrant={selectedGrant}
+                onGrantSelect={onGrantSelect}
+                onToggleBookmark={onToggleBookmark}
+                searchTerm={searchTerm}
+                isMobile={false}
+                aiMatches={aiMatches}
+              />
+            </div>
 
             {/* Right Panel - Grant Details */}
-            <GrantDetailsPanel
-              selectedGrant={selectedGrant}
-              onToggleBookmark={onToggleBookmark}
-              isMobile={false}
-            />
+            <div className="flex-1">
+              <GrantDetailsPanel
+                selectedGrant={selectedGrant}
+                onToggleBookmark={onToggleBookmark}
+                isMobile={false}
+              />
+            </div>
           </>
         )}
       </div>
