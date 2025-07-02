@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
 import { Calendar, Bookmark } from "lucide-react";
@@ -142,9 +141,9 @@ const GrantCard = ({
           {grant.title}
         </h3>
 
-        {/* Description */}
+        {/* Description - now showing aboutGrant which contains subtitle from database */}
         <p className="text-xs text-ink-obsidian/70 line-clamp-2 leading-relaxed">
-          {grant.description}
+          {grant.aboutGrant}
         </p>
 
         {/* Footer with funding and deadline */}
