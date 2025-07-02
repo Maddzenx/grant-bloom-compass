@@ -32,10 +32,18 @@ serve(async (req) => {
     }
 
     if (!openAIApiKey) {
-      console.error('OpenAI API key not configured - using fallback matching');
+      console.error('OpenAI API key not configured');
+      const errorResponse: MatchingResponse = {
+        rankedGrants: [],
+        explanation: 'AI search failed - please try again'
+      };
+      return new Response(JSON.stringify(errorResponse), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    console.log('🔍 Enhanced Grants Matching Engine - Query:', query);
+    console.log('🔍 AI Grants Matching Engine - Query:', query);
 
     // Fetch ALL grants from the database
     const { data: grants, error: grantsError } = await supabase
@@ -56,53 +64,32 @@ serve(async (req) => {
       });
     }
 
-    console.log('📊 Processing grants with enhanced AI:', grants.length);
+    console.log('📊 Processing grants with AI:', grants.length);
 
-    // Use enhanced scorer with improved AI capabilities
-    const scorer = new EnhancedGrantScorer(openAIApiKey || 'fallback');
+    // Use AI scorer for all grants
+    const scorer = new EnhancedGrantScorer(openAIApiKey);
     const scoredGrants = await scorer.scoreAllGrants(query, grants);
 
-    // Ensure comprehensive coverage
-    const allGrantIds = new Set(grants.map(g => g.id));
-    const scoredGrantIds = new Set(scoredGrants.map(sg => sg.grantId));
-    
-    const missingGrants = grants.filter(g => !scoredGrantIds.has(g.id));
-    if (missingGrants.length > 0) {
-      console.log(`⚠️ Found ${missingGrants.length} grants without scores - adding enhanced fallback scores`);
-      
-      for (const grant of missingGrants) {
-        const enhancedScore = await scorer.getFallbackScore(query, grant);
-        scoredGrants.push({
-          grantId: grant.id,
-          relevanceScore: enhancedScore / 100,
-          matchingReasons: [`Enhanced semantic analysis: ${enhancedScore}/100`]
-        });
-      }
-    }
-
-    // Final sort with enhanced ranking
+    // Sort by relevance score
     const finalSortedGrants = scoredGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
 
     const response: MatchingResponse = {
       rankedGrants: finalSortedGrants,
-      explanation: `Enhanced AI analysis completed - analyzed ${finalSortedGrants.length} grants using contextual understanding and semantic matching`
+      explanation: `AI analysis completed - analyzed ${finalSortedGrants.length} grants using contextual understanding and semantic matching`
     };
 
-    console.log(`✅ Enhanced grants matching completed - scored all grants: ${finalSortedGrants.length}`);
+    console.log(`✅ AI grants matching completed - scored grants: ${finalSortedGrants.length}`);
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in enhanced grants-matching-engine:', error);
+    console.error('Error in grants-matching-engine:', error);
     const errorResponse: MatchingResponse = {
       rankedGrants: [],
-      explanation: 'Enhanced matching temporarily unavailable - please try again'
+      explanation: 'AI search failed - please try again'
     };
-    return new Response(JSON.stringify({ 
-      error: error.message,
-      ...errorResponse
-    }), {
+    return new Response(JSON.stringify(errorResponse), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -26,7 +26,7 @@ export const useGrantsMatchingEngine = () => {
     setMatchingError(null);
 
     try {
-      console.log('🔍 Starting structured grants matching for query:', query);
+      console.log('🔍 Starting grants matching for query:', query);
 
       const { data, error } = await supabase.functions.invoke('grants-matching-engine', {
         body: { query: query.trim() }
@@ -48,9 +48,14 @@ export const useGrantsMatchingEngine = () => {
       return data as GrantsMatchingResult;
 
     } catch (error) {
-      console.error('❌ Grants matching failed:', error);
-      setMatchingError(error instanceof Error ? error.message : 'Grants matching failed');
-      return null;
+      console.error('❌ AI search failed:', error);
+      setMatchingError('AI search failed - please try again');
+      
+      // Return empty result with error message
+      return {
+        rankedGrants: [],
+        explanation: 'AI search failed - please try again'
+      };
     } finally {
       setIsMatching(false);
     }
