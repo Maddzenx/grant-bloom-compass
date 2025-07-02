@@ -25,77 +25,96 @@ const GrantDetailsPanel = ({
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
-  const {
-    isGrantSaved
-  } = useSavedGrantsContext();
+  const { isGrantSaved } = useSavedGrantsContext();
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollArea = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-      if (!scrollArea) return;
-      const currentScrollY = scrollArea.scrollTop;
-      const scrollingDown = currentScrollY > lastScrollY.current;
-      const hasScrolledPastThreshold = currentScrollY > 150;
-      const isNearTop = currentScrollY < 50;
-      console.log('Scroll data:', {
-        currentScrollY,
-        scrollingDown,
-        hasScrolledPastThreshold,
-        isNearTop,
-        showStickyHeader
-      });
+      const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+      if (!viewport) return;
+      const currentY = viewport.scrollTop;
+      const scrollingDown = currentY > lastScrollY.current;
+      const pastThreshold = currentY > 150;
+      const nearTop = currentY < 50;
 
-      // Show sticky header when scrolling down and past threshold
-      if (scrollingDown && hasScrolledPastThreshold && !showStickyHeader) {
+      if (scrollingDown && pastThreshold && !showStickyHeader) {
         setShowStickyHeader(true);
-      }
-      // Hide sticky header when near the top
-      else if (isNearTop && showStickyHeader) {
+      } else if (nearTop && showStickyHeader) {
         setShowStickyHeader(false);
       }
-      lastScrollY.current = currentScrollY;
+      lastScrollY.current = currentY;
     };
-    const scrollArea = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollArea) {
-      scrollArea.addEventListener('scroll', handleScroll);
-      return () => scrollArea.removeEventListener('scroll', handleScroll);
-    }
+
+    const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    viewport?.addEventListener("scroll", handleScroll);
+    return () => viewport?.removeEventListener("scroll", handleScroll);
   }, [showStickyHeader]);
 
-  // Reset sticky header when grant changes
   useEffect(() => {
     setShowStickyHeader(false);
     lastScrollY.current = 0;
   }, [selectedGrant?.id]);
 
-  const containerClass = isMobile ? "w-full bg-canvas-cloud overflow-hidden relative" : "w-[65%] bg-canvas-cloud overflow-hidden relative";
+  // containerClass still uses the global canvas background
+  const containerClass = isMobile
+    ? "w-full bg-canvas-cloud overflow-hidden relative"
+    : "w-[65%] bg-canvas-cloud overflow-hidden relative";
 
-  return <div className={containerClass}>
-      {/* Mobile Back Button */}
-      {isMobile && selectedGrant && onBackToList && <div className="sticky top-0 z-20 bg-canvas-cloud p-3">
-          <Button variant="ghost" size="sm" onClick={onBackToList} className="flex items-center gap-2">
+  return (
+    <div className={containerClass}>
+      {isMobile && selectedGrant && onBackToList && (
+        <div className="sticky top-0 z-20 bg-[#f0f1f3] p-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBackToList}
+            className="flex items-center gap-2"
+          >
             <ArrowLeft className="w-4 h-4" />
             Tillbaka till listan
           </Button>
-        </div>}
-      
-      {selectedGrant ? <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
-          <div className="px-0 py-1 md:p-1 bg-canvas-cloud relative bg-[#f0f1f3] pl-0 pr-10">
-            {/* Enhanced Sticky Header positioned within the white content area */}
-            {selectedGrant && <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${showStickyHeader ? 'opacity-100 transform translate-y-0 shadow-lg' : 'opacity-0 transform -translate-y-4 pointer-events-none'}`}>
-                <GrantStickyHeader grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} isMobile={isMobile} />
-              </div>}
-            
+        </div>
+      )}
+
+      {selectedGrant ? (
+        <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
+          <div className="relative bg-[#f0f1f3] px-0 py-1 md:px-1 md:py-1 pl-0 pr-10">
+            {selectedGrant && (
+              <div
+                className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${
+                  showStickyHeader
+                    ? "opacity-100 translate-y-0 shadow-lg"
+                    : "opacity-0 -translate-y-4 pointer-events-none"
+                }`}
+              >
+                <GrantStickyHeader
+                  grant={selectedGrant}
+                  isBookmarked={isGrantSaved(selectedGrant.id)}
+                  onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
+                  orgLogo={getOrganizationLogo(selectedGrant.organization)}
+                  isMobile={isMobile}
+                />
+              </div>
+            )}
+
             <div className="bg-white rounded-lg">
-              <GrantDetails grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} isMobile={isMobile} />
+              <GrantDetails
+                grant={selectedGrant}
+                isBookmarked={isGrantSaved(selectedGrant.id)}
+                onToggleBookmark={() => onToggleBookmark(selectedGrant.id)}
+                isMobile={isMobile}
+              />
             </div>
           </div>
-        </ScrollArea> : <div className="flex items-center justify-center h-full p-4">
+        </ScrollArea>
+      ) : (
+        <div className="flex items-center justify-center h-full p-4">
           <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
             <EmptyGrantDetails />
           </div>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default GrantDetailsPanel;
