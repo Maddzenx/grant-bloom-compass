@@ -52,18 +52,40 @@ serve(async (req) => {
       });
     }
 
+    console.log('🎯 Sector matching for query:', query);
+
+    // Fallback sector matching for common terms
+    const fallbackMatching = (searchQuery: string): string[] => {
+      const lowerQuery = searchQuery.toLowerCase();
+      const matches: string[] = [];
+      
+      // Simple keyword matching for common Swedish terms
+      if (lowerQuery.includes('hav') || lowerQuery.includes('marin') || lowerQuery.includes('ocean')) {
+        matches.push('Hav, marin miljö & blå ekonomi');
+      }
+      if (lowerQuery.includes('ai') || lowerQuery.includes('digital')) {
+        matches.push('Digitalisering, automatisering & AI');
+      }
+      if (lowerQuery.includes('energi') || lowerQuery.includes('klimat')) {
+        matches.push('Energi, klimat & hållbar utveckling');
+      }
+      if (lowerQuery.includes('transport') || lowerQuery.includes('mobilitet')) {
+        matches.push('Transport, mobilitet & logistik');
+      }
+      
+      return matches.length > 0 ? matches : ['Övrigt & tvärsektoriella satsningar'];
+    };
+
     if (!openAIApiKey) {
-      console.error('OpenAI API key not configured');
+      console.log('⚠️ OpenAI API key not configured, using fallback matching');
+      const fallbackSectors = fallbackMatching(query);
       return new Response(JSON.stringify({ 
-        error: 'Sector matching failed - please try again',
-        relevantSectors: []
+        relevantSectors: fallbackSectors,
+        explanation: `Found ${fallbackSectors.length} relevant sectors using keyword matching`
       }), {
-        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
-    console.log('🎯 Sector matching for query:', query);
 
     const prompt = `You are an expert at categorizing business needs and research queries into relevant industry sectors.
 
@@ -82,68 +104,83 @@ Instructions:
 Example response format:
 ["Digitalisering, automatisering & AI", "Energi, klimat & hållbar utveckling"]`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'You are an expert sector classifier. Always respond with valid JSON array of sector names.' 
-          },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.1,
-        max_tokens: 500,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`OpenAI API error: ${response.status} ${errorText}`);
-      throw new Error('Sector matching failed');
-    }
-
-    const aiData = await response.json();
-    const sectorsText = aiData.choices[0].message.content.trim();
-    
-    let relevantSectors: string[] = [];
     try {
-      relevantSectors = JSON.parse(sectorsText);
-      
-      // Validate that all returned sectors are in our list
-      relevantSectors = relevantSectors.filter(sector => 
-        INDUSTRY_SECTORS.includes(sector)
-      );
-      
-      // Ensure we have at least some sectors
-      if (relevantSectors.length === 0) {
-        relevantSectors = ['Övrigt & tvärsektoriella satsningar'];
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are an expert sector classifier. Always respond with valid JSON array of sector names.' 
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.1,
+          max_tokens: 500,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`OpenAI API error: ${response.status} ${errorText}`);
+        throw new Error('OpenAI API failed');
       }
+
+      const aiData = await response.json();
+      const sectorsText = aiData.choices[0].message.content.trim();
       
-    } catch (parseError) {
-      console.error('Failed to parse sector response:', sectorsText);
-      relevantSectors = ['Övrigt & tvärsektoriella satsningar'];
+      let relevantSectors: string[] = [];
+      try {
+        relevantSectors = JSON.parse(sectorsText);
+        
+        // Validate that all returned sectors are in our list
+        relevantSectors = relevantSectors.filter(sector => 
+          INDUSTRY_SECTORS.includes(sector)
+        );
+        
+        // Ensure we have at least some sectors
+        if (relevantSectors.length === 0) {
+          throw new Error('No valid sectors returned');
+        }
+        
+      } catch (parseError) {
+        console.error('Failed to parse AI response:', sectorsText);
+        throw new Error('Failed to parse AI response');
+      }
+
+      console.log(`✅ AI sector matching completed - found ${relevantSectors.length} relevant sectors:`, relevantSectors);
+
+      return new Response(JSON.stringify({ 
+        relevantSectors,
+        explanation: `AI identified ${relevantSectors.length} relevant sectors for targeted search`
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+
+    } catch (aiError) {
+      console.error('AI processing failed, using fallback:', aiError);
+      // Use fallback matching when AI fails
+      const fallbackSectors = fallbackMatching(query);
+      console.log(`🔧 Using fallback matching - found ${fallbackSectors.length} sectors:`, fallbackSectors);
+      
+      return new Response(JSON.stringify({ 
+        relevantSectors: fallbackSectors,
+        explanation: `Found ${fallbackSectors.length} relevant sectors using keyword matching (AI unavailable)`
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
-
-    console.log(`✅ Sector matching completed - found ${relevantSectors.length} relevant sectors:`, relevantSectors);
-
-    return new Response(JSON.stringify({ 
-      relevantSectors,
-      explanation: `Identified ${relevantSectors.length} relevant sectors for targeted search`
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
 
   } catch (error) {
     console.error('Error in sector-matching:', error);
     return new Response(JSON.stringify({ 
       error: 'Sector matching failed - please try again',
-      relevantSectors: []
+      relevantSectors: ['Övrigt & tvärsektoriella satsningar']
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

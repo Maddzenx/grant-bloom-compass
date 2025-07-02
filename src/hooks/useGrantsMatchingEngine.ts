@@ -33,25 +33,39 @@ export const useGrantsMatchingEngine = () => {
     try {
       console.log('🔍 Starting two-step grants matching for query:', query);
 
-      // Step 1: Get relevant sectors
+      // Step 1: Get relevant sectors with improved error handling
       console.log('📋 Step 1: Identifying relevant sectors...');
-      const { data: sectorData, error: sectorError } = await supabase.functions.invoke('sector-matching', {
-        body: { query: query.trim() }
-      });
-
-      if (sectorError) {
-        throw new Error(`Sector matching failed: ${sectorError.message}`);
+      
+      let sectorData;
+      try {
+        const { data, error } = await supabase.functions.invoke('sector-matching', {
+          body: { query: query.trim() }
+        });
+        
+        if (error) {
+          console.error('Sector matching error:', error);
+          throw new Error(`Sector matching failed: ${error.message}`);
+        }
+        
+        sectorData = data;
+      } catch (sectorError) {
+        console.error('Sector matching failed, proceeding without sector filtering:', sectorError);
+        // Continue with all sectors as fallback
+        sectorData = {
+          relevantSectors: [], // Empty array means no sector filtering
+          explanation: 'Using all sectors due to sector matching failure'
+        };
       }
 
-      if (!sectorData || !sectorData.relevantSectors) {
+      if (!sectorData) {
         throw new Error('No sector data received');
       }
 
-      const relevantSectors = sectorData.relevantSectors;
+      const relevantSectors = sectorData.relevantSectors || [];
       console.log('✅ Step 1 completed - relevant sectors:', relevantSectors);
 
-      // Step 2: Match grants within relevant sectors
-      console.log('🎯 Step 2: Matching grants within relevant sectors...');
+      // Step 2: Match grants within relevant sectors (or all grants if sector matching failed)
+      console.log('🎯 Step 2: Matching grants...');
       const { data: matchingData, error: matchingError } = await supabase.functions.invoke('grants-matching-engine', {
         body: { 
           query: query.trim(),
@@ -60,6 +74,7 @@ export const useGrantsMatchingEngine = () => {
       });
 
       if (matchingError) {
+        console.error('Grant matching error:', matchingError);
         throw new Error(`Grant matching failed: ${matchingError.message}`);
       }
 
@@ -77,12 +92,13 @@ export const useGrantsMatchingEngine = () => {
 
     } catch (error) {
       console.error('❌ AI search failed:', error);
-      setMatchingError('AI search failed - please try again');
+      const errorMessage = error instanceof Error ? error.message : 'AI search failed - please try again';
+      setMatchingError(errorMessage);
       
       // Return empty result with error message
       return {
         rankedGrants: [],
-        explanation: 'AI search failed - please try again'
+        explanation: errorMessage
       };
     } finally {
       setIsMatching(false);

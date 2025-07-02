@@ -1,4 +1,3 @@
-
 import { GrantCandidate, ScoredGrant } from './types.ts';
 import { buildEnhancedPrompt } from './enhancedPromptBuilder.ts';
 
@@ -35,7 +34,7 @@ export class EnhancedGrantScorer {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4.1-2025-04-14', // Using the flagship ChatGPT model
+          model: 'gpt-4o-mini',
           messages: [
             { 
               role: 'system', 
@@ -50,7 +49,7 @@ export class EnhancedGrantScorer {
             },
             { role: 'user', content: prompt }
           ],
-          temperature: 0.1, // Low temperature for consistent scoring
+          temperature: 0.1,
           max_tokens: 10,
         }),
       });
@@ -65,7 +64,7 @@ export class EnhancedGrantScorer {
       const scoreText = aiData.choices[0].message.content.trim();
       
       const score = this.parseScore(scoreText, grant.id);
-      this.cache.set(cacheKey, score); // Cache the result
+      this.cache.set(cacheKey, score);
       
       console.log(`✅ Enhanced scoring - Grant ${grant.id}: ${score}/100`);
       
@@ -196,7 +195,7 @@ export class EnhancedGrantScorer {
       'innovation', 'research', 'development', 'startup', 'sme', 'technology', 'digital',
       'sustainability', 'green', 'energy', 'health', 'ai', 'artificial', 'intelligence',
       'forskning', 'utveckling', 'innovation', 'teknik', 'digitalisering', 'hållbarhet',
-      'energi', 'hälsa', 'miljö', 'klimat'
+      'energi', 'hälsa', 'miljö', 'klimat', 'hav', 'marin'
     ]);
     return domainTerms.has(token);
   }
@@ -237,7 +236,7 @@ export class EnhancedGrantScorer {
     const scoredGrants: ScoredGrant[] = [];
     
     // Optimized batch processing with rate limiting
-    const batchSize = 3; // Smaller batches for better control
+    const batchSize = 3;
     for (let i = 0; i < grants.length; i += batchSize) {
       const batch = grants.slice(i, i + batchSize);
       console.log(`📦 Processing enhanced batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(grants.length/batchSize)}`);
