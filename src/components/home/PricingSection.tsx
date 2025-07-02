@@ -37,7 +37,7 @@ const PricingSection = () => {
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline with highlighted "Pri" */}
         <div className="text-center mb-16">
-          <h2 className="font-newsreader font-normal text-gray-900 leading-[1.15]" 
+          <h2 className="font-poppins font-normal text-gray-900 leading-[1.15]" 
               style={{ fontSize: 'clamp(38px, 6vw, 60px)' }}>
             <span className="relative inline-block">
               <span 
@@ -66,16 +66,16 @@ const PricingSection = () => {
               style={{ backgroundColor: plan.background }}
             >
               {/* Plan Name */}
-              <h3 className="font-newsreader font-normal text-[28px] text-gray-900 mb-6">
+              <h3 className="font-poppins font-normal text-[28px] text-gray-900 mb-6">
                 {plan.name}
               </h3>
               
               {/* Price */}
               <div className="mb-8">
-                <div className="font-newsreader font-semibold text-[38px] text-gray-900 leading-tight">
+                <div className="font-poppins font-semibold text-[38px] text-gray-900 leading-tight">
                   {plan.price}
                 </div>
-                <div className="font-newsreader font-normal text-[24px] text-gray-900">
+                <div className="font-poppins font-normal text-[24px] text-gray-900">
                   /month
                 </div>
               </div>
@@ -89,7 +89,7 @@ const PricingSection = () => {
                       style={{ backgroundColor: '#B3E93B' }}
                       aria-hidden="true"
                     />
-                    <span className="font-newsreader text-[18px] text-gray-800 opacity-80">
+                    <span className="font-poppins text-[18px] text-gray-800 opacity-80">
                       {feature}
                     </span>
                   </li>
@@ -98,7 +98,7 @@ const PricingSection = () => {
 
               {/* Subscribe Button */}
               <button 
-                className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-newsreader font-medium text-[20px] px-10 py-4 rounded-full transition-colors duration-200 w-full"
+                className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-poppins font-medium text-[20px] px-10 py-4 rounded-full transition-colors duration-200 w-full"
                 style={{ borderRadius: '999px' }}
               >
                 Subscribe

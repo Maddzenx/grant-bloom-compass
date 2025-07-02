@@ -15,7 +15,7 @@ const OrganizationTabs = () => {
       {organizationTabs.map((org, index) => (
         <button
           key={index}
-          className="px-4 py-2 bg-white/50 hover:bg-white/100 rounded-full font-newsreader font-medium text-gray-700 transition-all duration-200 hover:shadow-sm"
+          className="px-4 py-2 bg-white/50 hover:bg-white/100 rounded-full font-poppins font-medium text-gray-700 transition-all duration-200 hover:shadow-sm"
         >
           {org}
         </button>
