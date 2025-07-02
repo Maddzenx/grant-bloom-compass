@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
-
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
 }
-
 const GrantNotionHeader = ({
   grant,
   isBookmarked,
@@ -64,9 +62,7 @@ const GrantNotionHeader = ({
         </p>}
 
       {/* About Grant section (if different from description) */}
-      {grant.aboutGrant && grant.aboutGrant !== grant.description && <p className="text-gray-700 mb-6 leading-relaxed max-w-4xl text-sm">
-          {grant.aboutGrant}
-        </p>}
+      {grant.aboutGrant && grant.aboutGrant !== grant.description}
 
       {/* Action buttons */}
       <div className="flex items-center gap-3 mb-6">
@@ -80,5 +76,4 @@ const GrantNotionHeader = ({
       </div>
     </div>;
 };
-
 export default GrantNotionHeader;
