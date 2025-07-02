@@ -186,6 +186,8 @@ export type Database = {
           application_process: string | null
           application_templates_links: Json | null
           application_templates_names: Json | null
+          cofinancing_level: number | null
+          cofinancing_required: boolean | null
           consortium_requirement: string | null
           contact_email: string | null
           contact_name: string | null
@@ -205,10 +207,12 @@ export type Database = {
           information_webinar_dates: Json | null
           information_webinar_links: Json | null
           information_webinar_names: Json | null
+          is_original_source: boolean | null
           keywords: Json | null
           max_grant_per_project: number | null
           min_grant_per_project: number | null
           organisation: string | null
+          original_source_url: string | null
           original_url: string
           other_sources_links: Json | null
           other_sources_names: Json | null
@@ -224,8 +228,8 @@ export type Database = {
           project_start_date_min: string | null
           region: string | null
           scraped_at: string | null
+          search_description: string | null
           subtitle: string | null
-          support_level: number | null
           title: string | null
           total_funding_amount: number | null
           updated_at: string | null
@@ -237,6 +241,8 @@ export type Database = {
           application_process?: string | null
           application_templates_links?: Json | null
           application_templates_names?: Json | null
+          cofinancing_level?: number | null
+          cofinancing_required?: boolean | null
           consortium_requirement?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -256,10 +262,12 @@ export type Database = {
           information_webinar_dates?: Json | null
           information_webinar_links?: Json | null
           information_webinar_names?: Json | null
+          is_original_source?: boolean | null
           keywords?: Json | null
           max_grant_per_project?: number | null
           min_grant_per_project?: number | null
           organisation?: string | null
+          original_source_url?: string | null
           original_url: string
           other_sources_links?: Json | null
           other_sources_names?: Json | null
@@ -275,8 +283,8 @@ export type Database = {
           project_start_date_min?: string | null
           region?: string | null
           scraped_at?: string | null
+          search_description?: string | null
           subtitle?: string | null
-          support_level?: number | null
           title?: string | null
           total_funding_amount?: number | null
           updated_at?: string | null
@@ -288,6 +296,8 @@ export type Database = {
           application_process?: string | null
           application_templates_links?: Json | null
           application_templates_names?: Json | null
+          cofinancing_level?: number | null
+          cofinancing_required?: boolean | null
           consortium_requirement?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -307,10 +317,12 @@ export type Database = {
           information_webinar_dates?: Json | null
           information_webinar_links?: Json | null
           information_webinar_names?: Json | null
+          is_original_source?: boolean | null
           keywords?: Json | null
           max_grant_per_project?: number | null
           min_grant_per_project?: number | null
           organisation?: string | null
+          original_source_url?: string | null
           original_url?: string
           other_sources_links?: Json | null
           other_sources_names?: Json | null
@@ -326,8 +338,8 @@ export type Database = {
           project_start_date_min?: string | null
           region?: string | null
           scraped_at?: string | null
+          search_description?: string | null
           subtitle?: string | null
-          support_level?: number | null
           title?: string | null
           total_funding_amount?: number | null
           updated_at?: string | null
@@ -358,36 +370,6 @@ export type Database = {
           scraped_at?: string | null
           title?: string
           unique_identifier?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          company_name: string | null
-          company_type: string | null
-          created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          company_name?: string | null
-          company_type?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id: string
-          updated_at?: string
-        }
-        Update: {
-          company_name?: string | null
-          company_type?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string
         }
         Relationships: []
       }
