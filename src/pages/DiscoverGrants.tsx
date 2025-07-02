@@ -67,7 +67,7 @@ const DiscoverGrants = () => {
   } = useFilterState();
 
   // Use the same matching engine as the home page
-  const { searchGrants: searchWithMatchingEngine, isSearching: isMatchingEngineSearching } = useGrantsMatchingEngine();
+  const { matchGrants, isMatching } = useGrantsMatchingEngine();
 
   // Use matched grants if available, otherwise use all grants
   const baseGrants = matchedGrants || grants;
@@ -140,7 +140,7 @@ const DiscoverGrants = () => {
 
     console.log('🤖 Using matching engine search for:', searchTerm);
     try {
-      const result = await searchWithMatchingEngine(searchTerm);
+      const result = await matchGrants(searchTerm);
       console.log('🎯 Matching engine result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
@@ -296,7 +296,7 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={[]}
-      isSearching={isMatchingEngineSearching}
+      isSearching={isMatching}
       searchMetrics={{ totalResults: searchResults.length, searchTime: 0 }}
       aiMatches={aiMatches}
       onSearchChange={setSearchTerm}
