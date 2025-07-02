@@ -109,11 +109,7 @@ const EnhancedSearchBar = ({
               <X className="w-4 h-4" />
             </Button>}
         </div>
-        <Button 
-          onClick={onSearch}
-          disabled={!searchTerm.trim() || isSearching}
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 h-full"
-        >
+        <Button onClick={onSearch} disabled={!searchTerm.trim() || isSearching} className="rounded-xl h-full bg-[#d7cffc] text-slate-950 px-[21px] text-sm my-0 py-[10px]">
           {isSearching ? 'Söker...' : 'Search'}
         </Button>
       </div>
