@@ -66,6 +66,9 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
+  // Use the same matching engine as the home page
+  const { searchGrants: searchWithMatchingEngine, isSearching: isMatchingEngineSearching } = useGrantsMatchingEngine();
+
   // Use matched grants if available, otherwise use all grants
   const baseGrants = matchedGrants || grants;
 
@@ -126,10 +129,7 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseGrants, filters]);
 
-  // AI search functionality
-  const { searchGrants, isSearching } = useAIGrantSearch();
-
-  // Handle manual AI search trigger
+  // Use the matching engine search instead of the simple AI search
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
       console.log('⚠️ Empty search term, clearing AI matches');
@@ -138,22 +138,28 @@ const DiscoverGrants = () => {
       return;
     }
 
-    console.log('🤖 Manual AI search triggered for:', searchTerm);
+    console.log('🤖 Using matching engine search for:', searchTerm);
     try {
-      const result = await searchGrants(searchTerm);
-      console.log('🎯 AI search result:', result);
+      const result = await searchWithMatchingEngine(searchTerm);
+      console.log('🎯 Matching engine result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
-        console.log('✅ Setting AI matches from search result:', result.rankedGrants.length);
-        setAiMatches(result.rankedGrants);
+        console.log('✅ Setting AI matches from matching engine result:', result.rankedGrants.length);
+        // Convert matching engine results to AI matches format
+        const convertedMatches = result.rankedGrants.map(match => ({
+          grantId: match.grantId,
+          relevanceScore: match.relevanceScore,
+          matchingReasons: match.matchingReasons || []
+        }));
+        setAiMatches(convertedMatches);
         setSortBy("default");
       } else {
-        console.log('⚠️ No AI matches found, clearing existing matches');
+        console.log('⚠️ No matches found, clearing existing matches');
         setAiMatches(undefined);
         setSortBy("default");
       }
     } catch (error) {
-      console.error('❌ AI search failed:', error);
+      console.error('❌ Matching engine search failed:', error);
       // On error, still clear existing matches to show all grants
       setAiMatches(undefined);
       setSortBy("default");
@@ -290,7 +296,7 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={[]}
-      isSearching={isSearching}
+      isSearching={isMatchingEngineSearching}
       searchMetrics={{ totalResults: searchResults.length, searchTime: 0 }}
       aiMatches={aiMatches}
       onSearchChange={setSearchTerm}
