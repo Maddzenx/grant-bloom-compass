@@ -57,7 +57,7 @@ const GrantList = ({
   return <div className={containerClass}>
       <ScrollArea className="flex-1">
         <div className="bg-canvas-cloud w-full bg-[#f0f1f3] py-px px-[5px]">
-          <div className="space-y-2 pl-10 pr-0">
+          <div className="space-y-2 pl-9 pr-0">
             {grants.length === 0 ? <div className="text-center text-ink-secondary mt-12 px-4">
                 <div className="body-text">
                   {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}

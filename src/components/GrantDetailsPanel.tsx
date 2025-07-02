@@ -75,7 +75,7 @@ const GrantDetailsPanel = ({
         </div>}
       
       {selectedGrant ? <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
-          <div className="px-0 py-1 md:p-1 bg-canvas-cloud relative bg-[v#F0F1F3] bg-[#f0f1f3] pl-0 pr-32 ">
+          <div className="px-0 py-1 md:p-1 bg-canvas-cloud relative bg-[v#F0F1F3] bg-[#f0f1f3] pl-0 pr-32">
             {/* Enhanced Sticky Header positioned within the white content area */}
             {selectedGrant && <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${showStickyHeader ? 'opacity-100 transform translate-y-0 shadow-lg' : 'opacity-0 transform -translate-y-4 pointer-events-none'}`}>
                 <GrantStickyHeader grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} isMobile={isMobile} />
