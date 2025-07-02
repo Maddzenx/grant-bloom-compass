@@ -56,8 +56,8 @@ const GrantDetailsPanel = ({
 
   // containerClass still uses the global canvas background
   const containerClass = isMobile
-    ? "w-full bg-canvas-cloud overflow-hidden relative"
-    : "w-[65%] bg-canvas-cloud overflow-hidden relative";
+    ? "w-full bg-[#f0f1f3] overflow-hidden relative"
+    : "w-[65%] bg-[#f0f1f3] overflow-hidden relative";
 
   return (
     <div className={containerClass}>
