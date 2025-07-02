@@ -62,17 +62,11 @@ serve(async (req) => {
     const grantsForAI = grants.map(grant => ({
       id: grant.id,
       title: grant.title,
-      organisation: grant.organisation,
-      description: grant.description,
       subtitle: grant.subtitle,
-      eligibility: grant.eligibility,
+      description: grant.description,
+      search_description: grant.search_description,
       keywords: grant.keywords,
-      industry_sectors: grant.industry_sectors,
-      eligible_organisations: grant.eligible_organisations,
-      max_grant_per_project: grant.max_grant_per_project,
-      min_grant_per_project: grant.min_grant_per_project,
-      application_closing_date: grant.application_closing_date,
-      evaluation_criteria: grant.evaluation_criteria
+      industry_sectors: grant.industry_sectors
     }));
 
     const prompt = `You are an expert grant matching system. Given a user query and a list of available grants, analyze which grants best match the user's needs and rank them by relevance.
@@ -82,15 +76,14 @@ User Query: "${query}"
 Available Grants:
 ${JSON.stringify(grantsForAI, null, 2)}
 
-Please analyze the user query against all grant information including title, description, eligibility criteria, keywords, industry sectors, and other relevant fields. 
+Please analyze the user query against the grant information including title, subtitle, description, search_description, keywords, and industry_sectors. 
 
 Return a JSON response with the following structure:
 {
   "rankedGrants": [
     {
       "grantId": "grant_id_here",
-      "relevanceScore": 0.72,
-      "matchingReasons": ["reason 1", "reason 2"]
+      "relevanceScore": 0.72
     }
   ],
   "explanation": "Brief explanation of the matching process"
@@ -98,16 +91,13 @@ Return a JSON response with the following structure:
 
 Rules:
 - Rank ALL grants by relevance (0.00 to 1.00 score, with 2 digits precision)
-- Include specific reasons why each grant matches
 - Consider semantic similarity, not just keyword matching
-- Factor in eligibility, funding amounts, deadlines, and industry sectors
 - Be thorough in your analysis
 
 Consider:
 - Relevance to the user's project description
-- Eligibility match for their organization type
-- Focus area alignment
-- Funding purpose match`;
+- Focus area alignment based on keywords and industry sectors
+- Content match with title, subtitle, description, and search_description`;
 
 
 
@@ -153,8 +143,7 @@ Consider:
       parsedResponse = {
         rankedGrants: grantsForAI.map(grant => ({
           grantId: grant.id,
-          relevanceScore: 0.5,
-          matchingReasons: ['AI analysis temporarily unavailable']
+          relevanceScore: 0.5
         })),
         explanation: 'Using fallback matching due to AI response parsing error'
       };
