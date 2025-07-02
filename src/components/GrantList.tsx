@@ -4,6 +4,7 @@ import GrantCard from "@/components/GrantCard";
 import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
+
 interface GrantListProps {
   grants: Grant[];
   selectedGrant: Grant | null;
@@ -13,6 +14,7 @@ interface GrantListProps {
   isMobile: boolean;
   aiMatches?: AIGrantMatch[];
 }
+
 const GrantList = ({
   grants,
   selectedGrant,
@@ -54,9 +56,10 @@ const GrantList = ({
     });
     return map;
   }, [aiMatches]);
+
   return <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <div className="bg-canvas-cloud w-full bg-[#f0f1f3] py-px px-[5px] pl-10 pr-0">
+        <div className="w-full bg-[#f0f1f3] py-px px-[5px] pl-10 pr-0">
           <div className="space-y-2 pl-15 pr-0">
             {grants.length === 0 ? <div className="text-center text-ink-secondary mt-12 px-4">
                 <div className="body-text">
@@ -78,4 +81,5 @@ const GrantList = ({
       </ScrollArea>
     </div>;
 };
+
 export default GrantList;
