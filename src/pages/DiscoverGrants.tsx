@@ -26,6 +26,7 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [aiMatches, setAiMatches] = useState<AIGrantMatch[] | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
@@ -33,7 +34,8 @@ const DiscoverGrants = () => {
     isError,
     locationState: location.state,
     initialSearchTerm,
-    aiMatchesCount: aiMatches?.length || 0
+    aiMatchesCount: aiMatches?.length || 0,
+    searchTerm
   });
 
   // Check if we have structured matching results from navigation state
@@ -126,22 +128,39 @@ const DiscoverGrants = () => {
 
   // AI search functionality
   const { searchGrants, isSearching } = useAIGrantSearch();
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  
-  // Perform AI search when search term changes
-  useEffect(() => {
-    if (searchTerm.trim() && !location.state?.searchTerm) {
-      console.log('🤖 Performing AI search for:', searchTerm);
-      searchGrants(searchTerm).then(result => {
-        if (result?.rankedGrants) {
-          setAiMatches(result.rankedGrants);
-          setSortBy("default");
-        }
-      });
-    }
-  }, [searchTerm, searchGrants, location.state?.searchTerm]);
 
-  // Use filtered grants as search results (no local search algorithms)
+  // Handle manual AI search trigger
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      console.log('⚠️ Empty search term, clearing AI matches');
+      setAiMatches(undefined);
+      setSortBy("default");
+      return;
+    }
+
+    console.log('🤖 Manual AI search triggered for:', searchTerm);
+    try {
+      const result = await searchGrants(searchTerm);
+      console.log('🎯 AI search result:', result);
+      
+      if (result?.rankedGrants && result.rankedGrants.length > 0) {
+        console.log('✅ Setting AI matches from search result:', result.rankedGrants.length);
+        setAiMatches(result.rankedGrants);
+        setSortBy("default");
+      } else {
+        console.log('⚠️ No AI matches found, clearing existing matches');
+        setAiMatches(undefined);
+        setSortBy("default");
+      }
+    } catch (error) {
+      console.error('❌ AI search failed:', error);
+      // On error, still clear existing matches to show all grants
+      setAiMatches(undefined);
+      setSortBy("default");
+    }
+  };
+
+  // Use filtered grants as search results
   const searchResults = filteredGrants;
 
   // Clear AI matches when search term is cleared manually (not from navigation)
@@ -151,18 +170,6 @@ const DiscoverGrants = () => {
       console.log('🧹 Cleared AI matches due to empty search term');
     }
   }, [searchTerm, location.state?.searchTerm]);
-
-  // Handle manual AI search trigger
-  const handleSearch = async () => {
-    if (searchTerm.trim()) {
-      console.log('🤖 Manual AI search triggered for:', searchTerm);
-      const result = await searchGrants(searchTerm);
-      if (result?.rankedGrants) {
-        setAiMatches(result.rankedGrants);
-        setSortBy("default");
-      }
-    }
-  };
 
   // Apply AI-based sorting when we have AI matches and using default sorting
   const sortedSearchResults = useMemo(() => {
