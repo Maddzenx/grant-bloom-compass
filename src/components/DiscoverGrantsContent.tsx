@@ -24,6 +24,7 @@ interface DiscoverGrantsContentProps {
   searchMetrics: any;
   aiMatches?: AIGrantMatch[];
   onSearchChange: (value: string) => void;
+  onSearch: () => void;
   onSortChange: (sortBy: SortOption) => void;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
   onClearFilters: () => void;
@@ -46,6 +47,7 @@ export const DiscoverGrantsContent = ({
   searchMetrics,
   aiMatches,
   onSearchChange,
+  onSearch,
   onSortChange,
   onFiltersChange,
   onClearFilters,
@@ -61,6 +63,7 @@ export const DiscoverGrantsContent = ({
       <DiscoverHeader
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}
+        onSearch={onSearch}
         sortBy={sortBy}
         onSortChange={onSortChange}
         totalGrants={searchResults.length}

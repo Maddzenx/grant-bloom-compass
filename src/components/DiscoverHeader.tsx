@@ -7,6 +7,7 @@ import SortingControls, { SortOption } from "@/components/SortingControls";
 interface DiscoverHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  onSearch: () => void;
   sortBy: SortOption;
   onSortChange: (sortBy: SortOption) => void;
   totalGrants: number;
@@ -22,6 +23,7 @@ interface DiscoverHeaderProps {
 const DiscoverHeader = ({
   searchTerm,
   onSearchChange,
+  onSearch,
   sortBy,
   onSortChange,
   totalGrants,
@@ -49,6 +51,7 @@ const DiscoverHeader = ({
               <EnhancedSearchBar 
                 searchTerm={searchTerm} 
                 onSearchChange={onSearchChange} 
+                onSearch={onSearch}
                 suggestions={suggestions} 
                 isSearching={isSearching} 
                 searchMetrics={searchMetrics} 

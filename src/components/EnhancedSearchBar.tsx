@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 interface EnhancedSearchBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  onSearch: () => void;
   suggestions: string[];
   isSearching: boolean;
   searchMetrics?: {
@@ -16,6 +17,7 @@ interface EnhancedSearchBarProps {
 const EnhancedSearchBar = ({
   searchTerm,
   onSearchChange,
+  onSearch,
   suggestions,
   isSearching,
   searchMetrics
@@ -82,6 +84,7 @@ const EnhancedSearchBar = ({
         } else if (searchTerm.trim()) {
           saveSearchToHistory(searchTerm);
           setShowSuggestions(false);
+          onSearch();
         }
         break;
       case 'Escape':
@@ -98,12 +101,21 @@ const EnhancedSearchBar = ({
   };
   const allSuggestions = [...suggestions, ...recentSearches].filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()) && s !== searchTerm);
   return <div className="relative w-full">
-      <div className="relative">
-        <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isSearching ? 'text-gray-500 animate-pulse' : 'text-gray-400'}`} />
-        <Input ref={inputRef} placeholder="Sök efter bidrag, organisation eller område..." value={searchTerm} onChange={e => handleInputChange(e.target.value)} onFocus={handleInputFocus} onBlur={handleInputBlur} onKeyDown={handleKeyDown} className="pl-12 pr-10 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full text-black placeholder:text-black py-px px-[49px]" />
-        {searchTerm && <Button type="button" variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
-            <X className="w-4 h-4" />
-          </Button>}
+      <div className="relative flex">
+        <div className="flex-1 relative">
+          <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isSearching ? 'text-gray-500 animate-pulse' : 'text-gray-400'}`} />
+          <Input ref={inputRef} placeholder="Sök efter bidrag, organisation eller område..." value={searchTerm} onChange={e => handleInputChange(e.target.value)} onFocus={handleInputFocus} onBlur={handleInputBlur} onKeyDown={handleKeyDown} className="pl-12 pr-10 border-gray-300 bg-white rounded-l-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full text-black placeholder:text-black py-px" />
+          {searchTerm && <Button type="button" variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
+              <X className="w-4 h-4" />
+            </Button>}
+        </div>
+        <Button 
+          onClick={onSearch}
+          disabled={!searchTerm.trim() || isSearching}
+          className="bg-primary hover:bg-primary/90 text-white rounded-l-none rounded-r-xl border-l-0 px-6 h-full"
+        >
+          {isSearching ? 'Söker...' : 'Sök'}
+        </Button>
       </div>
 
       {/* Search suggestions dropdown */}

@@ -152,6 +152,18 @@ const DiscoverGrants = () => {
     }
   }, [searchTerm, location.state?.searchTerm]);
 
+  // Handle manual AI search trigger
+  const handleSearch = async () => {
+    if (searchTerm.trim()) {
+      console.log('🤖 Manual AI search triggered for:', searchTerm);
+      const result = await searchGrants(searchTerm);
+      if (result?.rankedGrants) {
+        setAiMatches(result.rankedGrants);
+        setSortBy("default");
+      }
+    }
+  };
+
   // Apply AI-based sorting when we have AI matches and using default sorting
   const sortedSearchResults = useMemo(() => {
     console.log('🎯 Sorting results:', {
@@ -275,6 +287,7 @@ const DiscoverGrants = () => {
       searchMetrics={{ totalResults: searchResults.length, searchTime: 0 }}
       aiMatches={aiMatches}
       onSearchChange={setSearchTerm}
+      onSearch={handleSearch}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}
       onClearFilters={clearFilters}
