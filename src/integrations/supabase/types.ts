@@ -346,6 +346,24 @@ export type Database = {
         }
         Relationships: []
       }
+      grant_call_vector_search: {
+        Row: {
+          content: string
+          embedding: string | null
+          id: string
+        }
+        Insert: {
+          content: string
+          embedding?: string | null
+          id?: string
+        }
+        Update: {
+          content?: string
+          embedding?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       grantListDailyScrape: {
         Row: {
           grant_url: string
