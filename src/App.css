@@ -1,8 +1,12 @@
+/* Remove max-width and padding from #root to let .page-container control it */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+}
+
+/* Optional: If you want #root to always fill the screen height */
+html, body, #root {
+  min-height: 100vh;
+  width: 100%;
 }
 
 .logo {
