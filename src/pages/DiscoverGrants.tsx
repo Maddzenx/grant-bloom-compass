@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
-import { useEnhancedSearch } from "@/hooks/useEnhancedSearch";
+import { useAIGrantSearch } from "@/hooks/useAIGrantSearch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useGrantSelection } from "@/hooks/useGrantSelection";
 import { SortOption } from "@/components/SortingControls";
@@ -124,20 +124,25 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseGrants, filters]);
 
-  // Enhanced search hook with initial search term
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchResults,
-    suggestions,
-    searchMetrics,
-    isSearching,
-  } = useEnhancedSearch({
-    grants: filteredGrants,
-    filters: { organization: '', minFunding: '', maxFunding: '', deadline: '' },
-    sortBy,
-    initialSearchTerm,
-  });
+  // AI search functionality
+  const { searchGrants, isSearching } = useAIGrantSearch();
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  
+  // Perform AI search when search term changes
+  useEffect(() => {
+    if (searchTerm.trim() && !location.state?.searchTerm) {
+      console.log('🤖 Performing AI search for:', searchTerm);
+      searchGrants(searchTerm).then(result => {
+        if (result?.rankedGrants) {
+          setAiMatches(result.rankedGrants);
+          setSortBy("default");
+        }
+      });
+    }
+  }, [searchTerm, searchGrants, location.state?.searchTerm]);
+
+  // Use filtered grants as search results (no local search algorithms)
+  const searchResults = filteredGrants;
 
   // Clear AI matches when search term is cleared manually (not from navigation)
   useEffect(() => {
@@ -265,9 +270,9 @@ const DiscoverGrants = () => {
       sortBy={sortBy}
       filters={filters}
       hasActiveFilters={hasActiveFilters}
-      suggestions={suggestions}
+      suggestions={[]}
       isSearching={isSearching}
-      searchMetrics={searchMetrics}
+      searchMetrics={{ totalResults: searchResults.length, searchTime: 0 }}
       aiMatches={aiMatches}
       onSearchChange={setSearchTerm}
       onSortChange={setSortBy}
