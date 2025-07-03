@@ -64,13 +64,51 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Use the new semantic search
+  // Use the semantic search hook
   const { searchGrants, isSearching } = useSemanticSearch();
 
-  // Filter grants based on semantic matches - this is the key fix
+  // Trigger semantic search when search term changes and is not empty
+  useEffect(() => {
+    if (searchTerm.trim() && !location.state?.aiSearchResult) {
+      console.log('🔍 Auto-triggering semantic search for:', searchTerm);
+      handleSearch();
+    }
+  }, [searchTerm]);
+
+  // Handle semantic search
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      console.log('⚠️ Empty search term, clearing semantic matches');
+      setSemanticMatches(undefined);
+      setSortBy("default");
+      return;
+    }
+
+    console.log('🔍 Using semantic search for:', searchTerm);
+    try {
+      const result = await searchGrants(searchTerm);
+      console.log('🎯 Semantic search result:', result);
+      
+      if (result?.rankedGrants && result.rankedGrants.length > 0) {
+        console.log('✅ Setting semantic matches from search result:', result.rankedGrants.length);
+        setSemanticMatches(result.rankedGrants);
+        setSortBy("default");
+      } else {
+        console.log('⚠️ No matches found, clearing existing matches');
+        setSemanticMatches([]);
+        setSortBy("default");
+      }
+    } catch (error) {
+      console.error('❌ Semantic search failed:', error);
+      setSemanticMatches(undefined);
+      setSortBy("default");
+    }
+  };
+
+  // Filter grants based on semantic matches
   const semanticallyFilteredGrants = useMemo(() => {
     if (!semanticMatches || semanticMatches.length === 0) {
-      // No semantic search performed, return all grants
+      // No semantic search performed or no matches, return all grants
       return grants;
     }
 
@@ -145,36 +183,6 @@ const DiscoverGrants = () => {
     console.log('✅ Final filtered grants:', filtered.length);
     return filtered;
   }, [semanticallyFilteredGrants, filters]);
-
-  // Handle semantic search
-  const handleSearch = async () => {
-    if (!searchTerm.trim()) {
-      console.log('⚠️ Empty search term, clearing semantic matches');
-      setSemanticMatches(undefined);
-      setSortBy("default");
-      return;
-    }
-
-    console.log('🔍 Using semantic search for:', searchTerm);
-    try {
-      const result = await searchGrants(searchTerm);
-      console.log('🎯 Semantic search result:', result);
-      
-      if (result?.rankedGrants && result.rankedGrants.length > 0) {
-        console.log('✅ Setting semantic matches from search result:', result.rankedGrants.length);
-        setSemanticMatches(result.rankedGrants);
-        setSortBy("default");
-      } else {
-        console.log('⚠️ No matches found, clearing existing matches');
-        setSemanticMatches([]);
-        setSortBy("default");
-      }
-    } catch (error) {
-      console.error('❌ Semantic search failed:', error);
-      setSemanticMatches(undefined);
-      setSortBy("default");
-    }
-  };
 
   // Use filtered grants as search results
   const searchResults = filteredGrants;
