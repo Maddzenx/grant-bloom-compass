@@ -58,10 +58,10 @@ export function TopNavigation() {
                   key={item.title}
                   to={item.url}
                   className={cn(
-                    "px-2 py-2 text-xs font-newsreader font-medium transition-colors rounded-md",
+                    "px-2 py-2 text-xs font-newsreader transition-colors rounded-md",
                     isActive
-                      ? 'bg-white text-ink-obsidian shadow-sm border' 
-                      : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border'
+                      ? 'text-ink-obsidian font-bold' 
+                      : 'text-ink-secondary font-medium hover:bg-white hover:border'
                   )}
                   style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                 >
