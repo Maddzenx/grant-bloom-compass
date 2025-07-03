@@ -22,6 +22,8 @@ serve(async (req) => {
   try {
     const { query } = await req.json();
 
+    console.log('🔍 Semantic Grant Search - Received query:', query);
+
     if (!query || typeof query !== 'string') {
       return new Response(JSON.stringify({ error: 'Query is required' }), {
         status: 400,
@@ -34,14 +36,12 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         error: 'Semantic search temporarily unavailable',
         rankedGrants: [],
-        explanation: 'Semantic search temporarily unavailable - showing all grants'
+        explanation: 'Semantic search temporarily unavailable - API key not configured'
       }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
-    console.log('🔍 Semantic Grant Search - Query:', query);
 
     // Generate embedding using OpenAI
     console.log('📊 Generating embedding with OpenAI...');
@@ -72,14 +72,16 @@ serve(async (req) => {
     // Use the correct Supabase semantic search function
     const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.78,
-      match_count: 25,
+      match_threshold: 0.5, // Lower threshold to get more results
+      match_count: 20,
     });
 
     if (searchError) {
       console.error('Supabase search error:', searchError);
       throw new Error(`Search failed: ${searchError.message}`);
     }
+
+    console.log(`📊 Found ${matches?.length || 0} semantic matches`);
 
     if (!matches || matches.length === 0) {
       console.log('No matches found');
@@ -91,14 +93,14 @@ serve(async (req) => {
       });
     }
 
-    console.log(`📊 Found ${matches.length} semantic matches`);
-
     // Calculate similarity scores and transform matches to expected format
     const rankedGrants = matches.map((match: any, index: number) => {
       // Calculate a relevance score based on the semantic similarity
       // The match_grant_call_details function returns results ordered by similarity
       const baseScore = 0.95 - (index * 0.03); // Start high and decrease
       const relevanceScore = Math.max(0.1, baseScore); // Ensure minimum score
+      
+      console.log(`📊 Match ${index + 1}: Grant ${match.id}, Score: ${relevanceScore}`);
       
       return {
         grantId: match.id,
@@ -115,8 +117,7 @@ serve(async (req) => {
       explanation: `Found ${matches.length} grants using semantic search based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants with scores:`, 
-      rankedGrants.slice(0, 3).map(g => ({ id: g.grantId, score: g.relevanceScore })));
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants`);
     
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -127,7 +128,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       error: 'Semantic search failed - please try again',
       rankedGrants: [],
-      explanation: 'Search encountered an error - showing all grants'
+      explanation: 'Search encountered an error - please try again'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

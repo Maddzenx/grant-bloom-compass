@@ -26,15 +26,17 @@ export const useSemanticSearch = () => {
     setSearchError(null);
 
     try {
-      console.log('🔍 Starting semantic search for query:', query);
+      console.log('🔍 Calling semantic search function with query:', query);
 
       const { data, error } = await supabase.functions.invoke('semantic-grant-search', {
         body: { query: query.trim() }
       });
 
+      console.log('📡 Supabase function response:', { data, error });
+
       if (error) {
         console.error('❌ Supabase function error:', error);
-        throw new Error(error.message);
+        throw new Error(error.message || 'Function call failed');
       }
 
       if (!data) {
@@ -47,7 +49,7 @@ export const useSemanticSearch = () => {
         throw new Error(data.error);
       }
 
-      console.log('✅ Semantic search completed:', {
+      console.log('✅ Semantic search completed successfully:', {
         rankedCount: data.rankedGrants?.length || 0,
         explanation: data.explanation
       });
@@ -59,9 +61,10 @@ export const useSemanticSearch = () => {
       const errorMessage = error instanceof Error ? error.message : 'Semantic search failed';
       setSearchError(errorMessage);
       
+      // Return empty results instead of null to indicate search was attempted
       return {
         rankedGrants: [],
-        explanation: 'Search encountered an error - showing all grants'
+        explanation: 'Search encountered an error - please try again'
       };
     } finally {
       setIsSearching(false);
