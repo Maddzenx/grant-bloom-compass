@@ -67,67 +67,99 @@ serve(async (req) => {
     const embeddingData = await embeddingResponse.json();
     const queryEmbedding = embeddingData.data[0].embedding;
 
-    console.log('✅ Embedding generated, searching for matches using negative inner product...');
+    console.log('✅ Embedding generated, using direct SQL query with negative inner product...');
 
-    // Use negative inner product with a more permissive threshold
-    // For negative inner product, smaller (more negative) values are more similar
-    // Set threshold to -2.0 to allow a wider range of results
-    const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
-      query_embedding: queryEmbedding,
-      match_threshold: -2.0, // More permissive threshold for negative inner product
-      match_count: 20,
-    });
+    // Use direct SQL query with negative inner product since the RPC function might be using cosine distance
+    const { data: matches, error: searchError } = await supabase
+      .from('grant_call_details')
+      .select('*')
+      .not('embedding', 'is', null)
+      .limit(20);
 
     if (searchError) {
       console.error('Supabase search error:', searchError);
       throw new Error(`Search failed: ${searchError.message}`);
     }
 
-    console.log(`📊 Found ${matches?.length || 0} semantic matches`);
-
     if (!matches || matches.length === 0) {
-      console.log('No matches found');
+      console.log('No grants with embeddings found');
       return new Response(JSON.stringify({
         rankedGrants: [],
-        explanation: 'No matching grants found for your search query'
+        explanation: 'No grants with embeddings found'
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Calculate similarity scores based on negative inner product
-    const rankedGrants = matches.map((match: any, index: number) => {
-      // For negative inner product, values closer to 0 indicate better similarity
-      // The distance field represents the negative inner product
-      const negativeInnerProduct = match.distance || -1.0;
+    // Calculate negative inner product manually for each grant
+    const grantsWithScores = matches
+      .map((grant: any) => {
+        if (!grant.embedding) return null;
+        
+        try {
+          // Parse the embedding string to array
+          const grantEmbedding = JSON.parse(grant.embedding);
+          
+          // Calculate negative inner product manually
+          let dotProduct = 0;
+          for (let i = 0; i < queryEmbedding.length && i < grantEmbedding.length; i++) {
+            dotProduct += queryEmbedding[i] * grantEmbedding[i];
+          }
+          const negativeInnerProduct = -dotProduct;
+          
+          return {
+            ...grant,
+            distance: negativeInnerProduct
+          };
+        } catch (error) {
+          console.error('Error parsing embedding for grant:', grant.id, error);
+          return null;
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.distance - b.distance) // Sort by negative inner product (smaller is better)
+      .slice(0, 20);
+
+    console.log(`📊 Found ${grantsWithScores.length} grants with calculated negative inner products`);
+
+    if (grantsWithScores.length === 0) {
+      console.log('No valid embeddings found');
+      return new Response(JSON.stringify({
+        rankedGrants: [],
+        explanation: 'No grants with valid embeddings found'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Calculate similarity scores based on actual negative inner product values
+    const rankedGrants = grantsWithScores.map((match: any, index: number) => {
+      const negativeInnerProduct = match.distance;
       
-      // Convert negative inner product to similarity score (0-1 scale)
-      // Since values are typically between -2 and 0, we'll normalize accordingly
-      // Values closer to 0 are more similar, values closer to -2 are less similar
-      const similarityScore = Math.max(0, Math.min(1, (negativeInnerProduct + 2) / 2));
+      // For negative inner product with normalized embeddings, values typically range from -1 to 1
+      // Convert to similarity score (0-1 scale) where values closer to 1 are more similar
+      const similarityScore = Math.max(0, Math.min(1, (-negativeInnerProduct + 1) / 2));
       const relevanceScore = Math.round(similarityScore * 100) / 100;
       
-      console.log(`📊 Grant ${match.id}: Negative Inner Product: ${negativeInnerProduct}, Similarity: ${relevanceScore}`);
+      console.log(`📊 Grant ${match.id}: Negative Inner Product: ${negativeInnerProduct.toFixed(6)}, Similarity: ${relevanceScore}`);
       
       return {
         grantId: match.id,
         relevanceScore: relevanceScore,
         matchingReasons: [
           `Semantic similarity score: ${Math.round(relevanceScore * 100)}%`,
-          `Negative inner product: ${negativeInnerProduct.toFixed(3)}`
+          `Negative inner product: ${negativeInnerProduct.toFixed(6)}`
         ]
       };
     });
 
-    // Sort by relevance score (highest first)
-    rankedGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
     const response = {
       rankedGrants,
-      explanation: `Found ${matches.length} grants using semantic search with negative inner product based on your query: "${query}"`
+      explanation: `Found ${grantsWithScores.length} grants using manual negative inner product calculation based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants with negative inner product similarity scores`);
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with calculated similarity scores`);
+    console.log('Top 3 scores:', rankedGrants.slice(0, 3).map(g => ({ id: g.grantId, score: g.relevanceScore })));
     
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
