@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -103,17 +102,6 @@ const HomePage = () => {
             onFileSelect={onFileSelect}
             onSubmit={handleRedirect}
           />
-
-          {/* Primary CTA */}
-          <div className="mb-12">
-            <Button
-              onClick={handleRedirect}
-              disabled={isProcessing}
-              className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-newsreader font-semibold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-lg"
-            >
-              {t('hero.findGrants')}
-            </Button>
-          </div>
 
           {/* Organization Tabs */}
           <OrganizationTabs />

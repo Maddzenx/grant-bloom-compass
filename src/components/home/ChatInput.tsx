@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Mic, Upload, Square, Sparkles, ArrowUp, Plus } from "lucide-react";
+import { Mic, Upload, Square, Sparkles, Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -45,6 +45,16 @@ const ChatInput = ({
     }
   };
 
+  // Auto-resize textarea function
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+    
+    // Auto-resize the textarea
+    const textarea = e.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  };
+
   return (
     <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
@@ -53,12 +63,13 @@ const ChatInput = ({
           <div className="px-4 py-4">
             <Textarea
               placeholder="Beskriv ditt projekt eller verksamhet för att hitta passande bidrag..."
-              className="w-full min-h-[80px] border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none"
+              className="w-full min-h-[24px] max-h-[200px] border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none overflow-hidden"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={handleTextareaChange}
               onKeyPress={handleKeyPress}
               disabled={isProcessing}
-              rows={3}
+              rows={1}
+              style={{ height: 'auto' }}
             />
           </div>
 
@@ -101,10 +112,10 @@ const ChatInput = ({
                 <Button
                   onClick={handleSubmit}
                   disabled={isProcessing}
-                  className="bg-black hover:bg-gray-800 text-white p-2 rounded-full flex-shrink-0"
-                  title="Skicka"
+                  className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full flex-shrink-0 text-sm font-medium"
+                  title="Hitta bidrag"
                 >
-                  <ArrowUp className="w-5 h-5" />
+                  Hitta bidrag
                 </Button>
               )}
             </div>
