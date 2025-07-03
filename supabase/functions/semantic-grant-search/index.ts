@@ -183,9 +183,9 @@ serve(async (req) => {
       return { grant, similarity: clampedScore };
     });
 
-    // Sort by similarity score (highest first), filter out 0% matches, and take top 25
+    // Sort by similarity score (highest first), filter out 0% matches, and take top 25.
     const topMatches = scaledGrants
-      .filter(({ similarity }) => similarity > 0) // Cut off all results at 0 matching percentage
+      .filter(({ similarity }) => similarity > 0) // Cut off all results at 0 matching percentage.
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 25);
 
