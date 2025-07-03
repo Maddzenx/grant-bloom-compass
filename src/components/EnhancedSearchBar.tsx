@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, X, Clock } from "lucide-react";
+import { Search, X, Clock, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 interface EnhancedSearchBarProps {
@@ -105,9 +105,17 @@ const EnhancedSearchBar = ({
         <div className="flex-1 relative">
           <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isSearching ? 'text-gray-500 animate-pulse' : 'text-gray-400'}`} />
           <Input ref={inputRef} placeholder="Sök efter bidrag, organisation eller område..." value={searchTerm} onChange={e => handleInputChange(e.target.value)} onFocus={handleInputFocus} onBlur={handleInputBlur} onKeyDown={handleKeyDown} className="pl-12 pr-10 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full text-black placeholder:text-black py-px" />
-          {searchTerm && <Button type="button" variant="ghost" size="sm" onClick={clearSearch} className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
-              <X className="w-4 h-4" />
-            </Button>}
+          
+          {/* Right side icons - loading spinner or clear button */}
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+            {isSearching ? (
+              <Loader2 className="w-4 h-4 text-gray-500 animate-spin" />
+            ) : searchTerm ? (
+              <Button type="button" variant="ghost" size="sm" onClick={clearSearch} className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
+                <X className="w-4 h-4" />
+              </Button>
+            ) : null}
+          </div>
         </div>
         <Button onClick={onSearch} disabled={!searchTerm.trim() || isSearching} className="rounded-xl h-full bg-[#d7cffc] px-[21px] text-sm my-0 py-[10px] text-black">
           {isSearching ? 'Söker...' : 'Search'}
