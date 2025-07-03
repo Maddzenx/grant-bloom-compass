@@ -97,7 +97,7 @@ serve(async (req) => {
     const rankedGrants = matches.map((match: any, index: number) => {
       // Calculate a relevance score based on the semantic similarity
       // The match_grant_call_details function returns results ordered by similarity
-      const baseScore = 0.95 - (index * 0.03); // Start high and decrease
+      const baseScore = 0.95 - (index * 0.05); // Start high and decrease
       const relevanceScore = Math.max(0.1, baseScore); // Ensure minimum score
       
       console.log(`📊 Match ${index + 1}: Grant ${match.id}, Score: ${relevanceScore}`);
