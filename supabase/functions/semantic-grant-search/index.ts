@@ -72,7 +72,7 @@ serve(async (req) => {
     // Use the correct Supabase semantic search function
     const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.2, // Lower threshold to get more results
+      match_threshold: 0.1, // Lower threshold to get more results
       match_count: 20,
     });
 
@@ -93,31 +93,37 @@ serve(async (req) => {
       });
     }
 
-    // Calculate similarity scores and transform matches to expected format
-    const rankedGrants = matches.map((match: any, index: number) => {
-      // Calculate a relevance score based on the semantic similarity
-      // The match_grant_call_details function returns results ordered by similarity
-      const baseScore = 0.95 - (index * 0.05); // Start high and decrease
-      const relevanceScore = Math.max(0.1, baseScore); // Ensure minimum score
+    // Calculate actual similarity scores based on vector distance
+    const rankedGrants = matches.map((match: any) => {
+      // The match_grant_call_details function returns results with cosine distance
+      // Convert cosine distance to similarity score (0-1 scale)
+      // Cosine distance is typically between 0-2, where 0 is most similar
+      // We'll convert this to a percentage where higher = more similar
+      const cosineDistance = match.distance || 1.0; // fallback if no distance
+      const similarityScore = Math.max(0, (2 - cosineDistance) / 2); // Convert to 0-1 scale
+      const relevanceScore = Math.round(similarityScore * 100) / 100; // Round to 2 decimal places
       
-      console.log(`📊 Match ${index + 1}: Grant ${match.id}, Score: ${relevanceScore}`);
+      console.log(`📊 Grant ${match.id}: Distance: ${cosineDistance}, Similarity: ${relevanceScore}`);
       
       return {
         grantId: match.id,
         relevanceScore: relevanceScore,
         matchingReasons: [
-          `Semantic similarity match (rank ${index + 1})`,
-          `Relevance score: ${relevanceScore.toFixed(2)}`
+          `Semantic similarity score: ${Math.round(relevanceScore * 100)}%`,
+          `Vector distance: ${cosineDistance.toFixed(3)}`
         ]
       };
     });
+
+    // Sort by relevance score (highest first)
+    rankedGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
 
     const response = {
       rankedGrants,
       explanation: `Found ${matches.length} grants using semantic search based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants`);
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with actual similarity scores`);
     
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

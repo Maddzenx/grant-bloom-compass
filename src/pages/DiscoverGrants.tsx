@@ -64,7 +64,9 @@ const DiscoverGrants = () => {
       console.log('🎯 Semantic search result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
-        console.log('✅ Setting semantic matches:', result.rankedGrants.length);
+        console.log('✅ Setting semantic matches with actual scores:', 
+          result.rankedGrants.map(g => ({ id: g.grantId, score: g.relevanceScore }))
+        );
         setSemanticMatches(result.rankedGrants);
       } else {
         console.log('⚠️ No semantic matches found');
@@ -174,7 +176,7 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseFilteredGrants, filters, hasActiveFilters]);
 
-  // Apply semantic-based sorting when we have matches
+  // Apply sorting based on actual semantic scores
   const sortedSearchResults = useMemo(() => {
     if (!filteredGrants || filteredGrants.length === 0) {
       return [];
@@ -188,28 +190,27 @@ const DiscoverGrants = () => {
     });
 
     if (semanticMatches && semanticMatches.length > 0 && sortBy === "default") {
-      // Create a map of grant IDs to their semantic scores
+      // Create a map of grant IDs to their actual semantic scores
       const scoreMap = new Map<string, number>();
-      semanticMatches.forEach((match, index) => {
-        const score = match.relevanceScore !== null && match.relevanceScore !== undefined 
-          ? match.relevanceScore 
-          : 0.9 - (index * 0.05); // Fallback scoring based on order
-        scoreMap.set(match.grantId, score);
+      semanticMatches.forEach((match) => {
+        // Use the actual relevance score from the semantic search
+        scoreMap.set(match.grantId, match.relevanceScore || 0);
       });
       
-      // Sort grants by semantic relevance score (highest first)
+      // Sort grants by actual semantic relevance score (highest first)
       const sorted = [...filteredGrants].sort((a, b) => {
         const scoreA = scoreMap.get(a.id) ?? 0;
         const scoreB = scoreMap.get(b.id) ?? 0;
         return scoreB - scoreA;
       });
       
-      console.log('🎯 Semantic-sorted results:', {
+      console.log('🎯 Semantic-sorted results with actual scores:', {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
           title: g.title.substring(0, 30) + '...',
-          score: scoreMap.get(g.id)
+          actualScore: scoreMap.get(g.id),
+          percentage: Math.round((scoreMap.get(g.id) || 0) * 100) + '%'
         }))
       });
       
