@@ -148,19 +148,16 @@ serve(async (req) => {
     const maxRawScore = Math.max(...scoredGrants.map(sg => sg.similarity));
     console.log(`📊 Max raw similarity score: ${maxRawScore.toFixed(3)}`);
 
-    // Dynamically scale all scores so the highest becomes 1.0 (100%)
+    // Dynamically transpose all scores so the highest becomes 1.0 (100%)
+    // Using subtraction to preserve the 8x scaling factor
     const scaledGrants = scoredGrants.map(({ grant, similarity }) => {
-      let scaledScore = 0;
-      
-      if (maxRawScore > 0) {
-        // Scale so the maximum score becomes 1.0
-        scaledScore = similarity / maxRawScore;
-      }
+      // Subtract (maxScore - 1.0) from all scores to shift the maximum to 1.0
+      const transposedScore = similarity - (maxRawScore - 1.0);
       
       // Clamp to ensure values stay within 0-1 range
-      const clampedScore = Math.max(0, Math.min(1, scaledScore));
+      const clampedScore = Math.max(0, Math.min(1, transposedScore));
 
-      console.log(`📊 Grant ${grant.id}: Raw: ${similarity.toFixed(3)}, Scaled: ${clampedScore.toFixed(3)}`);
+      console.log(`📊 Grant ${grant.id}: Raw: ${similarity.toFixed(3)}, Transposed: ${clampedScore.toFixed(3)}`);
 
       return { grant, similarity: clampedScore };
     });
