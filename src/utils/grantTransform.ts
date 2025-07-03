@@ -1,4 +1,3 @@
-
 import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
@@ -30,6 +29,7 @@ type PartialSupabaseGrantRow = Pick<
   | 'eligible_organisations'
   | 'industry_sectors'
   | 'original_url'
+  | 'application_opening_date'
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
@@ -120,6 +120,12 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     return 'Ej specificerat';
   };
 
+  // Helper function to get raw date (ISO string or null)
+  const getRawDate = (dateValue: string | null): string => {
+    if (!dateValue) return '';
+    return dateValue;
+  };
+
   try {
     const transformed: Grant = {
       id: supabaseGrant.id,
@@ -127,6 +133,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       organization: supabaseGrant.organisation || 'Okänd organisation',
       description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
       fundingAmount: formatFundingAmount(supabaseGrant),
+      opens_at: getRawDate((supabaseGrant as any).application_opening_date),
       deadline: formatDate(supabaseGrant.application_closing_date),
       tags: jsonToStringArray(supabaseGrant.keywords),
       qualifications: supabaseGrant.eligibility || 'Ej specificerat',

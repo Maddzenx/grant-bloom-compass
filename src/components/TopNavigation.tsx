@@ -1,4 +1,3 @@
-
 import { useLocation, Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,7 +35,7 @@ export function TopNavigation() {
   };
 
   return (
-    <nav className="bg-canvas-cloud border-b shadow-sm" style={{ borderColor: '#F0F1F3' }}>
+    <nav className="bg-canvas-cloud border-b shadow-sm sticky top-0 z-40" style={{ borderColor: '#F0F1F3' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

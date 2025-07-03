@@ -72,7 +72,7 @@ export const DiscoverGrantsContent = ({
       />
 
       {/* Enhanced Filter Controls */}
-      <div className="bg-accent-lavender-10 border-b border-accent-foreground">
+      <div className="bg-canvas-cloud">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <EnhancedFilterControls 
             filters={filters} 
