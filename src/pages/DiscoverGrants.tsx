@@ -25,6 +25,7 @@ const DiscoverGrants = () => {
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [hasSearched, setHasSearched] = useState(false);
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
@@ -32,6 +33,7 @@ const DiscoverGrants = () => {
     isError,
     searchTerm,
     semanticMatchesCount: semanticMatches?.length || 0,
+    hasSearched
   });
 
   // Enhanced filter state
@@ -45,15 +47,18 @@ const DiscoverGrants = () => {
   // Use the semantic search hook
   const { searchGrants, isSearching } = useSemanticSearch();
 
-  // Handle semantic search
+  // Handle semantic search - only when explicitly called
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
       console.log('⚠️ Empty search term, clearing semantic matches');
       setSemanticMatches(undefined);
+      setHasSearched(false);
       return;
     }
 
     console.log('🔍 Starting semantic search for:', searchTerm);
+    setHasSearched(true);
+    
     try {
       const result = await searchGrants(searchTerm);
       console.log('🎯 Semantic search result:', result);
@@ -71,28 +76,27 @@ const DiscoverGrants = () => {
     }
   };
 
-  // Trigger semantic search when search term changes
+  // Auto-trigger search only if coming from home page with search term
   useEffect(() => {
-    if (searchTerm.trim()) {
-      console.log('🔍 Auto-triggering semantic search for:', searchTerm);
+    if (initialSearchTerm && !hasSearched) {
+      console.log('🔍 Auto-triggering search from home page for:', initialSearchTerm);
       handleSearch();
-    } else {
-      setSemanticMatches(undefined);
     }
-  }, [searchTerm]);
+  }, [initialSearchTerm, hasSearched]);
 
-  // Filter grants based on semantic matches first
+  // Filter grants based on search state
   const baseFilteredGrants = useMemo(() => {
-    console.log('🎯 Filtering grants based on semantic matches:', {
+    console.log('🎯 Filtering grants based on search state:', {
       totalGrants: grants.length,
       hasSemanticMatches: !!semanticMatches,
       semanticMatchesCount: semanticMatches?.length || 0,
-      searchTerm: searchTerm.trim()
+      searchTerm: searchTerm.trim(),
+      hasSearched
     });
 
-    // If no search term, return all grants
-    if (!searchTerm.trim()) {
-      console.log('📋 No search term, returning all grants');
+    // If no search has been performed or no search term, return all grants
+    if (!hasSearched || !searchTerm.trim()) {
+      console.log('📋 No search performed, returning all grants');
       return grants;
     }
 
@@ -115,12 +119,12 @@ const DiscoverGrants = () => {
       return filteredGrants;
     }
 
-    // If semantic search is still loading or failed, return all grants
-    console.log('📋 Semantic search not ready, returning all grants');
+    // If semantic search failed but we searched, return all grants as fallback
+    console.log('📋 Search performed but no semantic results, returning all grants as fallback');
     return grants;
-  }, [grants, semanticMatches, searchTerm]);
+  }, [grants, semanticMatches, searchTerm, hasSearched]);
 
-  // Apply additional filters to the semantically filtered grants
+  // Apply additional filters to the search results
   const filteredGrants = useMemo(() => {
     console.log('🔍 Applying additional filters:', { 
       baseCount: baseFilteredGrants?.length || 0,
@@ -245,6 +249,15 @@ const DiscoverGrants = () => {
     refetch();
   }, [refetch]);
 
+  // Clear search results when search term is cleared
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    if (!value.trim()) {
+      setSemanticMatches(undefined);
+      setHasSearched(false);
+    }
+  }, []);
+
   // Show loading/error/empty states
   const stateComponent = DiscoverGrantsStates({
     isLoading,
@@ -272,7 +285,7 @@ const DiscoverGrants = () => {
       isSearching={isSearching}
       searchMetrics={{ totalResults: sortedSearchResults.length, searchTime: 0 }}
       aiMatches={semanticMatches}
-      onSearchChange={setSearchTerm}
+      onSearchChange={handleSearchChange}
       onSearch={handleSearch}
       onSortChange={setSortBy}
       onFiltersChange={updateFilters}

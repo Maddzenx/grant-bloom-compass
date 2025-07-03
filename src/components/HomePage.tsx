@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -40,44 +41,13 @@ const HomePage = () => {
       return;
     }
 
-    // Use structured grants matching when there's input
-    console.log('🚀 Starting structured grants matching...');
-    const matchingResult = await matchGrants(inputValue);
-    
-    if (matchingResult && matchingResult.rankedGrants.length > 0 && grants) {
-      // Sort grants based on structured matching results
-      const rankedGrantIds = matchingResult.rankedGrants
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
-        .map(match => match.grantId);
-      
-      const sortedGrants = rankedGrantIds
-        .map(id => grants.find(grant => grant.id === id))
-        .filter(Boolean);
-      
-      // Add any remaining grants not ranked by the matching engine
-      const unrankedGrants = grants.filter(grant => 
-        !rankedGrantIds.includes(grant.id)
-      );
-      
-      const finalSortedGrants = [...sortedGrants, ...unrankedGrants];
-
-      console.log('✅ Structured matching successful, navigating with sorted results...');
-      navigate("/discover", {
-        state: {
-          matchedGrants: finalSortedGrants,
-          aiSearchResult: matchingResult,
-          searchTerm: inputValue
-        }
-      });
-    } else {
-      console.log('❌ Structured matching failed or no results, navigating to discover page...');
-      navigate("/discover", {
-        state: {
-          searchTerm: inputValue,
-          searchError: matchingError
-        }
-      });
-    }
+    // Navigate to discover page with search term to trigger semantic search
+    console.log('🚀 Navigating to discover page with search term:', inputValue);
+    navigate("/discover", {
+      state: {
+        searchTerm: inputValue
+      }
+    });
   };
 
   const handleVoiceInput = async () => {
@@ -131,6 +101,7 @@ const HomePage = () => {
             handleVoiceInput={handleVoiceInput}
             handleFileUpload={handleFileUpload}
             onFileSelect={onFileSelect}
+            onSubmit={handleRedirect}
           />
 
           {/* Primary CTA */}

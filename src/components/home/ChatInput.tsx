@@ -13,6 +13,7 @@ interface ChatInputProps {
   handleVoiceInput: () => void;
   handleFileUpload: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit?: () => void; // Add optional submit handler
 }
 
 const ChatInput = ({
@@ -22,11 +23,11 @@ const ChatInput = ({
   isProcessing,
   handleVoiceInput,
   handleFileUpload,
-  onFileSelect
+  onFileSelect,
+  onSubmit
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
-  const [isSemanticSearching, setIsSemanticSearching] = useState(false);
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -35,7 +36,13 @@ const ChatInput = ({
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey && inputValue.trim()) {
       e.preventDefault();
-      // This will be handled by the parent component
+      onSubmit?.();
+    }
+  };
+
+  const handleSubmit = () => {
+    if (inputValue.trim()) {
+      onSubmit?.();
     }
   };
 
@@ -53,7 +60,7 @@ const ChatInput = ({
                 : 'hover:bg-gray-100 text-gray-500'
             }`}
             onClick={handleVoiceInput}
-            disabled={isProcessing || isSemanticSearching}
+            disabled={isProcessing}
             title={isRecording ? t('chat.stopRecording') : t('chat.startRecording')}
           >
             {isRecording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -65,7 +72,7 @@ const ChatInput = ({
             size="sm"
             className="p-3 rounded-full hover:bg-gray-100 flex-shrink-0 text-gray-500"
             onClick={handleFileUploadClick}
-            disabled={isProcessing || isSemanticSearching}
+            disabled={isProcessing}
             title={t('chat.uploadFile')}
           >
             <Upload className="w-5 h-5" />
@@ -87,15 +94,26 @@ const ChatInput = ({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            disabled={isProcessing || isSemanticSearching}
+            disabled={isProcessing}
           />
 
-          {/* Semantic Search Indicator */}
-          {(isProcessing || isSemanticSearching) && (
+          {/* Search Button */}
+          {inputValue.trim() && (
+            <Button
+              onClick={handleSubmit}
+              disabled={isProcessing}
+              className="bg-[#d7cffc] hover:bg-[#c5c3f0] text-black px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              Sök
+            </Button>
+          )}
+
+          {/* Processing Indicator */}
+          {isProcessing && (
             <div className="flex items-center gap-2 text-blue-600 flex-shrink-0">
               <Sparkles className="w-5 h-5 animate-pulse" />
               <span className="text-sm font-medium font-poppins">
-                {isSemanticSearching ? 'Semantic sökning...' : 'Bearbetar...'}
+                Bearbetar...
               </span>
             </div>
           )}
