@@ -137,7 +137,7 @@ serve(async (req) => {
         
         // Convert to similarity score (0-1 scale where 1 is most similar)
         // Cosine similarity ranges from -1 to 1, so we normalize to 0-1
-        const similarityScore = (cosineSimilarity)*4-0.5 ;
+        const similarityScore = (cosineSimilarity)*4-1 ;
         const clampedScore = Math.max(0, Math.min(1, similarityScore));
 
         console.log(`📊 Grant ${grant.id}: Cosine: ${cosineSimilarity.toFixed(3)}, Similarity: ${clampedScore.toFixed(3)}`);
