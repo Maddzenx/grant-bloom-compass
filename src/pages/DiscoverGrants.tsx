@@ -72,9 +72,15 @@ const DiscoverGrants = () => {
         console.log('⚠️ No semantic matches found');
         setSemanticMatches([]);
       }
+      
+      // Close details panel after successful search completion
+      handleBackToList();
     } catch (error) {
       console.error('❌ Semantic search failed:', error);
       setSemanticMatches([]);
+      
+      // Close details panel even on error to show the (empty) results
+      handleBackToList();
     }
   };
 

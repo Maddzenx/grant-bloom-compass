@@ -54,19 +54,19 @@ const GrantCard = ({
     
     if (percentage >= 75) {
       return (
-        <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100 font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#d7f5d7] text-[#4a7c4a] border-[#c5e9c5] hover:bg-[#d7f5d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );
     } else if (percentage >= 40) {
       return (
-        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100 font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#f5e6d7] text-[#7c6a4a] border-[#e9dbc5] hover:bg-[#f5e6d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-100 font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#f5d7d7] text-[#7c4a4a] border-[#e9c5c5] hover:bg-[#f5d7d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );

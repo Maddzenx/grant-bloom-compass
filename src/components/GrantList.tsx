@@ -23,24 +23,18 @@ const GrantList = ({
   isMobile,
   aiMatches
 }: GrantListProps) => {
-  const containerClass = isMobile 
-    ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" 
-    : "basis-1/3 min-w-0 bg-canvas-cloud overflow-hidden flex flex-col";
-
   return (
-    <div className={containerClass}>
+    <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
       <ScrollArea className="flex-1">
-        <div className="pl-0 md:pl-2 pr-0 md:pr-0">
-          <ConsolidatedGrantList
-            grants={grants}
-            selectedGrant={selectedGrant}
-            onGrantSelect={onGrantSelect}
-            onToggleBookmark={onToggleBookmark}
-            searchTerm={searchTerm}
-            isMobile={isMobile}
-            aiMatches={aiMatches}
-          />
-        </div>
+        <ConsolidatedGrantList
+          grants={grants}
+          selectedGrant={selectedGrant}
+          onGrantSelect={onGrantSelect}
+          onToggleBookmark={onToggleBookmark}
+          searchTerm={searchTerm}
+          isMobile={isMobile}
+          aiMatches={aiMatches}
+        />
       </ScrollArea>
     </div>
   );

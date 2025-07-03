@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, Bookmark } from "lucide-react";
+import { Calendar, Bookmark, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
@@ -9,12 +9,14 @@ interface GrantNotionHeaderProps {
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
+  onBackToList?: () => void;
 }
 const GrantNotionHeader = ({
   grant,
   isBookmarked,
   onToggleBookmark,
-  isMobile = false
+  isMobile = false,
+  onBackToList
 }: GrantNotionHeaderProps) => {
   const navigate = useNavigate();
   const {
@@ -50,9 +52,23 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-  return <div className="w-full px-0 md:px-4 pb-4 rounded-none pt-2">
+  return <div className="w-full px-0 md:px-4 pb-4 rounded-none pt-4 relative">
+      {/* Close button for desktop in top right corner */}
+      {!isMobile && onBackToList && (
+        <div className="absolute top-4 right-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBackToList}
+            className="h-8 w-8 p-0 rounded-full bg-gray-100 hover:bg-gray-200"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
       {/* Title */}
-      <h1 className="text-2xl font-bold text-gray-900 mb-1 leading-tight">
+      <h1 className="text-2xl font-bold text-gray-900 mb-1 leading-tight pr-12">
         {grant.title}
       </h1>
 

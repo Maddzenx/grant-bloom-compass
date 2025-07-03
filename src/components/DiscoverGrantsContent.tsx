@@ -57,7 +57,7 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-col w-full h-screen bg-canvas-cloud overflow-hidden">
+    <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
       {/* Enhanced Search Header */}
       <DiscoverHeader 
         searchTerm={searchTerm} 
@@ -85,8 +85,8 @@ export const DiscoverGrantsContent = ({
         </div>
       </div>
 
-      {/* Main Content Area with horizontal margins, scrollable */}
-      <div className="flex-1 flex max-w-[1280px] mx-auto w-full px-10 md:px-20 overflow-auto" style={{ minHeight: 0 }}>
+      {/* Main Content Area - Full width with natural scrolling */}
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 relative">
         {/* Mobile Layout */}
         {isMobile ? (
           <>
@@ -114,26 +114,37 @@ export const DiscoverGrantsContent = ({
             )}
           </>
         ) : (
-          /* Desktop Layout */
-          <>
-            {/* Left Panel - Grant List */}
-            <GrantList 
-              grants={searchResults} 
-              selectedGrant={selectedGrant} 
-              onGrantSelect={onGrantSelect} 
-              onToggleBookmark={onToggleBookmark} 
-              searchTerm={searchTerm} 
-              isMobile={false} 
-              aiMatches={aiMatches} 
-            />
+          /* Desktop Layout - Split panel with sticky details */
+          <div className="flex gap-4 h-full">
+            {/* Grant List - Full width when no details, 1/3 width when details shown */}
+            <div className={`transition-all duration-300 ${
+              showDetails ? 'w-1/3 min-w-0' : 'w-full'
+            }`}>
+              <GrantList 
+                grants={searchResults} 
+                selectedGrant={selectedGrant} 
+                onGrantSelect={onGrantSelect} 
+                onToggleBookmark={onToggleBookmark} 
+                searchTerm={searchTerm} 
+                isMobile={false} 
+                aiMatches={aiMatches} 
+              />
+            </div>
 
-            {/* Right Panel - Grant Details */}
-            <GrantDetailsPanel 
-              selectedGrant={selectedGrant} 
-              onToggleBookmark={onToggleBookmark} 
-              isMobile={false} 
-            />
-          </>
+            {/* Grant Details Panel - Sticky and full viewport height */}
+            {showDetails && selectedGrant && (
+              <div className="w-2/3 min-w-0">
+                <div className="sticky top-24 h-[calc(100vh-6rem)]">
+                  <GrantDetailsPanel 
+                    selectedGrant={selectedGrant} 
+                    onToggleBookmark={onToggleBookmark} 
+                    isMobile={false} 
+                    onBackToList={onBackToList} 
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

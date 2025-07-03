@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import GrantDetails from "@/components/GrantDetails";
 import GrantStickyHeader from "@/components/GrantStickyHeader";
 import EmptyGrantDetails from "@/components/EmptyGrantDetails";
@@ -54,7 +54,7 @@ const GrantDetailsPanel = ({
 
   const containerClass = isMobile 
     ? "w-full bg-canvas-cloud overflow-hidden relative" 
-    : "basis-2/3 min-w-0 bg-canvas-cloud overflow-hidden relative";
+    : "w-full h-full bg-canvas-cloud overflow-hidden relative";
 
   return (
     <div className={containerClass}>
@@ -68,7 +68,7 @@ const GrantDetailsPanel = ({
       )}
 
       {selectedGrant ? (
-        <ScrollArea ref={scrollRef} className="h-full" data-grant-details-scroll>
+        <ScrollArea ref={scrollRef} className="h-full w-full" data-grant-details-scroll>
           <div className="relative bg-[#f0f1f3] px-0 py-1 md:px-1 pl-0 pr-4 md:pr-6 md:py-0">
             {selectedGrant && (
               <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${
@@ -86,12 +86,13 @@ const GrantDetailsPanel = ({
               </div>
             )}
 
-            <div className="bg-white rounded-lg mr-0 md:mr-2 px-4 pb-6">
+            <div className="bg-white rounded-lg mr-0 md:mr-2 px-4 pb-6 min-h-full">
               <GrantDetails 
                 grant={selectedGrant} 
                 isBookmarked={isGrantSaved(selectedGrant.id)} 
                 onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} 
                 isMobile={isMobile} 
+                onBackToList={onBackToList}
               />
             </div>
           </div>

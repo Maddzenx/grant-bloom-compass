@@ -34,7 +34,7 @@ const DiscoverHeader = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center justify-center sticky top-0 z-30">
+    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center justify-center">
       <div className="w-full max-w-4xl mx-auto px-4 md:px-6 pt-2 pb-2">
         <div className="text-center space-y-1">
           <div className="flex justify-center mt-0 mb-0">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Grant } from '@/types/grant';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -46,10 +45,9 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
   const handleGrantSelect = useCallback((grant: Grant) => {
     console.log('🔥 Grant selected:', grant);
     setSelectedGrant(grant);
-    if (isMobile) {
-      setShowDetails(true);
-    }
-  }, [isMobile]);
+    // Always show details when a grant is selected, both mobile and desktop
+    setShowDetails(true);
+  }, []);
 
   const toggleBookmark = useCallback((grantId: string) => {
     const grant = searchResults.find(g => g.id === grantId);
