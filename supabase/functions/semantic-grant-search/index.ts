@@ -67,9 +67,9 @@ serve(async (req) => {
     const embeddingData = await embeddingResponse.json();
     const queryEmbedding = embeddingData.data[0].embedding;
 
-    console.log('✅ Embedding generated, fetching grants for manual comparison...');
+    console.log('✅ Embedding generated, fetching grants for cosine similarity comparison...');
 
-    // Get all grants with embeddings for manual similarity calculation
+    // Get all grants with embeddings for manual similarity calculation using cosine distance
     const { data: grants, error: grantsError } = await supabase
       .from('grant_call_details')
       .select('*')
@@ -92,7 +92,7 @@ serve(async (req) => {
       });
     }
 
-    // Calculate similarity scores manually using negative inner product
+    // Calculate similarity scores manually using cosine distance
     const scoredGrants = grants.map((grant: any) => {
       if (!grant.embedding) {
         return { grant, similarity: 0 };
@@ -113,18 +113,34 @@ serve(async (req) => {
           return { grant, similarity: 0 };
         }
 
-        // Calculate negative inner product manually
-        let negativeInnerProduct = 0;
+        // Calculate cosine similarity manually
+        // First calculate dot product
+        let dotProduct = 0;
         for (let i = 0; i < Math.min(queryEmbedding.length, grantEmbedding.length); i++) {
-          negativeInnerProduct -= queryEmbedding[i] * grantEmbedding[i];
+          dotProduct += queryEmbedding[i] * grantEmbedding[i];
         }
 
+        // Calculate magnitudes
+        let queryMagnitude = 0;
+        let grantMagnitude = 0;
+        for (let i = 0; i < queryEmbedding.length; i++) {
+          queryMagnitude += queryEmbedding[i] * queryEmbedding[i];
+        }
+        for (let i = 0; i < grantEmbedding.length; i++) {
+          grantMagnitude += grantEmbedding[i] * grantEmbedding[i];
+        }
+        queryMagnitude = Math.sqrt(queryMagnitude);
+        grantMagnitude = Math.sqrt(grantMagnitude);
+
+        // Calculate cosine similarity
+        const cosineSimilarity = dotProduct / (queryMagnitude * grantMagnitude);
+        
         // Convert to similarity score (0-1 scale where 1 is most similar)
-        // For normalized embeddings, negative inner product ranges from -1 to 1
-        const similarityScore = (-negativeInnerProduct + 1) / 2;
+        // Cosine similarity ranges from -1 to 1, so we normalize to 0-1
+        const similarityScore = (cosineSimilarity + 1) / 2;
         const clampedScore = Math.max(0, Math.min(1, similarityScore));
 
-        console.log(`📊 Grant ${grant.id}: NIP: ${negativeInnerProduct.toFixed(3)}, Similarity: ${clampedScore.toFixed(3)}`);
+        console.log(`📊 Grant ${grant.id}: Cosine: ${cosineSimilarity.toFixed(3)}, Similarity: ${clampedScore.toFixed(3)}`);
 
         return { grant, similarity: clampedScore };
       } catch (error) {
@@ -142,17 +158,17 @@ serve(async (req) => {
       grantId: grant.id,
       relevanceScore: Math.round(similarity * 1000) / 1000, // Round to 3 decimal places
       matchingReasons: [
-        `Semantic similarity score: ${Math.round(similarity * 100)}%`,
-        `Manual negative inner product calculation`
+        `Cosine similarity score: ${Math.round(similarity * 100)}%`,
+        `Manual cosine similarity calculation`
       ]
     }));
 
     const response = {
       rankedGrants,
-      explanation: `Found ${topMatches.length} grants using semantic search based on your query: "${query}"`
+      explanation: `Found ${topMatches.length} grants using cosine similarity search based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants with manual similarity calculation`);
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with cosine similarity calculation`);
     console.log('Top 3 scores:', rankedGrants.slice(0, 3).map(g => `${g.grantId}: ${Math.round(g.relevanceScore * 100)}%`));
     
     return new Response(JSON.stringify(response), {
