@@ -67,15 +67,34 @@ const DiscoverGrants = () => {
   // Use the new semantic search
   const { searchGrants, isSearching } = useSemanticSearch();
 
-  // Use matched grants if available, otherwise use all grants
-  const baseGrants = matchedGrants || grants;
+  // Filter grants based on semantic matches - this is the key fix
+  const semanticallyFilteredGrants = useMemo(() => {
+    if (!semanticMatches || semanticMatches.length === 0) {
+      // No semantic search performed, return all grants
+      return grants;
+    }
 
-  // Apply filters to grants
-  const filteredGrants = useMemo(() => {
-    console.log('🔍 Filtering grants:', { totalGrants: baseGrants?.length || 0 });
+    // Filter grants to only include those that were semantically matched
+    const matchedGrantIds = semanticMatches.map(match => match.grantId);
+    const filteredGrants = grants.filter(grant => matchedGrantIds.includes(grant.id));
     
-    if (!baseGrants || baseGrants.length === 0) {
-      console.log('⚠️ No grants to filter');
+    console.log('🎯 Semantically filtered grants:', {
+      totalGrants: grants.length,
+      matchedIds: matchedGrantIds.length,
+      filteredGrants: filteredGrants.length
+    });
+
+    return filteredGrants;
+  }, [grants, semanticMatches]);
+
+  // Apply additional filters to semantically filtered grants
+  const filteredGrants = useMemo(() => {
+    console.log('🔍 Applying additional filters to semantically filtered grants:', { 
+      totalGrants: semanticallyFilteredGrants?.length || 0 
+    });
+    
+    if (!semanticallyFilteredGrants || semanticallyFilteredGrants.length === 0) {
+      console.log('⚠️ No semantically filtered grants to filter');
       return [];
     }
 
@@ -87,14 +106,14 @@ const DiscoverGrants = () => {
     
     const actuallyHasActiveFilters = hasOrganizationFilter || hasFundingFilter || hasDeadlineFilter || hasTagsFilter;
 
-    // If no active filters, return all grants
+    // If no active filters, return semantically filtered grants
     if (!actuallyHasActiveFilters) {
-      console.log('✅ No active filters, returning all grants:', baseGrants.length);
-      return baseGrants;
+      console.log('✅ No additional filters, returning semantically filtered grants:', semanticallyFilteredGrants.length);
+      return semanticallyFilteredGrants;
     }
 
-    // Apply filtering
-    const filtered = baseGrants.filter(grant => {
+    // Apply additional filtering
+    const filtered = semanticallyFilteredGrants.filter(grant => {
       // Organization filter
       if (hasOrganizationFilter && !filters.organizations.includes(grant.organization)) {
         return false;
@@ -123,9 +142,9 @@ const DiscoverGrants = () => {
       return true;
     });
 
-    console.log('✅ Filtered grants:', filtered.length);
+    console.log('✅ Final filtered grants:', filtered.length);
     return filtered;
-  }, [baseGrants, filters]);
+  }, [semanticallyFilteredGrants, filters]);
 
   // Handle semantic search
   const handleSearch = async () => {
@@ -147,7 +166,7 @@ const DiscoverGrants = () => {
         setSortBy("default");
       } else {
         console.log('⚠️ No matches found, clearing existing matches');
-        setSemanticMatches(undefined);
+        setSemanticMatches([]);
         setSortBy("default");
       }
     } catch (error) {
@@ -259,7 +278,7 @@ const DiscoverGrants = () => {
 
   return (
     <DiscoverGrantsContent
-      grants={baseGrants}
+      grants={grants}
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}

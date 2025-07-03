@@ -69,7 +69,7 @@ serve(async (req) => {
 
     console.log('✅ Embedding generated, searching for matches...');
 
-    // Use Supabase semantic search function
+    // Use the correct Supabase semantic search function
     const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
       query_embedding: queryEmbedding,
       match_threshold: 0.78,
@@ -93,22 +93,31 @@ serve(async (req) => {
 
     console.log(`📊 Found ${matches.length} semantic matches`);
 
-    // Transform matches to expected format
-    const rankedGrants = matches.map((match: any, index: number) => ({
-      grantId: match.id,
-      relevanceScore: 0.9 - (index * 0.02), // Decreasing relevance based on order
-      matchingReasons: [
-        `Semantic similarity match`,
-        `Ranked #${index + 1} of ${matches.length} results`
-      ]
-    }));
+    // Calculate similarity scores and transform matches to expected format
+    const rankedGrants = matches.map((match: any, index: number) => {
+      // Calculate a relevance score based on the semantic similarity
+      // The match_grant_call_details function returns results ordered by similarity
+      const baseScore = 0.95 - (index * 0.03); // Start high and decrease
+      const relevanceScore = Math.max(0.1, baseScore); // Ensure minimum score
+      
+      return {
+        grantId: match.id,
+        relevanceScore: relevanceScore,
+        matchingReasons: [
+          `Semantic similarity match (rank ${index + 1})`,
+          `Relevance score: ${relevanceScore.toFixed(2)}`
+        ]
+      };
+    });
 
     const response = {
       rankedGrants,
       explanation: `Found ${matches.length} grants using semantic search based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants`);
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with scores:`, 
+      rankedGrants.slice(0, 3).map(g => ({ id: g.grantId, score: g.relevanceScore })));
+    
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
