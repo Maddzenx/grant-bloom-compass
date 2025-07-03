@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
@@ -95,7 +94,7 @@ serve(async (req) => {
     // Calculate similarity scores manually using cosine distance
     const scoredGrants = grants.map((grant: any) => {
       if (!grant.embedding) {
-        return { grant, rawScore: 0 };
+        return { grant, similarity: 0 };
       }
 
       // Parse the embedding vector string to array
@@ -110,7 +109,7 @@ serve(async (req) => {
           grantEmbedding = grant.embedding;
         } else {
           console.warn(`Invalid embedding format for grant ${grant.id}`);
-          return { grant, rawScore: 0 };
+          return { grant, similarity: 0 };
         }
 
         // Calculate cosine similarity manually
@@ -135,98 +134,58 @@ serve(async (req) => {
         // Calculate cosine similarity
         const cosineSimilarity = dotProduct / (queryMagnitude * grantMagnitude);
         
-        return { grant, rawScore: cosineSimilarity };
+        // Apply the *8 scaling to preserve distribution
+        const rawSimilarityScore = cosineSimilarity * 8;
+
+        return { grant, similarity: rawSimilarityScore };
       } catch (error) {
         console.error(`Error processing embedding for grant ${grant.id}:`, error);
-        return { grant, rawScore: 0 };
+        return { grant, similarity: 0 };
       }
     });
 
-    // Sort by raw score (highest first) to find the top score
-    const sortedByRawScore = scoredGrants.sort((a, b) => b.rawScore - a.rawScore);
-    
-    // Get the top score for sliding scale calculation
-    const topScore = sortedByRawScore[0]?.rawScore || 0;
-    console.log(`📊 Top raw cosine similarity score: ${topScore.toFixed(4)}`);
+    // Find the maximum raw similarity score for dynamic scaling
+    const maxRawScore = Math.max(...scoredGrants.map(sg => sg.similarity));
+    console.log(`📊 Max raw similarity score: ${maxRawScore.toFixed(3)}`);
 
-    // Implement sliding scale
-    // Map the top score to a range between 60% and 100%
-    const minDisplayScore = 0.6; // 60%
-    const maxDisplayScore = 1.0; // 100%
-    
-    // Calculate the scaling factor based on the top score
-    // If top score is very high (e.g., 0.9), scale differently than if it's lower (e.g., 0.3)
-    const scoreRange = maxDisplayScore - minDisplayScore; // 0.4 (40% range)
-    
-    const scaledGrants = sortedByRawScore.map(({ grant, rawScore }) => {
-      let scaledScore;
+    // Dynamically scale all scores so the highest becomes 1.0 (100%)
+    const scaledGrants = scoredGrants.map(({ grant, similarity }) => {
+      let scaledScore = 0;
       
-      if (topScore <= 0) {
-        // If no meaningful similarity, set all to 0
-        scaledScore = 0;
-      } else {
-        // Scale relative to the top score
-        // The top score gets mapped to somewhere between 60-100% based on its actual value
-        const normalizedScore = rawScore / topScore; // 0 to 1 relative to top score
-        
-        // Determine the target max score based on the top score quality
-        let targetMaxScore;
-        if (topScore >= 0.8) {
-          targetMaxScore = 1.0; // Excellent match - top can be 100%
-        } else if (topScore >= 0.6) {
-          targetMaxScore = 0.9; // Good match - top can be 90%
-        } else if (topScore >= 0.4) {
-          targetMaxScore = 0.8; // Decent match - top can be 80%
-        } else if (topScore >= 0.2) {
-          targetMaxScore = 0.7; // Weak match - top can be 70%
-        } else {
-          targetMaxScore = 0.6; // Poor match - top can be 60%
-        }
-        
-        // Calculate the actual range to use
-        const actualRange = targetMaxScore - minDisplayScore;
-        const minThreshold = minDisplayScore;
-        
-        // Apply the scaling
-        scaledScore = minThreshold + (normalizedScore * actualRange);
-        
-        // Ensure score doesn't go below a minimum threshold for very low scores
-        if (rawScore < topScore * 0.1) { // If score is less than 10% of top score
-          scaledScore = Math.max(0, scaledScore - 0.1); // Reduce by 10%
-        }
+      if (maxRawScore > 0) {
+        // Scale so the maximum score becomes 1.0
+        scaledScore = similarity / maxRawScore;
       }
       
-      // Clamp the score between 0 and 1
-      scaledScore = Math.max(0, Math.min(1, scaledScore));
-      
-      console.log(`📊 Grant ${grant.id}: Raw: ${rawScore.toFixed(3)}, Scaled: ${scaledScore.toFixed(3)} (${Math.round(scaledScore * 100)}%)`);
-      
-      return { grant, similarity: scaledScore };
+      // Clamp to ensure values stay within 0-1 range
+      const clampedScore = Math.max(0, Math.min(1, scaledScore));
+
+      console.log(`📊 Grant ${grant.id}: Raw: ${similarity.toFixed(3)}, Scaled: ${clampedScore.toFixed(3)}`);
+
+      return { grant, similarity: clampedScore };
     });
 
-    // Take top 25 results
-    const topMatches = scaledGrants.slice(0, 25);
+    // Sort by similarity score (highest first) and take top 20
+    const topMatches = scaledGrants
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 25);
 
     const rankedGrants = topMatches.map(({ grant, similarity }) => ({
       grantId: grant.id,
       relevanceScore: Math.round(similarity * 1000) / 1000, // Round to 3 decimal places
       matchingReasons: [
-        `Similarity score: ${Math.round(similarity * 100)}%`,
-        `Cosine similarity with sliding scale normalization`
+        `Cosine similarity score: ${Math.round(similarity * 100)}%`,
+        `Manual cosine similarity calculation`
       ]
     }));
 
     const response = {
       rankedGrants,
-      explanation: `Found ${topMatches.length} grants using cosine similarity with sliding scale normalization based on your query: "${query}"`
+      explanation: `Found ${topMatches.length} grants using cosine similarity search based on your query: "${query}"`
     };
 
-    console.log('✅ Returning ranked grants with sliding scale scores');
-    console.log('📊 Score distribution:', {
-      topScore: `${Math.round((topMatches[0]?.similarity || 0) * 100)}%`,
-      avgScore: `${Math.round((topMatches.reduce((sum, g) => sum + g.similarity, 0) / topMatches.length) * 100)}%`,
-      minScore: `${Math.round((topMatches[topMatches.length - 1]?.similarity || 0) * 100)}%`
-    });
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with cosine similarity calculation`);
+    console.log('Top 3 scores:', rankedGrants.slice(0, 3).map(g => `${g.grantId}: ${Math.round(g.relevanceScore * 100)}%`));
     
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
