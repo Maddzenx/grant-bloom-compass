@@ -110,9 +110,56 @@ const GrantCard = ({
     percentage: shouldShowMatchScore ? Math.round(matchScore * 100) : 'N/A'
   });
 
+  // --- Status logic ---
+  const today = new Date();
+  const opensAt = new Date(grant.opens_at);
+  // Try to parse deadline as ISO, fallback to Swedish date
+  let deadlineDate: Date;
+  try {
+    deadlineDate = new Date(grant.deadline);
+    if (isNaN(deadlineDate.getTime())) {
+      // Fallback for Swedish format (e.g., '15 mars 2025')
+      const [day, monthName, year] = grant.deadline.split(' ');
+      const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+      const month = months.findIndex(m => m === monthName.toLowerCase());
+      deadlineDate = new Date(Number(year), month, Number(day));
+    }
+  } catch {
+    deadlineDate = new Date();
+  }
+  let status: 'open' | 'upcoming' | 'closed' = 'closed';
+  if (today >= opensAt && today <= deadlineDate) status = 'open';
+  else if (today < opensAt) status = 'upcoming';
+  // ---
+
   return (
     <Card className={`p-6 min-h-[120px] rounded-xl shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
+        {/* Status component */}
+        <div className="mb-1">
+          {status === 'open' && (
+            <div className="flex items-center gap-2 text-green-700 text-sm font-medium">
+              <span className="inline-flex items-center gap-1">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Öppen:
+              </span>
+              <span>{Math.max(0, Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))} dagar kvar.</span>
+              <span className="inline-flex items-center gap-1 ml-4">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                Sök senast: {grant.deadline}
+              </span>
+            </div>
+          )}
+          {status === 'upcoming' && (
+            <div className="flex items-center gap-2 text-yellow-700 text-sm font-medium">
+              <span className="inline-flex items-center gap-1">
+                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                Kommande:
+              </span>
+              <span>Öppnar för ansökningar {grant.opens_at}</span>
+            </div>
+          )}
+        </div>
         {/* Header with organization and match score */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70 flex-shrink-0">

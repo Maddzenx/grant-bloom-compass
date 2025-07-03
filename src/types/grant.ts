@@ -1,10 +1,10 @@
-
 export interface Grant {
   id: string;
   title: string;
   organization: string;
   description: string;
   fundingAmount: string;
+  opens_at: string;
   deadline: string;
   tags: string[];
   qualifications: string;

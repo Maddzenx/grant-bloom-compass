@@ -1,4 +1,3 @@
-
 import { Grant } from "@/types/grant";
 
 export const grants: Grant[] = [
@@ -8,6 +7,7 @@ export const grants: Grant[] = [
     organization: "Vinnova",
     description: "Stödjer banbrytande teknikstartups inom AI, blockchain och IoT",
     fundingAmount: "500 000 - 2 000 000 SEK",
+    opens_at: "2025-01-01",
     deadline: "15 mars 2025",
     tags: ["Teknik", "Startup", "AI"],
     qualifications: "Företag i tidigt skede, teknikfokus, Sverige-baserade",
@@ -53,6 +53,7 @@ export const grants: Grant[] = [
     organization: "Vinnova",
     description: "Stödjer innovativa företag som utvecklar hållbara teknologier",
     fundingAmount: "1 000 000 - 3 000 000 SEK",
+    opens_at: "2025-03-01",
     deadline: "20 april 2025",
     tags: ["Hållbarhet", "Miljöteknik", "Innovation"],
     qualifications: "Startups och SME som arbetar med miljötekniska lösningar",
