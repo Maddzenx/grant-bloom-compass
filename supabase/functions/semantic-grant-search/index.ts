@@ -72,7 +72,7 @@ serve(async (req) => {
     // Use the correct Supabase semantic search function
     const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.5, // Lower threshold to get more results
+      match_threshold: 0.2, // Lower threshold to get more results
       match_count: 20,
     });
 
