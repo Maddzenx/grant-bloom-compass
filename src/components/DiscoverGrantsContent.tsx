@@ -57,7 +57,7 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-col w-full bg-canvas-cloud overflow-hidden">
+    <div className="flex flex-col w-full h-screen bg-canvas-cloud overflow-hidden">
       {/* Enhanced Search Header */}
       <DiscoverHeader 
         searchTerm={searchTerm} 
@@ -85,8 +85,8 @@ export const DiscoverGrantsContent = ({
         </div>
       </div>
 
-      {/* Main Content Area with horizontal margins */}
-      <div className="flex flex-1 overflow-hidden max-w-[1280px] mx-auto w-full px-10 md:px-20">
+      {/* Main Content Area with horizontal margins, scrollable */}
+      <div className="flex-1 flex max-w-[1280px] mx-auto w-full px-10 md:px-20 overflow-auto" style={{ minHeight: 0 }}>
         {/* Mobile Layout */}
         {isMobile ? (
           <>
