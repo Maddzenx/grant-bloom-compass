@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import EnhancedSearchBar from "@/components/EnhancedSearchBar";
@@ -34,20 +33,15 @@ const DiscoverHeader = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full bg-canvas-cloud flex-shrink-0 min-h-[50vh] flex items-center justify-center">
-      <div className="w-full max-w-4xl mx-auto px-6 py-8">
+    <div className="w-full bg-canvas-cloud flex-shrink-0">
+      <div className="w-full max-w-4xl mx-auto px-6 md:px-8 pt-8 pb-2">
         {/* Centered content block */}
-        <div className="text-center space-y-8">
+        <div className="text-center space-y-4">
           {/* Header with title */}
-          <div className="space-y-2">
-            <h1 className="headline text-ink-obsidian">
-              Upptäck bidrag
-            </h1>
-          </div>
-          
-          {/* Search bar */}
-          <div className="flex justify-center">
-            <div className="w-full max-w-2xl">
+          <h1 className="headline text-ink-obsidian text-3xl font-bold mb-2">Upptäck bidrag</h1>
+          {/* Search bar and button in a single row */}
+          <div className="flex justify-center mt-0 mb-2">
+            <div className="w-full max-w-2xl flex items-center gap-2">
               <EnhancedSearchBar 
                 searchTerm={searchTerm} 
                 onSearchChange={onSearchChange} 
@@ -58,14 +52,15 @@ const DiscoverHeader = ({
               />
             </div>
           </div>
-          
-          {/* Results count and sorting - positioned below search */}
-          <div className={`flex items-center ${isMobile ? 'flex-col gap-4' : 'justify-between max-w-2xl mx-auto'}`}>
-            <div className={`text-ink-secondary body-text ${isMobile ? 'order-2' : ''}`}>
+          {/* Advanced filter and sorting controls side by side */}
+          <div className="flex flex-row items-center justify-between max-w-2xl mx-auto gap-4 mt-2 mb-0">
+            <div className="text-ink-secondary body-text">
               {totalGrants} bidrag hittade
               {isSearching && <span className="ml-2 text-ink-secondary">• Söker...</span>}
             </div>
-            <div className={isMobile ? 'order-1 w-full flex justify-center' : ''}>
+            <div className="flex flex-row items-center gap-3">
+              {/* Advanced filter placeholder (to be replaced with actual filter component if needed) */}
+              <span className="text-sm text-gray-500">Avancerat filter</span>
               <SortingControls 
                 sortBy={sortBy} 
                 onSortChange={onSortChange} 

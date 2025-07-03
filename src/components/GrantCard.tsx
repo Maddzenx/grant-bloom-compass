@@ -111,7 +111,7 @@ const GrantCard = ({
   });
 
   return (
-    <Card className={`p-4 cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2 shadow-md' : 'bg-white border-l-transparent hover:bg-accent-2/5 hover:shadow-sm'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
+    <Card className={`p-6 min-h-[120px] rounded-xl shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
         {/* Header with organization and match score */}
         <div className="flex items-start justify-between gap-2">
@@ -137,12 +137,12 @@ const GrantCard = ({
         </div>
 
         {/* Title */}
-        <h3 className="font-semibold text-ink-obsidian text-sm leading-tight line-clamp-2">
+        <h3 className="font-bold text-ink-obsidian text-base leading-tight break-words">
           {grant.title}
         </h3>
 
         {/* Description - now showing aboutGrant which contains subtitle from database */}
-        <p className="text-xs text-ink-obsidian/70 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-ink-obsidian/70 leading-relaxed break-words">
           {grant.aboutGrant}
         </p>
 

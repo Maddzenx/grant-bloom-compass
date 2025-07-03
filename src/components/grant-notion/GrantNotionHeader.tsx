@@ -50,14 +50,14 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-  return <div className="w-full px-6 pb-12 rounded-none md:px-[24px] py-[24px] my-0">
+  return <div className="w-full px-0 md:px-6 pb-8 rounded-none pt-4">
       {/* Title */}
-      <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight md:text-xl">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2 leading-tight">
         {grant.title}
       </h1>
 
       {/* Description from database */}
-      {grant.description && <p className="text-gray-700 mb-6 leading-relaxed max-w-4xl text-sm">
+      {grant.description && <p className="text-gray-700 mb-4 leading-relaxed max-w-[65ch] text-base">
           {grant.description}
         </p>}
 
@@ -65,7 +65,7 @@ const GrantNotionHeader = ({
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
 
       {/* Action buttons */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <Button onClick={handleApplyClick} className="px-6 py-2 text-black text-sm font-medium rounded-lg bg-[#d7cffc] hover:bg-[#CEC5F9]">
           Ansök om bidrag
         </Button>

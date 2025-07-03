@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Grant } from '@/types/grant';
 import { SortOption } from '@/components/SortingControls';
@@ -87,7 +86,7 @@ export const DiscoverGrantsContent = ({
       </div>
 
       {/* Main Content Area with horizontal margins */}
-      <div className="flex flex-1 overflow-hidden max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-1 overflow-hidden max-w-[1280px] mx-auto w-full px-10 md:px-20">
         {/* Mobile Layout */}
         {isMobile ? (
           <>

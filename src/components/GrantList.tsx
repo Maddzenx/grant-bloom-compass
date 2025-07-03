@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ConsolidatedGrantList from "@/components/ConsolidatedGrantList";
@@ -26,7 +25,7 @@ const GrantList = ({
 }: GrantListProps) => {
   const containerClass = isMobile 
     ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" 
-    : "w-[35%] bg-canvas-cloud overflow-hidden flex flex-col border-r border-[#F0F1F3]";
+    : "basis-1/3 min-w-0 bg-canvas-cloud overflow-hidden flex flex-col";
 
   return (
     <div className={containerClass}>

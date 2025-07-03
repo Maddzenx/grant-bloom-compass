@@ -54,7 +54,7 @@ const GrantDetailsPanel = ({
 
   const containerClass = isMobile 
     ? "w-full bg-canvas-cloud overflow-hidden relative" 
-    : "w-[65%] bg-canvas-cloud overflow-hidden relative";
+    : "basis-2/3 min-w-0 bg-canvas-cloud overflow-hidden relative";
 
   return (
     <div className={containerClass}>

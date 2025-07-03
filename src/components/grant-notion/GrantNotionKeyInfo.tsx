@@ -8,39 +8,24 @@ const GrantNotionKeyInfo = ({
   grant,
   isMobile = false
 }: GrantNotionKeyInfoProps) => {
-  return <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  return (
+    <div className="flex flex-col md:flex-row gap-4 md:gap-8 mb-6 items-start md:items-center">
       {/* Bidragsbelopp */}
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          
-          <span className="text-xs text-gray-600">Bidragsbelopp</span>
-        </div>
-        <div className="text-lg font-bold text-gray-900">
-          {grant.fundingAmount}
-        </div>
+      <div className="flex flex-col">
+        <span className="text-sm text-gray-500">Bidragsbelopp</span>
+        <span className="text-base font-semibold text-gray-900">{grant.fundingAmount}</span>
       </div>
-
       {/* Ansökningsdeadline */}
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          
-          <span className="text-xs text-gray-600">Ansökningsdeadline</span>
-        </div>
-        <div className="text-lg font-bold text-gray-900">
-          {grant.deadline}
-        </div>
+      <div className="flex flex-col">
+        <span className="text-sm text-gray-500">Ansökningsdeadline</span>
+        <span className="text-base font-semibold text-gray-900">{grant.deadline}</span>
       </div>
-
       {/* Organisation */}
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          
-          <span className="text-xs text-gray-600">Organisation</span>
-        </div>
-        <div className="text-lg font-bold text-gray-900">
-          {grant.organization}
-        </div>
+      <div className="flex flex-col">
+        <span className="text-sm text-gray-500">Organisation</span>
+        <span className="text-base font-semibold text-gray-900">{grant.organization}</span>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default GrantNotionKeyInfo;
