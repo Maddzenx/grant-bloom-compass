@@ -1,7 +1,6 @@
-
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useGrants } from "@/hooks/useGrants";
+import { useGrants } from "@/hooks/useGrantsQuery";
 import { Grant } from "@/types/grant";
 import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 import { useFilterState } from "@/hooks/useFilterState";
