@@ -59,7 +59,7 @@ export const DiscoverGrantsContent = ({
 
   return (
     <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden">
-      {/* Enhanced Search Header */}
+      {/* Enhanced Search Header - now centered */}
       <DiscoverHeader
         searchTerm={searchTerm}
         onSearchChange={onSearchChange}
@@ -72,16 +72,18 @@ export const DiscoverGrantsContent = ({
         searchMetrics={searchMetrics}
       />
 
-      {/* Enhanced Filter Controls */}
-      <div className="bg-accent-lavender-10 border-b border-accent-lavender">
-        <EnhancedFilterControls
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-          onClearAll={onClearFilters}
-          grants={grants}
-          filteredGrants={searchResults}
-          hasActiveFilters={hasActiveFilters}
-        />
+      {/* Enhanced Filter Controls - centered */}
+      <div className="bg-accent-lavender-10 border-b border-accent-lavender flex justify-center">
+        <div className="w-full max-w-4xl mx-auto px-6">
+          <EnhancedFilterControls
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            onClearAll={onClearFilters}
+            grants={grants}
+            filteredGrants={searchResults}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </div>
       </div>
 
       {/* Main Content Area */}
