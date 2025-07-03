@@ -69,10 +69,12 @@ serve(async (req) => {
 
     console.log('✅ Embedding generated, searching for matches using negative inner product...');
 
-    // Use negative inner product instead of cosine distance
+    // Use negative inner product with a more permissive threshold
+    // For negative inner product, smaller (more negative) values are more similar
+    // Set threshold to -2.0 to allow a wider range of results
     const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
       query_embedding: queryEmbedding,
-      match_threshold: -1.0, // Adjusted threshold for negative inner product
+      match_threshold: -2.0, // More permissive threshold for negative inner product
       match_count: 20,
     });
 
@@ -95,14 +97,14 @@ serve(async (req) => {
 
     // Calculate similarity scores based on negative inner product
     const rankedGrants = matches.map((match: any, index: number) => {
-      // For negative inner product, higher values (closer to 0) indicate better similarity
-      // The distance field now represents the negative inner product
+      // For negative inner product, values closer to 0 indicate better similarity
+      // The distance field represents the negative inner product
       const negativeInnerProduct = match.distance || -1.0;
       
-      // Convert to similarity score (0-1 scale)
-      // Since we're using negative inner product, values closer to 0 are more similar
-      // We'll normalize based on typical embedding ranges
-      const similarityScore = Math.max(0, Math.min(1, (negativeInnerProduct + 1) / 2));
+      // Convert negative inner product to similarity score (0-1 scale)
+      // Since values are typically between -2 and 0, we'll normalize accordingly
+      // Values closer to 0 are more similar, values closer to -2 are less similar
+      const similarityScore = Math.max(0, Math.min(1, (negativeInnerProduct + 2) / 2));
       const relevanceScore = Math.round(similarityScore * 100) / 100;
       
       console.log(`📊 Grant ${match.id}: Negative Inner Product: ${negativeInnerProduct}, Similarity: ${relevanceScore}`);
