@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -17,6 +16,11 @@ export interface EnhancedFilterOptions {
     };
   };
   tags: string[];
+  industrySectors: string[];
+  eligibleApplicants: string[];
+  consortiumRequired: boolean | null;
+  geographicScope: string[];
+  cofinancingRequired: boolean | null;
 }
 
 const defaultFilters: EnhancedFilterOptions = {
@@ -24,6 +28,11 @@ const defaultFilters: EnhancedFilterOptions = {
   fundingRange: { min: null, max: null },
   deadline: { type: 'preset', preset: '' },
   tags: [],
+  industrySectors: [],
+  eligibleApplicants: [],
+  consortiumRequired: null,
+  geographicScope: [],
+  cofinancingRequired: null,
 };
 
 export const useFilterState = () => {
@@ -105,12 +114,17 @@ const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptio
       customRange: { start: null, end: null },
     },
     tags: searchParams.get('tags')?.split(',').filter(Boolean) || [],
+    industrySectors: searchParams.get('industrySectors')?.split(',').filter(Boolean) || [],
+    eligibleApplicants: searchParams.get('eligibleApplicants')?.split(',').filter(Boolean) || [],
+    consortiumRequired: searchParams.get('consortiumRequired') === 'true',
+    geographicScope: searchParams.get('geographicScope')?.split(',').filter(Boolean) || [],
+    cofinancingRequired: searchParams.get('cofinancingRequired') === 'true',
   };
 };
 
 const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions) => {
   // Clear existing filter params
-  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags'].forEach(key => {
+  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags', 'industrySectors', 'eligibleApplicants', 'consortiumRequired', 'geographicScope', 'cofinancingRequired'].forEach(key => {
     params.delete(key);
   });
 
@@ -130,5 +144,20 @@ const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions
   }
   if (filters.tags.length > 0) {
     params.set('tags', filters.tags.join(','));
+  }
+  if (filters.industrySectors.length > 0) {
+    params.set('industrySectors', filters.industrySectors.join(','));
+  }
+  if (filters.eligibleApplicants.length > 0) {
+    params.set('eligibleApplicants', filters.eligibleApplicants.join(','));
+  }
+  if (filters.consortiumRequired !== null) {
+    params.set('consortiumRequired', filters.consortiumRequired.toString());
+  }
+  if (filters.geographicScope.length > 0) {
+    params.set('geographicScope', filters.geographicScope.join(','));
+  }
+  if (filters.cofinancingRequired !== null) {
+    params.set('cofinancingRequired', filters.cofinancingRequired.toString());
   }
 };
