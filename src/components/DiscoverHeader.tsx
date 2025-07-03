@@ -2,6 +2,7 @@ import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import EnhancedSearchBar from "@/components/EnhancedSearchBar";
 import SortingControls, { SortOption } from "@/components/SortingControls";
+import { CustomDateRangePicker } from "./deadline-filter/CustomDateRangePicker";
 
 interface DiscoverHeaderProps {
   searchTerm: string;
@@ -36,7 +37,6 @@ const DiscoverHeader = ({
     <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center justify-center sticky top-0 z-30">
       <div className="w-full max-w-4xl mx-auto px-4 md:px-6 pt-2 pb-2">
         <div className="text-center space-y-1">
-          <h1 className="headline text-ink-obsidian text-2xl font-bold mb-4">Upptäck bidrag</h1>
           <div className="flex justify-center mt-0 mb-0">
             <div className="w-full max-w-2xl flex items-center gap-2">
               <EnhancedSearchBar 
