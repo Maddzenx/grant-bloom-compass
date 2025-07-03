@@ -137,7 +137,7 @@ serve(async (req) => {
         
         // Convert to similarity score (0-1 scale where 1 is most similar)
         // Cosine similarity ranges from -1 to 1, so we normalize to 0-1
-        const similarityScore = (cosineSimilarity + 1) / 2;
+        const similarityScore = (cosineSimilarity + 1.2) / 4;
         const clampedScore = Math.max(0, Math.min(1, similarityScore));
 
         console.log(`📊 Grant ${grant.id}: Cosine: ${cosineSimilarity.toFixed(3)}, Similarity: ${clampedScore.toFixed(3)}`);
@@ -152,7 +152,7 @@ serve(async (req) => {
     // Sort by similarity score (highest first) and take top 20
     const topMatches = scoredGrants
       .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, 20);
+      .slice(0, 25);
 
     const rankedGrants = topMatches.map(({ grant, similarity }) => ({
       grantId: grant.id,
