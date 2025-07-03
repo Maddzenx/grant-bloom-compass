@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useHumorousExamples } from "@/hooks/useHumorousExamples";
 
 interface ChatInputProps {
   inputValue: string;
@@ -27,6 +28,48 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
+  const { example, isLoading: isLoadingExample } = useHumorousExamples();
+  const [typedText, setTypedText] = useState('');
+  const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Typewriter effect for the humorous example - letter by letter
+  useEffect(() => {
+    if (example && !isLoadingExample && !isTyping) {
+      // Start typing immediately, no delay
+      setIsTyping(true);
+      setCurrentLetterIndex(0);
+      setTypedText('');
+      
+      let letterIndex = 0;
+      
+      const typeLetters = () => {
+        if (letterIndex < example.length) {
+          const newText = example.substring(0, letterIndex + 1);
+          setTypedText(newText);
+          setCurrentLetterIndex(letterIndex + 1);
+          letterIndex++;
+          
+          // Natural typing speed between 30-100ms per letter
+          const delay = Math.random() * 70 + 30;
+          setTimeout(typeLetters, delay);
+        } else {
+          setIsTyping(false);
+        }
+      };
+      
+      typeLetters();
+    }
+  }, [example, isLoadingExample, isTyping]);
+
+  // Reset typing animation when example changes
+  useEffect(() => {
+    if (example && !isLoadingExample) {
+      setTypedText('');
+      setCurrentLetterIndex(0);
+      setIsTyping(false);
+    }
+  }, [example]);
 
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
@@ -55,6 +98,17 @@ const ChatInput = ({
     textarea.style.height = textarea.scrollHeight + 'px';
   };
 
+  // Clear typed text when user starts typing
+  const handleFocus = () => {
+    if (typedText && !inputValue) {
+      setTypedText('');
+      setIsTyping(false);
+    }
+  };
+
+  // Show the typed text as placeholder, but only if user hasn't typed anything
+  const placeholderText = !inputValue ? typedText : "";
+
   return (
     <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
@@ -62,14 +116,17 @@ const ChatInput = ({
           {/* Text Input Area */}
           <div className="px-4 py-4">
             <Textarea
-              placeholder="Beskriv ditt projekt eller verksamhet för att hitta passande bidrag..."
-              className="w-full min-h-[24px] max-h-[200px] border-0 bg-transparent text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none overflow-hidden"
+              placeholder={placeholderText}
+              className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-lg focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none overflow-hidden transition-all duration-300 ease-in-out placeholder:text-gray-400 ${
+                isTyping ? 'placeholder:after:content-["_"] placeholder:after:animate-pulse' : ''
+              }`}
               value={inputValue}
               onChange={handleTextareaChange}
               onKeyPress={handleKeyPress}
+              onFocus={handleFocus}
               disabled={isProcessing}
-              rows={1}
-              style={{ height: 'auto' }}
+              rows={2}
+              style={{ height: 'auto', minHeight: '48px' }}
             />
           </div>
 
@@ -134,9 +191,9 @@ const ChatInput = ({
           className="hidden"
         />
         
-        {/* Enhanced Search Info */}
+        {/* Enhanced Search Info - Hidden loading indicator */}
         <div className="mt-3 text-center">
-          
+          {/* Loading indicator removed */}
         </div>
       </div>
     </div>
