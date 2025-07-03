@@ -67,65 +67,92 @@ serve(async (req) => {
     const embeddingData = await embeddingResponse.json();
     const queryEmbedding = embeddingData.data[0].embedding;
 
-    console.log('✅ Embedding generated, searching for matches...');
+    console.log('✅ Embedding generated, fetching grants for manual comparison...');
 
-    // Use the updated Supabase semantic search function with negative inner product
-    const { data: matches, error: searchError } = await supabase.rpc('match_grant_call_details', {
-      query_embedding: queryEmbedding,
-      match_threshold: -2.0, // Threshold for negative inner product (lower is more restrictive)
-      match_count: 20,
-    });
+    // Get all grants with embeddings for manual similarity calculation
+    const { data: grants, error: grantsError } = await supabase
+      .from('grant_call_details')
+      .select('*')
+      .not('embedding', 'is', null);
 
-    if (searchError) {
-      console.error('Supabase search error:', searchError);
-      throw new Error(`Search failed: ${searchError.message}`);
+    if (grantsError) {
+      console.error('Error fetching grants:', grantsError);
+      throw new Error(`Failed to fetch grants: ${grantsError.message}`);
     }
 
-    console.log(`📊 Found ${matches?.length || 0} semantic matches`);
+    console.log(`📊 Found ${grants?.length || 0} grants with embeddings`);
 
-    if (!matches || matches.length === 0) {
-      console.log('No matches found');
+    if (!grants || grants.length === 0) {
+      console.log('No grants found with embeddings');
       return new Response(JSON.stringify({
         rankedGrants: [],
-        explanation: 'No matching grants found for your search query'
+        explanation: 'No grants found with embeddings for semantic search'
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Calculate similarity scores from negative inner product
-    const rankedGrants = matches.map((match: any) => {
-      // The updated function returns negative inner product as distance
-      // For normalized embeddings, negative inner product ranges from -1 to 1
-      // where 1 is most similar and -1 is least similar
-      const negativeInnerProduct = match.distance || -1.0;
-      
-      // Convert to similarity score (0-1 scale where 1 is most similar)
-      // Since we have negative inner product, we need to normalize it properly
-      const similarityScore = (-negativeInnerProduct + 1) / 2;
-      const relevanceScore = Math.max(0, Math.min(1, similarityScore)); // Clamp to 0-1
-      
-      console.log(`📊 Grant ${match.id}: Negative Inner Product: ${negativeInnerProduct}, Similarity: ${relevanceScore.toFixed(3)}`);
-      
-      return {
-        grantId: match.id,
-        relevanceScore: Math.round(relevanceScore * 1000) / 1000, // Round to 3 decimal places
-        matchingReasons: [
-          `Semantic similarity score: ${Math.round(relevanceScore * 100)}%`,
-          `Negative inner product: ${negativeInnerProduct.toFixed(3)}`
-        ]
-      };
+    // Calculate similarity scores manually using negative inner product
+    const scoredGrants = grants.map((grant: any) => {
+      if (!grant.embedding) {
+        return { grant, similarity: 0 };
+      }
+
+      // Parse the embedding vector string to array
+      let grantEmbedding;
+      try {
+        // Handle different embedding formats
+        if (typeof grant.embedding === 'string') {
+          // Remove brackets and split by comma
+          const cleanStr = grant.embedding.replace(/[\[\]]/g, '');
+          grantEmbedding = cleanStr.split(',').map((x: string) => parseFloat(x.trim()));
+        } else if (Array.isArray(grant.embedding)) {
+          grantEmbedding = grant.embedding;
+        } else {
+          console.warn(`Invalid embedding format for grant ${grant.id}`);
+          return { grant, similarity: 0 };
+        }
+
+        // Calculate negative inner product manually
+        let negativeInnerProduct = 0;
+        for (let i = 0; i < Math.min(queryEmbedding.length, grantEmbedding.length); i++) {
+          negativeInnerProduct -= queryEmbedding[i] * grantEmbedding[i];
+        }
+
+        // Convert to similarity score (0-1 scale where 1 is most similar)
+        // For normalized embeddings, negative inner product ranges from -1 to 1
+        const similarityScore = (-negativeInnerProduct + 1) / 2;
+        const clampedScore = Math.max(0, Math.min(1, similarityScore));
+
+        console.log(`📊 Grant ${grant.id}: NIP: ${negativeInnerProduct.toFixed(3)}, Similarity: ${clampedScore.toFixed(3)}`);
+
+        return { grant, similarity: clampedScore };
+      } catch (error) {
+        console.error(`Error processing embedding for grant ${grant.id}:`, error);
+        return { grant, similarity: 0 };
+      }
     });
 
-    // Sort by relevance score (highest first)
-    rankedGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
+    // Sort by similarity score (highest first) and take top 20
+    const topMatches = scoredGrants
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 20);
+
+    const rankedGrants = topMatches.map(({ grant, similarity }) => ({
+      grantId: grant.id,
+      relevanceScore: Math.round(similarity * 1000) / 1000, // Round to 3 decimal places
+      matchingReasons: [
+        `Semantic similarity score: ${Math.round(similarity * 100)}%`,
+        `Manual negative inner product calculation`
+      ]
+    }));
 
     const response = {
       rankedGrants,
-      explanation: `Found ${matches.length} grants using semantic search based on your query: "${query}"`
+      explanation: `Found ${topMatches.length} grants using semantic search based on your query: "${query}"`
     };
 
-    console.log(`✅ Returning ${rankedGrants.length} ranked grants with proper similarity scores`);
+    console.log(`✅ Returning ${rankedGrants.length} ranked grants with manual similarity calculation`);
     console.log('Top 3 scores:', rankedGrants.slice(0, 3).map(g => `${g.grantId}: ${Math.round(g.relevanceScore * 100)}%`));
     
     return new Response(JSON.stringify(response), {
