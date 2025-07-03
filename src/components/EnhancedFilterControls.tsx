@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import { Grant } from "@/types/grant";
 import { EnhancedFilterOptions } from "@/hooks/useFilterState";
@@ -6,6 +7,7 @@ import { FilterHeader } from "./filters/FilterHeader";
 import { FilterGrid } from "./filters/FilterGrid";
 import { FilterActions } from "./filters/FilterActions";
 import { parseFundingAmount, calculateActiveFilterCount, processOrganizationOptions } from "@/utils/filterHelpers";
+
 interface EnhancedFilterControlsProps {
   filters: EnhancedFilterOptions;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
@@ -14,6 +16,7 @@ interface EnhancedFilterControlsProps {
   filteredGrants: Grant[];
   hasActiveFilters: boolean;
 }
+
 export const EnhancedFilterControls = ({
   filters,
   onFiltersChange,
@@ -42,6 +45,7 @@ export const EnhancedFilterControls = ({
       return true;
     }).length;
   }, [grants, pendingFilters.fundingRange]);
+
   const handleRemoveFilter = (filterType: string, value?: string) => {
     switch (filterType) {
       case 'organizations':
@@ -76,15 +80,18 @@ export const EnhancedFilterControls = ({
         break;
     }
   };
+
   const handlePendingFilterChange = (newFilters: Partial<EnhancedFilterOptions>) => {
     setPendingFilters(prev => ({
       ...prev,
       ...newFilters
     }));
   };
+
   const handleApplyFilters = () => {
     onFiltersChange(pendingFilters);
   };
+
   const handleClearFilters = () => {
     const defaultFilters: EnhancedFilterOptions = {
       organizations: [],
@@ -96,15 +103,23 @@ export const EnhancedFilterControls = ({
         type: 'preset',
         preset: ''
       },
-      tags: []
+      tags: [],
+      industrySectors: [],
+      eligibleApplicants: [],
+      consortiumRequired: null,
+      geographicScope: [],
+      cofinancingRequired: null,
     };
     setPendingFilters(defaultFilters);
     onClearAll();
   };
+
   const hasPendingChanges = useMemo(() => {
     return JSON.stringify(filters) !== JSON.stringify(pendingFilters);
   }, [filters, pendingFilters]);
+
   const activeFilterCount = calculateActiveFilterCount(filters);
+
   return <div className="" style={{
     backgroundColor: '#FFFFFF'
   }}>
@@ -116,7 +131,7 @@ export const EnhancedFilterControls = ({
 
       {/* Filter controls - only show when expanded */}
       {isExpanded && <div className="p-4 pt-3 border border-gray-200 bg-[#f0f1f3]">
-          <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} />
+          <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} />
 
           <FilterActions hasPendingChanges={hasPendingChanges} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} />
         </div>}

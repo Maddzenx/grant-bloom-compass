@@ -1,3 +1,4 @@
+
 import { Grant } from '@/types/grant';
 import { FilterOptions } from '@/components/FilterControls';
 
@@ -84,41 +85,6 @@ export const filterGrants = (grants: Grant[], searchTerm: string, filters: Filte
     if (filters.deadline) {
       const days = parseInt(filters.deadline, 10);
       if (!isDeadlineWithinDays(grant.deadline, days)) return false;
-    }
-
-    // Industry Sectors filter
-    if (filters.industrySectors && filters.industrySectors.length > 0) {
-      if (!grant.industry_sectors || !filters.industrySectors.some(sector => grant.industry_sectors.includes(sector))) {
-        return false;
-      }
-    }
-
-    // Eligible Applicants filter
-    if (filters.eligibleApplicants && filters.eligibleApplicants.length > 0) {
-      if (!grant.eligible_organisations || !filters.eligibleApplicants.some(app => grant.eligible_organisations.includes(app))) {
-        return false;
-      }
-    }
-
-    // Consortium Requirement filter
-    if (filters.consortiumRequired !== null) {
-      if (grant.consortium_requirement !== filters.consortiumRequired) {
-        return false;
-      }
-    }
-
-    // Geographic Scope filter
-    if (filters.geographicScope && filters.geographicScope.length > 0) {
-      if (!grant.geographic_scope || !filters.geographicScope.some(scope => grant.geographic_scope.includes(scope))) {
-        return false;
-      }
-    }
-
-    // Co-financing Requirement filter
-    if (filters.cofinancingRequired !== null) {
-      if (grant.cofinancing_required !== filters.cofinancingRequired) {
-        return false;
-      }
     }
 
     return true;
