@@ -1,11 +1,12 @@
-
 import React from "react";
 import { Grant } from "@/types/grant";
-import { Calendar, Bookmark } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BookmarkCheck, Bookmark, Clock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ConsolidatedGrantListProps {
   grants: Grant[];
@@ -31,6 +32,19 @@ const ConsolidatedGrantList = ({
     addToSaved,
     removeFromSaved
   } = useSavedGrantsContext();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const grantsPerPage = 15;
+
+  // Calculate pagination
+  const totalPages = Math.ceil(grants.length / grantsPerPage);
+  const startIndex = (currentPage - 1) * grantsPerPage;
+  const endIndex = startIndex + grantsPerPage;
+  const currentGrants = grants.slice(startIndex, endIndex);
+
+  // Reset to first page when grants change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [grants.length]);
 
   const formatDate = (dateString: string) => {
     try {
@@ -94,7 +108,7 @@ const ConsolidatedGrantList = ({
 
   return (
     <div className="bg-white">
-      {grants.length === 0 ? (
+      {currentGrants.length === 0 ? (
         <div className="text-center text-ink-secondary py-12 px-6">
           <div className="text-base">
             {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -102,7 +116,7 @@ const ConsolidatedGrantList = ({
         </div>
       ) : (
         <div className="divide-y divide-gray-100">
-          {grants.map((grant) => {
+          {currentGrants.map((grant) => {
             const matchScore = matchScoreMap.get(grant.id);
             const shouldShowMatchScore = matchScore !== undefined && 
                                         matchScore !== null && 
@@ -112,68 +126,152 @@ const ConsolidatedGrantList = ({
             const actuallyBookmarked = isGrantSaved(grant.id);
             const isSelected = selectedGrant?.id === grant.id;
 
+            // --- Status logic ---
+            const today = new Date();
+            const opensAt = new Date(grant.opens_at);
+            // Try to parse deadline as ISO, fallback to Swedish date
+            let deadlineDate: Date;
+            try {
+              deadlineDate = new Date(grant.deadline);
+              if (isNaN(deadlineDate.getTime())) {
+                // Fallback for Swedish format (e.g., '15 mars 2025')
+                const [day, monthName, year] = grant.deadline.split(' ');
+                const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+                const month = months.findIndex(m => m === monthName.toLowerCase());
+                deadlineDate = new Date(Number(year), month, Number(day));
+              }
+            } catch {
+              deadlineDate = new Date();
+            }
+            let status: 'open' | 'upcoming' | 'closed' = 'closed';
+            if (today >= opensAt && today <= deadlineDate) status = 'open';
+            else if (today < opensAt) status = 'upcoming';
+            // ---
+            console.log('Status:', status, grant.title, grant.opens_at, grant.deadline);
+
+            const daysLeft = Math.max(0, Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+            const actualDeadline = formatDate(grant.deadline);
+
             return (
               <div
                 key={grant.id}
-                className={`p-5 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
+                className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
                   isSelected ? 'bg-[#F6F6F6]' : ''
                 }`}
                 onClick={() => onGrantSelect(grant)}
               >
-                {/* Header with organization logo and match score */}
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src={orgLogo.src} 
-                      alt={orgLogo.alt} 
-                      className={orgLogo.className}
-                    />
+                <div className="space-y-2">
+                  {/* Header with organization logo and match score */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      {orgLogo && (
+                        <img 
+                          src={orgLogo.src} 
+                          alt={orgLogo.alt} 
+                          className={orgLogo.className}
+                        />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {shouldShowMatchScore && (
+                        <Badge variant="secondary" className="text-xs">
+                          {Math.round(matchScore * 100)}% match
+                        </Badge>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBookmarkToggle(e, grant);
+                        }}
+                        className="h-7 px-1"
+                      >
+                        {isGrantSaved(grant.id) ? (
+                          <BookmarkCheck className="h-4 w-4 text-accent-2" />
+                        ) : (
+                          <Bookmark className="h-4 w-4 text-gray-400" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {/* Match score badge */}
-                    {shouldShowMatchScore && (
-                      <div className="flex-shrink-0">
-                        {getMatchBadge(matchScore)}
-                      </div>
-                    )}
-                    {/* Bookmark button */}
-                    <button 
-                      onClick={(e) => handleBookmarkToggle(e, grant)}
-                      className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-                      aria-label={actuallyBookmarked ? "Remove bookmark" : "Add bookmark"}
-                    >
-                      <Bookmark className={`w-4 h-4 transition-colors ${
-                        actuallyBookmarked 
-                          ? 'fill-accent-lavender text-accent-lavender' 
-                          : 'text-gray-400 fill-none'
-                      }`} />
-                    </button>
+
+                  {/* Title */}
+                  <h3 className="text-base font-bold text-gray-900 leading-tight">
+                    {grant.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 leading-snug">
+                    {grant.aboutGrant}
+                  </p>
+
+                  {/* Footer with funding and deadline */}
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-gray-900">
+                      {grant.fundingAmount}
+                    </span>
+                    <span className="text-gray-500">
+                      {actualDeadline}
+                    </span>
                   </div>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-lg font-semibold text-ink-obsidian mb-2 leading-tight">
-                  {grant.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-sm text-ink-secondary mb-3 leading-relaxed line-clamp-2">
-                  {grant.aboutGrant}
-                </p>
-
-                {/* Footer with funding and deadline */}
-                <div className="flex items-center justify-between">
-                  <span className="text-base font-semibold text-accent-1">
-                    {grant.fundingAmount}
-                  </span>
-                  <div className="flex items-center gap-2 text-xs text-ink-secondary">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>Ansökan stänger {formatDate(grant.deadline)}</span>
+                {/* Status component at bottom with smaller font and subtle separation */}
+                {status === 'open' && (
+                  <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                    <div className="flex items-center gap-2 text-green-600">
+                      <Clock className="h-3 w-3" />
+                      <span>Öppen: {daysLeft} dagar kvar.</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-green-600 mt-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>Sök senast: {deadlineDate.toISOString().split('T')[0]}</span>
+                    </div>
                   </div>
-                </div>
+                )}
+                {status === 'upcoming' && (
+                  <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <Calendar className="h-3 w-3" />
+                      <span>Kommande: Öppnar för ansökningar {opensAt.toISOString().split('T')[0]}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
+        </div>
+      )}
+      
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 py-4 px-6 border-t border-gray-100">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className="h-8 w-8 p-0"
+            aria-label="Föregående sida"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <span className="text-sm text-gray-700 min-w-[90px] text-center">
+            {grants.length === 0
+              ? null
+              : `${startIndex + 1}–${Math.min(endIndex, grants.length)} of ${grants.length}`}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+            className="h-8 w-8 p-0"
+            aria-label="Nästa sida"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
         </div>
       )}
     </div>

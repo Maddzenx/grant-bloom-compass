@@ -25,12 +25,12 @@ const GrantList = ({
 }: GrantListProps) => {
   const containerClass = isMobile 
     ? "w-full bg-canvas-cloud overflow-hidden flex flex-col" 
-    : "basis-1/3 min-w-0 bg-canvas-cloud overflow-hidden flex flex-col border-r border-[#F0F1F3]";
+    : "basis-1/3 min-w-0 bg-canvas-cloud overflow-hidden flex flex-col";
 
   return (
     <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <div className="pl-0 md:pl-2 pr-4 md:pr-6">
+        <div className="pl-0 md:pl-2 pr-0 md:pr-0">
           <ConsolidatedGrantList
             grants={grants}
             selectedGrant={selectedGrant}
