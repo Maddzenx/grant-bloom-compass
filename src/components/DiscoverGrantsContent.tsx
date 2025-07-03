@@ -57,7 +57,7 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="h-screen bg-canvas-cloud flex flex-col w-full overflow-hidden">
+    <div className="flex flex-col w-full bg-canvas-cloud overflow-hidden">
       {/* Enhanced Search Header */}
       <DiscoverHeader 
         searchTerm={searchTerm} 
