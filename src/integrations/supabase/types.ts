@@ -104,6 +104,30 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          content: string
+          created_at: string | null
+          embedding: unknown | null
+          id: number
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          embedding?: unknown | null
+          id?: never
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          embedding?: unknown | null
+          id?: never
+          title?: string
+        }
+        Relationships: []
+      }
       draft_versions: {
         Row: {
           changes_summary: string | null
@@ -199,6 +223,7 @@ export type Database = {
           eligibility: string | null
           eligible_cost_categories: Json | null
           eligible_organisations: Json | null
+          embedding: string | null
           error_message: string | null
           evaluation_criteria: string | null
           geographic_scope: string | null
@@ -254,6 +279,7 @@ export type Database = {
           eligibility?: string | null
           eligible_cost_categories?: Json | null
           eligible_organisations?: Json | null
+          embedding?: string | null
           error_message?: string | null
           evaluation_criteria?: string | null
           geographic_scope?: string | null
@@ -309,6 +335,7 @@ export type Database = {
           eligibility?: string | null
           eligible_cost_categories?: Json | null
           eligible_organisations?: Json | null
+          embedding?: string | null
           error_message?: string | null
           evaluation_criteria?: string | null
           geographic_scope?: string | null
@@ -588,7 +615,87 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      embedding_input: {
+        Args: { doc: Database["public"]["Tables"]["documents"]["Row"] }
+        Returns: string
+      }
+      match_documents: {
+        Args: {
+          query_embedding: string
+          match_threshold: number
+          match_count: number
+        }
+        Returns: {
+          content: string
+          created_at: string | null
+          embedding: unknown | null
+          id: number
+          title: string
+        }[]
+      }
+      match_grant_call_details: {
+        Args: {
+          query_embedding: string
+          match_threshold: number
+          match_count: number
+        }
+        Returns: {
+          ai_enabled: boolean | null
+          application_closing_date: string | null
+          application_opening_date: string | null
+          application_process: string | null
+          application_templates_links: Json | null
+          application_templates_names: Json | null
+          cofinancing_level: number | null
+          cofinancing_required: boolean | null
+          consortium_requirement: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contact_title: string | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          eligibility: string | null
+          eligible_cost_categories: Json | null
+          eligible_organisations: Json | null
+          embedding: string | null
+          error_message: string | null
+          evaluation_criteria: string | null
+          geographic_scope: string | null
+          id: string
+          industry_sectors: Json | null
+          information_webinar_dates: Json | null
+          information_webinar_links: Json | null
+          information_webinar_names: Json | null
+          is_original_source: boolean | null
+          keywords: Json | null
+          max_grant_per_project: number | null
+          min_grant_per_project: number | null
+          organisation: string | null
+          original_source_url: string | null
+          original_url: string
+          other_sources_links: Json | null
+          other_sources_names: Json | null
+          other_templates_links: Json | null
+          other_templates_names: Json | null
+          processed_at: string | null
+          processing_status: string | null
+          project_duration_months_max: number | null
+          project_duration_months_min: number | null
+          project_end_date_max: string | null
+          project_end_date_min: string | null
+          project_start_date_max: string | null
+          project_start_date_min: string | null
+          region: string | null
+          scraped_at: string | null
+          search_description: string | null
+          subtitle: string | null
+          title: string | null
+          total_funding_amount: number | null
+          updated_at: string | null
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

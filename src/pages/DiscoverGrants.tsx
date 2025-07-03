@@ -3,15 +3,13 @@ import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrants } from "@/hooks/useGrants";
 import { Grant } from "@/types/grant";
-import { useAIGrantSearch } from "@/hooks/useAIGrantSearch";
+import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useGrantSelection } from "@/hooks/useGrantSelection";
 import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
-import { AISearchResult, AIGrantMatch } from "@/hooks/useAIGrantSearch";
-import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
 
 const DiscoverGrants = () => {
   const location = useLocation();
@@ -25,7 +23,7 @@ const DiscoverGrants = () => {
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
-  const [aiMatches, setAiMatches] = useState<AIGrantMatch[] | undefined>(undefined);
+  const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
   console.log('🔥 DiscoverGrants render:', { 
@@ -34,7 +32,7 @@ const DiscoverGrants = () => {
     isError,
     locationState: location.state,
     initialSearchTerm,
-    aiMatchesCount: aiMatches?.length || 0,
+    semanticMatchesCount: semanticMatches?.length || 0,
     searchTerm
   });
 
@@ -49,11 +47,11 @@ const DiscoverGrants = () => {
     matchedGrantsCount: matchedGrants?.length || 0
   });
 
-  // Set AI matches from location state when available
+  // Set semantic matches from location state when available
   useEffect(() => {
     if (matchingResult?.rankedGrants) {
-      console.log('🎯 Setting AI matches from location state:', matchingResult.rankedGrants.length);
-      setAiMatches(matchingResult.rankedGrants);
+      console.log('🎯 Setting semantic matches from location state:', matchingResult.rankedGrants.length);
+      setSemanticMatches(matchingResult.rankedGrants);
       setSortBy("default");
     }
   }, [matchingResult]);
@@ -66,8 +64,8 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Use the same matching engine as the home page
-  const { matchGrants, isMatching } = useGrantsMatchingEngine();
+  // Use the new semantic search
+  const { searchGrants, isSearching } = useSemanticSearch();
 
   // Use matched grants if available, otherwise use all grants
   const baseGrants = matchedGrants || grants;
@@ -129,39 +127,32 @@ const DiscoverGrants = () => {
     return filtered;
   }, [baseGrants, filters]);
 
-  // Use the matching engine search instead of the simple AI search
+  // Handle semantic search
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
-      console.log('⚠️ Empty search term, clearing AI matches');
-      setAiMatches(undefined);
+      console.log('⚠️ Empty search term, clearing semantic matches');
+      setSemanticMatches(undefined);
       setSortBy("default");
       return;
     }
 
-    console.log('🤖 Using matching engine search for:', searchTerm);
+    console.log('🔍 Using semantic search for:', searchTerm);
     try {
-      const result = await matchGrants(searchTerm);
-      console.log('🎯 Matching engine result:', result);
+      const result = await searchGrants(searchTerm);
+      console.log('🎯 Semantic search result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
-        console.log('✅ Setting AI matches from matching engine result:', result.rankedGrants.length);
-        // Convert matching engine results to AI matches format
-        const convertedMatches = result.rankedGrants.map(match => ({
-          grantId: match.grantId,
-          relevanceScore: match.relevanceScore,
-          matchingReasons: match.matchingReasons || []
-        }));
-        setAiMatches(convertedMatches);
+        console.log('✅ Setting semantic matches from search result:', result.rankedGrants.length);
+        setSemanticMatches(result.rankedGrants);
         setSortBy("default");
       } else {
         console.log('⚠️ No matches found, clearing existing matches');
-        setAiMatches(undefined);
+        setSemanticMatches(undefined);
         setSortBy("default");
       }
     } catch (error) {
-      console.error('❌ Matching engine search failed:', error);
-      // On error, still clear existing matches to show all grants
-      setAiMatches(undefined);
+      console.error('❌ Semantic search failed:', error);
+      setSemanticMatches(undefined);
       setSortBy("default");
     }
   };
@@ -169,46 +160,45 @@ const DiscoverGrants = () => {
   // Use filtered grants as search results
   const searchResults = filteredGrants;
 
-  // Clear AI matches when search term is cleared manually (not from navigation)
+  // Clear semantic matches when search term is cleared manually
   useEffect(() => {
     if (!searchTerm.trim() && !location.state?.searchTerm) {
-      setAiMatches(undefined);
-      console.log('🧹 Cleared AI matches due to empty search term');
+      setSemanticMatches(undefined);
+      console.log('🧹 Cleared semantic matches due to empty search term');
     }
   }, [searchTerm, location.state?.searchTerm]);
 
-  // Apply AI-based sorting when we have AI matches and using default sorting
+  // Apply semantic-based sorting when we have matches and using default sorting
   const sortedSearchResults = useMemo(() => {
     console.log('🎯 Sorting results:', {
-      hasAiMatches: !!aiMatches,
-      aiMatchesCount: aiMatches?.length || 0,
+      hasSemanticMatches: !!semanticMatches,
+      semanticMatchesCount: semanticMatches?.length || 0,
       sortBy,
       searchResultsCount: searchResults.length
     });
 
-    if (aiMatches && aiMatches.length > 0 && sortBy === "default") {
-      console.log('🤖 Applying AI-based sorting for default sort');
+    if (semanticMatches && semanticMatches.length > 0 && sortBy === "default") {
+      console.log('🔍 Applying semantic-based sorting for default sort');
       
-      // Create a map of grant IDs to their AI scores
+      // Create a map of grant IDs to their semantic scores
       const scoreMap = new Map<string, number>();
-      aiMatches.forEach(match => {
-        // Ensure we have a valid score
+      semanticMatches.forEach(match => {
         const score = match.relevanceScore !== null && match.relevanceScore !== undefined 
           ? match.relevanceScore 
-          : 0.25; // Fallback score
+          : 0.25;
         scoreMap.set(match.grantId, score);
         
         console.log(`📊 Grant ${match.grantId} -> Score: ${score}`);
       });
       
-      // Sort grants by AI relevance score (highest first)
+      // Sort grants by semantic relevance score (highest first)
       const sorted = [...searchResults].sort((a, b) => {
-        const scoreA = scoreMap.get(a.id) ?? 0.1; // Fallback for missing scores
+        const scoreA = scoreMap.get(a.id) ?? 0.1;
         const scoreB = scoreMap.get(b.id) ?? 0.1;
         return scoreB - scoreA;
       });
       
-      console.log('🎯 AI-sorted results:', {
+      console.log('🎯 Semantic-sorted results:', {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 5).map(g => ({
           id: g.id,
@@ -221,9 +211,9 @@ const DiscoverGrants = () => {
     }
     
     return searchResults;
-  }, [searchResults, aiMatches, sortBy]);
+  }, [searchResults, semanticMatches, sortBy]);
 
-  // Grant selection logic - uses context directly for bookmark state
+  // Grant selection logic
   const {
     selectedGrant,
     showDetails,
@@ -237,7 +227,6 @@ const DiscoverGrants = () => {
   useEffect(() => {
     if (location.state?.selectedGrant && grants.length > 0) {
       const preSelectedGrant = location.state.selectedGrant as Grant;
-      // Find the grant in our current grants list
       const matchingGrant = grants.find(g => g.id === preSelectedGrant.id);
       if (matchingGrant) {
         console.log('🎯 Pre-selecting grant from navigation state:', matchingGrant.id);
@@ -245,23 +234,6 @@ const DiscoverGrants = () => {
       }
     }
   }, [location.state, grants, setSelectedGrant]);
-
-  // Log structured matching results if available
-  useEffect(() => {
-    if (matchingResult) {
-      console.log('🤖 Structured matching results available:', {
-        explanation: matchingResult.explanation,
-        totalMatches: matchingResult.rankedGrants.length,
-        topMatches: matchingResult.rankedGrants.slice(0, 5).map(match => ({
-          grantId: match.grantId,
-          score: match.relevanceScore,
-          reasons: match.matchingReasons
-        }))
-      });
-    } else {
-      console.log('❌ No structured matching results in location state');
-    }
-  }, [matchingResult]);
 
   const handleToggleBookmark = useCallback((grantId: string) => {
     toggleBookmark(grantId);
@@ -296,9 +268,9 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={[]}
-      isSearching={isMatching}
+      isSearching={isSearching}
       searchMetrics={{ totalResults: searchResults.length, searchTime: 0 }}
-      aiMatches={aiMatches}
+      aiMatches={semanticMatches}
       onSearchChange={setSearchTerm}
       onSearch={handleSearch}
       onSortChange={setSortBy}
