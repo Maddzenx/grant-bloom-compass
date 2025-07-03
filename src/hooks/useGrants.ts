@@ -53,6 +53,7 @@ export const useGrants = () => {
               subtitle: 'Supporting innovation in Swedish SMEs',
               eligibility: 'Small and medium enterprises registered in Sweden with less than 250 employees',
               application_closing_date: '2024-12-31',
+              application_opening_date: '2024-07-01',
               max_grant_per_project: 5000000,
               min_grant_per_project: 500000,
               total_funding_amount: 50000000,
@@ -76,6 +77,7 @@ export const useGrants = () => {
               subtitle: 'Advancing green technology solutions',
               eligibility: 'Companies and research organizations working on renewable energy projects',
               application_closing_date: '2024-11-15',
+              application_opening_date: '2024-08-01',
               max_grant_per_project: 10000000,
               min_grant_per_project: 1000000,
               total_funding_amount: 100000000,
@@ -99,6 +101,7 @@ export const useGrants = () => {
               subtitle: 'Digitizing Swedish businesses',
               eligibility: 'Swedish companies looking to implement digital transformation projects',
               application_closing_date: '2024-10-30',
+              application_opening_date: '2024-07-15',
               max_grant_per_project: 2000000,
               min_grant_per_project: 200000,
               total_funding_amount: 25000000,
@@ -152,14 +155,15 @@ export const useGrants = () => {
         } catch (transformError) {
           console.error('❌ Transform error for grant:', grant.id, transformError);
           
-          // Create a fallback grant object
+          // Create a fallback grant object with all required properties
           const fallbackGrant: Grant = {
             id: grant.id,
             title: grant.title || 'Untitled Grant',
             organization: grant.organisation || 'Unknown Organization',
             description: grant.description || grant.subtitle || 'No description available',
             fundingAmount: 'Not specified',
-            deadline: 'Not specified',
+            opens_at: grant.application_opening_date || '2024-01-01',
+            deadline: grant.application_closing_date || 'Not specified',
             tags: [],
             qualifications: grant.eligibility || 'Not specified',
             aboutGrant: grant.subtitle || grant.description || 'No information available',
