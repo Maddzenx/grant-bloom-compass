@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Grant } from '@/types/grant';
 import { SortOption } from '@/components/SortingControls';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
@@ -8,6 +8,7 @@ import GrantList from '@/components/GrantList';
 import GrantDetailsPanel from '@/components/GrantDetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
+import { FilterBar } from './FilterBar';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -56,6 +57,23 @@ export const DiscoverGrantsContent = ({
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
 
+  // Extract unique organizations, tags, and sectors from grants
+  const organizationOptions = useMemo(() => {
+    return grants
+      .map(g => g.organization)
+      .filter(Boolean)
+      .filter((org, idx, arr) => arr.indexOf(org) === idx)
+      .sort();
+  }, [grants]);
+
+  const tagOptions = useMemo(() => {
+    const tags = grants.flatMap(g => g.tags || []);
+    return Array.from(new Set(tags)).sort();
+  }, [grants]);
+
+  // Sectors: fallback to empty array (add logic if sector field is added)
+  const sectorOptions: string[] = [];
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
       {/* Enhanced Search Header */}
@@ -71,19 +89,19 @@ export const DiscoverGrantsContent = ({
         searchMetrics={searchMetrics} 
       />
 
-      {/* Enhanced Filter Controls */}
-      <div className="bg-canvas-cloud">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <EnhancedFilterControls 
-            filters={filters} 
-            onFiltersChange={onFiltersChange} 
-            onClearAll={onClearFilters} 
-            grants={grants} 
-            filteredGrants={searchResults} 
-            hasActiveFilters={hasActiveFilters} 
-          />
-        </div>
-      </div>
+      {/* Pixel-perfect Filter Bar */}
+      <FilterBar
+        filters={filters}
+        onFiltersChange={onFiltersChange}
+        onResetFilters={onClearFilters}
+        organizationOptions={organizationOptions}
+        fundingRange={filters.fundingRange}
+        onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+        deadlineValue={filters.deadline}
+        onDeadlineChange={val => onFiltersChange({ deadline: val })}
+        tagOptions={tagOptions}
+        sectorOptions={sectorOptions}
+      />
 
       {/* Main Content Area - Full width with natural scrolling */}
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 relative">
@@ -139,7 +157,9 @@ export const DiscoverGrantsContent = ({
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 
                     isMobile={false} 
-                    onBackToList={onBackToList} 
+                    onBackToList={onBackToList}
+                    sortBy={sortBy}
+                    onSortChange={onSortChange}
                   />
                 </div>
               </div>

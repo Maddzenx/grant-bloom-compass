@@ -9,13 +9,17 @@ interface GrantDetailsProps {
   onToggleBookmark: () => void;
   isMobile?: boolean;
   onBackToList?: () => void;
+  sortBy?: import("./SortingControls").SortOption;
+  onSortChange?: (sortBy: import("./SortingControls").SortOption) => void;
 }
 const GrantDetails = ({
   grant,
   isBookmarked,
   onToggleBookmark,
   isMobile = false,
-  onBackToList
+  onBackToList,
+  sortBy = "default",
+  onSortChange = () => {},
 }: GrantDetailsProps) => {
   return <div className="max-w-4xl mx-auto">
       <div className="bg-white min-h-screen">
@@ -25,6 +29,8 @@ const GrantDetails = ({
           onToggleBookmark={onToggleBookmark} 
           isMobile={isMobile} 
           onBackToList={onBackToList}
+          sortBy={sortBy}
+          onSortChange={onSortChange}
         />
         <div className="w-full px-4 pb-6 rounded-none py-0 md:px-[16px]">
           <GrantNotionKeyInfo grant={grant} isMobile={isMobile} />
