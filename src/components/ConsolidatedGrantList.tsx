@@ -96,7 +96,7 @@ const ConsolidatedGrantList = ({
     <div className="bg-white">
       {grants.length === 0 ? (
         <div className="text-center text-ink-secondary py-12 px-6">
-          <div className="text-lg">
+          <div className="text-base">
             {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
           </div>
         </div>
@@ -115,13 +115,13 @@ const ConsolidatedGrantList = ({
             return (
               <div
                 key={grant.id}
-                className={`p-6 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
-                  isSelected ? 'bg-accent-2/10 border-l-4 border-l-accent-2' : ''
+                className={`p-5 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
+                  isSelected ? 'bg-[#F6F6F6]' : ''
                 }`}
                 onClick={() => onGrantSelect(grant)}
               >
                 {/* Header with organization logo and match score */}
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <img 
                       src={orgLogo.src} 
@@ -142,7 +142,7 @@ const ConsolidatedGrantList = ({
                       className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
                       aria-label={actuallyBookmarked ? "Remove bookmark" : "Add bookmark"}
                     >
-                      <Bookmark className={`w-5 h-5 transition-colors ${
+                      <Bookmark className={`w-4 h-4 transition-colors ${
                         actuallyBookmarked 
                           ? 'fill-accent-lavender text-accent-lavender' 
                           : 'text-gray-400 fill-none'
@@ -152,22 +152,22 @@ const ConsolidatedGrantList = ({
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-ink-obsidian mb-3 leading-tight">
+                <h3 className="text-lg font-semibold text-ink-obsidian mb-2 leading-tight">
                   {grant.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-base text-ink-secondary mb-4 leading-relaxed line-clamp-2">
+                <p className="text-sm text-ink-secondary mb-3 leading-relaxed line-clamp-2">
                   {grant.aboutGrant}
                 </p>
 
                 {/* Footer with funding and deadline */}
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold text-accent-1">
+                  <span className="text-base font-semibold text-accent-1">
                     {grant.fundingAmount}
                   </span>
-                  <div className="flex items-center gap-2 text-sm text-ink-secondary">
-                    <Calendar className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-xs text-ink-secondary">
+                    <Calendar className="w-3.5 h-3.5" />
                     <span>Ansökan stänger {formatDate(grant.deadline)}</span>
                   </div>
                 </div>
