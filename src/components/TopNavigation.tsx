@@ -1,11 +1,9 @@
-
 import { useLocation, Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import LanguageSelector from "@/components/LanguageSelector";
 import UserMenu from "@/components/ui/user-menu";
 
 export function TopNavigation() {
@@ -52,18 +50,18 @@ export function TopNavigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {menuItems.map(item => {
+          <div className="hidden md:flex items-center space-x-3 text-xs">
+            {menuItems.filter(item => item.title !== 'Hem').map(item => {
               const isActive = location.pathname === item.url;
               return (
                 <Link
                   key={item.title}
                   to={item.url}
                   className={cn(
-                    "px-4 py-2 text-lg font-newsreader font-medium transition-colors rounded-md",
+                    "px-2 py-2 text-xs font-newsreader transition-colors rounded-md",
                     isActive
-                      ? 'bg-white text-ink-obsidian shadow-sm border' 
-                      : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border'
+                      ? 'text-ink-obsidian font-bold' 
+                      : 'text-ink-secondary font-medium hover:bg-white hover:border'
                   )}
                   style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                 >
@@ -73,13 +71,11 @@ export function TopNavigation() {
             })}
             
             {/* Language Selector and User Menu */}
-            <LanguageSelector />
             <UserMenu />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            <LanguageSelector />
             <UserMenu />
             <Button
               variant="ghost"
@@ -108,7 +104,7 @@ export function TopNavigation() {
                     to={item.url}
                     onClick={closeMobileMenu}
                     className={cn(
-                      "block px-3 py-3 text-lg font-newsreader font-medium transition-colors rounded-md",
+                      "block px-3 py-3 text-base font-newsreader font-medium transition-colors rounded-md",
                       isActive
                         ? 'bg-white text-ink-obsidian shadow-sm border'
                         : 'text-ink-secondary hover:bg-white hover:shadow-sm hover:border'
