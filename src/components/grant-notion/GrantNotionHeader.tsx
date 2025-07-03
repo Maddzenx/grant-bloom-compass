@@ -50,14 +50,14 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-  return <div className="w-full px-0 md:px-6 pb-8 rounded-none pt-4">
+  return <div className="w-full px-0 md:px-4 pb-4 rounded-none pt-2">
       {/* Title */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-2 leading-tight">
+      <h1 className="text-2xl font-bold text-gray-900 mb-1 leading-tight">
         {grant.title}
       </h1>
 
       {/* Description from database */}
-      {grant.description && <p className="text-gray-700 mb-4 leading-relaxed max-w-[65ch] text-base">
+      {grant.description && <p className="text-gray-700 mb-2 leading-snug max-w-[65ch] text-sm">
           {grant.description}
         </p>}
 
@@ -65,11 +65,11 @@ const GrantNotionHeader = ({
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
 
       {/* Action buttons */}
-      <div className="flex items-center gap-3 mb-4">
-        <Button onClick={handleApplyClick} className="px-6 py-2 text-black text-sm font-medium rounded-lg bg-[#d7cffc] hover:bg-[#CEC5F9]">
+      <div className="flex items-center gap-2 mb-2">
+        <Button onClick={handleApplyClick} className="px-4 py-1 text-black text-xs font-medium rounded-lg bg-[#d7cffc] hover:bg-[#CEC5F9] h-8">
           Ansök om bidrag
         </Button>
-        <Button variant="outline" onClick={handleBookmarkToggle} className="px-4 py-2 text-sm border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50">
+        <Button variant="outline" onClick={handleBookmarkToggle} className="px-2 py-1 text-xs border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 h-8">
           <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"}`} />
           {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
         </Button>

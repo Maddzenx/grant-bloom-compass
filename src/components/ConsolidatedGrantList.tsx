@@ -155,12 +155,12 @@ const ConsolidatedGrantList = ({
             return (
               <div
                 key={grant.id}
-                className={`p-5 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
+                className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${
                   isSelected ? 'bg-[#F6F6F6]' : ''
                 }`}
                 onClick={() => onGrantSelect(grant)}
               >
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {/* Header with organization logo and match score */}
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
@@ -185,7 +185,7 @@ const ConsolidatedGrantList = ({
                           e.stopPropagation();
                           handleBookmarkToggle(e, grant);
                         }}
-                        className="h-8 px-2"
+                        className="h-7 px-1"
                       >
                         {isGrantSaved(grant.id) ? (
                           <BookmarkCheck className="h-4 w-4 text-accent-2" />
@@ -202,12 +202,12 @@ const ConsolidatedGrantList = ({
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-sm text-gray-600 leading-snug">
                     {grant.aboutGrant}
                   </p>
 
                   {/* Footer with funding and deadline */}
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-gray-900">
                       {grant.fundingAmount}
                     </span>
@@ -217,24 +217,24 @@ const ConsolidatedGrantList = ({
                   </div>
                 </div>
 
-                {/* Status component at bottom with smaller font */}
+                {/* Status component at bottom with smaller font and subtle separation */}
                 {status === 'open' && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Clock className="h-3 w-3 text-green-600" />
-                      <span className="text-green-600 font-medium">Öppen: {daysLeft} dagar kvar.</span>
+                  <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                    <div className="flex items-center gap-2 text-green-600">
+                      <Clock className="h-3 w-3" />
+                      <span>Öppen: {daysLeft} dagar kvar.</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm mt-1">
-                      <Calendar className="h-3 w-3 text-green-600" />
-                      <span className="text-green-600">Sök senast: {deadlineDate.toISOString().split('T')[0]}</span>
+                    <div className="flex items-center gap-2 text-green-600 mt-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>Sök senast: {deadlineDate.toISOString().split('T')[0]}</span>
                     </div>
                   </div>
                 )}
                 {status === 'upcoming' && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="h-3 w-3 text-amber-600" />
-                      <span className="text-amber-600 font-medium">Kommande: Öppnar för ansökningar {opensAt.toISOString().split('T')[0]}</span>
+                  <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                    <div className="flex items-center gap-2 text-amber-600">
+                      <Calendar className="h-3 w-3" />
+                      <span>Kommande: Öppnar för ansökningar {opensAt.toISOString().split('T')[0]}</span>
                     </div>
                   </div>
                 )}

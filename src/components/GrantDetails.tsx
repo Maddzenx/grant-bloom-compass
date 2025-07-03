@@ -18,7 +18,7 @@ const GrantDetails = ({
   return <div className="max-w-4xl mx-auto">
       <div className="bg-white min-h-screen">
         <GrantNotionHeader grant={grant} isBookmarked={isBookmarked} onToggleBookmark={onToggleBookmark} isMobile={isMobile} />
-        <div className="w-full px-6 pb-12 rounded-none py-0 md:px-[24px]">
+        <div className="w-full px-4 pb-6 rounded-none py-0 md:px-[16px]">
           <GrantNotionKeyInfo grant={grant} isMobile={isMobile} />
           <GrantNotionContent grant={grant} isMobile={isMobile} />
         </div>

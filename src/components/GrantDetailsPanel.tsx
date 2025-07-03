@@ -86,7 +86,7 @@ const GrantDetailsPanel = ({
               </div>
             )}
 
-            <div className="bg-white rounded-lg mr-0 md:mr-2">
+            <div className="bg-white rounded-lg mr-0 md:mr-2 px-4 pb-6">
               <GrantDetails 
                 grant={selectedGrant} 
                 isBookmarked={isGrantSaved(selectedGrant.id)} 
