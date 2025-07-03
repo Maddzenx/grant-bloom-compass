@@ -148,16 +148,37 @@ serve(async (req) => {
     const maxRawScore = Math.max(...scoredGrants.map(sg => sg.similarity));
     console.log(`📊 Max raw similarity score: ${maxRawScore.toFixed(3)}`);
 
-    // Dynamically transpose all scores so the highest becomes 1.0 (100%)
+    // Determine dynamic ceiling based on the quality of the top match
+    // Map raw scores to ceiling percentages between 50% and 100%
+    const determineCeiling = (rawScore: number): number => {
+      // Define thresholds for ceiling calculation
+      const highThreshold = 4.0; // 50% cosine similarity * 8 scaling = excellent match
+      const lowThreshold = 1.0;  // 12.5% cosine similarity * 8 scaling = weak match
+      
+      if (rawScore >= highThreshold) {
+        return 1.0; // 100% ceiling for excellent matches
+      } else if (rawScore <= lowThreshold) {
+        return 0.5; // 50% ceiling for weak matches
+      } else {
+        // Linear interpolation between 50% and 100%
+        const ratio = (rawScore - lowThreshold) / (highThreshold - lowThreshold);
+        return 0.5 + (0.5 * ratio); // 50% + up to 50% more
+      }
+    };
+
+    const dynamicCeiling = determineCeiling(maxRawScore);
+    console.log(`📊 Dynamic ceiling set to: ${Math.round(dynamicCeiling * 100)}% based on top score quality`);
+
+    // Dynamically transpose all scores so the highest becomes the dynamic ceiling
     // Using subtraction to preserve the 8x scaling factor
     const scaledGrants = scoredGrants.map(({ grant, similarity }) => {
-      // Subtract (maxScore - 1.0) from all scores to shift the maximum to 1.0
-      const transposedScore = similarity - (maxRawScore - 1.0);
+      // Subtract (maxScore - ceiling) from all scores to shift the maximum to the ceiling
+      const transposedScore = similarity - (maxRawScore - dynamicCeiling);
       
-      // Clamp to ensure values stay within 0-1 range
-      const clampedScore = Math.max(0, Math.min(1, transposedScore));
+      // Clamp to ensure values stay within 0-ceiling range
+      const clampedScore = Math.max(0, Math.min(dynamicCeiling, transposedScore));
 
-      console.log(`📊 Grant ${grant.id}: Raw: ${similarity.toFixed(3)}, Transposed: ${clampedScore.toFixed(3)}`);
+      console.log(`📊 Grant ${grant.id}: Raw: ${similarity.toFixed(3)}, Transposed: ${clampedScore.toFixed(3)} (${Math.round(clampedScore * 100)}%)`);
 
       return { grant, similarity: clampedScore };
     });
