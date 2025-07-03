@@ -17,6 +17,7 @@ import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
+import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
@@ -25,6 +26,7 @@ const HomePage = () => {
 
   const { data: grants, isLoading: grantsLoading } = useGrants();
   const { matchGrants, isMatching, matchingError } = useGrantsMatchingEngine();
+  const { searchGrants, isSearching } = useSemanticSearch();
   const {
     isRecording,
     isTranscribing,
@@ -40,13 +42,32 @@ const HomePage = () => {
       return;
     }
 
-    // Navigate to discover page with search term to trigger semantic search
-    console.log('🚀 Navigating to discover page with search term:', inputValue);
-    navigate("/discover", {
-      state: {
-        searchTerm: inputValue
-      }
-    });
+    console.log('🚀 Starting search on home page for:', inputValue);
+    
+    try {
+      // Perform the search first
+      const searchResult = await searchGrants(inputValue);
+      
+      console.log('🔍 Search completed, navigating to discover page with results:', searchResult);
+      
+      // Navigate to discover page with search term and results
+      navigate("/discover", {
+        state: {
+          searchTerm: inputValue,
+          searchResults: searchResult
+        }
+      });
+    } catch (error) {
+      console.error('❌ Search failed on home page:', error);
+      
+      // Navigate anyway but let discover page handle the error
+      navigate("/discover", {
+        state: {
+          searchTerm: inputValue,
+          searchError: true
+        }
+      });
+    }
   };
 
   const handleVoiceInput = async () => {
@@ -74,7 +95,7 @@ const HomePage = () => {
     }
   };
 
-  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading;
+  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading || isSearching;
 
   return (
     <div className="min-h-screen bg-[#F0F1F3] relative">
@@ -113,6 +134,7 @@ const HomePage = () => {
             isUploading={isUploading}
             isMatching={isMatching}
             grantsLoading={grantsLoading}
+            isSearching={isSearching}
             matchingError={matchingError}
           />
         </div>

@@ -8,6 +8,7 @@ interface StatusMessagesProps {
   isUploading: boolean;
   isMatching: boolean;
   grantsLoading: boolean;
+  isSearching?: boolean;
   matchingError: string | null;
 }
 
@@ -17,6 +18,7 @@ const StatusMessages = ({
   isUploading,
   isMatching,
   grantsLoading,
+  isSearching,
   matchingError
 }: StatusMessagesProps) => {
   const { t } = useLanguage();
@@ -25,6 +27,14 @@ const StatusMessages = ({
     return (
       <div className="text-center text-red-600 mt-4">
         <p>{t('status.error')}: {matchingError}</p>
+      </div>
+    );
+  }
+
+  if (isSearching) {
+    return (
+      <div className="text-center text-blue-600 mt-4">
+        <p>Söker bidrag...</p>
       </div>
     );
   }

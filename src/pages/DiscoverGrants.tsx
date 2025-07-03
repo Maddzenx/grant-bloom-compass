@@ -23,9 +23,10 @@ const DiscoverGrants = () => {
   
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
-  const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(undefined);
+  const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
+  const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(initialSearchResults?.rankedGrants || undefined);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(!!initialSearchTerm);
 
   console.log('🔥 DiscoverGrants render:', { 
     grantsCount: grants?.length || 0, 
@@ -78,13 +79,15 @@ const DiscoverGrants = () => {
     }
   };
 
-  // Auto-trigger search only if coming from home page with search term
+  // Auto-trigger search only if coming from home page with search term but no pre-fetched results
   useEffect(() => {
-    if (initialSearchTerm && !hasSearched) {
+    if (initialSearchTerm && !hasSearched && !initialSearchResults) {
       console.log('🔍 Auto-triggering search from home page for:', initialSearchTerm);
       handleSearch();
+    } else if (initialSearchResults) {
+      console.log('✅ Using pre-fetched search results from home page');
     }
-  }, [initialSearchTerm, hasSearched]);
+  }, [initialSearchTerm, hasSearched, initialSearchResults]);
 
   // Filter grants based on search state
   const baseFilteredGrants = useMemo(() => {
