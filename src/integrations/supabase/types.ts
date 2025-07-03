@@ -104,30 +104,6 @@ export type Database = {
           },
         ]
       }
-      documents: {
-        Row: {
-          content: string
-          created_at: string | null
-          embedding: unknown | null
-          id: number
-          title: string
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          embedding?: unknown | null
-          id?: never
-          title: string
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          embedding?: unknown | null
-          id?: never
-          title?: string
-        }
-        Relationships: []
-      }
       draft_versions: {
         Row: {
           changes_summary: string | null
@@ -373,24 +349,6 @@ export type Database = {
         }
         Relationships: []
       }
-      grant_call_vector_search: {
-        Row: {
-          content: string
-          embedding: string | null
-          id: string
-        }
-        Insert: {
-          content: string
-          embedding?: string | null
-          id?: string
-        }
-        Update: {
-          content?: string
-          embedding?: string | null
-          id?: string
-        }
-        Relationships: []
-      }
       grantListDailyScrape: {
         Row: {
           grant_url: string
@@ -615,24 +573,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      embedding_input: {
-        Args: { doc: Database["public"]["Tables"]["documents"]["Row"] }
-        Returns: string
-      }
-      match_documents: {
-        Args: {
-          query_embedding: string
-          match_threshold: number
-          match_count: number
-        }
-        Returns: {
-          content: string
-          created_at: string | null
-          embedding: unknown | null
-          id: number
-          title: string
-        }[]
-      }
       match_grant_call_details: {
         Args: {
           query_embedding: string

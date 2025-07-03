@@ -1,3 +1,4 @@
+
 import { useLocation, Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -5,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
+import UserMenu from "@/components/ui/user-menu";
 
 export function TopNavigation() {
   const location = useLocation();
@@ -70,13 +72,15 @@ export function TopNavigation() {
               );
             })}
             
-            {/* Language Selector */}
+            {/* Language Selector and User Menu */}
             <LanguageSelector />
+            <UserMenu />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
             <LanguageSelector />
+            <UserMenu />
             <Button
               variant="ghost"
               size="sm"
