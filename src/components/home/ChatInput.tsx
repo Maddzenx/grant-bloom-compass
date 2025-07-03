@@ -110,7 +110,7 @@ const ChatInput = ({
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* Text Input Area */}
           <div className="px-4 py-4">
-            <Textarea placeholder={placeholderText} className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-lg focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none overflow-hidden transition-all duration-300 ease-in-out placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-["_"] placeholder:after:animate-pulse' : ''}`} value={inputValue} onChange={handleTextareaChange} onKeyPress={handleKeyPress} onFocus={handleFocus} disabled={isProcessing} rows={2} style={{
+            <Textarea placeholder={placeholderText} className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-lg focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-poppins resize-none overflow-hidden placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-["_"] placeholder:after:animate-pulse' : ''}`} value={inputValue} onChange={handleTextareaChange} onKeyPress={handleKeyPress} onFocus={handleFocus} disabled={isProcessing} rows={2} style={{
             height: 'auto',
             minHeight: '48px'
           }} />
