@@ -31,15 +31,17 @@ const GrantList = ({
   return (
     <div className={containerClass}>
       <ScrollArea className="flex-1">
-        <ConsolidatedGrantList
-          grants={grants}
-          selectedGrant={selectedGrant}
-          onGrantSelect={onGrantSelect}
-          onToggleBookmark={onToggleBookmark}
-          searchTerm={searchTerm}
-          isMobile={isMobile}
-          aiMatches={aiMatches}
-        />
+        <div className="pl-0 md:pl-2 pr-4 md:pr-6">
+          <ConsolidatedGrantList
+            grants={grants}
+            selectedGrant={selectedGrant}
+            onGrantSelect={onGrantSelect}
+            onToggleBookmark={onToggleBookmark}
+            searchTerm={searchTerm}
+            isMobile={isMobile}
+            aiMatches={aiMatches}
+          />
+        </div>
       </ScrollArea>
     </div>
   );
