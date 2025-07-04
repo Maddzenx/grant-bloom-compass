@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Grant } from "@/types/grant";
 import { EnhancedFilterOptions } from "@/hooks/useFilterState";
@@ -120,20 +119,20 @@ export const EnhancedFilterControls = ({
 
   const activeFilterCount = calculateActiveFilterCount(filters);
 
-  return <div className="" style={{
-    backgroundColor: '#FFFFFF'
-  }}>
+  return <div className="border border-gray-200 rounded-lg shadow-sm bg-white px-2 py-2 md:px-4 md:py-3 max-w-5xl mx-auto">
       {/* Filter chips */}
-      {hasActiveFilters && <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={onClearAll} organizations={organizationOptions} />}
+      {hasActiveFilters && <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={onClearAll} organizations={organizationOptions} className="mb-2" />}
 
       {/* Header with expand/collapse toggle */}
-      <FilterHeader isExpanded={isExpanded} onToggleExpanded={() => setIsExpanded(!isExpanded)} hasActiveFilters={hasActiveFilters} filteredCount={filteredGrants.length} totalCount={grants.length} activeFilterCount={activeFilterCount} />
+      <FilterHeader isExpanded={isExpanded} onToggleExpanded={() => setIsExpanded(!isExpanded)} hasActiveFilters={hasActiveFilters} filteredCount={filteredGrants.length} totalCount={grants.length} activeFilterCount={activeFilterCount} className="mb-1" />
 
       {/* Filter controls - only show when expanded */}
-      {isExpanded && <div className="p-4 pt-3 border border-gray-200 bg-[#f0f1f3]">
-          <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} />
+      {isExpanded && <div className="p-2 pt-2 border border-gray-100 bg-[#f7f7fa] rounded-lg">
+          <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} compact />
 
-          <FilterActions hasPendingChanges={hasPendingChanges} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} />
+          <div className="flex justify-end gap-2 mt-2">
+            <FilterActions hasPendingChanges={hasPendingChanges} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} compact />
+          </div>
         </div>}
     </div>;
 };

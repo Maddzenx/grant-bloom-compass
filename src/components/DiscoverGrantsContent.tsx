@@ -58,22 +58,29 @@ export const DiscoverGrantsContent = ({
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
 
-  // Extract unique organizations, tags, and sectors from grants
-  const organizationOptions = useMemo(() => {
-    return grants
-      .map(g => g.organization)
-      .filter(Boolean)
-      .filter((org, idx, arr) => arr.indexOf(org) === idx)
-      .sort();
-  }, [grants]);
+  // Extract unique organizations from grants
+  const organizationOptions = useMemo(() =>
+    grants.map(g => g.organization).filter(Boolean).filter((org, idx, arr) => arr.indexOf(org) === idx).sort(),
+    [grants]
+  );
 
-  const tagOptions = useMemo(() => {
-    const tags = grants.flatMap(g => g.tags || []);
-    return Array.from(new Set(tags)).sort();
-  }, [grants]);
+  // Extract unique industry sectors from grants
+  const industryOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.industry_sectors || []))).sort(),
+    [grants]
+  );
 
-  // Sectors: fallback to empty array (add logic if sector field is added)
-  const sectorOptions: string[] = [];
+  // Extract unique eligible applicant types from grants
+  const eligibleApplicantOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.eligible_organisations || []))).sort(),
+    [grants]
+  );
+
+  // Extract unique geographic scopes from grants
+  const geographicScopeOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.geographic_scope || []))).sort(),
+    [grants]
+  );
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
@@ -94,20 +101,23 @@ export const DiscoverGrantsContent = ({
             />
           </div>
           {/* Filter and sorting row */}
-          <div className="flex flex-row items-center justify-between max-w-2xl mt-0 gap-x-8">
-            <FilterBar
-              filters={filters}
-              onFiltersChange={onFiltersChange}
-              onResetFilters={onClearFilters}
-              organizationOptions={organizationOptions}
-              fundingRange={filters.fundingRange}
-              onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
-              deadlineValue={filters.deadline}
-              onDeadlineChange={val => onFiltersChange({ deadline: val })}
-              tagOptions={tagOptions}
-              sectorOptions={sectorOptions}
-            />
-            <div className="flex-shrink-0">
+          <div className="flex flex-row items-center justify-between w-full mt-0 gap-x-8">
+            <div className="flex-1 min-w-0">
+              <FilterBar
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                onResetFilters={onClearFilters}
+                organizationOptions={organizationOptions}
+                fundingRange={filters.fundingRange}
+                onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+                deadlineValue={filters.deadline}
+                onDeadlineChange={val => onFiltersChange({ deadline: val })}
+                industryOptions={industryOptions}
+                eligibleApplicantOptions={eligibleApplicantOptions}
+                geographicScopeOptions={geographicScopeOptions}
+              />
+            </div>
+            <div className="w-auto ml-auto flex-shrink-0">
               <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
             </div>
           </div>

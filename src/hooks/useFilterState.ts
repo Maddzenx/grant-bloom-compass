@@ -161,3 +161,41 @@ const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions
     params.set('cofinancingRequired', filters.cofinancingRequired.toString());
   }
 };
+
+// --- Inference helpers for boolean and scope fields ---
+export const inferConsortiumRequired = (grant: any): boolean => {
+  // Look for phrases like "Minst 2 aktörer" or "konsortium" in requirements or description
+  const text = [
+    ...(grant.requirements || []),
+    grant.description || '',
+    grant.aboutGrant || '',
+    grant.qualifications || ''
+  ].join(' ').toLowerCase();
+  return text.includes('minst 2 aktörer') || text.includes('konsortium');
+};
+
+export const inferCofinancingRequired = (grant: any): boolean => {
+  // Look for "medfinansiering" or similar in fundingRules or requirements
+  const text = [
+    ...(grant.fundingRules || []),
+    ...(grant.requirements || []),
+    grant.description || '',
+    grant.aboutGrant || ''
+  ].join(' ').toLowerCase();
+  return text.includes('medfinansiering');
+};
+
+export const inferGeographicScope = (grant: any): string[] => {
+  // Look for "Sverige", "EU", "Europa", "internationell", "global" in eligibility or description
+  const text = [
+    grant.eligibility || '',
+    grant.description || '',
+    grant.aboutGrant || '',
+    grant.qualifications || ''
+  ].join(' ').toLowerCase();
+  const scopes: string[] = [];
+  if (text.includes('sverige') || text.includes('svensk')) scopes.push('Sverige');
+  if (text.includes('eu') || text.includes('europa')) scopes.push('EU');
+  if (text.includes('internationell') || text.includes('global')) scopes.push('Global');
+  return scopes;
+};

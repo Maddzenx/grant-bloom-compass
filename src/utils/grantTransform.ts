@@ -30,6 +30,8 @@ type PartialSupabaseGrantRow = Pick<
   | 'industry_sectors'
   | 'original_url'
   | 'application_opening_date'
+  | 'geographic_scope'
+  | 'region'
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
@@ -126,6 +128,31 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     return dateValue;
   };
 
+  // Helper to normalize geographic/region values
+  const normalizeGeographicValues = (input: any): string[] => {
+    let values: string[] = [];
+    if (!input) return values;
+    if (Array.isArray(input)) {
+      values = input;
+    } else if (typeof input === 'string') {
+      // Try to parse as JSON array
+      try {
+        const parsed = JSON.parse(input);
+        if (Array.isArray(parsed)) {
+          values = parsed;
+        } else {
+          // If not a JSON array, treat as comma-separated string
+          values = input.split(',');
+        }
+      } catch {
+        // Not JSON, treat as comma-separated string
+        values = input.split(',');
+      }
+    }
+    // Split any comma-separated items, trim, and flatten
+    return values.flatMap(v => v.split(',')).map(v => v.trim()).filter(Boolean);
+  };
+
   try {
     const transformed: Grant = {
       id: supabaseGrant.id,
@@ -156,7 +183,13 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       templates: jsonToStringArray(supabaseGrant.application_templates_names), // Only application_templates_names
       evaluationCriteria: supabaseGrant.evaluation_criteria || '',
       applicationProcess: supabaseGrant.application_process || '',
-      originalUrl: supabaseGrant.original_url || ''
+      originalUrl: supabaseGrant.original_url || '',
+      industry_sectors: jsonToStringArray(supabaseGrant.industry_sectors),
+      eligible_organisations: jsonToStringArray(supabaseGrant.eligible_organisations),
+      geographic_scope: [
+        ...normalizeGeographicValues((supabaseGrant as any).geographic_scope),
+        ...normalizeGeographicValues(supabaseGrant.region)
+      ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);

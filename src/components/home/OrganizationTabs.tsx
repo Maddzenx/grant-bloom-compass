@@ -27,15 +27,15 @@ const OrganizationTabs = () => {
 
   return (
     <div className="mb-16">
-      <h3 className="text-xl font-poppins font-medium text-gray-400 mb-6 text-center">
+      <h3 className="text-base font-poppins font-normal text-gray-400 mb-4 text-center">
         Sökande organisation:
       </h3>
-      <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
+      <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
         {organizationTypes.map((org, index) => (
           <button
             key={index}
             onClick={() => toggleOrganization(org)}
-            className={`px-4 py-2 rounded-full font-poppins font-medium transition-all duration-200 hover:shadow-sm ${
+            className={`px-3 py-1.5 rounded-full font-poppins font-normal text-sm transition-all duration-200 hover:shadow-sm ${
               selectedOrganizations.includes(org)
                 ? 'bg-[#cec5f9] text-white'
                 : 'bg-white/50 hover:bg-white/100 text-gray-700'
