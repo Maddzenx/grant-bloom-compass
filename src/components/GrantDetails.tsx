@@ -21,8 +21,8 @@ const GrantDetails = ({
   sortBy = "default",
   onSortChange = () => {},
 }: GrantDetailsProps) => {
-  return <div className="max-w-4xl mx-auto">
-      <div className="bg-white min-h-screen">
+  return <div>
+      <div className="bg-white">
         <GrantNotionHeader 
           grant={grant} 
           isBookmarked={isBookmarked} 

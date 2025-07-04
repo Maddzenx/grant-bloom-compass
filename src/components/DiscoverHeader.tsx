@@ -35,9 +35,9 @@ const DiscoverHeader = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center justify-center sticky top-0 z-30">
-      <div className="w-full max-w-4xl mx-auto px-4 md:px-6 pt-6 pb-4">
-        <div className="flex items-center gap-2 mt-2 mb-4">
+    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center sticky top-0 z-30 px-0">
+      <div className="w-full px-0 pt-0 pb-0">
+        <div className="flex items-center gap-2 mt-2 mb-2">
           <div className="relative flex-1">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-accent-lavender">
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>

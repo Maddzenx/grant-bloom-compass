@@ -9,6 +9,7 @@ import GrantDetailsPanel from '@/components/GrantDetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
 import { FilterBar } from './FilterBar';
+import SortingControls from '@/components/SortingControls';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -76,32 +77,42 @@ export const DiscoverGrantsContent = ({
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-      {/* Enhanced Search Header */}
-      <DiscoverHeader 
-        searchTerm={searchTerm} 
-        onSearchChange={onSearchChange} 
-        onSearch={onSearch} 
-        sortBy={sortBy} 
-        onSortChange={onSortChange} 
-        totalGrants={searchResults.length} 
-        suggestions={suggestions} 
-        isSearching={isSearching} 
-        searchMetrics={searchMetrics} 
-      />
-
-      {/* Pixel-perfect Filter Bar */}
-      <FilterBar
-        filters={filters}
-        onFiltersChange={onFiltersChange}
-        onResetFilters={onClearFilters}
-        organizationOptions={organizationOptions}
-        fundingRange={filters.fundingRange}
-        onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
-        deadlineValue={filters.deadline}
-        onDeadlineChange={val => onFiltersChange({ deadline: val })}
-        tagOptions={tagOptions}
-        sectorOptions={sectorOptions}
-      />
+      {/* Search bar and filter/sort row grouped, left-aligned with main content */}
+      <div className="w-full bg-canvas-cloud pt-6 pb-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <DiscoverHeader 
+              searchTerm={searchTerm} 
+              onSearchChange={onSearchChange} 
+              onSearch={onSearch} 
+              sortBy={sortBy} 
+              onSortChange={onSortChange} 
+              totalGrants={searchResults.length} 
+              suggestions={suggestions} 
+              isSearching={isSearching} 
+              searchMetrics={searchMetrics} 
+            />
+          </div>
+          {/* Filter and sorting row */}
+          <div className="flex flex-row items-center justify-between max-w-2xl mt-0 gap-x-8">
+            <FilterBar
+              filters={filters}
+              onFiltersChange={onFiltersChange}
+              onResetFilters={onClearFilters}
+              organizationOptions={organizationOptions}
+              fundingRange={filters.fundingRange}
+              onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+              deadlineValue={filters.deadline}
+              onDeadlineChange={val => onFiltersChange({ deadline: val })}
+              tagOptions={tagOptions}
+              sectorOptions={sectorOptions}
+            />
+            <div className="flex-shrink-0">
+              <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content Area - Full width with natural scrolling */}
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 relative">

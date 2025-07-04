@@ -77,16 +77,11 @@ const GrantNotionHeader = ({
       </div>
     )}
 
-    {/* Title and SortingControls in a flex row */}
+    {/* Title in a flex row, no SortingControls */}
     <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2">
       <h1 className="text-2xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
         {grant.title}
       </h1>
-      {!isMobile && (
-        <div className="flex flex-row items-center gap-2 flex-shrink-0 mt-1" style={{ minWidth: 260 }}>
-          <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
-        </div>
-      )}
     </div>
 
     {/* Description from database */}

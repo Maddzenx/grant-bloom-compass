@@ -29,19 +29,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   sectorOptions,
 }) => {
   return (
-    <div className="w-full flex justify-center bg-canvas-cloud pb-2">
-      <div className="flex flex-row items-center gap-2 mt-0 mb-0">
+    <div className="w-full flex justify-start bg-canvas-cloud pb-2">
+      <div className="flex flex-row items-center gap-1 mt-0 mb-0">
         {/* Organization Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-full px-5 py-2 bg-white border border-gray-300 text-ink-obsidian font-medium text-[15px] shadow-none hover:bg-gray-50">
+            <Button variant="outline" className="rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-8">
               Organization
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-4">
-            <div className="flex flex-col gap-2">
+          <PopoverContent className="w-56 p-3">
+            <div className="flex flex-col gap-1">
               {organizationOptions.map(org => (
-                <label key={org} className="flex items-center gap-2 cursor-pointer">
+                <label key={org} className="flex items-center gap-2 cursor-pointer text-sm">
                   <input
                     type="checkbox"
                     checked={filters.organizations?.includes(org)}
@@ -52,7 +52,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                       onFiltersChange({ organizations: newOrgs });
                     }}
                   />
-                  <span className="text-sm">{org}</span>
+                  <span>{org}</span>
                 </label>
               ))}
             </div>
@@ -61,16 +61,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {/* Funding Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-full px-5 py-2 bg-white border border-gray-300 text-ink-obsidian font-medium text-[15px] shadow-none hover:bg-gray-50">
+            <Button variant="outline" className="rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-8">
               Funding
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-4">
-            <div className="flex flex-col gap-2">
+          <PopoverContent className="w-56 p-3">
+            <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-600">Min</label>
               <input
                 type="number"
-                className="border rounded px-2 py-1"
+                className="border rounded px-2 py-1 text-sm"
                 value={fundingRange.min ?? ''}
                 onChange={e => onFundingRangeChange({ ...fundingRange, min: e.target.value ? Number(e.target.value) : null })}
                 placeholder="0"
@@ -78,7 +78,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <label className="text-xs font-medium text-gray-600">Max</label>
               <input
                 type="number"
-                className="border rounded px-2 py-1"
+                className="border rounded px-2 py-1 text-sm"
                 value={fundingRange.max ?? ''}
                 onChange={e => onFundingRangeChange({ ...fundingRange, max: e.target.value ? Number(e.target.value) : null })}
                 placeholder="No limit"
@@ -89,16 +89,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {/* Deadline Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-full px-5 py-2 bg-white border border-gray-300 text-ink-obsidian font-medium text-[15px] shadow-none hover:bg-gray-50">
+            <Button variant="outline" className="rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-8">
               Deadline
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-4">
-            {/* You can replace this with your EnhancedDeadlineFilter component for full functionality */}
-            <div className="flex flex-col gap-2">
+          <PopoverContent className="w-56 p-3">
+            <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-600">Preset</label>
               <select
-                className="border rounded px-2 py-1"
+                className="border rounded px-2 py-1 text-sm"
                 value={deadlineValue.preset || ''}
                 onChange={e => onDeadlineChange({ type: 'preset', preset: e.target.value })}
               >
@@ -116,14 +115,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {/* Tags Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-full px-5 py-2 bg-white border border-gray-300 text-ink-obsidian font-medium text-[15px] shadow-none hover:bg-gray-50">
+            <Button variant="outline" className="rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-8">
               Tags
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-4">
-            <div className="flex flex-col gap-2">
+          <PopoverContent className="w-56 p-3">
+            <div className="flex flex-col gap-1">
               {tagOptions.map(tag => (
-                <label key={tag} className="flex items-center gap-2 cursor-pointer">
+                <label key={tag} className="flex items-center gap-2 cursor-pointer text-sm">
                   <input
                     type="checkbox"
                     checked={filters.tags?.includes(tag)}
@@ -134,7 +133,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                       onFiltersChange({ tags: newTags });
                     }}
                   />
-                  <span className="text-sm">{tag}</span>
+                  <span>{tag}</span>
                 </label>
               ))}
             </div>
@@ -143,14 +142,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {/* Sectors Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-full px-5 py-2 bg-white border border-gray-300 text-ink-obsidian font-medium text-[15px] shadow-none hover:bg-gray-50">
+            <Button variant="outline" className="rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-8">
               Sectors
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-4">
-            <div className="flex flex-col gap-2">
+          <PopoverContent className="w-56 p-3">
+            <div className="flex flex-col gap-1">
               {sectorOptions.map(sector => (
-                <label key={sector} className="flex items-center gap-2 cursor-pointer">
+                <label key={sector} className="flex items-center gap-2 cursor-pointer text-sm">
                   <input
                     type="checkbox"
                     checked={filters.sectors?.includes(sector)}
@@ -161,7 +160,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                       onFiltersChange({ sectors: newSectors });
                     }}
                   />
-                  <span className="text-sm">{sector}</span>
+                  <span>{sector}</span>
                 </label>
               ))}
             </div>
@@ -169,7 +168,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </Popover>
         {/* Reset Filters */}
         <button
-          className="ml-2 text-[15px] text-accent-lavender hover:underline bg-transparent border-none p-0 font-medium"
+          className="ml-2 text-sm text-accent-lavender hover:underline bg-transparent border-none p-0 font-medium min-h-0 h-8"
           onClick={onResetFilters}
         >
           Reset filters
