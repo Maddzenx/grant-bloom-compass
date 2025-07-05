@@ -9,6 +9,8 @@ import GrantDetailsPanel from '@/components/GrantDetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
 import { FilterBar } from './FilterBar';
+import SortingControls from '@/components/SortingControls';
+import { sortGrants } from '@/utils/grantSorting';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -57,51 +59,74 @@ export const DiscoverGrantsContent = ({
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
 
-  // Extract unique organizations, tags, and sectors from grants
-  const organizationOptions = useMemo(() => {
-    return grants
-      .map(g => g.organization)
-      .filter(Boolean)
-      .filter((org, idx, arr) => arr.indexOf(org) === idx)
-      .sort();
-  }, [grants]);
+  // Extract unique organizations from grants
+  const organizationOptions = useMemo(() =>
+    grants.map(g => g.organization).filter(Boolean).filter((org, idx, arr) => arr.indexOf(org) === idx).sort(),
+    [grants]
+  );
 
-  const tagOptions = useMemo(() => {
-    const tags = grants.flatMap(g => g.tags || []);
-    return Array.from(new Set(tags)).sort();
-  }, [grants]);
+  // Extract unique industry sectors from grants
+  const industryOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.industry_sectors || []))).sort(),
+    [grants]
+  );
 
-  // Sectors: fallback to empty array (add logic if sector field is added)
-  const sectorOptions: string[] = [];
+  // Extract unique eligible applicant types from grants
+  const eligibleApplicantOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.eligible_organisations || []))).sort(),
+    [grants]
+  );
+
+  // Extract unique geographic scopes from grants
+  const geographicScopeOptions = useMemo(() =>
+    Array.from(new Set(grants.flatMap(g => g.geographic_scope || []))).sort(),
+    [grants]
+  );
+
+  // Sort grants based on selected sort option
+  const sortedGrants = useMemo(() => sortGrants(searchResults, sortBy, searchTerm), [searchResults, sortBy, searchTerm]);
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-      {/* Enhanced Search Header */}
-      <DiscoverHeader 
-        searchTerm={searchTerm} 
-        onSearchChange={onSearchChange} 
-        onSearch={onSearch} 
-        sortBy={sortBy} 
-        onSortChange={onSortChange} 
-        totalGrants={searchResults.length} 
-        suggestions={suggestions} 
-        isSearching={isSearching} 
-        searchMetrics={searchMetrics} 
-      />
-
-      {/* Pixel-perfect Filter Bar */}
-      <FilterBar
-        filters={filters}
-        onFiltersChange={onFiltersChange}
-        onResetFilters={onClearFilters}
-        organizationOptions={organizationOptions}
-        fundingRange={filters.fundingRange}
-        onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
-        deadlineValue={filters.deadline}
-        onDeadlineChange={val => onFiltersChange({ deadline: val })}
-        tagOptions={tagOptions}
-        sectorOptions={sectorOptions}
-      />
+      {/* Search bar and filter/sort row grouped, left-aligned with main content */}
+      <div className="w-full bg-canvas-cloud pt-6 pb-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <DiscoverHeader 
+              searchTerm={searchTerm} 
+              onSearchChange={onSearchChange} 
+              onSearch={onSearch} 
+              sortBy={sortBy} 
+              onSortChange={onSortChange} 
+              totalGrants={searchResults.length} 
+              suggestions={suggestions} 
+              isSearching={isSearching} 
+              searchMetrics={searchMetrics} 
+            />
+          </div>
+          {/* Filter and sorting row */}
+          <div className="flex flex-row items-center justify-between w-full mt-0 gap-x-8">
+            <div className="flex-1 min-w-0">
+              <FilterBar
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                onResetFilters={onClearFilters}
+                organizationOptions={organizationOptions}
+                fundingRange={filters.fundingRange}
+                onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+                deadlineValue={filters.deadline}
+                onDeadlineChange={val => onFiltersChange({ deadline: val })}
+                industryOptions={industryOptions}
+                eligibleApplicantOptions={eligibleApplicantOptions}
+                geographicScopeOptions={geographicScopeOptions}
+              />
+            </div>
+            <div className="w-auto ml-auto flex-shrink-0">
+              <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content Area - Full width with natural scrolling */}
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 relative">
@@ -111,7 +136,7 @@ export const DiscoverGrantsContent = ({
             {/* Show list when not viewing details */}
             {!showDetails && (
               <GrantList 
-                grants={searchResults} 
+                grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
                 onGrantSelect={onGrantSelect} 
                 onToggleBookmark={onToggleBookmark} 
@@ -139,7 +164,7 @@ export const DiscoverGrantsContent = ({
               showDetails ? 'w-1/3 min-w-0' : 'w-full'
             }`}>
               <GrantList 
-                grants={searchResults} 
+                grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
                 onGrantSelect={onGrantSelect} 
                 onToggleBookmark={onToggleBookmark} 
@@ -152,7 +177,7 @@ export const DiscoverGrantsContent = ({
             {/* Grant Details Panel - Sticky and full viewport height */}
             {showDetails && selectedGrant && (
               <div className="w-2/3 min-w-0">
-                <div className="sticky top-24 h-[calc(100vh-6rem)]">
+                <div className="sticky top-0 h-[calc(100vh-0rem)]">
                   <GrantDetailsPanel 
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 

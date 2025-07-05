@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Grant } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
@@ -57,6 +56,7 @@ export const FilterGrid = ({
   const industrySectorOptions = getUniqueValues(grants, 'industry_sectors');
   const eligibleApplicantOptions = getUniqueValues(grants, 'eligible_organisations');
   const geographicScopeOptions = getUniqueValues(grants, 'geographic_scope');
+  const tagOptions = getUniqueValues(grants, 'tags');
 
   return (
     <TooltipProvider>
@@ -129,6 +129,18 @@ export const FilterGrid = ({
                 value={pendingFilters.geographicScope}
                 onValueChange={vals => onPendingFilterChange({ geographicScope: vals })}
                 placeholder="Select scope..."
+              />
+            </div>
+            {/* Tags/Keywords Filter */}
+            <div className="space-y-1 col-span-2">
+              <label className="text-xs font-medium text-gray-700">
+                {selectedCountLabel(pendingFilters.tags, 'Tags/Keywords')}
+              </label>
+              <MultiSelect
+                options={tagOptions}
+                value={pendingFilters.tags}
+                onValueChange={vals => onPendingFilterChange({ tags: vals })}
+                placeholder="Select tags..."
               />
             </div>
           </div>

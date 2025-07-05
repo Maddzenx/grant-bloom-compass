@@ -13,17 +13,17 @@ const GrantNotionKeyInfo = ({
       {/* Bidragsbelopp */}
       <div className="flex flex-col items-center md:items-center flex-1 text-center">
         <span className="text-xs text-gray-500">Bidragsbelopp</span>
-        <span className="text-lg font-bold text-gray-900">{grant.fundingAmount}</span>
+        <span className="text-base font-bold text-gray-900">{grant.fundingAmount}</span>
       </div>
       {/* Ansökningsdeadline */}
       <div className="flex flex-col items-center md:items-center flex-1 text-center">
         <span className="text-xs text-gray-500">Ansökningsdeadline</span>
-        <span className="text-lg font-bold text-gray-900">{grant.deadline}</span>
+        <span className="text-base font-bold text-gray-900">{grant.deadline}</span>
       </div>
       {/* Organisation */}
       <div className="flex flex-col items-center md:items-center flex-1 text-center">
         <span className="text-xs text-gray-500">Organisation</span>
-        <span className="text-lg font-bold text-gray-900">{grant.organization}</span>
+        <span className="text-base font-bold text-gray-900">{grant.organization}</span>
       </div>
     </div>
   );

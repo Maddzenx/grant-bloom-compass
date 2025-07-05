@@ -64,26 +64,22 @@ const GrantDetailsPanel = ({
         </div>}
 
       {selectedGrant ? <>
-          {/* Sorting dropdown above the card, right-aligned, desktop only */}
-          {!isMobile && <div className="flex justify-end items-center mb-2 pr-2">
-              <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
-            </div>}
-          <ScrollArea ref={scrollRef} className="h-full w-full" data-grant-details-scroll>
-            <div className="relative bg-[#f0f1f3] px-0 py-1 md:px-1 md:pr-6 md:py-0">
-              {selectedGrant && <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${showStickyHeader ? "opacity-100 translate-y-0 shadow-lg" : "opacity-0 -translate-y-4 pointer-events-none"}`}>
-                  <GrantStickyHeader grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} isMobile={isMobile} />
-                </div>}
+        <ScrollArea ref={scrollRef} className="h-full w-full" data-grant-details-scroll>
+          <div className="relative bg-[#f0f1f3] px-0 py-0 md:px-1 md:pr-0 md:py-0">
+            {selectedGrant && <div className={`absolute top-0 left-2 right-2 md:left-4 md:right-4 z-30 transition-all duration-300 ease-in-out ${showStickyHeader ? "opacity-100 translate-y-0 shadow-lg" : "opacity-0 -translate-y-4 pointer-events-none"}`}>
+                <GrantStickyHeader grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} orgLogo={getOrganizationLogo(selectedGrant.organization)} isMobile={isMobile} />
+              </div>}
 
-              <div className="bg-white rounded-lg mr-0 md:mr-2 px-4 pb-6 min-h-full">
-                <GrantDetails grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} isMobile={isMobile} onBackToList={onBackToList} />
-              </div>
+            <div className="bg-white rounded-lg mr-0 md:mr-2 px-4 pb-6 min-h-full">
+              <GrantDetails grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} isMobile={isMobile} onBackToList={onBackToList} />
             </div>
-          </ScrollArea>
-        </> : <div className="flex items-center justify-center h-full p-4">
-          <div className="bg-white rounded-lg w-full h-full flex items-center justify-center mr-0 md:mr-2">
-            <EmptyGrantDetails />
           </div>
-        </div>}
+        </ScrollArea>
+      </> : <div className="flex items-center justify-center h-full p-4">
+        <div className="bg-white rounded-lg w-full h-full flex items-center justify-center mr-0 md:mr-2">
+          <EmptyGrantDetails />
+        </div>
+      </div>}
     </div>;
 };
 export default GrantDetailsPanel;
