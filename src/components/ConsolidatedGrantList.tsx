@@ -6,7 +6,7 @@ import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookmarkCheck, Bookmark, Clock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bookmark, Clock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ConsolidatedGrantListProps {
   grants: Grant[];
@@ -189,11 +189,7 @@ const ConsolidatedGrantList = ({
                           }}
                           className="h-7 px-1"
                         >
-                          {isGrantSaved(grant.id) ? (
-                            <BookmarkCheck className="h-4 w-4 text-accent-2" />
-                          ) : (
-                            <Bookmark className="h-4 w-4 text-gray-400" />
-                          )}
+                          <Bookmark className={`h-4 w-4 transition-colors ${isGrantSaved(grant.id) ? 'text-[#8162F4] fill-[#8162F4]' : 'text-gray-400'}`} />
                         </Button>
                       </div>
                     </div>
@@ -214,7 +210,7 @@ const ConsolidatedGrantList = ({
                         {grant.fundingAmount}
                       </span>
                       <span className="text-gray-500">
-                        {actualDeadline}
+                        Deadline: {actualDeadline}
                       </span>
                     </div>
 

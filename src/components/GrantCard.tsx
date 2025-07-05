@@ -178,7 +178,7 @@ const GrantCard = ({
               className="p-1 hover:bg-accent-2/10 rounded transition-colors flex-shrink-0"
               aria-label={actuallyBookmarked ? "Remove bookmark" : "Add bookmark"}
             >
-              <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'fill-accent-lavender text-accent-lavender' : 'text-white stroke-ink-obsidian/40 fill-none'}`} />
+              <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'text-[#8162F4] fill-[#8162F4]' : 'text-gray-400'}`} />
             </button>
           </div>
         </div>
