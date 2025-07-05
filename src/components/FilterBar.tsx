@@ -31,7 +31,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   geographicScopeOptions = [],
 }) => {
   return (
-    <div className="w-full flex justify-start bg-canvas-cloud pb-2">
+    <div className="w-full flex flex-col justify-start bg-canvas-cloud pb-2">
       <div className="flex flex-row items-center gap-1 mt-0 mb-0">
         {/* Organization Filter */}
         <Popover>
@@ -238,6 +238,127 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         >
           Reset filters
         </button>
+      </div>
+      {/* Selected filter chips */}
+      <div className="flex flex-wrap gap-2 mt-1 ml-1 w-full">
+        {/* Organization chips */}
+        {filters.organizations && filters.organizations.length > 0 && filters.organizations.map((org: string) => (
+          <span key={org} className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {org}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => {
+                const newOrgs = filters.organizations.filter((o: string) => o !== org);
+                onFiltersChange({ organizations: newOrgs });
+              }}
+              aria-label={`Remove ${org}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {/* Funding range chip */}
+        {(fundingRange.min !== null || fundingRange.max !== null) && (
+          <span className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {fundingRange.min !== null ? `Min: ${fundingRange.min}` : ''}
+            {fundingRange.min !== null && fundingRange.max !== null ? ' - ' : ''}
+            {fundingRange.max !== null ? `Max: ${fundingRange.max}` : ''}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => onFundingRangeChange({ min: null, max: null })}
+              aria-label="Remove funding range"
+            >
+              ×
+            </button>
+          </span>
+        )}
+        {/* Deadline chip */}
+        {deadlineValue && deadlineValue.preset && (
+          <span className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {deadlineValue.preset}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => onDeadlineChange({ type: 'preset', preset: '' })}
+              aria-label="Remove deadline"
+            >
+              ×
+            </button>
+          </span>
+        )}
+        {/* Industry chips */}
+        {filters.industrySectors && filters.industrySectors.length > 0 && filters.industrySectors.map((ind: string) => (
+          <span key={ind} className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {ind}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => {
+                const newInds = filters.industrySectors.filter((i: string) => i !== ind);
+                onFiltersChange({ industrySectors: newInds });
+              }}
+              aria-label={`Remove ${ind}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {/* Eligible Applicant chips */}
+        {filters.eligibleApplicants && filters.eligibleApplicants.length > 0 && filters.eligibleApplicants.map((app: string) => (
+          <span key={app} className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {app}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => {
+                const newApps = filters.eligibleApplicants.filter((a: string) => a !== app);
+                onFiltersChange({ eligibleApplicants: newApps });
+              }}
+              aria-label={`Remove ${app}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {/* Consortium Required chip */}
+        {filters.consortiumRequired === true && (
+          <span className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            Consortium required
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => onFiltersChange({ consortiumRequired: null })}
+              aria-label="Remove consortium required"
+            >
+              ×
+            </button>
+          </span>
+        )}
+        {/* Co-financing Required chip */}
+        {filters.cofinancingRequired === true && (
+          <span className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            Co-financing required
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => onFiltersChange({ cofinancingRequired: null })}
+              aria-label="Remove cofinancing required"
+            >
+              ×
+            </button>
+          </span>
+        )}
+        {/* Geographic chips */}
+        {filters.geographicScope && filters.geographicScope.length > 0 && filters.geographicScope.map((scope: string) => (
+          <span key={scope} className="inline-flex items-center bg-white border border-gray-300 rounded-full px-2 py-0.5 text-xs text-gray-700">
+            {scope}
+            <button
+              className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+              onClick={() => {
+                const newScopes = filters.geographicScope.filter((s: string) => s !== scope);
+                onFiltersChange({ geographicScope: newScopes });
+              }}
+              aria-label={`Remove ${scope}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
       </div>
     </div>
   );

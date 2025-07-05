@@ -43,7 +43,7 @@ const DiscoverHeader = ({
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             </span>
             <input
-              className="w-full pl-10 pr-10 py-3 rounded-full border border-[#E0E0E0] bg-white text-[16px] font-medium text-ink-obsidian focus:ring-accent-lavender focus:outline-none"
+              className="w-full pl-10 pr-10 py-3 rounded-full border border-[#E0E0E0] bg-white text-sm font-medium text-ink-obsidian focus:ring-accent-lavender focus:outline-none"
               placeholder="Search grants..."
               value={searchTerm}
               onChange={e => onSearchChange(e.target.value)}
@@ -60,7 +60,7 @@ const DiscoverHeader = ({
             )}
           </div>
           <Button
-            className="ml-2 px-6 py-3 rounded-full bg-accent-lavender text-white font-semibold text-[16px] shadow-none hover:bg-accent-lavender/90"
+            className="ml-2 px-3 py-2 rounded-full bg-accent-lavender text-white font-semibold text-sm shadow-none hover:bg-accent-lavender/90"
             onClick={onSearch}
             aria-label="Search"
           >

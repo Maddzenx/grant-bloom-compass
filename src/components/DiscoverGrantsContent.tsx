@@ -90,7 +90,7 @@ export const DiscoverGrantsContent = ({
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
       {/* Search bar and filter/sort row grouped, left-aligned with main content */}
       <div className="w-full bg-canvas-cloud pt-6 pb-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="max-w-2xl">
             <DiscoverHeader 
               searchTerm={searchTerm} 
@@ -105,8 +105,8 @@ export const DiscoverGrantsContent = ({
             />
           </div>
           {/* Filter and sorting row */}
-          <div className="flex flex-row items-center justify-between w-full mt-0 gap-x-8">
-            <div className="flex-1 min-w-0">
+          <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-between md:gap-x-8 w-full mt-0">
+            <div className="flex-1 min-w-0 overflow-x-auto">
               <FilterBar
                 filters={filters}
                 onFiltersChange={onFiltersChange}
@@ -121,7 +121,8 @@ export const DiscoverGrantsContent = ({
                 geographicScopeOptions={geographicScopeOptions}
               />
             </div>
-            <div className="w-auto ml-auto flex-shrink-0">
+            {/* Sorting controls: below filter bar on mobile, right on desktop */}
+            <div className="w-full md:w-auto md:ml-auto flex-shrink-0">
               <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
             </div>
           </div>
@@ -129,7 +130,7 @@ export const DiscoverGrantsContent = ({
       </div>
 
       {/* Main Content Area - Full width with natural scrolling */}
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8 relative">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 pb-8 relative">
         {/* Mobile Layout */}
         {isMobile ? (
           <>
