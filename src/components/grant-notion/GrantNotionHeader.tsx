@@ -79,7 +79,7 @@ const GrantNotionHeader = ({
 
     {/* Title in a flex row, no SortingControls */}
     <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2">
-      <h1 className="text-2xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
+      <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
         {grant.title}
       </h1>
     </div>

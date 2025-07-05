@@ -40,7 +40,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Organization
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex flex-col gap-1">
               {organizationOptions.map(org => (
                 <label key={org} className="flex items-center gap-2 cursor-pointer text-xs">
@@ -67,7 +67,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Funding
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-600">Min</label>
               <input
@@ -95,7 +95,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Deadline
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-600">Preset</label>
               <select
@@ -121,7 +121,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Industry
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 max-h-56 overflow-y-auto">
+          <PopoverContent className="w-56 p-3 max-h-56 overflow-y-auto" align="start">
             <div className="flex flex-col gap-1">
               {industryOptions.map(ind => (
                 <label key={ind} className="flex items-center gap-2 cursor-pointer text-xs">
@@ -148,7 +148,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Eligible Applicant
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex flex-col gap-1">
               {eligibleApplicantOptions.map(applicant => (
                 <label key={applicant} className="flex items-center gap-2 cursor-pointer text-xs">
@@ -175,7 +175,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Consortium
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-gray-700">Required</label>
               <input
@@ -193,7 +193,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Co-financing
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
+          <PopoverContent className="w-56 p-3" align="start">
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-gray-700">Required</label>
               <input
@@ -211,7 +211,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               Geographic
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3 max-h-56 overflow-y-auto">
+          <PopoverContent className="w-56 p-3 max-h-56 overflow-y-auto" align="start">
             <div className="flex flex-col gap-1">
               {geographicScopeOptions.map(scope => (
                 <label key={scope} className="flex items-center gap-2 cursor-pointer text-xs">

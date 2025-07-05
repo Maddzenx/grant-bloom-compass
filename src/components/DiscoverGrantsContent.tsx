@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
 import { FilterBar } from './FilterBar';
 import SortingControls from '@/components/SortingControls';
+import { sortGrants } from '@/utils/grantSorting';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -82,6 +83,9 @@ export const DiscoverGrantsContent = ({
     [grants]
   );
 
+  // Sort grants based on selected sort option
+  const sortedGrants = useMemo(() => sortGrants(searchResults, sortBy, searchTerm), [searchResults, sortBy, searchTerm]);
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
       {/* Search bar and filter/sort row grouped, left-aligned with main content */}
@@ -132,7 +136,7 @@ export const DiscoverGrantsContent = ({
             {/* Show list when not viewing details */}
             {!showDetails && (
               <GrantList 
-                grants={searchResults} 
+                grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
                 onGrantSelect={onGrantSelect} 
                 onToggleBookmark={onToggleBookmark} 
@@ -160,7 +164,7 @@ export const DiscoverGrantsContent = ({
               showDetails ? 'w-1/3 min-w-0' : 'w-full'
             }`}>
               <GrantList 
-                grants={searchResults} 
+                grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
                 onGrantSelect={onGrantSelect} 
                 onToggleBookmark={onToggleBookmark} 
@@ -173,7 +177,7 @@ export const DiscoverGrantsContent = ({
             {/* Grant Details Panel - Sticky and full viewport height */}
             {showDetails && selectedGrant && (
               <div className="w-2/3 min-w-0">
-                <div className="sticky top-24 h-[calc(100vh-6rem)]">
+                <div className="sticky top-0 h-[calc(100vh-0rem)]">
                   <GrantDetailsPanel 
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 
