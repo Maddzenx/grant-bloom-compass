@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
+
 interface FilterChipsProps {
   filters: EnhancedFilterOptions;
   onRemoveFilter: (filterType: string, value?: string) => void;
@@ -11,12 +12,15 @@ interface FilterChipsProps {
     value: string;
     label: string;
   }[];
+  className?: string;
 }
+
 export const FilterChips = ({
   filters,
   onRemoveFilter,
   onClearAll,
-  organizations
+  organizations,
+  className = ""
 }: FilterChipsProps) => {
   const getOrganizationLabel = (value: string) => {
     return organizations.find(org => org.value === value)?.label || value;
@@ -89,7 +93,7 @@ export const FilterChips = ({
   if (chips.length === 0) {
     return null;
   }
-  return <div className="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200 bg-[f0f1f3] bg-[#f0f1f3]">
+  return <div className={`flex flex-wrap items-center gap-2 p-3 border-b border-gray-200 bg-[f0f1f3] bg-[#f0f1f3] ${className}`}>
       <span className="text-sm text-muted-foreground font-medium">Active filters:</span>
       
       {chips.map(chip => <Badge key={chip.key} variant="secondary" className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-900">

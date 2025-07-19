@@ -7,12 +7,14 @@ interface FilterActionsProps {
   hasPendingChanges: boolean;
   onApplyFilters: () => void;
   onClearFilters: () => void;
+  compact?: boolean;
 }
 
 export const FilterActions = ({
   hasPendingChanges,
   onApplyFilters,
   onClearFilters,
+  compact = false,
 }: FilterActionsProps) => {
   return (
     <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-200">

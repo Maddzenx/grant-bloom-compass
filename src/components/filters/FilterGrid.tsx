@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Grant } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
@@ -24,6 +25,7 @@ interface FilterGridProps {
   filteredGrants: Grant[];
   hasActiveFilters?: boolean;
   onClearAll?: () => void;
+  compact?: boolean;
 }
 
 // Helper to extract unique values from grants
@@ -40,7 +42,6 @@ const getUniqueValues = (grants: Grant[], field: keyof Grant): string[] => {
   return Array.from(values).filter(Boolean);
 };
 
-// Helper for selected count label
 const selectedCountLabel = (selected: string[], label: string) => selected.length > 0 ? `${label} (${selected.length})` : label;
 
 export const FilterGrid = ({
@@ -52,6 +53,7 @@ export const FilterGrid = ({
   filteredGrants,
   hasActiveFilters,
   onClearAll,
+  compact = false,
 }: FilterGridProps) => {
   const industrySectorOptions = getUniqueValues(grants, 'industry_sectors');
   const eligibleApplicantOptions = getUniqueValues(grants, 'eligible_organisations');
