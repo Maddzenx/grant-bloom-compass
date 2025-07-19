@@ -31,8 +31,8 @@ serve(async (req) => {
 
 Examples of the style:
 - "Vi är ett konsortium av pirater från Karibien som vill expandera vår verksamhet till att sälja krabbor på lokala loppmarknader"
-- "Vi är en forskningsgrupp från Uppsala som studerar varför katter alltid landar på sina fötter och vill utveckla detta till fallskärmsteknologi"
-- "Vi är ett startup från Linköping som utvecklar AI-assistenter för att hjälpa plantor att nätverka med varandra"
+- "Vi är en forskningsgrupp från Västernorrlands län som studerar varför katter alltid landar på sina fötter och vill utveckla detta till fallskärmsteknologi"
+- "Vi är ett startup från Karlsborg som utvecklar AI-assistenter för att hjälpa plantor att nätverka med varandra"
 
 Generate ONE new example in this style:`;
 

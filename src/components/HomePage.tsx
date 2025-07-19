@@ -119,6 +119,7 @@ const HomePage = () => {
             setInputValue={setInputValue}
             isRecording={isRecording}
             isProcessing={isProcessing}
+            isSearching={isSearching}
             handleVoiceInput={handleVoiceInput}
             handleFileUpload={handleFileUpload}
             onFileSelect={onFileSelect}
