@@ -7,7 +7,7 @@ const CTASection = () => {
       <div className="w-full max-w-6xl mx-auto text-center">
         {/* Primary Headline */}
         <h2 
-          className="font-poppins font-normal text-gray-900 mb-12 leading-[1.15]"
+          className="font-[Basic] font-normal text-gray-900 mb-12 leading-[1.15]"
           style={{ fontSize: 'clamp(42px, 6vw, 68px)' }}
         >
           Try it yourself!
@@ -16,7 +16,7 @@ const CTASection = () => {
         {/* CTA Button */}
         <div className="mb-16">
           <button
-            className="bg-[#D1F364] hover:bg-[#C5E858] text-black font-poppins font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
+            className="bg-[#D1F364] hover:bg-[#C5E858] text-black font-[Basic] font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
             style={{ 
               fontSize: '22px',
               padding: '1.1rem 3.2rem',
@@ -36,7 +36,7 @@ const CTASection = () => {
         {/* Secondary Contact Line */}
         <div className="mb-8">
           <p 
-            className="font-poppins font-normal leading-[1.4] mb-2"
+            className="font-[Basic] font-normal leading-[1.4] mb-2"
             style={{ 
               fontSize: 'clamp(18px, 4.5vw, 24px)',
               color: '#78797A'
@@ -45,7 +45,7 @@ const CTASection = () => {
             More questions?
           </p>
           <p 
-            className="font-poppins font-normal leading-[1.4]"
+            className="font-[Basic] font-normal leading-[1.4]"
             style={{ 
               fontSize: 'clamp(18px, 4.5vw, 24px)',
               color: '#78797A'
@@ -65,7 +65,7 @@ const CTASection = () => {
         {/* Brand Mark */}
         <div className="mt-8">
           <div 
-            className="font-poppins font-normal inline-block"
+            className="font-[Basic] font-normal inline-block"
             style={{ fontSize: 'clamp(36px, 5vw, 46px)' }}
             role="img"
             aria-label="Graigent logo"
