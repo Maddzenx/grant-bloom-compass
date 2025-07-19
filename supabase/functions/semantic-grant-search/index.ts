@@ -31,7 +31,6 @@ interface LLMFilterResult {
   grantId: string;
   shouldInclude: boolean;
   refinedScore: number; // 0-100
-  reasoning: string;
 }
 
 const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]): Promise<LLMFilterResult[]> => {
@@ -45,15 +44,12 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
         id: grant.id,
         title: grant.title || 'No title',
         organisation: grant.organisation || 'Unknown',
-        search_description: grant.search_description || grant.description || 'No description available',
+        search_description: grant.search_description || 'No description available',
         geographic_scope: grant.geographic_scope || 'Not specified',
         region: grant.region || 'Not specified',
         eligible_organisations: Array.isArray(grant.eligible_organisations) ? grant.eligible_organisations : 
                                (typeof grant.eligible_organisations === 'string' ? 
                                 JSON.parse(grant.eligible_organisations || '[]') : []),
-        industry_sectors: Array.isArray(grant.industry_sectors) ? grant.industry_sectors :
-                         (typeof grant.industry_sectors === 'string' ? 
-                          JSON.parse(grant.industry_sectors || '[]') : []),
         currentRelevanceScore: Math.round(grant.relevanceScore * 100)
       };
     } catch (parseError) {
@@ -62,11 +58,10 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
         id: grant.id,
         title: grant.title || 'No title',
         organisation: grant.organisation || 'Unknown',
-        search_description: grant.search_description || grant.description || 'No description available',
+        search_description: 'No description available',
         geographic_scope: grant.geographic_scope || 'Not specified',
         region: grant.region || 'Not specified',
         eligible_organisations: [],
-        industry_sectors: [],
         currentRelevanceScore: Math.round(grant.relevanceScore * 100)
       };
     }
@@ -104,8 +99,7 @@ Please evaluate each grant and respond with a JSON array of objects with this st
 {
   "grantId": "grant_id_here",
   "shouldInclude": true/false,
-  "refinedScore": 0-100,
-  "reasoning": "Brief explanation for the score"
+  "refinedScore": 0-100
 }
 
 Be thorough but fair in your evaluation.`;
@@ -160,8 +154,8 @@ Be thorough but fair in your evaluation.`;
     console.log(`🤖 LLM filtering complete. Processed ${filterResults.length} results`);
     console.log('All LLM scores:', filterResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
     
-    const filteredResults = filterResults.filter(result => result.shouldInclude && result.refinedScore >= 30);
-    console.log(`🔍 After 30% filter: ${filteredResults.length} results remaining`);
+    const filteredResults = filterResults.filter(result => result.shouldInclude);
+    console.log(`🔍 After filtering: ${filteredResults.length} results remaining`);
     console.log('Filtered scores:', filteredResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
     
     return filteredResults;
@@ -238,83 +232,150 @@ serve(async (req) => {
     const queryEmbedding = embeddingData.data[0].embedding;
     console.log('✅ Embedding generated successfully, length:', queryEmbedding.length);
 
-    console.log('✅ Embedding generated, using PostgreSQL vector search for optimal performance...');
+    console.log('✅ Embedding generated, fetching grants for cosine similarity comparison...');
 
-    // Use PostgreSQL's built-in vector similarity search (much faster than JavaScript calculation)
+    // Get all grants with embeddings for manual similarity calculation using cosine distance
     let grants;
     try {
-             console.log('🔍 Performing database-level vector similarity search...');
-       
-       // Alternative approach: Use direct SQL with proper vector casting
-       const { data, error: grantsError } = await supabase
-         .from('grant_call_details')
-         .select(`
-           id, title, organisation, description, search_description,
-           geographic_scope, region, eligible_organisations, 
-           industry_sectors,
-           (embedding <#> '[${queryEmbedding.join(',')}]'::vector) as distance
-         `)
-         .not('embedding', 'is', null)
-         .order('distance', { ascending: false })  // Higher similarity first
-         .limit(50);  // Limit to top 50 candidates for performance
+      console.log('🔍 Querying database for grants with embeddings...');
+      const { data, error: grantsError } = await supabase
+        .from('grant_call_details')
+        .select(`
+          id, title, organisation, description, search_description, 
+          geographic_scope, region, eligible_organisations, 
+          industry_sectors, embedding
+        `)
+        .not('embedding', 'is', null);
 
-      console.log('📊 Vector similarity search completed');
+      console.log('📊 Database query completed');
 
       if (grantsError) {
-        console.error('❌ Database error in vector search:', JSON.stringify(grantsError, null, 2));
-        throw new Error(`Vector search failed: ${grantsError.message || 'Unknown database error'}`);
+        console.error('❌ Database error fetching grants:', JSON.stringify(grantsError, null, 2));
+        throw new Error(`Failed to fetch grants: ${grantsError.message || 'Unknown database error'}`);
       }
       
-      console.log('✅ Vector search successful');
+      console.log('✅ Database query successful');
       grants = data;
     } catch (dbError) {
-      console.error('❌ Vector search error:', JSON.stringify(dbError, null, 2));
-      throw new Error(`Vector search failed: ${dbError.message || 'Unknown connection error'}`);
+      console.error('❌ Database connection error:', JSON.stringify(dbError, null, 2));
+      throw new Error(`Database connection failed: ${dbError.message || 'Unknown connection error'}`);
     }
 
-    console.log(`📊 Found ${grants?.length || 0} grants from vector search`);
+    console.log(`📊 Found ${grants?.length || 0} grants with embeddings`);
 
     if (!grants || grants.length === 0) {
-      console.log('No grants found with vector similarity search');
+      console.log('No grants found with embeddings');
       return new Response(JSON.stringify({
         rankedGrants: [],
-        explanation: 'No grants found with sufficient similarity for the search query'
+        explanation: 'No grants found with embeddings for semantic search'
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-         // Convert database similarity results to our format
-     console.log('🔍 Processing vector search results...');
-     const scoredGrants = grants.map((grant: any) => {
-       // PostgreSQL returns negative inner product (higher = more similar)
-       // Normalize to 0-1 scale for consistency with our scoring system
-       const rawDistance = grant.distance || 0;
-       const similarity = Math.max(0, Math.min(1, rawDistance / 10)); // Scale and clamp to 0-1
-       
-       console.log(`📊 Grant ${grant.id}: Raw Distance: ${rawDistance.toFixed(3)}, Similarity: ${similarity.toFixed(3)} (${Math.round(similarity * 100)}%)`);
-       
-       return { 
-         grant: {
-           id: grant.id,
-           title: grant.title,
-           organisation: grant.organisation,
-           description: grant.description,
-           search_description: grant.search_description,
-           geographic_scope: grant.geographic_scope,
-           region: grant.region,
-           eligible_organisations: grant.eligible_organisations,
-           industry_sectors: grant.industry_sectors
-         }, 
-         similarity 
-       };
-     });
+    // Calculate similarity scores manually using cosine distance
+    console.log('🔍 Processing embeddings and calculating similarities...');
+    const scoredGrants = grants.map((grant: any) => {
+      if (!grant.embedding) {
+        return { grant, similarity: 0 };
+      }
 
-         // Sort by similarity score (highest first), filter out very low scores, and take top 25
-     const topMatches = scoredGrants
-       .filter(({ similarity }) => similarity > 0.1) // Cut off results below 10% similarity (database already filtered)
-       .sort((a, b) => b.similarity - a.similarity)
-       .slice(0, 25);
+      // Parse the embedding vector string to array
+      let grantEmbedding;
+      try {
+        // Handle different embedding formats
+        if (typeof grant.embedding === 'string') {
+          // Remove brackets and split by comma
+          const cleanStr = grant.embedding.replace(/[\[\]]/g, '');
+          grantEmbedding = cleanStr.split(',').map((x: string) => parseFloat(x.trim()));
+        } else if (Array.isArray(grant.embedding)) {
+          grantEmbedding = grant.embedding;
+        } else {
+          console.warn(`⚠️ Invalid embedding format for grant ${grant.id}`);
+          return { grant, similarity: 0 };
+        }
+
+        // Validate embedding dimensions
+        if (!grantEmbedding || grantEmbedding.length === 0) {
+          console.warn(`⚠️ Empty embedding for grant ${grant.id}`);
+          return { grant, similarity: 0 };
+        }
+
+        // Calculate cosine similarity manually
+        // First calculate dot product
+        let dotProduct = 0;
+        for (let i = 0; i < Math.min(queryEmbedding.length, grantEmbedding.length); i++) {
+          dotProduct += queryEmbedding[i] * grantEmbedding[i];
+        }
+
+        // Calculate magnitudes
+        let queryMagnitude = 0;
+        let grantMagnitude = 0;
+        for (let i = 0; i < queryEmbedding.length; i++) {
+          queryMagnitude += queryEmbedding[i] * queryEmbedding[i];
+        }
+        for (let i = 0; i < grantEmbedding.length; i++) {
+          grantMagnitude += grantEmbedding[i] * grantEmbedding[i];
+        }
+        queryMagnitude = Math.sqrt(queryMagnitude);
+        grantMagnitude = Math.sqrt(grantMagnitude);
+
+        // Calculate cosine similarity
+        const cosineSimilarity = dotProduct / (queryMagnitude * grantMagnitude);
+        
+        // Apply the *8 scaling to preserve distribution
+        const rawSimilarityScore = cosineSimilarity * 8;
+
+        return { grant, similarity: rawSimilarityScore };
+      } catch (error) {
+        console.error(`Error processing embedding for grant ${grant.id}:`, error);
+        return { grant, similarity: 0 };
+      }
+    });
+
+    // Find the maximum raw similarity score for dynamic scaling
+    const similarities = scoredGrants.map(sg => sg.similarity).filter(s => !isNaN(s) && isFinite(s));
+    const maxRawScore = similarities.length > 0 ? Math.max(...similarities) : 0;
+    console.log(`📊 Max raw similarity score: ${maxRawScore.toFixed(3)}`);
+
+    // Determine dynamic ceiling based on the quality of the top match
+    // Map raw scores to ceiling percentages between 50% and 100%
+    const determineCeiling = (rawScore: number): number => {
+      // Define thresholds for ceiling calculation
+      const highThreshold = 4.0; // 50% cosine similarity * 8 scaling = excellent match
+      const lowThreshold = 1.0;  // 12.5% cosine similarity * 8 scaling = weak match
+      
+      if (rawScore >= highThreshold) {
+        return 1.0; // 100% ceiling for excellent matches
+      } else if (rawScore <= lowThreshold) {
+        return 0.5; // 50% ceiling for weak matches
+      } else {
+        // Linear interpolation between 50% and 100%
+        const ratio = (rawScore - lowThreshold) / (highThreshold - lowThreshold);
+        return 0.5 + (0.5 * ratio); // 50% + up to 50% more
+      }
+    };
+
+    const dynamicCeiling = determineCeiling(maxRawScore);
+    console.log(`📊 Dynamic ceiling set to: ${Math.round(dynamicCeiling * 100)}% based on top score quality`);
+
+    // Dynamically transpose all scores so the highest becomes the dynamic ceiling
+    // Using subtraction to preserve the 8x scaling factor
+    const scaledGrants = scoredGrants.map(({ grant, similarity }) => {
+      // Subtract (maxScore - ceiling) from all scores to shift the maximum to the ceiling
+      const transposedScore = similarity - (maxRawScore - dynamicCeiling);
+      
+      // Clamp to ensure values stay within 0-ceiling range
+      const clampedScore = Math.max(0, Math.min(dynamicCeiling, transposedScore));
+
+      return { grant, similarity: clampedScore };
+    });
+
+    // Sort by similarity score (highest first), filter out 0% matches, and take top 25.
+    const topMatches = scaledGrants
+      .filter(({ similarity }) => similarity > 0) // Cut off all results at 0 matching percentage.
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 25);
 
     console.log(`📊 Found ${topMatches.length} semantic matches, starting LLM filtering...`);
     console.log('🎯 Top matches for LLM filtering:', topMatches.slice(0, 5).map(m => ({
@@ -381,7 +442,6 @@ serve(async (req) => {
         relevanceScore: Math.round(result.refinedScore) / 100, // Convert back to 0-1 scale
         matchingReasons: [
           `LLM refined score: ${result.refinedScore}%`,
-          `Reasoning: ${result.reasoning || 'No reasoning provided'}`,
           `Original semantic score: ${originalScore}%`
         ]
       };
