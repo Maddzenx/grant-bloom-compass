@@ -27,12 +27,12 @@ serve(async (req) => {
 3. Be professional enough to not be offensive but amusing enough to make people smile
 4. Be related to business development, research, or innovation
 5. Be one sentence long (max 150 characters)
-6. Follow this style: "Vi är ett [funny description] som vill [business goal/expansion]"
+6. Follow this style: "Vi är ett [funny description] från [location] som vill [business goal/expansion]"
 
 Examples of the style:
-- "Vi är ett konsortium av pirater som vill expandera vår verksamhet till att sälja krabbor på lokala loppmarknader"
-- "Vi är en forskningsgrupp som studerar varför katter alltid landar på sina fötter och vill utveckla detta till fallskärmsteknologi"
-- "Vi är ett startup som utvecklar AI-assistenter för att hjälpa plantor att nätverka med varandra"
+- "Vi är ett konsortium av pirater från Karibien som vill expandera vår verksamhet till att sälja krabbor på lokala loppmarknader"
+- "Vi är en forskningsgrupp från Uppsala som studerar varför katter alltid landar på sina fötter och vill utveckla detta till fallskärmsteknologi"
+- "Vi är ett startup från Linköping som utvecklar AI-assistenter för att hjälpa plantor att nätverka med varandra"
 
 Generate ONE new example in this style:`;
 
