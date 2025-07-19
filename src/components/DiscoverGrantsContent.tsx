@@ -11,6 +11,8 @@ import { AIGrantMatch } from '@/hooks/useAIGrantSearch';
 import { FilterBar } from './FilterBar';
 import SortingControls from '@/components/SortingControls';
 import { sortGrants } from '@/utils/grantSorting';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Filter } from 'lucide-react';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -58,6 +60,7 @@ export const DiscoverGrantsContent = ({
   onBackToList
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
+  const [filterOpen, setFilterOpen] = React.useState(false);
 
   // Extract unique organizations from grants
   const organizationOptions = useMemo(() =>
@@ -128,7 +131,54 @@ export const DiscoverGrantsContent = ({
           </div>
         </div>
       </div>
-
+      {/* Floating filter button for mobile */}
+      {isMobile && (
+        <>
+          <button
+            className="fixed z-50 bottom-5 right-5 bg-black text-white rounded-full shadow-lg flex items-center justify-center w-14 h-14 active:scale-95 transition-all"
+            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.18)' }}
+            onClick={() => setFilterOpen(true)}
+            aria-label="Open filters"
+          >
+            <Filter className="w-7 h-7" />
+          </button>
+          <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+            <SheetContent side="bottom" className="max-h-[90vh] rounded-t-2xl p-0 flex flex-col">
+              <div className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-gray-200">
+                <span className="text-lg font-semibold">Filter</span>
+                <button onClick={() => setFilterOpen(false)} className="p-2 rounded-full hover:bg-gray-100">
+                  <span className="sr-only">Close</span>
+                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto px-4 pb-24 pt-2">
+                <EnhancedFilterControls
+                  filters={filters}
+                  onFiltersChange={onFiltersChange}
+                  onClearAll={onClearFilters}
+                  grants={grants}
+                  filteredGrants={searchResults}
+                  hasActiveFilters={hasActiveFilters}
+                />
+              </div>
+              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex gap-2 px-4 py-4 z-50">
+                <button
+                  className="flex-1 bg-gray-100 text-black rounded-full py-3 font-medium text-base active:scale-95 transition-all"
+                  onClick={() => { onClearFilters(); setFilterOpen(false); }}
+                >
+                  Clear all
+                </button>
+                <button
+                  className="flex-1 bg-black text-white rounded-full py-3 font-medium text-base active:scale-95 transition-all"
+                  onClick={() => setFilterOpen(false)}
+                >
+                  Show {searchResults.length}
+                </button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </>
+      )}
       {/* Main Content Area - Full width with natural scrolling */}
       <div className="flex-1 max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 pb-8 relative">
         {/* Mobile Layout */}

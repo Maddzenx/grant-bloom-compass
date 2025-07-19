@@ -158,7 +158,7 @@ const translations = {
     
     // Hero Section
     'hero.title': '"Jag älskar att skriva bidrag!"\n- sa ingen någonsin.',
-    'hero.subtitle': 'Få matchning med bidrag och utkast genom att chatta med AI',
+    'hero.subtitle': 'Hitta rätt bidrag och få utkast med hjälp av AI.',
     'hero.findGrants': 'Hitta bidrag',
     
     // Chat Input

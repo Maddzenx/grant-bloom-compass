@@ -33,7 +33,7 @@ const TestimonialsSection = () => {
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline */}
         <div className="text-center mb-16">
-          <h2 className="font-poppins font-normal text-gray-900" style={{
+          <h2 className="font-[Basic] font-normal text-gray-900" style={{
           fontSize: 'clamp(36px, 6vw, 56px)',
           lineHeight: '1.15'
         }} role="heading" aria-level={2}>
@@ -54,17 +54,17 @@ const TestimonialsSection = () => {
                 
                 {/* Name and Handle */}
                 <div className="flex flex-col">
-                  <div className="font-poppins text-[17px] font-normal text-gray-900 leading-tight">
+                  <div className="font-[Basic] text-[17px] font-normal text-gray-900 leading-tight">
                     {testimonial.name}
                   </div>
-                  <div className="font-poppins text-[14px] text-gray-500 leading-tight">
+                  <div className="font-[Basic] text-[14px] text-gray-500 leading-tight">
                     {testimonial.handle}
                   </div>
                 </div>
               </div>
 
               {/* Quote */}
-              <blockquote className="font-poppins text-[15px] leading-[1.45] text-gray-800 opacity-80">
+              <blockquote className="font-[Basic] text-[15px] leading-[1.45] text-gray-800 opacity-80">
                 "{testimonial.quote}"
               </blockquote>
             </div>

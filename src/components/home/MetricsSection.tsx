@@ -29,7 +29,7 @@ const MetricsSection = () => {
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline with highlighted "baby" */}
         <div className="text-center mb-16">
-          <h2 className="font-poppins font-normal text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-[1.15]">
+          <h2 className="font-[Basic] font-normal text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-[1.15]">
             {t('metrics.title')}
           </h2>
         </div>
@@ -42,13 +42,13 @@ const MetricsSection = () => {
               className="bg-[#D7CFFC] p-12 rounded-lg flex flex-col justify-between min-h-[200px] relative"
             >
               {/* Caption - Top Left */}
-              <p className="font-poppins text-[15px] leading-[1.3] text-gray-800 opacity-80 max-w-[70%]">
+              <p className="font-[Basic] text-[15px] leading-[1.3] text-gray-800 opacity-80 max-w-[70%]">
                 {metric.caption}
               </p>
               
               {/* Stat - Bottom Right */}
               <div className="flex justify-end items-end flex-1">
-                <span className="font-poppins font-normal text-5xl md:text-6xl text-gray-900">
+                <span className="font-[Basic] font-normal text-5xl md:text-6xl text-gray-900">
                   {metric.stat}
                 </span>
               </div>
