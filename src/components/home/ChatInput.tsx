@@ -4,21 +4,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useHumorousExamples } from "@/hooks/useHumorousExamples";
+import { useSearchStatusMessages } from "@/hooks/useSearchStatusMessages";
+
 interface ChatInputProps {
   inputValue: string;
   setInputValue: (value: string) => void;
   isRecording: boolean;
   isProcessing: boolean;
+  isSearching?: boolean; // Add specific semantic search state
   handleVoiceInput: () => void;
   handleFileUpload: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit?: () => void; // Add optional submit handler
 }
+
 const ChatInput = ({
   inputValue,
   setInputValue,
   isRecording,
   isProcessing,
+  isSearching = false,
   handleVoiceInput,
   handleFileUpload,
   onFileSelect,
@@ -32,13 +37,119 @@ const ChatInput = ({
     example,
     isLoading: isLoadingExample
   } = useHumorousExamples();
+  const { generateMessages } = useSearchStatusMessages();
   const [typedText, setTypedText] = useState('');
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
 
+  // Dynamic search status states
+  const [terminalMessages, setTerminalMessages] = useState<string[]>([]);
+  const [currentTerminalIndex, setCurrentTerminalIndex] = useState(0);
+  const [terminalText, setTerminalText] = useState('');
+  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalTypedText, setTerminalTypedText] = useState('');
+  const [isTerminalTyping, setIsTerminalTyping] = useState(false);
+
+  // Terminal animation effect with typewriter and dynamic messages
+  useEffect(() => {
+    if (isSearching && !isLoadingExample && inputValue.trim()) {
+      setShowTerminal(true);
+      setCurrentTerminalIndex(0);
+      setTerminalText('');
+      setTerminalTypedText('');
+      
+      // Show initial "search initiated" message immediately
+      const initialMessage = "Sökning påbörjas...";
+      setTerminalText(initialMessage);
+      setIsTerminalTyping(true);
+      setTerminalTypedText('');
+      
+      // Type out the initial message
+      let letterIndex = 0;
+      const typeInitialMessage = () => {
+        if (letterIndex < initialMessage.length && isSearching) {
+          const newText = initialMessage.substring(0, letterIndex + 1);
+          setTerminalTypedText(newText);
+          letterIndex++;
+          const delay = Math.random() * 35 + 18;
+          setTimeout(typeInitialMessage, delay);
+        } else {
+          setIsTerminalTyping(false);
+        }
+      };
+      
+      // Start typing the initial message
+      typeInitialMessage();
+      
+      // Generate AI messages in parallel
+      const startMessageCycle = async () => {
+        try {
+          const dynamicMessages = await generateMessages(inputValue);
+          setTerminalMessages(dynamicMessages);
+          
+          // Wait a moment to ensure initial message has finished, then start AI messages
+          setTimeout(() => {
+            if (!isSearching) return;
+            
+            // Start cycling through AI-generated messages
+            let messageIndex = 0;
+            const showNextMessage = () => {
+              if (messageIndex < dynamicMessages.length && isSearching) {
+                setCurrentTerminalIndex(messageIndex);
+                const currentMessage = dynamicMessages[messageIndex];
+                setTerminalText(currentMessage);
+                
+                // Start typewriter effect for this message
+                setIsTerminalTyping(true);
+                setTerminalTypedText('');
+                let letterIndex = 0;
+                
+                const typeLetters = () => {
+                  if (letterIndex < currentMessage.length && isSearching) {
+                    const newText = currentMessage.substring(0, letterIndex + 1);
+                    setTerminalTypedText(newText);
+                    letterIndex++;
+                    // Same typing speed as humorous examples
+                    const delay = Math.random() * 35 + 18;
+                    setTimeout(typeLetters, delay);
+                  } else {
+                    setIsTerminalTyping(false);
+                    // Brief pause before next message (2000ms after typing completes)
+                    setTimeout(() => {
+                      if (isSearching) {
+                        messageIndex++;
+                        showNextMessage();
+                      }
+                    }, 2000); // 800ms after typing completes
+                  }
+                };
+                
+                typeLetters();
+              }
+            };
+            
+            // Start the AI message cycle
+            showNextMessage();
+          }, 500); // Small delay to ensure smooth transition
+          
+        } catch (error) {
+          console.error('Failed to generate messages:', error);
+          setShowTerminal(false);
+        }
+      };
+      
+      startMessageCycle();
+    } else {
+      setShowTerminal(false);
+      setTerminalText('');
+      setTerminalTypedText('');
+      setIsTerminalTyping(false);
+    }
+  }, [isSearching, isLoadingExample, inputValue, generateMessages]);
+
   // Typewriter effect for the humorous example - letter by letter
   useEffect(() => {
-    if (example && !isLoadingExample && !isTyping) {
+    if (example && !isLoadingExample && !isTyping && !showTerminal) {
       // Start typing immediately, no delay
       setIsTyping(true);
       setCurrentLetterIndex(0);
@@ -51,8 +162,8 @@ const ChatInput = ({
           setCurrentLetterIndex(letterIndex + 1);
           letterIndex++;
 
-          // Natural typing speed between 30-100ms per letter
-          const delay = Math.random() * 70 + 30;
+          // Faster typing speed - 1.5x faster than before (20-67ms per letter instead of 30-100ms)
+          const delay = Math.random() * 35 + 18;
           setTimeout(typeLetters, delay);
         } else {
           setIsTyping(false);
@@ -60,16 +171,25 @@ const ChatInput = ({
       };
       typeLetters();
     }
-  }, [example, isLoadingExample, isTyping]);
+  }, [example, isLoadingExample, isTyping, showTerminal]);
 
   // Reset typing animation when example changes
   useEffect(() => {
-    if (example && !isLoadingExample) {
+    if (example && !isLoadingExample && !showTerminal) {
       setTypedText('');
       setCurrentLetterIndex(0);
       setIsTyping(false);
     }
-  }, [example]);
+  }, [example, showTerminal]);
+
+  // Clear typed text only when user actually starts typing
+  useEffect(() => {
+    if (inputValue && typedText && !showTerminal) {
+      setTypedText('');
+      setIsTyping(false);
+    }
+  }, [inputValue, typedText, showTerminal]);
+
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -95,25 +215,46 @@ const ChatInput = ({
     textarea.style.height = textarea.scrollHeight + 'px';
   };
 
-  // Clear typed text when user starts typing
+  // Remove the text clearing on focus - let user click without clearing the example text
   const handleFocus = () => {
-    if (typedText && !inputValue) {
-      setTypedText('');
-      setIsTyping(false);
-    }
+    // Text will only be cleared when user actually starts typing (handled by useEffect above)
   };
 
-  // Show the typed text as placeholder, but only if user hasn't typed anything
-  const placeholderText = !inputValue ? typedText : "";
+  // Show the typed text as placeholder only when not searching and user hasn't typed anything
+  const placeholderText = showTerminal ? "" : (!inputValue ? typedText : "");
+
   return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* Text Input Area */}
           <div className="px-4 py-4">
-            <Textarea placeholder={placeholderText} className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-[_] placeholder:after:animate-pulse' : ''}`} value={inputValue} onChange={handleTextareaChange} onKeyPress={handleKeyPress} onFocus={handleFocus} disabled={isProcessing} rows={2} style={{
-            height: 'auto',
-            minHeight: '48px'
-          }} />
+            {showTerminal ? (
+              // Typewriter text display during search (like humorous examples)
+              <div className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden text-gray-400 flex items-start justify-start pt-3 ${isTerminalTyping ? 'after:content-["_"] after:animate-pulse after:ml-1' : ''}`}>
+                {terminalTypedText && (
+                  <div className="leading-relaxed">
+                    {terminalTypedText}
+                    {isTerminalTyping && <span className="animate-pulse">_</span>}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Normal textarea
+              <Textarea 
+                placeholder={placeholderText} 
+                className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-[_] placeholder:after:animate-pulse' : ''}`} 
+                value={inputValue} 
+                onChange={handleTextareaChange} 
+                onKeyPress={handleKeyPress} 
+                onFocus={handleFocus} 
+                disabled={isProcessing} 
+                rows={2} 
+                style={{
+                  height: 'auto',
+                  minHeight: '48px'
+                }} 
+              />
+            )}
           </div>
 
           {/* Bottom Button Bar */}
@@ -150,4 +291,5 @@ const ChatInput = ({
       </div>
     </div>;
 };
+
 export default ChatInput;
