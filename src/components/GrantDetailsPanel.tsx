@@ -56,13 +56,6 @@ const GrantDetailsPanel = ({
   }, [selectedGrant?.id]);
   const containerClass = isMobile ? "w-full bg-canvas-cloud overflow-hidden relative" : "w-full h-full bg-canvas-cloud overflow-hidden relative";
   return <div className={containerClass}>
-      {isMobile && selectedGrant && onBackToList && <div className="sticky top-0 z-20 bg-[#f0f1f3] p-3">
-          <Button variant="ghost" size="sm" onClick={onBackToList} className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Tillbaka till listan
-          </Button>
-        </div>}
-
       {selectedGrant ? <>
         <ScrollArea ref={scrollRef} className="h-full w-full" data-grant-details-scroll>
           <div className="relative bg-[#f0f1f3] px-0 py-0 md:px-1 md:pr-0 md:py-0">

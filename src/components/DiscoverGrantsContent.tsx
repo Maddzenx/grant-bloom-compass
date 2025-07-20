@@ -12,7 +12,7 @@ import { FilterBar } from './FilterBar';
 import SortingControls from '@/components/SortingControls';
 import { sortGrants } from '@/utils/grantSorting';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { Filter } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 
 interface DiscoverGrantsContentProps {
   grants: Grant[];
@@ -61,6 +61,7 @@ export const DiscoverGrantsContent = ({
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
   const [filterOpen, setFilterOpen] = React.useState(false);
+  const [detailsOpen, setDetailsOpen] = React.useState(false);
 
   // Extract unique organizations from grants
   const organizationOptions = useMemo(() =>
@@ -148,7 +149,7 @@ export const DiscoverGrantsContent = ({
                 <span className="text-lg font-semibold">Filter</span>
                 <button onClick={() => setFilterOpen(false)} className="p-2 rounded-full hover:bg-gray-100">
                   <span className="sr-only">Close</span>
-                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  <X className="w-6 h-6" />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-4 pb-24 pt-2">
@@ -184,28 +185,31 @@ export const DiscoverGrantsContent = ({
         {/* Mobile Layout */}
         {isMobile ? (
           <>
-            {/* Show list when not viewing details */}
-            {!showDetails && (
-              <GrantList 
-                grants={sortedGrants} 
-                selectedGrant={selectedGrant} 
-                onGrantSelect={onGrantSelect} 
-                onToggleBookmark={onToggleBookmark} 
-                searchTerm={searchTerm} 
-                isMobile={true} 
-                aiMatches={aiMatches} 
-              />
-            )}
-
-            {/* Show details when viewing a grant */}
-            {showDetails && selectedGrant && (
-              <GrantDetailsPanel 
-                selectedGrant={selectedGrant} 
-                onToggleBookmark={onToggleBookmark} 
-                isMobile={true} 
-                onBackToList={onBackToList} 
-              />
-            )}
+            {/* Show list always, details as modal sheet */}
+            <GrantList 
+              grants={sortedGrants} 
+              selectedGrant={selectedGrant} 
+              onGrantSelect={grant => { onGrantSelect(grant); setDetailsOpen(true); }} 
+              onToggleBookmark={onToggleBookmark} 
+              searchTerm={searchTerm} 
+              isMobile={true} 
+              aiMatches={aiMatches} 
+            />
+            <Sheet open={detailsOpen && !!selectedGrant} onOpenChange={open => { setDetailsOpen(open); if (!open) onBackToList(); }}>
+              <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp">
+                <div className="flex flex-col items-center pt-3 pb-2">
+                  <div className="w-12 h-1.5 rounded-full bg-gray-300 mb-2" />
+                </div>
+                <div className="flex-1 overflow-y-auto px-0 pb-4">
+                  <GrantDetailsPanel 
+                    selectedGrant={selectedGrant} 
+                    onToggleBookmark={onToggleBookmark} 
+                    isMobile={true} 
+                    onBackToList={() => { setDetailsOpen(false); onBackToList(); }} 
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
           </>
         ) : (
           /* Desktop Layout - Split panel with sticky details */
