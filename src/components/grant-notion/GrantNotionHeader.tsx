@@ -103,7 +103,7 @@ const GrantNotionHeader = ({
         </h1>
       </div>
       {/* Description from database */}
-      {grant.description && <p className="text-gray-700 mb-03 leading-snug max-w-[80ch] text-sm w-full">
+      {grant.description && <p className="text-gray-700 mb-4 leading-snug max-w-[80ch] text-sm w-full">
           {grant.description}
         </p>}
       {/* About Grant section (if different from description) */}
