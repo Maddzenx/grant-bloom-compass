@@ -88,7 +88,7 @@ const GrantNotionHeader = ({
   const actuallyBookmarked = isGrantSaved(grant.id);
   return <>
       {/* Organization icon and name inline at the top left */}
-      <div className={`flex items-center gap-2 mb-2 mt-4 ${isMobile ? '' : ''}`}>
+      <div className={`flex items-center gap-2 mb-2 ${isMobile ? '' : ''}`}>
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
         <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
       </div>
