@@ -8,6 +8,8 @@ import SortingControls, { SortOption } from "@/components/SortingControls";
 import { getOrganizationLogo } from '@/utils/organizationLogos';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
@@ -33,6 +35,26 @@ const GrantNotionHeader = ({
     isGrantSaved
   } = useSavedGrantsContext();
   const orgLogo = getOrganizationLogo(grant.organization);
+  // --- Status logic ---
+  const today = new Date();
+  const opensAt = new Date(grant.opens_at);
+  let deadlineDate: Date;
+  try {
+    deadlineDate = new Date(grant.deadline);
+    if (isNaN(deadlineDate.getTime())) {
+      const [day, monthName, year] = grant.deadline.split(' ');
+      const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+      const month = months.findIndex(m => m === monthName.toLowerCase());
+      deadlineDate = new Date(Number(year), month, Number(day));
+    }
+  } catch {
+    deadlineDate = new Date();
+  }
+  let status: 'open' | 'upcoming' | 'closed' = 'closed';
+  if (today >= opensAt && today <= deadlineDate) status = 'open';
+  else if (today < opensAt) status = 'upcoming';
+  // ---
+
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
     startApplication(grant);
@@ -66,9 +88,18 @@ const GrantNotionHeader = ({
   const actuallyBookmarked = isGrantSaved(grant.id);
   return <>
       {/* Organization icon and name inline at the top left */}
-      <div className="flex items-center gap-2 mb-2 py-[3px]">
-        <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 rounded-md bg-white object-contain shadow-sm" />
-        
+      <div className={`flex items-center gap-2 mb-2 ${isMobile ? '' : ''}`}>
+        <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
+        <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
+      </div>
+      {/* Status label under logo */}
+      <div className="mb-2">
+        {status === 'open' && (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>
+        )}
+        {status === 'upcoming' && (
+          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>
+        )}
       </div>
 
       {/* Desktop action buttons in top right corner */}
