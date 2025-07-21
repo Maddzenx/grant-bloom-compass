@@ -3,7 +3,7 @@ import { Grant } from '@/types/grant';
 import { SortOption } from '@/components/SortingControls';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import DiscoverHeader from '@/components/DiscoverHeader';
-import { LinkedInStyleFilterControls } from '@/components/LinkedInStyleFilterControls';
+import { EnhancedFilterControls } from '@/components/EnhancedFilterControls';
 import GrantList from '@/components/GrantList';
 import GrantDetailsPanel from '@/components/GrantDetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -108,21 +108,27 @@ export const DiscoverGrantsContent = ({
               searchMetrics={searchMetrics} 
             />
           </div>
-          {/* LinkedIn-style filter controls */}
-          <div className="mt-4">
-            <LinkedInStyleFilterControls
-              filters={filters}
-              onFiltersChange={onFiltersChange}
-              onClearAll={onClearFilters}
-              grants={grants}
-              filteredGrants={searchResults}
-              hasActiveFilters={hasActiveFilters}
-            />
-          </div>
-          
-          {/* Sorting controls */}
-          <div className="flex justify-end mt-4">
-            <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
+          {/* Filter and sorting row */}
+          <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-between md:gap-x-8 w-full mt-0">
+            <div className="flex-1 min-w-0 overflow-x-auto">
+              <FilterBar
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                onResetFilters={onClearFilters}
+                organizationOptions={organizationOptions}
+                fundingRange={filters.fundingRange}
+                onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+                deadlineValue={filters.deadline}
+                onDeadlineChange={val => onFiltersChange({ deadline: val })}
+                industryOptions={industryOptions}
+                eligibleApplicantOptions={eligibleApplicantOptions}
+                geographicScopeOptions={geographicScopeOptions}
+              />
+            </div>
+            {/* Sorting controls: below filter bar on mobile, right on desktop */}
+            <div className="w-full md:w-auto md:ml-auto flex-shrink-0">
+              <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
+            </div>
           </div>
         </div>
       </div>
@@ -147,7 +153,7 @@ export const DiscoverGrantsContent = ({
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-4 pb-24 pt-2">
-                <LinkedInStyleFilterControls
+                <EnhancedFilterControls
                   filters={filters}
                   onFiltersChange={onFiltersChange}
                   onClearAll={onClearFilters}
