@@ -11,15 +11,14 @@ const GrantNotionFundingRulesSection = ({ grant }: GrantNotionFundingRulesSectio
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Finansieringsregler</h3>
-      <div className="space-y-2">
+      <h3 className="text-base font-semibold text-gray-900 mb-4">Bidraget täcker följande:</h3>
+      <ul className="list-disc list-inside space-y-2">
         {grant.fundingRules.map((rule, index) => (
-          <div key={index} className="flex items-start gap-2">
-            <div className="w-3 h-3 bg-gray-200 rounded-full mt-0.5 flex-shrink-0"></div>
-            <span className="text-xs text-gray-700 leading-relaxed">{rule}</span>
-          </div>
+          <li key={index} className="text-xs text-gray-700 leading-relaxed">
+            {rule}
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

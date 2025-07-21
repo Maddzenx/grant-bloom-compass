@@ -16,6 +16,9 @@ interface ConsolidatedGrantListProps {
   searchTerm: string;
   isMobile: boolean;
   aiMatches?: AIGrantMatch[];
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
 }
 
 const ConsolidatedGrantList = ({
@@ -25,26 +28,16 @@ const ConsolidatedGrantList = ({
   onToggleBookmark,
   searchTerm,
   isMobile,
-  aiMatches
+  aiMatches,
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange = () => {},
 }: ConsolidatedGrantListProps) => {
   const {
     isGrantSaved,
     addToSaved,
     removeFromSaved
   } = useSavedGrantsContext();
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const grantsPerPage = 15;
-
-  // Calculate pagination
-  const totalPages = Math.ceil(grants.length / grantsPerPage);
-  const startIndex = (currentPage - 1) * grantsPerPage;
-  const endIndex = startIndex + grantsPerPage;
-  const currentGrants = grants.slice(startIndex, endIndex);
-
-  // Reset to first page when grants change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [grants.length]);
 
   const formatDate = (dateString: string) => {
     try {
@@ -82,23 +75,10 @@ const ConsolidatedGrantList = ({
     }
   };
 
-  // Create a map of grant IDs to match scores for quick lookup
-  const matchScoreMap = React.useMemo(() => {
-    if (!aiMatches || aiMatches.length === 0) {
-      return new Map();
-    }
-    const map = new Map<string, number>();
-    aiMatches.forEach(match => {
-      const validScore = match.relevanceScore !== null && match.relevanceScore !== undefined ? match.relevanceScore : 0.25;
-      map.set(match.grantId, validScore);
-    });
-    return map;
-  }, [aiMatches]);
-
   const handleBookmarkToggle = (e: React.MouseEvent, grant: Grant) => {
     e.stopPropagation();
-    const currentlyBookmarked = isGrantSaved(grant.id);
-    if (currentlyBookmarked) {
+    const isSaved = isGrantSaved(grant.id);
+    if (isSaved) {
       removeFromSaved(grant.id);
     } else {
       addToSaved(grant);
@@ -106,25 +86,32 @@ const ConsolidatedGrantList = ({
     onToggleBookmark(grant.id);
   };
 
+  // Create a map for quick lookup of match scores
+  const matchScoreMap = React.useMemo(() => 
+    new Map(aiMatches?.map(match => [match.id, match.score]) || [])
+  , [aiMatches]);
+
   return (
     <div className="bg-white">
-      {currentGrants.length === 0 ? (
+      {grants.length === 0 ? (
         <div className="text-center text-ink-secondary py-12 px-6">
           <div className="text-base">
             {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
+          </div>
+          <div className="text-sm mt-2">
+            Försök att justera dina filter eller söktermer.
           </div>
         </div>
       ) : (
         <>
           {/* Full-width rows layout */}
           <div className="divide-y divide-gray-100">
-            {currentGrants.map((grant) => {
+            {grants.map((grant) => {
               const matchScore = matchScoreMap.get(grant.id);
               const shouldShowMatchScore = matchScore !== undefined && 
                                           matchScore !== null && 
                                           !isNaN(matchScore) && 
                                           typeof matchScore === 'number';
-              const orgLogo = getOrganizationLogo(grant.organization);
               const actuallyBookmarked = isGrantSaved(grant.id);
               const isSelected = selectedGrant?.id === grant.id;
 
@@ -166,11 +153,11 @@ const ConsolidatedGrantList = ({
                     {/* Header with organization logo and match score */}
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
-                        {orgLogo && (
+                        {getOrganizationLogo(grant.organization) && (
                           <img 
-                            src={orgLogo.src} 
-                            alt={orgLogo.alt} 
-                            className={orgLogo.className}
+                            src={getOrganizationLogo(grant.organization).src} 
+                            alt={getOrganizationLogo(grant.organization).alt} 
+                            className={getOrganizationLogo(grant.organization).className}
                           />
                         )}
                       </div>
@@ -242,12 +229,12 @@ const ConsolidatedGrantList = ({
           </div>
           
           {/* Pagination Controls */}
-          {totalPages > 1 && (
+          {!isMobile && totalPages > 1 && (
             <div className="flex items-center justify-center gap-4 py-4 px-6 border-t border-gray-100">
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 className="h-8 w-8 p-0"
                 aria-label="Föregående sida"
@@ -255,14 +242,12 @@ const ConsolidatedGrantList = ({
                 <ChevronLeft className="h-5 w-5" />
               </Button>
               <span className="text-sm text-gray-700 min-w-[90px] text-center">
-                {grants.length === 0
-                  ? null
-                  : `${startIndex + 1}–${Math.min(endIndex, grants.length)} of ${grants.length}`}
+                Page {currentPage} of {totalPages}
               </span>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 className="h-8 w-8 p-0"
                 aria-label="Nästa sida"

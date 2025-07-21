@@ -12,11 +12,9 @@ const GrantNotionEvaluationSection = ({ grant }: GrantNotionEvaluationSectionPro
   return (
     <div>
       <h3 className="text-base font-semibold text-gray-900 mb-4">Utvärderingskriterier</h3>
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <p className="text-sm text-gray-700 leading-relaxed">
-          {grant.evaluationCriteria}
-        </p>
-      </div>
+      <p className="text-sm text-gray-700 leading-relaxed">
+        {grant.evaluationCriteria}
+      </p>
     </div>
   );
 };

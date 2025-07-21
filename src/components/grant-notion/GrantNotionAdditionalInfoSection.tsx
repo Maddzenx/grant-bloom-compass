@@ -13,7 +13,7 @@ const GrantNotionAdditionalInfoSection = ({ grant }: GrantNotionAdditionalInfoSe
   return (
     <div>
       <h3 className="text-base font-semibold text-gray-900 mb-4">Ytterligare information</h3>
-      <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+      <div className="space-y-4">
         {grant.qualifications && (
           <div>
             <h4 className="text-sm font-semibold text-gray-900 mb-2">Kvalifikationer</h4>
