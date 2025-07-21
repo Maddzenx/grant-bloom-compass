@@ -123,6 +123,7 @@ export const DiscoverGrantsContent = ({
                 industryOptions={industryOptions}
                 eligibleApplicantOptions={eligibleApplicantOptions}
                 geographicScopeOptions={geographicScopeOptions}
+                totalGrantsCount={searchResults.length}
               />
             </div>
             {/* Sorting controls: below filter bar on mobile, right on desktop */}
