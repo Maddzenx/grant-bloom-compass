@@ -39,10 +39,21 @@ interface LinkedInStyleFilterControlsProps {
 
 const getUniqueValues = (grants: Grant[], field: keyof Grant): string[] => {
   const values = new Set<string>();
+  
+  if (!grants || grants.length === 0) {
+    return [];
+  }
+  
   grants.forEach(grant => {
+    if (!grant) return;
+    
     const value = grant[field];
     if (Array.isArray(value)) {
-      value.forEach(v => values.add(v));
+      value.forEach(v => {
+        if (v && typeof v === 'string') {
+          values.add(v);
+        }
+      });
     } else if (value && typeof value === 'string') {
       values.add(value);
     }
@@ -61,13 +72,18 @@ export const LinkedInStyleFilterControls = ({
   const [activePopover, setActivePopover] = useState<string | null>(null);
   const [pendingFilters, setPendingFilters] = useState<EnhancedFilterOptions>(filters);
 
-  const organizationOptions = useMemo(() => processOrganizationOptions(grants), [grants]);
-  const industrySectorOptions = getUniqueValues(grants, 'industry_sectors');
-  const eligibleApplicantOptions = getUniqueValues(grants, 'eligible_organisations');
-  const geographicScopeOptions = getUniqueValues(grants, 'geographic_scope');
-  const tagOptions = getUniqueValues(grants, 'tags');
+  const organizationOptions = useMemo(() => {
+    if (!grants || grants.length === 0) return [];
+    return processOrganizationOptions(grants);
+  }, [grants]);
+  
+  const industrySectorOptions = useMemo(() => getUniqueValues(grants || [], 'industry_sectors'), [grants]);
+  const eligibleApplicantOptions = useMemo(() => getUniqueValues(grants || [], 'eligible_organisations'), [grants]);
+  const geographicScopeOptions = useMemo(() => getUniqueValues(grants || [], 'geographic_scope'), [grants]);
+  const tagOptions = useMemo(() => getUniqueValues(grants || [], 'tags'), [grants]);
 
   const grantsInFundingRange = useMemo(() => {
+    if (!grants || grants.length === 0) return 0;
     if (!pendingFilters.fundingRange.min && !pendingFilters.fundingRange.max) {
       return grants.length;
     }
@@ -224,9 +240,9 @@ export const LinkedInStyleFilterControls = ({
           <div className="w-80 p-4">
             <h4 className="font-medium mb-3">Branschsektorer</h4>
             <MultiSelect
-              options={industrySectorOptions}
-              value={pendingFilters.industrySectors}
-              onValueChange={vals => setPendingFilters(prev => ({ ...prev, industrySectors: vals }))}
+              options={industrySectorOptions || []}
+              value={pendingFilters.industrySectors || []}
+              onValueChange={vals => setPendingFilters(prev => ({ ...prev, industrySectors: vals || [] }))}
               placeholder="Välj sektorer..."
             />
           </div>
@@ -236,9 +252,9 @@ export const LinkedInStyleFilterControls = ({
           <div className="w-80 p-4">
             <h4 className="font-medium mb-3">Behöriga sökande</h4>
             <MultiSelect
-              options={eligibleApplicantOptions}
-              value={pendingFilters.eligibleApplicants}
-              onValueChange={vals => setPendingFilters(prev => ({ ...prev, eligibleApplicants: vals }))}
+              options={eligibleApplicantOptions || []}
+              value={pendingFilters.eligibleApplicants || []}
+              onValueChange={vals => setPendingFilters(prev => ({ ...prev, eligibleApplicants: vals || [] }))}
               placeholder="Välj sökandetyper..."
             />
           </div>
@@ -248,9 +264,9 @@ export const LinkedInStyleFilterControls = ({
           <div className="w-80 p-4">
             <h4 className="font-medium mb-3">Geografisk omfattning</h4>
             <MultiSelect
-              options={geographicScopeOptions}
-              value={pendingFilters.geographicScope}
-              onValueChange={vals => setPendingFilters(prev => ({ ...prev, geographicScope: vals }))}
+              options={geographicScopeOptions || []}
+              value={pendingFilters.geographicScope || []}
+              onValueChange={vals => setPendingFilters(prev => ({ ...prev, geographicScope: vals || [] }))}
               placeholder="Välj regioner..."
             />
           </div>
@@ -260,9 +276,9 @@ export const LinkedInStyleFilterControls = ({
           <div className="w-80 p-4">
             <h4 className="font-medium mb-3">Taggar/Nyckelord</h4>
             <MultiSelect
-              options={tagOptions}
-              value={pendingFilters.tags}
-              onValueChange={vals => setPendingFilters(prev => ({ ...prev, tags: vals }))}
+              options={tagOptions || []}
+              value={pendingFilters.tags || []}
+              onValueChange={vals => setPendingFilters(prev => ({ ...prev, tags: vals || [] }))}
               placeholder="Välj taggar..."
             />
           </div>
