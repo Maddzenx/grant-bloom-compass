@@ -88,7 +88,7 @@ const ConsolidatedGrantList = ({
 
   // Create a map for quick lookup of match scores
   const matchScoreMap = React.useMemo(() => 
-    new Map(aiMatches?.map(match => [match.id, match.score]) || [])
+    new Map(aiMatches?.map(match => [match.grantId, match.relevanceScore]) || [])
   , [aiMatches]);
 
   return (
