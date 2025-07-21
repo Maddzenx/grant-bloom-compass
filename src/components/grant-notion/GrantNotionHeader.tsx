@@ -64,7 +64,7 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-  return <div className="mx-auto w-full max-w-2xl px-2 sm:px-4 lg:px-0">
+  return <>
       {/* Organization icon and name inline at the top left */}
       <div className="flex items-center gap-2 mb-2">
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 rounded-md bg-white object-contain shadow-sm" />
@@ -119,6 +119,6 @@ const GrantNotionHeader = ({
           {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
         </Button>
       </div>
-    </div>;
+    </>;
 };
 export default GrantNotionHeader;
