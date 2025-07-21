@@ -65,36 +65,6 @@ const FilterContent = ({
       </div>
       <Separator className="bg-purple-200" />
 
-      {/* Funding Filter */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-ink-obsidian">Finansiering</h3>
-            {(fundingRange.min !== null || fundingRange.max !== null) && <Button variant="link" size="sm" className="p-0 h-auto text-purple-600 font-semibold" onClick={() => onFundingRangeChange({
-          min: null,
-          max: null
-        })}>
-                    Återställ
-                </Button>}
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <label className="text-sm font-medium text-gray-500 mb-1 block">Minst</label>
-            <input type="number" className="w-full bg-gray-100 border-transparent rounded-md text-base p-2" value={fundingRange.min ?? ''} onChange={e => onFundingRangeChange({
-            ...fundingRange,
-            min: e.target.value ? Number(e.target.value) : null
-          })} placeholder="0" />
-          </div>
-          <div className="flex-1">
-            <label className="text-sm font-medium text-gray-500 mb-1 block">Högst</label>
-            <input type="number" className="w-full bg-gray-100 border-transparent rounded-md text-base p-2" value={fundingRange.max ?? ''} onChange={e => onFundingRangeChange({
-            ...fundingRange,
-            max: e.target.value ? Number(e.target.value) : null
-          })} placeholder="Ingen gräns" />
-          </div>
-        </div>
-      </div>
-      <Separator className="bg-purple-200" />
-
       {/* Deadline Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
@@ -218,12 +188,26 @@ const FilterContent = ({
 
     {/* Footer with updated button styles */}
     
+     <DrawerFooter className="p-4 border-t border-purple-200 bg-white flex-shrink-0 sticky bottom-0 flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
+        <Button variant="ghost" onClick={onResetFilters} className="w-full sm:w-auto font-bold text-lg text-ink-obsidian">
+            Återställ
+        </Button>
+        <DrawerClose asChild>
+            <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                Visa {totalGrantsCount} resultat
+            </Button>
+        </DrawerClose>
+    </DrawerFooter>
      <SheetFooter className="p-4 border-t border-purple-200 bg-white flex-shrink-0 sticky bottom-0 hidden sm:flex sm:justify-between sm:items-center">
-        <Button variant="ghost" onClick={onResetFilters} className="w-full sm:w-auto font-bold text-lg text-ink-secondary">Återställ</Button>
+        <Button variant="ghost" onClick={onResetFilters} className="w-full sm:w-auto font-bold text-lg text-ink-obsidian">
+            Återställ
+        </Button>
         <SheetClose asChild>
-          <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg px-6 py-3">Visa {totalGrantsCount} resultat</Button>
+            <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                Visa {totalGrantsCount} resultat
+            </Button>
         </SheetClose>
-      </SheetFooter>
+    </SheetFooter>
   </>;
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
@@ -254,9 +238,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {isMobile ? <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>{TriggerButton}</DrawerTrigger>
             <DrawerContent className="h-[90%] bg-white">
-               <DrawerHeader>
+               <DrawerHeader className="flex justify-between items-center p-4 border-b">
                 <DrawerTitle>Filter</DrawerTitle>
-              </DrawerHeader>
+                <DrawerClose asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
+                        <X className="w-4 h-4" />
+                    </Button>
+                </DrawerClose>
+            </DrawerHeader>
               <FilterContent {...props} />
             </DrawerContent>
           </Drawer> : <Sheet open={isOpen} onOpenChange={setIsOpen}>
