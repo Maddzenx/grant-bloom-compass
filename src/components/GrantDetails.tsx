@@ -24,7 +24,7 @@ const GrantDetails = ({
   return <div>
       <div className="bg-white">
         <GrantNotionHeader grant={grant} isBookmarked={isBookmarked} onToggleBookmark={onToggleBookmark} isMobile={isMobile} onBackToList={onBackToList} sortBy={sortBy} onSortChange={onSortChange} />
-        <div className="w-full px-4 pb-6 rounded-none py-0 md:px-0">
+        <div className="w-full px-0 pb-0 rounded-none py-0 md:px-0">
           <GrantNotionKeyInfo grant={grant} isMobile={isMobile} />
           <GrantNotionContent grant={grant} isMobile={isMobile} />
         </div>
