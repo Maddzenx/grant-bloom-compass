@@ -1,17 +1,24 @@
 import React from "react";
-import { Calendar, Bookmark, X } from "lucide-react";
+import { Calendar, Bookmark, X, ExternalLink, MoreHorizontal, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import SortingControls, { SortOption } from "@/components/SortingControls";
+import { getOrganizationLogo } from '@/utils/organizationLogos';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
-  onBackToList?: () => void;
   sortBy?: SortOption;
   onSortChange?: (sortBy: SortOption) => void;
 }
@@ -21,7 +28,6 @@ const GrantNotionHeader = ({
   isBookmarked,
   onToggleBookmark,
   isMobile = false,
-  onBackToList,
   sortBy = "default",
   onSortChange = () => {},
 }: GrantNotionHeaderProps) => {
@@ -32,6 +38,7 @@ const GrantNotionHeader = ({
     removeFromSaved,
     isGrantSaved
   } = useSavedGrantsContext();
+  const orgLogo = getOrganizationLogo(grant.organization);
 
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
@@ -59,48 +66,76 @@ const GrantNotionHeader = ({
     onToggleBookmark();
   };
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Länk kopierad till urklipp!");
+  };
+
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
-  return <div className="w-full px-0 md:px-4 pb-4 rounded-none pt-4 relative">
-    {/* Close button for desktop in top right corner */}
-    {!isMobile && onBackToList && (
-      <div className="absolute top-4 right-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBackToList}
-          className="h-8 w-8 p-0 rounded-full bg-gray-100 hover:bg-gray-200"
-        >
-          <X className="h-4 w-4" />
+  return <div className="w-full px-0 md:px-0 pb-4 rounded-none pt-4 relative">
+    <div className="mx-auto w-full max-w-2xl px-4">
+      {/* Organization icon and name inline at the top left */}
+      <div className="flex items-center gap-2 mb-2">
+        <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 rounded-md bg-white object-contain shadow-sm" />
+        <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
+      </div>
+
+      {/* Desktop action buttons in top right corner */}
+      {!isMobile && (
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-full"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleBookmarkToggle}>
+                <Bookmark className={`mr-2 h-4 w-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : ""}`} />
+                <span>{actuallyBookmarked ? "Sparat" : "Spara"}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleShare}>
+                <Share2 className="mr-2 h-4 w-4" />
+                <span>Dela</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleApplyClick}>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                <span>Ansök</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
+
+      {/* Title in a flex row, no SortingControls */}
+      <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2 w-full">
+        <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
+          {grant.title}
+        </h1>
+      </div>
+      {/* Description from database */}
+      {grant.description && <p className="text-gray-700 mb-2 leading-snug max-w-[65ch] text-sm w-full">
+          {grant.description}
+        </p>}
+      {/* About Grant section (if different from description) */}
+      {grant.aboutGrant && grant.aboutGrant !== grant.description}
+      {/* Action buttons */}
+      <div className="flex items-center gap-2 mb-2 w-full">
+        <Button onClick={handleApplyClick} className="flex-1 w-full px-2 py-1 text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+          Ansök om bidrag
+          <ExternalLink className="w-4 h-4 text-black" />
+        </Button>
+        <Button variant="outline" onClick={handleBookmarkToggle} className="flex-1 w-full px-2 py-1 text-xs font-normal rounded border-[#d7cffc] flex items-center gap-2 bg-white hover:bg-gray-50 h-8 shadow-none">
+          <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"}`} />
+          {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
         </Button>
       </div>
-    )}
-
-    {/* Title in a flex row, no SortingControls */}
-    <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2">
-      <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
-        {grant.title}
-      </h1>
-    </div>
-
-    {/* Description from database */}
-    {grant.description && <p className="text-gray-700 mb-2 leading-snug max-w-[65ch] text-sm">
-        {grant.description}
-      </p>}
-
-    {/* About Grant section (if different from description) */}
-    {grant.aboutGrant && grant.aboutGrant !== grant.description}
-
-    {/* Action buttons */}
-    <div className="flex items-center gap-2 mb-2">
-      <Button onClick={handleApplyClick} className="px-4 py-1 text-black text-xs font-medium rounded-lg bg-[#d7cffc] hover:bg-[#CEC5F9] h-8">
-        Ansök om bidrag
-      </Button>
-      <Button variant="outline" onClick={handleBookmarkToggle} className="px-2 py-1 text-xs border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 h-8">
-        <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"}`} />
-        {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
-      </Button>
     </div>
   </div>;
 };

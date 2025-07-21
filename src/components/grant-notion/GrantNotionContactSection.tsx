@@ -13,7 +13,7 @@ const GrantNotionContactSection = ({ grant }: GrantNotionContactSectionProps) =>
 
   return (
     <div className="pt-6 border-t border-gray-200">
-      <div className="bg-gray-50 p-4 rounded-lg">
+      <div>
         <h3 className="text-sm font-semibold text-gray-900 mb-3">Kontakt</h3>
         <div className="space-y-2">
           {(grant.contact.name || grant.contact.organization) && (
