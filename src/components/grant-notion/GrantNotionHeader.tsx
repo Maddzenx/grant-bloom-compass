@@ -66,9 +66,9 @@ const GrantNotionHeader = ({
   const actuallyBookmarked = isGrantSaved(grant.id);
   return <>
       {/* Organization icon and name inline at the top left */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2 py-[5px]">
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 rounded-md bg-white object-contain shadow-sm" />
-        <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
+        
       </div>
 
       {/* Desktop action buttons in top right corner */}
@@ -103,7 +103,7 @@ const GrantNotionHeader = ({
         </h1>
       </div>
       {/* Description from database */}
-      {grant.description && <p className="text-gray-700 mb-2 leading-snug max-w-[65ch] text-sm w-full">
+      {grant.description && <p className="text-gray-700 mb-03 leading-snug max-w-[80ch] text-sm w-full">
           {grant.description}
         </p>}
       {/* About Grant section (if different from description) */}
