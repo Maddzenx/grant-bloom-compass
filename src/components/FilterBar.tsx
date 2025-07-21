@@ -198,16 +198,7 @@ const FilterContent = ({
             </Button>
         </DrawerClose>
     </DrawerFooter>
-     <SheetFooter className="p-4 border-t border-purple-200 bg-white flex-shrink-0 sticky bottom-0 hidden sm:flex sm:justify-between sm:items-center">
-        <Button variant="ghost" onClick={onResetFilters} className="w-full sm:w-auto font-bold text-lg text-ink-obsidian">
-            Återställ
-        </Button>
-        <SheetClose asChild>
-            <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
-                Visa {totalGrantsCount} resultat
-            </Button>
-        </SheetClose>
-    </SheetFooter>
+     
   </>;
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
