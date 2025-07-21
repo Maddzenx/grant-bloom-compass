@@ -147,7 +147,7 @@ export const DiscoverGrantsContent = ({
             <SheetContent side="bottom" className="max-h-[90vh] rounded-t-2xl p-0 flex flex-col">
               <div className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-gray-200">
                 <span className="text-lg font-semibold">Filter</span>
-                <button onClick={() => setFilterOpen(false)} className="p-2 rounded-full hover:bg-gray-100">
+                <button onClick={() => setFilterOpen(false)} className="p-2 rounded-full hover:bg-canvas-bg">
                   <span className="sr-only">Close</span>
                   <X className="w-6 h-6" />
                 </button>
@@ -164,7 +164,7 @@ export const DiscoverGrantsContent = ({
               </div>
               <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex gap-2 px-4 py-4 z-50">
                 <button
-                  className="flex-1 bg-gray-100 text-black rounded-full py-3 font-medium text-base active:scale-95 transition-all"
+                  className="flex-1 bg-canvas-bg text-black rounded-full py-3 font-medium text-base active:scale-95 transition-all"
                   onClick={() => { onClearFilters(); setFilterOpen(false); }}
                 >
                   Clear all

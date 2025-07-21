@@ -75,9 +75,9 @@ const GrantHeader = ({
           variant="ghost" 
           size="sm" 
           onClick={handleBookmarkToggle} 
-          className={`p-2 hover:bg-gray-100 rounded-lg ${isMobile ? 'flex-1' : ''}`}
+          className={`p-2 hover:bg-canvas-bg rounded-lg ${isMobile ? 'flex-1' : ''}`}
         >
-          <Bookmark className={`w-5 h-5 ${actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400"}`} />
+          <Bookmark className={`w-5 h-5 transition-colors ${actuallyBookmarked ? 'text-accent-2' : 'text-gray-400'}`} />
           {isMobile && <span className="ml-2">Spara</span>}
         </Button>
         <Button 

@@ -76,7 +76,7 @@ const GrantStickyHeader = ({
             variant="ghost"
             size="sm"
             onClick={handleBookmarkToggle}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-300 hover:scale-105"
+            className="p-2 hover:bg-canvas-bg rounded-lg transition-all duration-300 hover:scale-105"
           >
             <Bookmark
               className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-all duration-300 hover:scale-110 ${

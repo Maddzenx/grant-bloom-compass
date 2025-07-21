@@ -1,21 +1,20 @@
 
 import React from 'react';
 import { Bot } from 'lucide-react';
+import { BeatLoader } from "react-spinners";
 
-export const TypingIndicator = () => {
+const TypingIndicator = () => {
   return (
-    <div className="flex gap-3 justify-start">
-      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-        <Bot className="w-4 h-4 text-white" />
+    <div className="flex items-center space-x-2">
+      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+        {/* Replace with an appropriate icon if you have one */}
+        <span className="text-xl">🤖</span>
       </div>
-      
-      <div className="bg-gray-100 rounded-2xl px-4 py-3">
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-          <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-          <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-        </div>
+      <div className="bg-canvas-bg rounded-2xl px-4 py-3">
+        <BeatLoader size={8} color="#6B7280" />
       </div>
     </div>
   );
 };
+
+export default TypingIndicator;

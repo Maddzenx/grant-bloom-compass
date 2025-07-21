@@ -167,6 +167,12 @@ const ConsolidatedGrantList = ({
                             {getMatchBadge(matchScore)}
                           </div>
                         )}
+                        {status === 'open' && (
+                          <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Öppen</Badge>
+                        )}
+                        {status === 'upcoming' && (
+                          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
@@ -202,7 +208,7 @@ const ConsolidatedGrantList = ({
                     </div>
 
                     {/* Status component at bottom with smaller font and subtle separation */}
-                    {status === 'open' && (
+                    {/* {status === 'open' && (
                       <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
                         <div className="flex items-center gap-2 text-green-600">
                           <Clock className="h-3 w-3" />
@@ -221,7 +227,7 @@ const ConsolidatedGrantList = ({
                           <span>Kommande: Öppnar för ansökningar {opensAt.toISOString().split('T')[0]}</span>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               );
