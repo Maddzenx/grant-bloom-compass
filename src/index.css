@@ -217,3 +217,22 @@
       #F0F1F3;
   }
 }
+
+@media (max-width: 768px) {
+  .grant-mobile-drawer {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: none !important;
+    background: #fff !important;
+    z-index: 50 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .grant-mobile-drawer .drawer-content-scroll {
+    flex: 1 1 0%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

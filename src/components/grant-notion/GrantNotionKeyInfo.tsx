@@ -19,10 +19,10 @@ const GrantNotionKeyInfo = ({
         <span className="text-xs text-gray-500">Ansökningsdeadline</span>
         <span className="text-base font-bold text-gray-900">{grant.deadline}</span>
       </div>
-      {/* Organisation */}
+      {/* Medfinansiering */}
       <div className="flex flex-col items-center justify-center text-center min-w-[120px]">
-        <span className="text-xs text-gray-500">Organisation</span>
-        <span className="text-base font-bold text-gray-900">{grant.organization}</span>
+        <span className="text-xs text-gray-500">Medfinansiering</span>
+        <span className="text-base font-bold text-gray-900">{grant.cofinancing_required ? 'Ja' : 'Nej'}</span>
       </div>
     </div>;
 };

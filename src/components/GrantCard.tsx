@@ -137,7 +137,7 @@ const GrantCard = ({
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70 flex-shrink-0">
-            <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
+            <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {shouldShowMatchScore && (

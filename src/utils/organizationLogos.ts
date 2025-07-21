@@ -32,6 +32,13 @@ export const getOrganizationLogo = (organization: string) => {
       className: "w-20 h-6 object-contain"
     };
   }
+  if (orgLower.includes('europeiska kommissionen') || orgLower.includes('eu')) {
+    return {
+      src: '/eu-flag.png',
+      alt: 'Europeiska unionen',
+      className: 'w-8 h-8 rounded-md object-contain shadow-sm',
+    };
+  }
   return {
     src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
     alt: organization,
