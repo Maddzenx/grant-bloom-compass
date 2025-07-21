@@ -115,7 +115,7 @@ const GrantNotionHeader = ({
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
       {/* Action buttons */}
       <div className="flex items-center gap-2 mb-2 w-full">
-        <Button onClick={handleApplyClick} className="flex-1 w-full px-2 py-1 text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+        <Button onClick={handleApplyClick} className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0">
           Ansök om bidrag
           <ExternalLink className="w-4 h-4 text-black" />
         </Button>
