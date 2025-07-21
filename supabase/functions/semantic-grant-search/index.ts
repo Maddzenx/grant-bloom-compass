@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -27,6 +28,14 @@ interface GrantForLLMFiltering {
   relevanceScore: number;
 }
 
+// Free models to try for LLM filtering, in order of preference (smartest/largest first)
+const llmFilterModels = [
+  'deepseek/deepseek-chat-v3-0324:free',
+  'deepseek/deepseek-r1-0528:free',
+  'deepseek/deepseek-r1:free',
+  'moonshotai/kimi-k2:free'
+];
+
 interface LLMFilterResult {
   grantId: string;
   shouldInclude: boolean;
@@ -36,6 +45,10 @@ interface LLMFilterResult {
 const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]): Promise<LLMFilterResult[]> => {
   console.log(`🤖 Starting LLM filtering for ${grants.length} grants with query: "${query}"`);
 
+  if (!openRouterApiKey) {
+    throw new Error('OpenRouter API key not configured');
+  }
+  
   // Prepare grants data for LLM
   console.log('📋 Preparing grant data for LLM...');
   const grantsForLLM = grants.map(grant => {
@@ -104,66 +117,106 @@ Please evaluate each grant and respond with a JSON array of objects with this st
 
 Be thorough but fair in your evaluation.`;
 
-  try {
-    console.log('🔄 Calling OpenAI for LLM filtering...');
-    console.log('📏 Prompt length:', prompt.length, 'characters');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        messages: [
-          { role: 'system', content: 'You are a precise grant matching expert. Always respond with valid JSON only.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 4000
-      }),
-    });
-    console.log('📡 OpenAI API call completed, status:', response.status);
+  let lastError: string | undefined;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ OpenAI LLM filtering error:', errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
-
-    console.log('✅ OpenAI response received successfully');
-    const aiResponse = await response.json();
-    let content = aiResponse.choices[0].message.content;
-    
-    // Strip markdown code fences if present
-    if (content.includes('```json')) {
-      console.log('🧹 Cleaning markdown wrapper from LLM response...');
-      content = content.replace(/```json\s*/g, '').replace(/\s*```/g, '').trim();
-    }
-    
-    // Parse the JSON response
-    let filterResults: LLMFilterResult[];
+  for (const model of llmFilterModels) {
     try {
-      filterResults = JSON.parse(content);
-      console.log(`✅ Successfully parsed LLM response with ${filterResults.length} results`);
-    } catch (parseError) {
-      console.error('❌ Failed to parse LLM response as JSON:', content);
-      throw new Error('Invalid JSON response from LLM');
-    }
+      console.log(`🔄 Calling OpenRouter with model ${model} for LLM filtering...`);
+      console.log('📏 Prompt length:', prompt.length, 'characters');
 
-    console.log(`🤖 LLM filtering complete. Processed ${filterResults.length} results`);
-    console.log('All LLM scores:', filterResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
-    
-    const filteredResults = filterResults.filter(result => result.shouldInclude);
-    console.log(`🔍 After filtering: ${filteredResults.length} results remaining`);
-    console.log('Filtered scores:', filteredResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
-    
-    return filteredResults;
-    
-  } catch (error) {
-    console.error('Error in LLM filtering:', error);
-    throw new Error(`LLM filtering failed: ${error.message}`);
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openRouterApiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://grant-bloom-compass.com',
+          'X-Title': 'Grant Bloom Compass'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'system', content: 'You are a precise grant matching expert. Always respond with valid JSON only.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2,
+          max_tokens: 4096,
+          response_format: { "type": "json_object" }
+        }),
+      });
+      console.log(`📡 API call to ${model} completed, status:`, response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ OpenRouter LLM filtering error with ${model}:`, errorText);
+        throw new Error(`OpenRouter API error with ${model}: ${response.status}`);
+      }
+
+      console.log('✅ OpenRouter response received successfully');
+      const aiResponse = await response.json();
+      let content = aiResponse.choices[0].message.content;
+
+             let filterResults: LLMFilterResult[];
+       try {
+         // The response should be a JSON object, as requested.
+         // It might be a string inside the content field, or the content itself is the object.
+         let parsedContent;
+         if (typeof content === 'string') {
+           if (content.includes('```json')) {
+             console.log('🧹 Cleaning markdown wrapper from LLM response...');
+             content = content.replace(/```json\s*/g, '').replace(/\s*```/g, '').trim();
+           }
+           parsedContent = JSON.parse(content);
+         } else if (typeof content === 'object' && content !== null) {
+           parsedContent = content;
+         } else {
+            throw new Error('Unexpected response format from LLM.');
+         }
+
+         // Handle different response formats - some models return direct array, others wrap in object
+         if (Array.isArray(parsedContent)) {
+           filterResults = parsedContent;
+         } else if (parsedContent.evaluations && Array.isArray(parsedContent.evaluations)) {
+           filterResults = parsedContent.evaluations;
+         } else if (parsedContent.results && Array.isArray(parsedContent.results)) {
+           filterResults = parsedContent.results;
+         } else if (parsedContent.grants && Array.isArray(parsedContent.grants)) {
+           filterResults = parsedContent.grants;
+         } else {
+           // Try to find any array property in the object
+           const keys = Object.keys(parsedContent);
+           const arrayKey = keys.find(key => Array.isArray(parsedContent[key]));
+           if (arrayKey) {
+             filterResults = parsedContent[arrayKey];
+           } else {
+             throw new Error(`Expected array or object with array property, got: ${JSON.stringify(parsedContent).substring(0, 200)}`);
+           }
+         }
+
+         console.log(`✅ Successfully parsed LLM response from ${model} with ${filterResults.length} results`);
+
+        console.log(`🤖 LLM filtering complete. Processed ${filterResults.length} results`);
+        console.log('All LLM scores:', filterResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
+
+        const filteredResults = filterResults.filter(result => result.shouldInclude);
+        console.log(`🔍 After filtering: ${filteredResults.length} results remaining`);
+        console.log('Filtered scores:', filteredResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
+
+        return filteredResults; // Success, return the results
+      } catch (parseError) {
+        console.error(`❌ Failed to parse LLM response from ${model} as JSON:`, content);
+        lastError = `Invalid JSON response from ${model}`;
+        continue; // Try next model
+      }
+    } catch (error) {
+      console.error(`Error with model ${model} in LLM filtering:`, error);
+      lastError = `LLM filtering failed with ${model}: ${error.message}`;
+      continue; // Try next model
+    }
   }
+
+  // If all models failed
+  console.error('All models failed for LLM filtering. Last error:', lastError);
+  throw new Error(`LLM filtering failed for all models. Last error: ${lastError}`);
 };
 
 serve(async (req) => {
