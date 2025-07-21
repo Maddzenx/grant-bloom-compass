@@ -92,15 +92,6 @@ const GrantNotionHeader = ({
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
         <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
       </div>
-      {/* Status label under logo */}
-      <div className="mb-2">
-        {status === 'open' && (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>
-        )}
-        {status === 'upcoming' && (
-          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>
-        )}
-      </div>
 
       {/* Desktop action buttons in top right corner */}
       {!isMobile && <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -126,6 +117,16 @@ const GrantNotionHeader = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>}
+
+      {/* Status label above title */}
+      <div className="mb-2">
+        {status === 'open' && (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>
+        )}
+        {status === 'upcoming' && (
+          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>
+        )}
+      </div>
 
       {/* Title in a flex row, no SortingControls */}
       <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2 w-full">
