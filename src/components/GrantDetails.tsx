@@ -19,20 +19,12 @@ const GrantDetails = ({
   isMobile = false,
   onBackToList,
   sortBy = "default",
-  onSortChange = () => {},
+  onSortChange = () => {}
 }: GrantDetailsProps) => {
   return <div>
       <div className="bg-white">
-        <GrantNotionHeader 
-          grant={grant} 
-          isBookmarked={isBookmarked} 
-          onToggleBookmark={onToggleBookmark} 
-          isMobile={isMobile} 
-          onBackToList={onBackToList}
-          sortBy={sortBy}
-          onSortChange={onSortChange}
-        />
-        <div className="w-full px-4 pb-6 rounded-none py-0 md:px-[16px]">
+        <GrantNotionHeader grant={grant} isBookmarked={isBookmarked} onToggleBookmark={onToggleBookmark} isMobile={isMobile} onBackToList={onBackToList} sortBy={sortBy} onSortChange={onSortChange} />
+        <div className="w-full px-4 pb-6 rounded-none py-0 md:px-0">
           <GrantNotionKeyInfo grant={grant} isMobile={isMobile} />
           <GrantNotionContent grant={grant} isMobile={isMobile} />
         </div>

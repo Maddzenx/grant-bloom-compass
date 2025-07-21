@@ -6,14 +6,8 @@ import { Grant } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import SortingControls, { SortOption } from "@/components/SortingControls";
 import { getOrganizationLogo } from '@/utils/organizationLogos';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
@@ -23,14 +17,13 @@ interface GrantNotionHeaderProps {
   onSortChange?: (sortBy: SortOption) => void;
   onBackToList?: () => void;
 }
-
 const GrantNotionHeader = ({
   grant,
   isBookmarked,
   onToggleBookmark,
   isMobile = false,
   sortBy = "default",
-  onSortChange = () => {},
+  onSortChange = () => {}
 }: GrantNotionHeaderProps) => {
   const navigate = useNavigate();
   const {
@@ -40,7 +33,6 @@ const GrantNotionHeader = ({
     isGrantSaved
   } = useSavedGrantsContext();
   const orgLogo = getOrganizationLogo(grant.organization);
-
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
     startApplication(grant);
@@ -51,7 +43,6 @@ const GrantNotionHeader = ({
       }
     });
   };
-
   const handleBookmarkToggle = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 Header bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
@@ -66,7 +57,6 @@ const GrantNotionHeader = ({
     // Call the parent's toggle function for UI updates
     onToggleBookmark();
   };
-
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     toast.success("Länk kopierad till urklipp!");
@@ -74,9 +64,8 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
-
   return <div className="w-full px-0 md:px-0 pb-4 rounded-none pt-4 relative m-0">
-    <div className="mx-auto w-full max-w-2xl px-4">
+    <div className="mx-auto w-full max-w-2xl px-0">
       {/* Organization icon and name inline at the top left */}
       <div className="flex items-center gap-2 mb-2">
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 rounded-md bg-white object-contain shadow-sm" />
@@ -84,15 +73,10 @@ const GrantNotionHeader = ({
       </div>
 
       {/* Desktop action buttons in top right corner */}
-      {!isMobile && (
-        <div className="absolute top-4 right-4 flex items-center gap-2">
+      {!isMobile && <div className="absolute top-4 right-4 flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-full"
-              >
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -111,8 +95,7 @@ const GrantNotionHeader = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      )}
+        </div>}
 
       {/* Title in a flex row, no SortingControls */}
       <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2 w-full">
@@ -140,5 +123,4 @@ const GrantNotionHeader = ({
     </div>
   </div>;
 };
-
 export default GrantNotionHeader;
