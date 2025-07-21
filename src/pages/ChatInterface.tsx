@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Grant } from '@/types/grant';
 import { ChatMessage } from '@/components/chat/ChatMessage';
-import { TypingIndicator } from '@/components/chat/TypingIndicator';
+import TypingIndicator from '@/components/chat/TypingIndicator';
 import { useChatAgent } from '@/hooks/useChatAgent';
 import { ApplicationPreview } from '@/components/chat/ApplicationPreview';
 

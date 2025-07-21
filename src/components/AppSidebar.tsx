@@ -38,7 +38,7 @@ export function AppSidebar() {
       <Sidebar className="">
         {/* Minimize button positioned at top right of sidebar */}
         <div className="absolute top-4 right-4 z-10">
-          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 transition-colors group-data-[collapsible=icon]:hidden" title="Dölj sidopanel">
+          <Button variant="ghost" size="sm" onClick={toggleSidebar} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-canvas-bg transition-colors group-data-[collapsible=icon]:hidden" title="Dölj sidopanel">
             <PanelLeft className="w-4 h-4" />
           </Button>
         </div>
@@ -52,7 +52,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
+                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-canvas-bg text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
                           <Icon className="w-5 h-5" />
                           <span>{item.title}</span>
                         </Link>
@@ -74,7 +74,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
+                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-canvas-bg text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
                           <Icon className="w-5 h-5" />
                           <span>{item.title}</span>
                         </Link>
@@ -96,7 +96,7 @@ export function AppSidebar() {
                 const isActive = location.pathname === item.url;
                 return <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
+                        <Link to={item.url} className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${isActive ? 'bg-canvas-bg text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
                           <Icon className="w-5 h-5" />
                           <span>{item.title}</span>
                         </Link>

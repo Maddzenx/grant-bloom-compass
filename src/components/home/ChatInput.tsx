@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2 } from "lucide-react";
+import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2, Paperclip, MicOff } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -261,13 +261,20 @@ const ChatInput = ({
           <div className="flex items-center justify-between px-4 py-3">
             {/* Left Side - Upload and Voice Buttons */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="w-10 h-10 p-0 rounded-full hover:bg-gray-100 flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm" onClick={handleFileUploadClick} disabled={isProcessing} title={t('chat.uploadFile')}>
-                <Plus className="w-7 h-7" />
+              <Button variant="ghost" size="sm" className="w-10 h-10 p-0 rounded-full hover:bg-canvas-bg flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm" onClick={handleFileUploadClick} disabled={isProcessing} title={t('chat.uploadFile')}>
+                <Paperclip className="w-5 h-5" />
               </Button>
 
               {/* Voice Recording Button */}
-              <Button variant="ghost" size="sm" className={`w-10 h-10 p-0 rounded-full flex-shrink-0 transition-all duration-200 border shadow-sm ${isRecording ? 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200 hover:border-red-300' : 'hover:bg-gray-100 text-gray-600 border-gray-200 hover:border-gray-300'}`} onClick={handleVoiceInput} disabled={isProcessing} title={isRecording ? t('chat.stopRecording') : t('chat.startRecording')}>
-                {isRecording ? <Square className="w-7 h-7" /> : <Mic className="w-7 h-7" />}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`w-10 h-10 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${isRecording ? 'bg-red-100 text-red-600 border-red-200 hover:border-red-300' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'}`} 
+                onClick={handleVoiceInput} 
+                disabled={isProcessing} 
+                title={isRecording ? t('chat.stopRecording') : t('chat.startRecording')}
+              >
+                {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </Button>
             </div>
 

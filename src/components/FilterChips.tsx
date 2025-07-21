@@ -98,7 +98,7 @@ export const FilterChips = ({
       
       {chips.map(chip => <Badge key={chip.key} variant="secondary" className="flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-900">
           <span className="text-xs">{chip.label}</span>
-          <button onClick={chip.onRemove} className="ml-1 hover:bg-gray-100 rounded-full p-0.5">
+          <button onClick={chip.onRemove} className="ml-1 hover:bg-canvas-bg rounded-full p-0.5">
             <X className="w-3 h-3" />
           </button>
         </Badge>)}

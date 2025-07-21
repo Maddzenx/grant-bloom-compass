@@ -35,7 +35,7 @@ export const FilterActions = ({
       >
         Apply Filters
         {hasPendingChanges && (
-          <span className="ml-1 text-xs bg-gray-100 text-black px-1.5 py-0.5 rounded-full border border-gray-300">
+          <span className="ml-1 text-xs bg-canvas-bg text-black px-1.5 py-0.5 rounded-full border border-gray-300">
             New
           </span>
         )}

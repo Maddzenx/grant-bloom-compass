@@ -36,6 +36,7 @@ export default {
 				'accent-lavender': '#CEC5F9',
 				'ink-obsidian': '#000000',
 				'ink-secondary': '#333333',
+				'canvas-bg': '#f9f9f7',
 				
 				// Design system tokens updated with new palette
 				border: 'hsl(var(--border))',

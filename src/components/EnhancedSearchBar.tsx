@@ -111,7 +111,13 @@ const EnhancedSearchBar = ({
             {isSearching ? (
               <Loader2 className="w-4 h-4 text-gray-500 animate-spin" />
             ) : searchTerm ? (
-              <Button type="button" variant="ghost" size="sm" onClick={clearSearch} className="h-6 w-6 p-0 hover:bg-gray-100 rounded-full">
+              <Button 
+                type="button" 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearSearch} 
+                className="h-6 w-6 p-0 hover:bg-canvas-bg rounded-full"
+              >
                 <X className="w-4 h-4" />
               </Button>
             ) : null}

@@ -135,44 +135,22 @@ const GrantCard = ({
   return (
     <Card className={`p-6 min-h-[120px] rounded-xl shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
-        {/* Status component */}
-        <div className="mb-1">
-          {status === 'open' && (
-            <div className="flex items-center gap-2 text-green-700 text-sm font-medium">
-              <span className="inline-flex items-center gap-1">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                Öppen:
-              </span>
-              <span>{Math.max(0, Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))} dagar kvar.</span>
-              <span className="inline-flex items-center gap-1 ml-4">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                Sök senast: {grant.deadline}
-              </span>
-            </div>
-          )}
-          {status === 'upcoming' && (
-            <div className="flex items-center gap-2 text-yellow-700 text-sm font-medium">
-              <span className="inline-flex items-center gap-1">
-                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                Kommande:
-              </span>
-              <span>Öppnar för ansökningar {grant.opens_at}</span>
-            </div>
-          )}
-        </div>
-        {/* Header with organization and match score */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70 flex-shrink-0">
             <img src={orgLogo.src} alt={orgLogo.alt} className={orgLogo.className} />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Match score badge - only show when AI search has been used and score is valid */}
             {shouldShowMatchScore && (
               <div className="flex-shrink-0">
                 {getMatchBadge(matchScore)}
               </div>
             )}
-            {/* Bookmark button */}
+            {status === 'open' && (
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Öppet</Badge>
+            )}
+            {status === 'upcoming' && (
+              <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>
+            )}
             <button 
               onClick={handleBookmarkToggle} 
               className="p-1 hover:bg-accent-2/10 rounded transition-colors flex-shrink-0"
