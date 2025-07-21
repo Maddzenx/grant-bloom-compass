@@ -107,9 +107,7 @@ const GrantNotionHeader = ({
           {grant.description}
         </p>}
       <div className="mb-4">
-        <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-          öppen, kommande
-        </span>
+        
       </div>
       {/* About Grant section (if different from description) */}
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
