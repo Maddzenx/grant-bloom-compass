@@ -1,9 +1,12 @@
 import React from "react";
 import { Grant } from "@/types/grant";
+import { formatCofinancingText } from "@/utils/grantHelpers";
+
 interface GrantNotionKeyInfoProps {
   grant: Grant;
   isMobile?: boolean;
 }
+
 const GrantNotionKeyInfo = ({
   grant,
   isMobile = false
@@ -22,8 +25,9 @@ const GrantNotionKeyInfo = ({
     {/* Medfinansiering */}
     <div className="flex-1 flex flex-col items-center justify-center text-center">
       <span className="text-xs text-gray-500">Medfinansiering</span>
-      <span className="text-base font-bold text-gray-900">{grant.cofinancing_required ? 'Ja' : 'Nej'}</span>
+      <span className="text-base font-bold text-gray-900">{formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level)}</span>
     </div>
   </div>;
 };
+
 export default GrantNotionKeyInfo;

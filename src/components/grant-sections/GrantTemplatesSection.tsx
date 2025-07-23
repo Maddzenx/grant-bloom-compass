@@ -63,7 +63,11 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
     window.open(generalSearchUrl, '_blank', 'noopener,noreferrer');
   };
 
-  if (grant.templates.length === 0 && grant.generalInfo.length === 0) return null;
+  const hasTemplates = grant.templates.length > 0;
+  const hasGeneralInfo = grant.generalInfo.length > 0;
+  const hasOtherSources = grant.other_sources_names && grant.other_sources_names.length > 0;
+
+  if (!hasTemplates && !hasGeneralInfo && !hasOtherSources) return null;
 
   return (
     <section className="bg-purple-50 p-4 md:p-6 rounded-lg border-2 border-purple-200">
@@ -74,7 +78,56 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
         </h2>
       </div>
       <div className="space-y-3">
-        {grant.templates.length > 0 && (
+        {/* Allmän information och dokument - now first, combining both generalInfo and other_sources_names */}
+        {(hasGeneralInfo || hasOtherSources) && (
+          <div>
+            <h3 className={`font-semibold text-purple-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+              Allmän information och dokument
+            </h3>
+            <div className="grid gap-2">
+              {/* General info files */}
+              {grant.generalInfo.map((file, index) => (
+                <div 
+                  key={`general-${index}`}
+                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
+                  onClick={() => handleFileClick(file)}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
+                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
+                      {file}
+                    </span>
+                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Klicka för mer info
+                    </span>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Other sources */}
+              {grant.other_sources_names && grant.other_sources_names.map((source, index) => (
+                <div 
+                  key={`source-${index}`}
+                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
+                  onClick={() => handleFileClick(source)}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
+                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
+                      {source}
+                    </span>
+                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Klicka för mer info
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Ansökningsmallar - now second */}
+        {hasTemplates && (
           <div>
             <h3 className={`font-semibold text-purple-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
               Ansökningsmallar
@@ -93,33 +146,6 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
                     </span>
                     <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
                       Klicka för att ladda ner
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {grant.generalInfo.length > 0 && (
-          <div>
-            <h3 className={`font-semibold text-purple-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
-              Allmän information och dokument
-            </h3>
-            <div className="grid gap-2">
-              {grant.generalInfo.map((file, index) => (
-                <div 
-                  key={index}
-                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
-                  onClick={() => handleFileClick(file)}
-                >
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
-                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
-                      {file}
-                    </span>
-                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Klicka för mer info
                     </span>
                   </div>
                 </div>

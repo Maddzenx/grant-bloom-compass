@@ -80,6 +80,124 @@
 
 **Status**: ✅ Completed
 
+### Date Handling and Display Improvements - 2024-12-19
+**Description**: Fixed date handling issues and improved the display of important dates in grant details.
+
+**Problems Identified**:
+- Project start/end dates were not being displayed in the important dates list
+- Information webinars with null dates were showing as "1 jan. 1970"
+- Date labels used incorrect capitalization (e.g., "Ansökan Öppnar" instead of "Ansökan öppnar")
+- Database queries were missing project date fields
+
+**Changes Made**:
+- **Null Date Handling**: Updated `formatDate` function to return "Datum saknas" for null or invalid dates
+- **Project Date Display**: Added all project start/end dates to important dates list with proper Swedish labels:
+  - "Tidigaste projektstart" (earliest project start)
+  - "Senaste projektstart" (latest project start) 
+  - "Tidigaste projektslut" (earliest project end)
+  - "Senaste projektslut" (latest project end)
+- **Date Label Formatting**: Updated all date labels to use proper Swedish capitalization (only first word capitalized)
+- **Database Queries**: Added missing project date fields to SELECT statements in both frontend and backend
+- **Type Definitions**: Extended `GrantListItem` interface to include all date fields for consistent data access
+
+**Technical Details**:
+- Updated `GrantNotionImportantDatesSection.tsx` - Fixed date formatting and added all project dates
+- Updated database queries in `grantsService.ts` and `filtered-grants-search/index.ts` to include all date fields
+- Updated `GrantListItem` type to include project date fields for list view consistency
+- Updated transformation functions to pass through all date fields
+- Fixed sorting to handle "Datum saknas" entries properly
+
+**Files Modified**:
+- `src/components/grant-notion/GrantNotionImportantDatesSection.tsx` - Complete rewrite of date handling
+- `src/types/grant.ts` - Added date fields to GrantListItem interface
+- `src/services/grantsService.ts` - Updated database query and transformation functions
+- `src/hooks/useBackendFilteredGrants.ts` - Updated transformation function
+- `src/utils/grantTransform.ts` - Updated importantDates field
+- `supabase/functions/filtered-grants-search/index.ts` - Updated database query
+
+**Status**: ✅ Completed
+
+### Templates and Files Display Fix - 2024-12-19
+**Description**: Fixed issue where templates and files were not showing up in the grant details view.
+
+**Problem Identified**:
+- Templates and files sections were empty in grant details view
+- Database queries were missing template fields (`application_templates_names`, `other_templates_names`, etc.)
+- Transformation functions were setting template fields to empty arrays with incorrect comments
+- Template fields were not being passed through from database to frontend components
+
+**Changes Made**:
+- **Database Queries**: Added missing template fields to SELECT statements in both frontend and backend
+- **Transformation Functions**: Fixed mapping of template fields from database to frontend:
+  - `application_templates_names` → `templates` (application templates)
+  - `other_templates_names` → `generalInfo` (general documents)
+  - `application_templates_links` → `application_templates_links` (template links)
+  - `other_templates_links` → `other_templates_links` (document links)
+- **Type Definitions**: Added template fields to `GrantListItem` interface for consistency
+- **Data Flow**: Ensured template fields flow from database through all transformation layers
+
+**Technical Details**:
+- Updated `grantsService.ts` - Fixed transformation functions and database queries
+- Updated `useBackendFilteredGrants.ts` - Added template fields to transformation
+- Updated `filtered-grants-search/index.ts` - Added template fields to backend query
+- Updated `types/grant.ts` - Added template fields to GrantListItem interface
+- Fixed incorrect comments that said template fields "don't exist in schema"
+
+**Files Modified**:
+- `src/services/grantsService.ts` - Fixed template field mapping and database queries
+- `src/hooks/useBackendFilteredGrants.ts` - Added template fields to transformation
+- `src/types/grant.ts` - Added template fields to GrantListItem interface
+- `supabase/functions/filtered-grants-search/index.ts` - Added template fields to database query
+
+**Status**: ✅ Completed
+
+### Enhanced Cofinancing Display and Swedish Text Updates - 2024-12-19
+**Description**: Enhanced the cofinancing display to show percentage levels and updated "Not specified" text to Swedish.
+
+**Changes Made**:
+- **Type Definitions**: Added `cofinancing_level` field to Grant, GrantListItem, and GrantDetails interfaces
+- **Database Queries**: Updated frontend and backend queries to include `cofinancing_level` field
+- **Transformation Functions**: Updated all transformation functions to handle the new cofinancing level field
+- **Cofinancing Text Formatting**: Created `formatCofinancingText` utility function that:
+  - Shows "50% medfinansiering krävs" when cofinancing is required and level exists
+  - Shows "Ingen medfinansiering krävs" when cofinancing is not required
+  - Shows "Medfinansiering krävs" when cofinancing is required but level is null/undefined
+  - Shows "Ej specificerat" when cofinancing requirement is null/undefined
+- **UI Components**: Updated `GrantNotionKeyInfo` component to use the new cofinancing text formatting
+- **Funding Amount Text**: Changed "Not specified" to "Ej specificerat" in funding amount formatting functions
+
+**Files Modified**:
+- `src/types/grant.ts` - Added cofinancing_level field to interfaces
+- `src/services/grantsService.ts` - Updated queries, transformations, and funding amount text
+- `src/hooks/useBackendFilteredGrants.ts` - Added cofinancing_level field and updated funding amount text
+- `supabase/functions/filtered-grants-search/index.ts` - Added cofinancing_level to backend query
+- `src/utils/grantHelpers.ts` - Added formatCofinancingText utility function
+- `src/components/grant-notion/GrantNotionKeyInfo.tsx` - Updated to use new cofinancing text formatting
+
+**Status**: ✅ Completed
+
+### Added Other Sources to Grant Details - 2024-12-19
+**Description**: Added support for `other_sources_links` and `other_sources_names` fields in grant details view and switched positions of "Allmän information och dokument" and "Ansökningsmallar" sections.
+
+**Changes Made**:
+- **Type Definitions**: Added `other_sources_links` and `other_sources_names` fields to Grant, GrantListItem, and GrantDetails interfaces
+- **Database Queries**: Updated frontend and backend queries to include `other_sources_names` and `other_sources_links` fields
+- **Transformation Functions**: Updated all transformation functions to handle the new fields
+- **UI Components**: Updated both `GrantNotionTemplatesSection` and `GrantTemplatesSection` components to:
+  - Include other sources under "Allmän information och dokument" section
+  - Switch positions so "Allmän information och dokument" appears first, then "Ansökningsmallar"
+  - Combine both `generalInfo` and `other_sources_names` under the same section
+
+**Files Modified**:
+- `src/types/grant.ts` - Added other_sources fields to interfaces
+- `src/services/grantsService.ts` - Updated queries and transformations
+- `src/hooks/useBackendFilteredGrants.ts` - Added other_sources fields to transformation
+- `supabase/functions/filtered-grants-search/index.ts` - Added other_sources fields to backend query
+- `src/components/grant-notion/GrantNotionTemplatesSection.tsx` - Updated UI to include other sources and switch positions
+- `src/components/grant-sections/GrantTemplatesSection.tsx` - Updated UI to include other sources and switch positions
+
+**Status**: ✅ Completed
+
 ### Discover Page Improvements - 2024-12-19
 **Description**: Implemented several improvements to the discover page including deadline filtering, default sorting, and enhanced sorting options.
 
