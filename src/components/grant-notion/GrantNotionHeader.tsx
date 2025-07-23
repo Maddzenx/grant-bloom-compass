@@ -99,7 +99,7 @@ const GrantNotionHeader = ({
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-white">
               <DropdownMenuItem onClick={handleBookmarkToggle}>
                 <Bookmark className={`mr-2 h-4 w-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : ""}`} />
                 <span>{actuallyBookmarked ? "Sparat" : "Spara"}</span>
