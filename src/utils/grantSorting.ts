@@ -4,16 +4,19 @@ import { Grant } from "@/types/grant";
 export type SortOption = "default" | "deadline-asc" | "deadline-desc" | "amount-desc" | "amount-asc" | "created-desc" | "relevance";
 
 // Parse funding amount string to number for comparison
-const parseFundingAmount = (fundingAmount: string): number => {
-  // Handle MSEK format and extract first number
+const parseFundingAmount = (fundingAmount: string | number): number => {
+  // If it's already a number, return it
+  if (typeof fundingAmount === 'number') {
+    return fundingAmount;
+  }
+  
+  // If it's a string, parse it
   const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
   if (match) {
     const amount = parseFloat(match[1].replace(',', '.'));
-    // If it contains MSEK, multiply by 1,000,000
     return fundingAmount.includes('M') ? amount * 1000000 : amount;
   }
   
-  // Extract any number from the string
   const numbers = fundingAmount.match(/\d+(?:\s*\d+)*/g);
   if (!numbers) return 0;
   

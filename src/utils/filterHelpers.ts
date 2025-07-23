@@ -2,7 +2,13 @@
 import { Grant, GrantListItem } from '@/types/grant';
 
 // Helper function to parse funding amounts
-export const parseFundingAmount = (fundingAmount: string): number => {
+export const parseFundingAmount = (fundingAmount: string | number): number => {
+  // If it's already a number, return it
+  if (typeof fundingAmount === 'number') {
+    return fundingAmount;
+  }
+  
+  // If it's a string, parse it
   const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
   if (match) {
     const amount = parseFloat(match[1].replace(',', '.'));

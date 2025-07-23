@@ -68,8 +68,8 @@ serve(async (req) => {
     let query = supabase
       .from('grant_call_details')
       .select(`
-        id, title, organisation, subtitle, funding_amount_min, funding_amount_max,
-        application_opening_date, application_closing_date, tags, industry_sectors,
+        id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project,
+        application_opening_date, application_closing_date, keywords, industry_sectors,
         eligible_organisations, geographic_scope, created_at
       `, { count: 'exact' });
 
@@ -159,10 +159,10 @@ serve(async (req) => {
         break;
       case 'amount-desc':
         // Note: This is a simplified approach. In production, you might want to store parsed amounts
-        query = query.order('funding_amount_max', { ascending: false, nullsLast: true });
+        query = query.order('max_grant_per_project', { ascending: false, nullsLast: true });
         break;
       case 'amount-asc':
-        query = query.order('funding_amount_max', { ascending: true, nullsLast: true });
+        query = query.order('max_grant_per_project', { ascending: true, nullsLast: true });
         break;
       case 'created-desc':
         query = query.order('created_at', { ascending: false });
@@ -196,7 +196,8 @@ serve(async (req) => {
     let filteredGrants = grants || [];
     if (filters.fundingRange && (filters.fundingRange.min || filters.fundingRange.max)) {
       filteredGrants = filteredGrants.filter(grant => {
-        const fundingAmount = parseFundingAmount(grant.funding_amount_max || grant.subtitle || '');
+        // Use max_grant_per_project as the primary funding amount, fallback to min_grant_per_project
+        const fundingAmount = grant.max_grant_per_project || grant.min_grant_per_project || 0;
         
         if (filters.fundingRange.min && fundingAmount < filters.fundingRange.min) {
           return false;

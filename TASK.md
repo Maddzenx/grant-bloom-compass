@@ -2,6 +2,35 @@
 
 ## Completed Tasks
 
+### Database Schema Column Name Fixes - 2024-12-19
+**Description**: Fixed database column name mismatches between code and actual database schema.
+
+**Changes Made**:
+- **Funding Amount Columns**: Updated from `funding_amount_min`/`funding_amount_max` to `min_grant_per_project`/`max_grant_per_project`
+- **Tags Column**: Updated from `tags` to `keywords` to match database schema
+- **Backend Functions**: Updated `filtered-grants-search` and `semantic-grant-search` to use correct column names
+- **Frontend Services**: Updated `grantsService.ts` and `useBackendFilteredGrants.ts` to use correct column names
+- **Utility Functions**: Updated all `parseFundingAmount` functions to handle both string and numeric values
+- **Data Transformation**: Fixed funding amount parsing to work with numeric database values instead of strings
+
+**Technical Details**:
+- Database uses `min_grant_per_project` and `max_grant_per_project` as bigint columns
+- `keywords` column contains JSON array of tags/keywords
+- Updated all utility functions to handle both legacy string format and new numeric format
+- Fixed funding range filtering to work with numeric values
+
+**Files Modified**:
+- `src/services/grantsService.ts` - Updated column names and data transformation
+- `src/hooks/useBackendFilteredGrants.ts` - Updated column names
+- `supabase/functions/filtered-grants-search/index.ts` - Updated column names and funding parsing
+- `src/utils/grantHelpers.ts` - Updated parseFundingAmount to handle numbers
+- `src/utils/searchUtils.ts` - Updated parseFundingAmount to handle numbers
+- `src/utils/grantSorting.ts` - Updated parseFundingAmount to handle numbers
+- `src/utils/grantFiltering.ts` - Updated parseFundingAmount to handle numbers
+- `src/utils/filterHelpers.ts` - Updated parseFundingAmount to handle numbers
+
+**Status**: ✅ Completed
+
 ### Discover Page Improvements - 2024-12-19
 **Description**: Implemented several improvements to the discover page including deadline filtering, default sorting, and enhanced sorting options.
 

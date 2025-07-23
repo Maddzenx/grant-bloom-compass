@@ -61,8 +61,8 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
     .select(`
-      id, title, organisation, subtitle, funding_amount_min, funding_amount_max,
-      application_opening_date, application_closing_date, tags, industry_sectors,
+      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project,
+      application_opening_date, application_closing_date, keywords, industry_sectors,
       eligible_organisations, geographic_scope
     `)
     .order('created_at', { ascending: false });
@@ -168,10 +168,10 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         title: grant.title || 'Untitled Grant',
         organization: grant.organisation || 'Unknown Organization',
         aboutGrant: grant.subtitle || grant.description || 'No information available',
-        fundingAmount: formatFundingAmount(grant.funding_amount_min, grant.funding_amount_max),
+        fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project),
         opens_at: grant.application_opening_date || '2024-01-01',
         deadline: grant.application_closing_date || 'Not specified',
-        tags: parseJsonArray(grant.tags) || [],
+        tags: parseJsonArray(grant.keywords) || [],
         industry_sectors: parseJsonArray(grant.industry_sectors),
         eligible_organisations: parseJsonArray(grant.eligible_organisations),
         geographic_scope: parseJsonArray(grant.geographic_scope)
@@ -200,17 +200,17 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
     long_description: grant.long_description,
     qualifications: grant.eligibility || 'Not specified',
     whoCanApply: grant.eligibility || 'Not specified',
-    importantDates: parseJsonArray(grant.important_dates) || [],
-    fundingRules: parseJsonArray(grant.funding_rules) || [],
-    generalInfo: parseJsonArray(grant.general_info) || [],
-    requirements: parseJsonArray(grant.requirements) || [],
+    importantDates: parseJsonArray(grant.information_webinar_dates) || [],
+    fundingRules: [], // This field doesn't exist in the schema, using empty array
+    generalInfo: [], // This field doesn't exist in the schema, using empty array
+    requirements: [], // This field doesn't exist in the schema, using empty array
     contact: {
       name: grant.contact_name || '',
       organization: grant.contact_title || '',
       email: grant.contact_email || '',
       phone: grant.contact_phone || ''
     },
-    templates: parseJsonArray(grant.templates) || [],
+    templates: [], // This field doesn't exist in the schema, using empty array
     application_templates_links: parseJsonArray(grant.application_templates_links),
     other_templates_links: parseJsonArray(grant.other_templates_links),
     evaluationCriteria: grant.evaluation_criteria || '',
