@@ -73,6 +73,14 @@ const DiscoverGrants = () => {
     enabled: useBackendPipeline, // Only enabled for manual browse pipeline
   });
 
+  // Track if this is the very first load (no filters, no sorting, no search)
+  const isInitialLoad = !hasActiveFilters && sortBy === "default" && !searchTerm.trim();
+  
+  // Show backend fetching overlay when:
+  // 1. We have existing data and are refetching, OR
+  // 2. User has applied filters/sorting (even if no data yet)
+  const showBackendFetchingOverlay = useBackendPipeline && backendFetching && (backendGrants.length > 0 || !isInitialLoad);
+
   // Handle semantic search - only when explicitly called
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -132,6 +140,7 @@ const DiscoverGrants = () => {
       };
     } else {
       // Backend pipeline: use backend filtered grants
+      // Note: React Query's placeholderData should keep previous data during loading
       return {
         grants: backendGrants,
         isLoading: backendLoading,
@@ -352,9 +361,17 @@ const DiscoverGrants = () => {
     // Backend pipeline will automatically refetch with new sorting
   }, []);
 
-  // Show loading/error/empty states
+  // Show loading/error/empty states - but NEVER for backend filtering/sorting operations
+  const showFullPageLoading = useSemanticPipeline 
+    ? (allGrantsLoading || isSearching) 
+    : (backendLoading && backendGrants.length === 0 && isInitialLoad);
+  
+  // Prevent showing "no grants found" when we're fetching new data
+  const effectiveIsLoading = showFullPageLoading || (useBackendPipeline && backendFetching);
+    
   const stateComponent = DiscoverGrantsStates({
-    isLoading: isLoading || (useSemanticPipeline && isSearching),
+    isLoading: showFullPageLoading,
+    isFetching: useBackendPipeline && backendFetching,
     isError,
     error,
     grants: useSemanticPipeline ? allGrants : backendGrants,
@@ -387,7 +404,8 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={[]}
-      isSearching={isSearching || (useBackendPipeline && backendFetching)}
+      isSearching={isSearching || (useSemanticPipeline && isSearching)}
+      isBackendFetching={showBackendFetchingOverlay}
       searchMetrics={searchMetrics}
       aiMatches={semanticMatches}
       onSearchChange={handleSearchChange}
