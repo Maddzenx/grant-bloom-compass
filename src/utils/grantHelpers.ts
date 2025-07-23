@@ -91,3 +91,25 @@ export const isGrantWithinDeadline = (grant: Grant | GrantListItem, deadlineFilt
   
   return true;
 };
+
+/**
+ * Formats cofinancing text based on cofinancing_required and cofinancing_level
+ * @param cofinancing_required - Whether cofinancing is required
+ * @param cofinancing_level - The cofinancing percentage level
+ * @returns Formatted cofinancing text
+ */
+export const formatCofinancingText = (cofinancing_required?: boolean, cofinancing_level?: number): string => {
+  if (cofinancing_required === false) {
+    return 'Ingen medfinansiering krävs';
+  }
+  
+  if (cofinancing_required === true && cofinancing_level !== null && cofinancing_level !== undefined) {
+    return `${cofinancing_level}% medfinansiering krävs`;
+  }
+  
+  if (cofinancing_required === true) {
+    return 'Medfinansiering krävs';
+  }
+  
+  return 'Ej specificerat';
+};

@@ -179,7 +179,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       qualifications: supabaseGrant.eligibility || 'Ej specificerat',
       aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
       whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
-      importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
+      importantDates: [], // This will be populated by the frontend component using the individual date fields
       fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
       generalInfo: jsonToStringArray(supabaseGrant.other_templates_names), // Only other_templates_names
       requirements: [

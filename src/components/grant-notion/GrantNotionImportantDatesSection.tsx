@@ -12,8 +12,12 @@ interface DateItem {
 }
 
 const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSectionProps) => {
-  const formatDate = (dateString: string): string => {
+  const formatDate = (dateString: string | null): string => {
+    if (!dateString) return "Datum saknas";
+    
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Datum saknas";
+    
     const day = date.getDate();
     const month = date.toLocaleDateString('sv-SE', { month: 'short' });
     const year = date.getFullYear();
@@ -27,7 +31,7 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     if (grant.application_opening_date) {
       dates.push({
         date: grant.application_opening_date,
-        label: "Ansökan Öppnar"
+        label: "Ansökan öppnar"
       });
     }
 
@@ -35,7 +39,7 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     if (grant.application_closing_date) {
       dates.push({
         date: grant.application_closing_date,
-        label: "Ansökan Stänger"
+        label: "Ansökan stänger"
       });
     }
 
@@ -43,9 +47,14 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     if (grant.project_start_date_min) {
       dates.push({
         date: grant.project_start_date_min,
-        label: grant.project_start_date_max && grant.project_start_date_max !== grant.project_start_date_min 
-          ? `Projekt Startar (${formatDate(grant.project_start_date_min)} - ${formatDate(grant.project_start_date_max)})`
-          : "Projekt Startar"
+        label: "Tidigaste projektstart"
+      });
+    }
+
+    if (grant.project_start_date_max && grant.project_start_date_max !== grant.project_start_date_min) {
+      dates.push({
+        date: grant.project_start_date_max,
+        label: "Senaste projektstart"
       });
     }
 
@@ -53,9 +62,14 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     if (grant.project_end_date_min) {
       dates.push({
         date: grant.project_end_date_min,
-        label: grant.project_end_date_max && grant.project_end_date_max !== grant.project_end_date_min
-          ? `Projekt Slutar (${formatDate(grant.project_end_date_min)} - ${formatDate(grant.project_end_date_max)})`
-          : "Projekt Slutar"
+        label: "Tidigaste projektslut"
+      });
+    }
+
+    if (grant.project_end_date_max && grant.project_end_date_max !== grant.project_end_date_min) {
+      dates.push({
+        date: grant.project_end_date_max,
+        label: "Senaste projektslut"
       });
     }
 
@@ -65,16 +79,24 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
         const webinarName = grant.information_webinar_names?.[index] || "Informationsmöte";
         const webinarLink = grant.information_webinar_links?.[index];
         
+        // Skip null dates or show "Datum saknas"
+        const displayDate = webinarDate || "Datum saknas";
+        
         dates.push({
-          date: webinarDate,
+          date: displayDate,
           label: webinarName,
           link: webinarLink
         });
       });
     }
 
-    // Sort dates chronologically
-    return dates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // Sort dates chronologically, but handle "Datum saknas" by putting them at the end
+    return dates.sort((a, b) => {
+      if (a.date === "Datum saknas" && b.date === "Datum saknas") return 0;
+      if (a.date === "Datum saknas") return 1;
+      if (b.date === "Datum saknas") return -1;
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
   };
 
   const importantDates = getImportantDates();

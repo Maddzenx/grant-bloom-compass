@@ -69,8 +69,11 @@ serve(async (req) => {
       .from('grant_call_details')
       .select(`
         id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount,
-        application_opening_date, application_closing_date, keywords, industry_sectors,
-        eligible_organisations, geographic_scope, created_at
+        application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
+        project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
+        information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
+        other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
+        geographic_scope, cofinancing_required, cofinancing_level, created_at
       `, { count: 'exact' });
 
     // Filter out grants with passed deadlines

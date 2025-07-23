@@ -62,8 +62,11 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
     .from('grant_call_details')
     .select(`
       id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount,
-      application_opening_date, application_closing_date, keywords, industry_sectors,
-      eligible_organisations, geographic_scope
+      application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
+      project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
+      information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
+      other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
+      geographic_scope, cofinancing_required, cofinancing_level
     `)
     .order('created_at', { ascending: false });
 
@@ -174,7 +177,26 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         tags: parseJsonArray(grant.keywords) || [],
         industry_sectors: parseJsonArray(grant.industry_sectors),
         eligible_organisations: parseJsonArray(grant.eligible_organisations),
-        geographic_scope: parseJsonArray(grant.geographic_scope)
+        geographic_scope: parseJsonArray(grant.geographic_scope),
+        // Date fields for important dates display
+        application_opening_date: grant.application_opening_date,
+        application_closing_date: grant.application_closing_date,
+        project_start_date_min: grant.project_start_date_min,
+        project_start_date_max: grant.project_start_date_max,
+        project_end_date_min: grant.project_end_date_min,
+        project_end_date_max: grant.project_end_date_max,
+        information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
+        information_webinar_links: parseJsonArray(grant.information_webinar_links),
+        information_webinar_names: parseJsonArray(grant.information_webinar_names),
+        // Template fields for files and documents
+        templates: parseJsonArray(grant.application_templates_names) || [],
+        generalInfo: parseJsonArray(grant.other_templates_names) || [],
+        application_templates_links: parseJsonArray(grant.application_templates_links),
+        other_templates_links: parseJsonArray(grant.other_templates_links),
+        other_sources_links: parseJsonArray(grant.other_sources_links),
+        other_sources_names: parseJsonArray(grant.other_sources_names),
+        cofinancing_required: grant.cofinancing_required || false,
+        cofinancing_level: grant.cofinancing_level || null
       };
       
       transformedItems.push(transformed);
@@ -200,9 +222,9 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
     long_description: grant.long_description,
     qualifications: grant.eligibility || 'Not specified',
     whoCanApply: grant.eligibility || 'Not specified',
-    importantDates: parseJsonArray(grant.information_webinar_dates) || [],
+    importantDates: [], // This will be populated by the frontend component using the individual date fields
     fundingRules: [], // This field doesn't exist in the schema, using empty array
-    generalInfo: [], // This field doesn't exist in the schema, using empty array
+    generalInfo: parseJsonArray(grant.other_templates_names) || [],
     requirements: [], // This field doesn't exist in the schema, using empty array
     contact: {
       name: grant.contact_name || '',
@@ -210,9 +232,12 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
       email: grant.contact_email || '',
       phone: grant.contact_phone || ''
     },
-    templates: [], // This field doesn't exist in the schema, using empty array
+    templates: parseJsonArray(grant.application_templates_names) || [],
     application_templates_links: parseJsonArray(grant.application_templates_links),
     other_templates_links: parseJsonArray(grant.other_templates_links),
+    other_sources_links: parseJsonArray(grant.other_sources_links),
+    other_sources_names: parseJsonArray(grant.other_sources_names),
+    cofinancing_level: grant.cofinancing_level || null,
     evaluationCriteria: grant.evaluation_criteria || '',
     applicationProcess: grant.application_process || '',
     originalUrl: grant.original_url,
@@ -248,7 +273,7 @@ const formatFundingAmount = (min?: number, max?: number, total?: number): string
     return `${min.toLocaleString()} kr`;
   }
   
-  return 'Not specified';
+  return 'Ej specificerat';
 };
 
 const parseJsonArray = (jsonValue: any): string[] | undefined => {

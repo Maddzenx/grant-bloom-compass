@@ -94,7 +94,26 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     tags: parseJsonArray(grant.keywords) || [],
     industry_sectors: parseJsonArray(grant.industry_sectors),
     eligible_organisations: parseJsonArray(grant.eligible_organisations),
-    geographic_scope: parseJsonArray(grant.geographic_scope)
+    geographic_scope: parseJsonArray(grant.geographic_scope),
+    // Date fields for important dates display
+    application_opening_date: grant.application_opening_date,
+    application_closing_date: grant.application_closing_date,
+    project_start_date_min: grant.project_start_date_min,
+    project_start_date_max: grant.project_start_date_max,
+    project_end_date_min: grant.project_end_date_min,
+    project_end_date_max: grant.project_end_date_max,
+    information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
+    information_webinar_links: parseJsonArray(grant.information_webinar_links),
+    information_webinar_names: parseJsonArray(grant.information_webinar_names),
+    // Template fields for files and documents
+    templates: parseJsonArray(grant.application_templates_names) || [],
+    generalInfo: parseJsonArray(grant.other_templates_names) || [],
+    application_templates_links: parseJsonArray(grant.application_templates_links),
+    other_templates_links: parseJsonArray(grant.other_templates_links),
+    other_sources_links: parseJsonArray(grant.other_sources_links),
+    other_sources_names: parseJsonArray(grant.other_sources_names),
+    cofinancing_required: grant.cofinancing_required || false,
+    cofinancing_level: grant.cofinancing_level || null
   };
 };
 
@@ -116,7 +135,7 @@ const formatFundingAmount = (min?: number, max?: number, total?: number): string
     return `${min.toLocaleString()} kr`;
   }
   
-  return 'Not specified';
+  return 'Ej specificerat';
 };
 
 const parseJsonArray = (jsonValue: any): string[] | undefined => {
