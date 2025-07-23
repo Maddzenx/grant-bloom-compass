@@ -111,16 +111,17 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       return `${amount.toLocaleString()} ${currency}`;
     };
     
-    if (grant.max_grant_per_project && grant.min_grant_per_project) {
-      const result = `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
-      console.log('🔍 formatFundingAmount: min-max ->', result);
-      return result;
-    }
-    
+    // Priority: max_grant_per_project if not null, otherwise total_funding_amount
     if (grant.max_grant_per_project) {
-      const result = `Upp till ${formatAmount(grant.max_grant_per_project)}`;
-      console.log('🔍 formatFundingAmount: max only ->', result);
-      return result;
+      if (grant.min_grant_per_project && grant.min_grant_per_project !== grant.max_grant_per_project) {
+        const result = `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
+        console.log('🔍 formatFundingAmount: min-max ->', result);
+        return result;
+      } else {
+        const result = formatAmount(grant.max_grant_per_project);
+        console.log('🔍 formatFundingAmount: max only ->', result);
+        return result;
+      }
     }
     
     if (grant.total_funding_amount) {

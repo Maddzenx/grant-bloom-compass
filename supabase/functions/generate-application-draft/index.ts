@@ -142,7 +142,7 @@ Organisation: ${grant.organisation}
 Beskrivning: ${grant.description}
 Behörighetskrav: ${grant.eligibility}
 Utvärderingskriterier: ${grant.evaluation_criteria}
-Finansiering: ${grant.max_grant_per_project ? `Upp till ${grant.max_grant_per_project} ${grant.currency || 'SEK'}` : 'Ej specificerat'}
+Finansiering: ${grant.max_grant_per_project ? `${grant.max_grant_per_project} ${grant.currency || 'SEK'}` : grant.total_funding_amount ? `${grant.total_funding_amount} ${grant.currency || 'SEK'}` : 'Ej specificerat'}
 Ansökningsprocess: ${grant.application_process || 'Ej specificerat'}
 
 PROJEKTDATA FRÅN AFFÄRSPLAN:

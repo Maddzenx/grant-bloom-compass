@@ -31,6 +31,30 @@
 
 **Status**: ✅ Completed
 
+### Funding Amount Display Optimization - 2024-12-19
+**Description**: Updated funding amount display logic to prioritize `max_grant_per_project` over `total_funding_amount` and removed "Max" and "Upp till" prefixes.
+
+**Changes Made**:
+- **Priority Logic**: Updated funding amount display to use `max_grant_per_project` when available, fallback to `total_funding_amount` when null
+- **Removed Prefixes**: Eliminated "Max" and "Upp till" prefixes from funding amount displays
+- **Consistent Formatting**: Ensured all funding amounts display as clean amount + currency format
+- **Updated Functions**: Modified `formatFundingAmount` functions in multiple files to support new logic
+
+**Technical Details**:
+- Updated `src/utils/grantTransform.ts` - Main transformation function for grant data
+- Updated `src/services/grantsService.ts` - Service layer funding amount formatting
+- Updated `src/hooks/useBackendFilteredGrants.ts` - Hook for backend filtered grants
+- Updated `supabase/functions/generate-application-draft/index.ts` - Backend function for application drafts
+- All funding amounts now display as "750 Mkr" instead of "Max 750 Mkr" or "Upp till 750 Mkr"
+
+**Files Modified**:
+- `src/utils/grantTransform.ts` - Updated formatFundingAmount function
+- `src/services/grantsService.ts` - Updated formatFundingAmount function and transformGrantListItems
+- `src/hooks/useBackendFilteredGrants.ts` - Updated formatFundingAmount function and transformSupabaseGrantToListItem
+- `supabase/functions/generate-application-draft/index.ts` - Updated funding amount display in AI prompts
+
+**Status**: ✅ Completed
+
 ### Discover Page Improvements - 2024-12-19
 **Description**: Implemented several improvements to the discover page including deadline filtering, default sorting, and enhanced sorting options.
 
