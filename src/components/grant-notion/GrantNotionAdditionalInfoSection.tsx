@@ -8,21 +8,12 @@ interface GrantNotionAdditionalInfoSectionProps {
 }
 
 const GrantNotionAdditionalInfoSection = ({ grant }: GrantNotionAdditionalInfoSectionProps) => {
-  if (!grant.qualifications && !grant.originalUrl) return null;
+  if (!grant.originalUrl) return null;
 
   return (
     <div>
       <h3 className="text-base font-semibold text-gray-900 mb-4">Ytterligare information</h3>
       <div className="space-y-4">
-        {grant.qualifications && (
-          <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-2">Kvalifikationer</h4>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {grant.qualifications}
-            </p>
-          </div>
-        )}
-        
         {grant.originalUrl && (
           <div>
             <h4 className="text-sm font-semibold text-gray-900 mb-2">Läs mer om utlysningen här</h4>
