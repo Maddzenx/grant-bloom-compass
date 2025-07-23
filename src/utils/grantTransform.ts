@@ -2,6 +2,7 @@ import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
 // Use a partial type that matches what we actually select from the database
+// Note: Using type assertion since the generated types might be outdated
 type PartialSupabaseGrantRow = Pick<
   Database['public']['Tables']['grant_call_details']['Row'],
   | 'id'
@@ -23,7 +24,9 @@ type PartialSupabaseGrantRow = Pick<
   | 'eligible_cost_categories'
   | 'information_webinar_dates'
   | 'application_templates_names'
+  | 'application_templates_links'
   | 'other_templates_names'
+  | 'other_templates_links'
   | 'evaluation_criteria'
   | 'application_process'
   | 'eligible_organisations'
@@ -32,7 +35,15 @@ type PartialSupabaseGrantRow = Pick<
   | 'application_opening_date'
   | 'geographic_scope'
   | 'region'
->;
+  | 'project_start_date_min'
+  | 'project_start_date_max'
+  | 'project_end_date_min'
+  | 'project_end_date_max'
+  | 'information_webinar_links'
+  | 'information_webinar_names'
+> & {
+  long_description?: string | null;
+};
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
   console.log('🔄 Starting transformation for grant:', supabaseGrant?.id);
@@ -159,6 +170,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       title: supabaseGrant.title || 'Ingen titel',
       organization: supabaseGrant.organisation || 'Okänd organisation',
       description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
+      long_description: supabaseGrant.long_description || undefined,
       fundingAmount: formatFundingAmount(supabaseGrant),
       opens_at: getRawDate((supabaseGrant as any).application_opening_date),
       deadline: formatDate(supabaseGrant.application_closing_date),
@@ -181,6 +193,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         phone: supabaseGrant.contact_phone || ''
       },
       templates: jsonToStringArray(supabaseGrant.application_templates_names), // Only application_templates_names
+      application_templates_links: jsonToStringArray(supabaseGrant.application_templates_links),
+      other_templates_links: jsonToStringArray(supabaseGrant.other_templates_links),
       evaluationCriteria: supabaseGrant.evaluation_criteria || '',
       applicationProcess: supabaseGrant.application_process || '',
       originalUrl: supabaseGrant.original_url || '',
@@ -190,6 +204,16 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         ...normalizeGeographicValues((supabaseGrant as any).geographic_scope),
         ...normalizeGeographicValues(supabaseGrant.region)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
+      // New date fields from database
+      application_opening_date: supabaseGrant.application_opening_date || undefined,
+      application_closing_date: supabaseGrant.application_closing_date || undefined,
+      project_start_date_min: supabaseGrant.project_start_date_min || undefined,
+      project_start_date_max: supabaseGrant.project_start_date_max || undefined,
+      project_end_date_min: supabaseGrant.project_end_date_min || undefined,
+      project_end_date_max: supabaseGrant.project_end_date_max || undefined,
+      information_webinar_dates: jsonToStringArray(supabaseGrant.information_webinar_dates),
+      information_webinar_links: jsonToStringArray(supabaseGrant.information_webinar_links),
+      information_webinar_names: jsonToStringArray(supabaseGrant.information_webinar_names),
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);

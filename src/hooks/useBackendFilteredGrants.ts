@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Grant } from '@/types/grant';
-import { transformSupabaseGrant } from '@/utils/grantTransform';
+import { GrantListItem } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import { SortOption } from '@/components/SortingControls';
 
@@ -83,12 +82,50 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
   };
 };
 
+const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
+  return {
+    id: grant.id,
+    title: grant.title || 'Untitled Grant',
+    organization: grant.organisation || 'Unknown Organization',
+    aboutGrant: grant.subtitle || grant.description || 'No information available',
+    fundingAmount: formatFundingAmount(grant.funding_amount_min, grant.funding_amount_max),
+    opens_at: grant.application_opening_date || '2024-01-01',
+    deadline: grant.application_closing_date || 'Not specified',
+    tags: parseJsonArray(grant.tags) || [],
+    industry_sectors: parseJsonArray(grant.industry_sectors),
+    eligible_organisations: parseJsonArray(grant.eligible_organisations),
+    geographic_scope: parseJsonArray(grant.geographic_scope)
+  };
+};
+
+const formatFundingAmount = (min?: number, max?: number): string => {
+  if (!min && !max) return 'Not specified';
+  if (min && max) {
+    if (min === max) return `${min.toLocaleString()} kr`;
+    return `${min.toLocaleString()} - ${max.toLocaleString()} kr`;
+  }
+  if (min) return `Min ${min.toLocaleString()} kr`;
+  if (max) return `Max ${max.toLocaleString()} kr`;
+  return 'Not specified';
+};
+
+const parseJsonArray = (jsonValue: any): string[] | undefined => {
+  if (!jsonValue) return undefined;
+  if (Array.isArray(jsonValue)) return jsonValue;
+  try {
+    const parsed = JSON.parse(jsonValue);
+    return Array.isArray(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const fetchBackendFilteredGrants = async (
   filters: BackendFilterOptions,
   sorting: BackendSortOptions,
   pagination: BackendPaginationOptions,
   searchTerm?: string
-): Promise<{ grants: Grant[]; pagination: BackendGrantsResponse['pagination'] }> => {
+): Promise<{ grants: GrantListItem[]; pagination: BackendGrantsResponse['pagination'] }> => {
   console.log('🔍 Fetching backend filtered grants:', {
     filters,
     sorting,
@@ -122,13 +159,13 @@ const fetchBackendFilteredGrants = async (
     totalPages: data.pagination?.totalPages || 0
   });
 
-  // Transform grants from Supabase format to frontend format
-  const transformedGrants: Grant[] = [];
+  // Transform grants from Supabase format to GrantListItem format
+  const transformedGrants: GrantListItem[] = [];
   
   if (data.grants && Array.isArray(data.grants)) {
     for (const grant of data.grants) {
       try {
-        const transformed = transformSupabaseGrant(grant);
+        const transformed = transformSupabaseGrantToListItem(grant);
         transformedGrants.push(transformed);
       } catch (transformError) {
         console.error('❌ Transform error for grant:', grant.id, transformError);

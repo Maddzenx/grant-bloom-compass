@@ -91,6 +91,10 @@ const GrantNotionHeader = ({
 
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
+
+  // Use subtitle when long_description is available, otherwise use description
+  const displayDescription = grant.long_description ? grant.aboutGrant : grant.description;
+
   return <>
       {/* Status label and organization icon inline */}
       <div className="flex items-center gap-2 mb-2 pt-4">
@@ -133,9 +137,9 @@ const GrantNotionHeader = ({
         </h1>
       </div>
       
-      {/* Description with full width */}
-      {grant.description && <p className="text-gray-700 mb-4 leading-snug text-sm w-full">
-          {grant.description}
+      {/* Description with full width - use subtitle when long_description is available */}
+      {displayDescription && <p className="text-gray-700 mb-4 leading-snug text-sm w-full">
+          {displayDescription}
         </p>}
       <div className="mb-4">
         

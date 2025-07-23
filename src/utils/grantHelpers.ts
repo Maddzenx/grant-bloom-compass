@@ -1,5 +1,5 @@
 
-import { Grant } from '@/types/grant';
+import { Grant, GrantListItem } from '@/types/grant';
 
 // Parse funding amount string to number for comparison
 export const parseFundingAmount = (fundingAmount: string): number => {
@@ -16,9 +16,9 @@ export const parseFundingAmount = (fundingAmount: string): number => {
   return parseInt(firstNumber, 10) || 0;
 };
 
-// Check if deadline is within specified days
-export const isGrantWithinDeadline = (grant: Grant, deadlineFilter: any): boolean => {
-  if (grant.deadline === 'Ej specificerat') return false;
+// Parse deadline string to Date object
+export const parseDeadline = (deadline: string): Date | null => {
+  if (deadline === 'Ej specificerat' || !deadline) return null;
   
   // Parse Swedish date format
   const months: { [key: string]: number } = {
@@ -26,16 +26,36 @@ export const isGrantWithinDeadline = (grant: Grant, deadlineFilter: any): boolea
     'juli': 6, 'augusti': 7, 'september': 8, 'oktober': 9, 'november': 10, 'december': 11
   };
   
-  const parts = grant.deadline.toLowerCase().split(' ');
-  if (parts.length < 3) return false;
+  const parts = deadline.toLowerCase().split(' ');
+  if (parts.length < 3) return null;
   
   const day = parseInt(parts[0], 10);
   const month = months[parts[1]];
   const year = parseInt(parts[2], 10);
   
-  if (isNaN(day) || month === undefined || isNaN(year)) return false;
+  if (isNaN(day) || month === undefined || isNaN(year)) return null;
   
-  const deadlineDate = new Date(year, month, day);
+  return new Date(year, month, day);
+};
+
+// Check if grant is active (not past deadline)
+export const isGrantActive = (grant: Grant | GrantListItem): boolean => {
+  const deadlineDate = parseDeadline(grant.deadline);
+  if (!deadlineDate) return true; // If no deadline specified, consider it active
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
+  
+  return deadlineDate >= today;
+};
+
+// Check if deadline is within specified days
+export const isGrantWithinDeadline = (grant: Grant | GrantListItem, deadlineFilter: any): boolean => {
+  if (grant.deadline === 'Ej specificerat') return false;
+  
+  const deadlineDate = parseDeadline(grant.deadline);
+  if (!deadlineDate) return false;
+  
   const today = new Date();
   
   if (deadlineFilter.type === 'preset' && deadlineFilter.preset) {

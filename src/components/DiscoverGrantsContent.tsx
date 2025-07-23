@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Grant } from '@/types/grant';
+import { GrantListItem } from '@/types/grant';
 import { SortOption } from '@/components/SortingControls';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import DiscoverHeader from '@/components/DiscoverHeader';
@@ -15,9 +15,9 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Filter, X } from 'lucide-react';
 
 interface DiscoverGrantsContentProps {
-  grants: Grant[];
-  searchResults: Grant[];
-  selectedGrant: Grant | null;
+  grants: GrantListItem[];
+  searchResults: GrantListItem[];
+  selectedGrant: GrantListItem | null;
   showDetails: boolean;
   searchTerm: string;
   sortBy: SortOption;
@@ -40,7 +40,7 @@ interface DiscoverGrantsContentProps {
   onSortChange: (sortBy: SortOption) => void;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
   onClearFilters: () => void;
-  onGrantSelect: (grant: Grant) => void;
+  onGrantSelect: (grant: GrantListItem) => void;
   onToggleBookmark: (grantId: string) => void;
   onBackToList: () => void;
   onPageChange?: (page: number) => void;
@@ -140,7 +140,12 @@ export const DiscoverGrantsContent = ({
             </div>
             {/* Sorting controls: below filter bar on mobile, right on desktop */}
             <div className="w-full md:w-auto md:ml-auto flex-shrink-0">
-              <SortingControls sortBy={sortBy} onSortChange={onSortChange} />
+              <SortingControls 
+                sortBy={sortBy} 
+                onSortChange={onSortChange} 
+                hasSearchTerm={!!searchTerm.trim()}
+                hasSemanticMatches={!!aiMatches && aiMatches.length > 0}
+              />
             </div>
           </div>
         </div>

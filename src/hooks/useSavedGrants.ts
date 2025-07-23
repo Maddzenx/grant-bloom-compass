@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { Grant } from '@/types/grant';
+import { Grant, GrantListItem } from '@/types/grant';
 
 interface SavedGrantsState {
   savedApplications: Grant[];
@@ -52,7 +52,7 @@ export const useSavedGrants = () => {
     }
   }, [savedGrants]);
 
-  const addToSaved = useCallback((grant: Grant) => {
+  const addToSaved = useCallback((grant: Grant | GrantListItem) => {
     console.log('📝 Adding grant to saved:', grant.id, grant.title);
     setSavedGrants(prev => {
       // Check if grant already exists in saved applications
@@ -63,9 +63,30 @@ export const useSavedGrants = () => {
         return prev;
       }
 
+      // Convert GrantListItem to Grant if needed
+      const grantToSave = 'description' in grant ? grant : {
+        ...grant,
+        description: grant.aboutGrant,
+        qualifications: '',
+        whoCanApply: '',
+        importantDates: [],
+        fundingRules: [],
+        generalInfo: [],
+        requirements: [],
+        contact: {
+          name: '',
+          organization: '',
+          email: '',
+          phone: ''
+        },
+        templates: [],
+        evaluationCriteria: '',
+        applicationProcess: ''
+      } as Grant;
+
       const newState = {
         ...prev,
-        savedApplications: [...prev.savedApplications, grant]
+        savedApplications: [...prev.savedApplications, grantToSave]
       };
       console.log('✅ New state after adding to saved:', newState);
       return newState;
@@ -84,7 +105,7 @@ export const useSavedGrants = () => {
     });
   }, []);
 
-  const startApplication = useCallback((grant: Grant) => {
+  const startApplication = useCallback((grant: Grant | GrantListItem) => {
     console.log('🚀 Starting application for grant:', grant.id, grant.title);
     setSavedGrants(prev => {
       console.log('📊 Current state before starting application:', prev);
@@ -93,9 +114,30 @@ export const useSavedGrants = () => {
       const newSavedApplications = prev.savedApplications.filter(g => g.id !== grant.id);
       const existsInActive = prev.activeApplications.some(g => g.id === grant.id);
       
+      // Convert GrantListItem to Grant if needed
+      const grantToSave = 'description' in grant ? grant : {
+        ...grant,
+        description: grant.aboutGrant,
+        qualifications: '',
+        whoCanApply: '',
+        importantDates: [],
+        fundingRules: [],
+        generalInfo: [],
+        requirements: [],
+        contact: {
+          name: '',
+          organization: '',
+          email: '',
+          phone: ''
+        },
+        templates: [],
+        evaluationCriteria: '',
+        applicationProcess: ''
+      } as Grant;
+      
       const newActiveApplications = existsInActive 
         ? prev.activeApplications 
-        : [...prev.activeApplications, grant];
+        : [...prev.activeApplications, grantToSave];
 
       const newState = {
         ...prev,
@@ -109,15 +151,36 @@ export const useSavedGrants = () => {
     });
   }, []);
 
-  const submitForReview = useCallback((grant: Grant) => {
+  const submitForReview = useCallback((grant: Grant | GrantListItem) => {
     console.log('📤 Submitting grant for review:', grant.id, grant.title);
     setSavedGrants(prev => {
+      // Convert GrantListItem to Grant if needed
+      const grantToSave = 'description' in grant ? grant : {
+        ...grant,
+        description: grant.aboutGrant,
+        qualifications: '',
+        whoCanApply: '',
+        importantDates: [],
+        fundingRules: [],
+        generalInfo: [],
+        requirements: [],
+        contact: {
+          name: '',
+          organization: '',
+          email: '',
+          phone: ''
+        },
+        templates: [],
+        evaluationCriteria: '',
+        applicationProcess: ''
+      } as Grant;
+
       const newState = {
         ...prev,
         activeApplications: prev.activeApplications.filter(g => g.id !== grant.id),
         pendingReview: prev.pendingReview.some(g => g.id === grant.id)
           ? prev.pendingReview
-          : [...prev.pendingReview, grant]
+          : [...prev.pendingReview, grantToSave]
       };
       console.log('✅ New state after submitting for review:', newState);
       return newState;

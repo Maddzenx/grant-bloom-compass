@@ -1,13 +1,13 @@
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ConsolidatedGrantList from "@/components/ConsolidatedGrantList";
-import { Grant } from "@/types/grant";
+import { GrantListItem } from "@/types/grant";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 
 interface GrantListProps {
-  grants: Grant[];
-  selectedGrant: Grant | null;
-  onGrantSelect: (grant: Grant) => void;
+  grants: GrantListItem[];
+  selectedGrant: GrantListItem | null;
+  onGrantSelect: (grant: GrantListItem) => void;
   onToggleBookmark: (grantId: string) => void;
   searchTerm: string;
   isMobile: boolean;

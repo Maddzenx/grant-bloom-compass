@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext } from 'react';
 import { useSavedGrants } from '@/hooks/useSavedGrants';
-import { Grant } from '@/types/grant';
+import { Grant, GrantListItem } from '@/types/grant';
 
 interface SavedGrantsContextType {
   savedGrants: {
@@ -9,12 +9,12 @@ interface SavedGrantsContextType {
     activeApplications: Grant[];
     pendingReview: Grant[];
   };
-  addToSaved: (grant: Grant) => void;
+  addToSaved: (grant: Grant | GrantListItem) => void;
   removeFromSaved: (grantId: string) => void;
   removeFromActive: (grantId: string) => void;
   removeFromPending: (grantId: string) => void;
-  startApplication: (grant: Grant) => void;
-  submitForReview: (grant: Grant) => void;
+  startApplication: (grant: Grant | GrantListItem) => void;
+  submitForReview: (grant: Grant | GrantListItem) => void;
   isGrantSaved: (grantId: string) => boolean;
 }
 

@@ -1,21 +1,21 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useGrants } from "@/hooks/useGrantsQuery";
-import { Grant } from "@/types/grant";
+import { useGrantListItems } from "@/hooks/useGrantListItems";
+import { GrantListItem } from "@/types/grant";
 import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useGrantSelection } from "@/hooks/useGrantSelection";
 import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
-import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
+import { parseFundingAmount, isGrantWithinDeadline, isGrantActive } from "@/utils/grantHelpers";
 import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
 
 const DiscoverGrants = () => {
   const location = useLocation();
   
   // State for search and pipeline management
-  const [sortBy, setSortBy] = useState<SortOption>("default");
+  const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Changed default to deadline-asc
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(initialSearchResults?.rankedGrants || undefined);
@@ -52,7 +52,7 @@ const DiscoverGrants = () => {
     error: allGrantsError,
     isError: allGrantsIsError,
     refetch: refetchAllGrants,
-  } = useGrants();
+  } = useGrantListItems();
 
   // Backend filtered grants hook (for manual browse pipeline)
   const {
@@ -74,7 +74,7 @@ const DiscoverGrants = () => {
   });
 
   // Track if this is the very first load (no filters, no sorting, no search)
-  const isInitialLoad = !hasActiveFilters && sortBy === "default" && !searchTerm.trim();
+  const isInitialLoad = !hasActiveFilters && sortBy === "deadline-asc" && !searchTerm.trim();
   
   // Show backend fetching overlay when:
   // 1. We have existing data and are refetching, OR
@@ -128,18 +128,23 @@ const DiscoverGrants = () => {
     }
   }, [initialSearchTerm, hasSearched, initialSearchResults]);
 
+  // Filter out expired grants from all grants
+  const activeGrants = useMemo(() => {
+    return allGrants.filter(grant => isGrantActive(grant));
+  }, [allGrants]);
+
   // Get the appropriate grants and loading states based on pipeline
   const { grants, isLoading, isError, error } = useMemo(() => {
     if (useSemanticPipeline) {
-      // Semantic pipeline: use all grants for filtering options, but results come from semantic search
+      // Semantic pipeline: use active grants for filtering options, but results come from semantic search
       return {
-        grants: allGrants,
+        grants: activeGrants,
         isLoading: allGrantsLoading,
         isError: allGrantsIsError,
         error: allGrantsError
       };
     } else {
-      // Backend pipeline: use backend filtered grants
+      // Backend pipeline: use backend filtered grants (backend should already filter expired grants)
       // Note: React Query's placeholderData should keep previous data during loading
       return {
         grants: backendGrants,
@@ -148,7 +153,7 @@ const DiscoverGrants = () => {
         error: backendError
       };
     }
-  }, [useSemanticPipeline, allGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError]);
+  }, [useSemanticPipeline, activeGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError]);
 
   // Filter grants based on pipeline
   const baseFilteredGrants = useMemo(() => {
@@ -165,7 +170,7 @@ const DiscoverGrants = () => {
     if (useSemanticPipeline) {
       // Semantic pipeline: filter based on semantic search results
       if (!hasSearched || !searchTerm.trim()) {
-        console.log('📋 No search performed, returning all grants');
+        console.log('📋 No search performed, returning all active grants');
         return grants;
       }
 
@@ -189,7 +194,7 @@ const DiscoverGrants = () => {
       }
 
       // If semantic search failed but we searched, return all grants as fallback
-      console.log('📋 Search performed but no semantic results, returning all grants as fallback');
+      console.log('📋 Search performed but no semantic results, returning all active grants as fallback');
       return grants;
     } else {
       // Backend pipeline: grants are already filtered by backend
@@ -280,7 +285,7 @@ const DiscoverGrants = () => {
     }
 
     // For semantic pipeline, apply frontend sorting
-    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0 && sortBy === "default") {
+    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0 && sortBy === "matching") {
       // Create a map of grant IDs to their actual semantic scores
       const scoreMap = new Map<string, number>();
       semanticMatches.forEach((match) => {
@@ -295,7 +300,7 @@ const DiscoverGrants = () => {
         return scoreB - scoreA;
       });
       
-      console.log('🎯 Semantic-sorted results with actual scores:', {
+      console.log('🎯 Matching-sorted results with actual scores:', {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
@@ -374,7 +379,7 @@ const DiscoverGrants = () => {
     isFetching: useBackendPipeline && backendFetching,
     isError,
     error,
-    grants: useSemanticPipeline ? allGrants : backendGrants,
+    grants: useSemanticPipeline ? activeGrants : backendGrants,
     onRefresh: handleRefresh,
   });
 
@@ -395,7 +400,7 @@ const DiscoverGrants = () => {
 
   return (
     <DiscoverGrantsContent
-      grants={useSemanticPipeline ? allGrants : backendGrants}
+      grants={useSemanticPipeline ? activeGrants : backendGrants}
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}
