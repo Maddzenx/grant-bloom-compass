@@ -55,6 +55,31 @@
 
 **Status**: ✅ Completed
 
+### Funding Amount Display Fix for List View - 2024-12-19
+**Description**: Fixed issue where grants with only `total_funding_amount` were not showing funding amounts in the list view.
+
+**Problem Identified**:
+- Grants with only `total_funding_amount` (no `max_grant_per_project`) were showing correctly in detailed view but not in list view
+- Root cause: Database queries for list items were missing `total_funding_amount` field in SELECT statements
+- List view used `fetchGrantListItems` and backend filtering, while detailed view used `transformSupabaseGrant`
+
+**Changes Made**:
+- **Frontend Service**: Added `total_funding_amount` to SELECT statement in `fetchGrantListItems` function
+- **Backend Function**: Added `total_funding_amount` to SELECT statement in `filtered-grants-search` Edge Function
+- **Consistent Data**: Both list and detailed views now have access to all funding amount fields
+
+**Technical Details**:
+- Updated `src/services/grantsService.ts` - Added `total_funding_amount` to database query
+- Updated `supabase/functions/filtered-grants-search/index.ts` - Added `total_funding_amount` to database query
+- Both functions now properly pass `total_funding_amount` to the `formatFundingAmount` function
+- Grants with only `total_funding_amount` will now display correctly in list view
+
+**Files Modified**:
+- `src/services/grantsService.ts` - Updated SELECT statement in `fetchGrantListItems`
+- `supabase/functions/filtered-grants-search/index.ts` - Updated SELECT statement in main query
+
+**Status**: ✅ Completed
+
 ### Discover Page Improvements - 2024-12-19
 **Description**: Implemented several improvements to the discover page including deadline filtering, default sorting, and enhanced sorting options.
 
