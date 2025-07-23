@@ -37,7 +37,7 @@ const AuthenticatedApp = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-canvas-cloud flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-newsreader font-normal mb-4">
             <span style={{ color: '#000000' }}>gr</span>
@@ -55,7 +55,7 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-canvas-cloud">
+    <div className="min-h-screen w-full bg-[#fafafa]">
       <TopNavigation />
       <main className="w-full">
         <Routes>
