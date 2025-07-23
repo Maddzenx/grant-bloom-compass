@@ -168,7 +168,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         title: grant.title || 'Untitled Grant',
         organization: grant.organisation || 'Unknown Organization',
         aboutGrant: grant.subtitle || grant.description || 'No information available',
-        fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project),
+        fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project, grant.total_funding_amount),
         opens_at: grant.application_opening_date || '2024-01-01',
         deadline: grant.application_closing_date || 'Not specified',
         tags: parseJsonArray(grant.keywords) || [],
@@ -230,14 +230,24 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
   };
 };
 
-const formatFundingAmount = (min?: number, max?: number): string => {
-  if (!min && !max) return 'Not specified';
-  if (min && max) {
-    if (min === max) return `${min.toLocaleString()} kr`;
-    return `${min.toLocaleString()} - ${max.toLocaleString()} kr`;
+const formatFundingAmount = (min?: number, max?: number, total?: number): string => {
+  // Priority: max_grant_per_project if not null, otherwise total_funding_amount
+  if (max) {
+    if (min && min !== max) {
+      return `${min.toLocaleString()} - ${max.toLocaleString()} kr`;
+    } else {
+      return `${max.toLocaleString()} kr`;
+    }
   }
-  if (min) return `Min ${min.toLocaleString()} kr`;
-  if (max) return `Max ${max.toLocaleString()} kr`;
+  
+  if (total) {
+    return `${total.toLocaleString()} kr`;
+  }
+  
+  if (min) {
+    return `${min.toLocaleString()} kr`;
+  }
+  
   return 'Not specified';
 };
 
