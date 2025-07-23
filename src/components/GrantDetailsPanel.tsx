@@ -31,9 +31,20 @@ const GrantDetailsPanel = ({
     isGrantSaved
   } = useSavedGrantsContext();
   const containerClass = isMobile ? "w-full bg-canvas-cloud overflow-hidden relative" : "w-full h-full bg-canvas-cloud overflow-hidden relative";
+
+  // Add viewportRef for scroll reset
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top when selectedGrant changes
+  React.useEffect(() => {
+    if (viewportRef.current) {
+      viewportRef.current.scrollTop = 0;
+    }
+  }, [selectedGrant]);
+
   return <div className={containerClass}>
       {selectedGrant ? <>
-        <ScrollArea className="h-full w-full" data-grant-details-scroll>
+        <ScrollArea className="h-full w-full" data-grant-details-scroll viewportRef={viewportRef}>
           <div className="relative bg-[#f0f1f3] px-0 py-0 md:pr-0 md:py-0 md:px-0">
             <div className="bg-white rounded-lg mr-0 md:mr-2 pb-6 min-h-full px-[30px]">
               <GrantDetails grant={selectedGrant} isBookmarked={isGrantSaved(selectedGrant.id)} onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} isMobile={isMobile} onBackToList={onBackToList} />

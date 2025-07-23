@@ -10,7 +10,7 @@
 @layer base {
   :root {
     --canvas-cloud: #F0F1F3;
-    --accent-lime: #D1F364;
+    --accent-lime: #FFFFFF; /* Changed from #D1F364 */
     --accent-lavender: #CEC5F9;
     --ink-obsidian: #000000;
     --ink-secondary: #333333;
@@ -20,19 +20,19 @@
     --card-foreground: 0 0 0;
     --popover: 255 255 255;
     --popover-foreground: 0 0 0;
-    --primary: 209 243 100;
+    --primary: 255 255 255; /* Changed from 209 243 100 */
     --primary-foreground: 0 0 0;
     --secondary: 206 197 249;
     --secondary-foreground: 0 0 0;
     --muted: 240 241 243;
     --muted-foreground: 51 51 51;
-    --accent: 209 243 100;
+    --accent: 255 255 255; /* Changed from 209 243 100 */
     --accent-foreground: 0 0 0;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 206 197 249;
     --input: 206 197 249;
-    --ring: 209 243 100;
+    --ring: 206 197 249; /* Changed from 209 243 100 */
     --radius: 0.5rem;
     --sidebar-background: 255 255 255;
     --sidebar-foreground: 0 0 0;
@@ -51,19 +51,19 @@
     --card-foreground: 240 241 243;
     --popover: 0 0 0;
     --popover-foreground: 240 241 243;
-    --primary: 209 243 100;
+    --primary: 255 255 255; /* Changed from 209 243 100 */
     --primary-foreground: 0 0 0;
     --secondary: 206 197 249;
     --secondary-foreground: 240 241 243;
     --muted: 0 0 0;
     --muted-foreground: 240 241 243;
-    --accent: 209 243 100;
+    --accent: 255 255 255; /* Changed from 209 243 100 */
     --accent-foreground: 0 0 0;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 240 241 243;
     --border: 206 197 249;
     --input: 206 197 249;
-    --ring: 209 243 100;
+    --ring: 206 197 249; /* Changed from 209 243 100 */
     --sidebar-background: 0 0 0;
     --sidebar-foreground: 240 241 243;
     --sidebar-primary: 206 197 249;

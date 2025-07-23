@@ -233,7 +233,7 @@ export const DiscoverGrantsContent = ({
             {/* Grant Details Panel - Sticky and full viewport height */}
             {showDetails && selectedGrant && (
               <div className="w-2/3 min-w-0">
-                <div className="sticky top-0 h-[calc(100vh-0rem)]">
+                <div className="sticky top-16 h-[calc(100vh-4rem)]">
                   <GrantDetailsPanel 
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 
