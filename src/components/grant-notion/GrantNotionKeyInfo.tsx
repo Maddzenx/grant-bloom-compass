@@ -8,7 +8,7 @@ const GrantNotionKeyInfo = ({
   grant,
   isMobile = false
 }: GrantNotionKeyInfoProps) => {
-  return <div className="flex flex-col sm:flex-row gap-2 mb-3 border bg-white mx-0 rounded-lg justify-center items-center px-0 py-[20px]">
+  return <div className="flex flex-col sm:flex-row gap-2 mb-3 border bg-white rounded-lg justify-center items-center py-[20px] mx-0 px-[10px]">
       {/* Bidragsbelopp */}
       <div className="flex flex-col items-center justify-center text-center min-w-[120px]">
         <span className="text-xs text-gray-500">Bidragsbelopp</span>
