@@ -186,6 +186,7 @@ export const useBackendFilteredGrants = ({
     refetchOnWindowFocus: false,
     staleTime: 2 * 60 * 1000, // 2 minutes
     gcTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: (previousData) => previousData, // Keep previous data while loading new data
   });
 
   // Update current page when pagination prop changes

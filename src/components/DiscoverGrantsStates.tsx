@@ -3,6 +3,7 @@ import React from 'react';
 
 interface DiscoverGrantsStatesProps {
   isLoading: boolean;
+  isFetching?: boolean;
   isError: boolean;
   error: Error | null;
   grants: any[];
@@ -11,6 +12,7 @@ interface DiscoverGrantsStatesProps {
 
 export const DiscoverGrantsStates = ({
   isLoading,
+  isFetching,
   isError,
   error,
   grants,
@@ -58,8 +60,8 @@ export const DiscoverGrantsStates = ({
     );
   }
 
-  // Show no data state - pixel perfect match to the image
-  if (!isLoading && (!grants || grants.length === 0)) {
+  // Show no data state - but not if we are in the middle of fetching new data
+  if (!isLoading && !isFetching && (!grants || grants.length === 0)) {
     console.log('No data state - grants:', grants);
     return (
       <div className="min-h-screen bg-[#f1ebe1] flex items-center justify-center p-4">

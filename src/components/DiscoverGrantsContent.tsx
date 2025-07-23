@@ -25,6 +25,7 @@ interface DiscoverGrantsContentProps {
   hasActiveFilters: boolean;
   suggestions: string[];
   isSearching: boolean;
+  isBackendFetching?: boolean;
   searchMetrics: any;
   aiMatches?: AIGrantMatch[];
   pagination?: {
@@ -56,6 +57,7 @@ export const DiscoverGrantsContent = ({
   hasActiveFilters,
   suggestions,
   isSearching,
+  isBackendFetching = false,
   searchMetrics,
   aiMatches,
   pagination,
@@ -193,6 +195,15 @@ export const DiscoverGrantsContent = ({
       )}
       {/* Main Content Area - Full width with natural scrolling */}
       <div className="flex-1 max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 pb-8 relative">
+        {/* Backend Loading Overlay */}
+        {isBackendFetching && (
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-40 flex items-start justify-center pt-12 animate-fade-in">
+            <div className="bg-white rounded-lg shadow-lg border border-gray-200 px-6 py-4 flex items-center gap-3">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+              <span className="text-sm font-medium text-gray-700">Uppdaterar resultat...</span>
+            </div>
+          </div>
+        )}
         {/* Mobile Layout */}
         {isMobile ? (
           <>
