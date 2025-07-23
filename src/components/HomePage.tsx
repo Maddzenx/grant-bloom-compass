@@ -106,14 +106,13 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading || isSearching;
 
   return (
-    <div className="min-h-screen bg-[#F0F1F3] relative">
-      {/* Purple cloud background overlay */}
-      <div className="absolute top-0 left-0 right-0 h-screen bg-no-repeat bg-center bg-contain opacity-30 pointer-events-none" style={{
-        backgroundImage: `url('/lovable-uploads/6e050f8a-703a-48a5-96e5-1c1f60977e6b.png')`,
-        backgroundSize: '800px 600px',
-        backgroundPosition: 'center 40%'
-      }} />
-
+    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
+      <img
+        src="/lovable-uploads/purple-cloud.png"
+        alt="Purple Cloud"
+        className="absolute left-1/2 top-0 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
+        draggable="false"
+      />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
         <div className="w-full max-w-4xl mx-auto text-center">

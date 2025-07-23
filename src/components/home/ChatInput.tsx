@@ -110,8 +110,8 @@ const ChatInput = ({
                     const newText = currentMessage.substring(0, letterIndex + 1);
                     setTerminalTypedText(newText);
                     letterIndex++;
-                    // Same typing speed as humorous examples
-                    const delay = Math.random() * 35 + 18;
+                    // Natural typing speed with slight variation (25-45ms per letter)
+                    const delay = Math.random() * 20 + 25;
                     setTimeout(typeLetters, delay);
                   } else {
                     setIsTerminalTyping(false);
@@ -163,8 +163,8 @@ const ChatInput = ({
           setCurrentLetterIndex(letterIndex + 1);
           letterIndex++;
 
-          // Faster typing speed - 1.5x faster than before (20-67ms per letter instead of 30-100ms)
-          const delay = Math.random() * 35 + 18;
+          // Natural typing speed with slight variation (25-45ms per letter)
+          const delay = Math.random() * 20 + 25;
           setTimeout(typeLetters, delay);
         } else {
           setIsTyping(false);
@@ -291,7 +291,7 @@ const ChatInput = ({
             {/* Right Side - Submit Button */}
             <div className="flex items-center gap-2">
               {/* Submit Button */}
-              <Button onClick={handleSubmit} disabled={isProcessing || !inputValue.trim()} size="sm" title="Hitta bidrag" className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9]">
+              <Button onClick={handleSubmit} disabled={isProcessing || !inputValue.trim()} size="sm" title="Hitta bidrag" className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]">
                 {isProcessing ? <Loader2 className="w-7 h-7 animate-spin" /> : <ArrowUp className="w-7 h-7" />}
               </Button>
             </div>
