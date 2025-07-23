@@ -61,7 +61,7 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
     .select(`
-      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project,
+      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount,
       application_opening_date, application_closing_date, keywords, industry_sectors,
       eligible_organisations, geographic_scope
     `)
