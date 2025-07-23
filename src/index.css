@@ -9,8 +9,7 @@
 /* Design System & Color Palette */
 @layer base {
   :root {
-    --canvas-cloud: #F0F1F3;
-    --accent-lime: #FFFFFF; /* Changed from #D1F364 */
+    --canvas-cloud: #fafafa;
     --accent-lavender: #CEC5F9;
     --ink-obsidian: #000000;
     --ink-secondary: #333333;
@@ -20,19 +19,19 @@
     --card-foreground: 0 0 0;
     --popover: 255 255 255;
     --popover-foreground: 0 0 0;
-    --primary: 255 255 255; /* Changed from 209 243 100 */
+    --primary: 206 197 249; /* lavender */
     --primary-foreground: 0 0 0;
     --secondary: 206 197 249;
     --secondary-foreground: 0 0 0;
     --muted: 240 241 243;
     --muted-foreground: 51 51 51;
-    --accent: 255 255 255; /* Changed from 209 243 100 */
+    --accent: 206 197 249; /* lavender */
     --accent-foreground: 0 0 0;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 206 197 249;
     --input: 206 197 249;
-    --ring: 206 197 249; /* Changed from 209 243 100 */
+    --ring: 59 130 246;
     --radius: 0.5rem;
     --sidebar-background: 255 255 255;
     --sidebar-foreground: 0 0 0;
@@ -41,7 +40,7 @@
     --sidebar-accent: 240 241 243;
     --sidebar-accent-foreground: 0 0 0;
     --sidebar-border: 206 197 249;
-    --sidebar-ring: 209 243 100;
+    --sidebar-ring: 206 197 249; /* lavender */
   }
 
   .dark {
@@ -51,19 +50,19 @@
     --card-foreground: 240 241 243;
     --popover: 0 0 0;
     --popover-foreground: 240 241 243;
-    --primary: 255 255 255; /* Changed from 209 243 100 */
+    --primary: 206 197 249; /* lavender */
     --primary-foreground: 0 0 0;
     --secondary: 206 197 249;
     --secondary-foreground: 240 241 243;
     --muted: 0 0 0;
     --muted-foreground: 240 241 243;
-    --accent: 255 255 255; /* Changed from 209 243 100 */
+    --accent: 206 197 249; /* lavender */
     --accent-foreground: 0 0 0;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 240 241 243;
     --border: 206 197 249;
     --input: 206 197 249;
-    --ring: 206 197 249; /* Changed from 209 243 100 */
+    --ring: 59 130 246;
     --sidebar-background: 0 0 0;
     --sidebar-foreground: 240 241 243;
     --sidebar-primary: 206 197 249;
@@ -71,7 +70,7 @@
     --sidebar-accent: 0 0 0;
     --sidebar-accent-foreground: 240 241 243;
     --sidebar-border: 206 197 249;
-    --sidebar-ring: 209 243 100;
+    --sidebar-ring: 206 197 249; /* lavender */
   }
 
   html, body {
@@ -121,17 +120,14 @@
 
 /* Utility Classes */
 @layer utilities {
-  .bg-canvas-cloud { background-color: #F0F1F3; }
-  .bg-accent-lime { background-color: #D1F364; }
+  .bg-canvas-cloud { background-color: #fafafa; }
   .bg-accent-lavender { background-color: #CEC5F9; }
   .bg-accent-lavender-10 { background-color: rgba(206, 197, 249, 0.1); }
   .bg-ink-obsidian { background-color: #000000; }
   .text-canvas-cloud { color: #F0F1F3; }
-  .text-accent-lime { color: #D1F364; }
   .text-accent-lavender { color: #CEC5F9; }
   .text-ink-obsidian { color: #000000; }
   .text-ink-secondary { color: #333333; }
-  .border-accent-lime { border-color: #D1F364; }
   .border-accent-lavender { border-color: #CEC5F9; }
 
   /* --- CONTAINER FOR WHITESPACE --- */
@@ -157,7 +153,7 @@
 
   /* Highlight utility class - using Accent 1 for highlights */
   .highlight {
-    @apply bg-accent-lime px-2 py-1 rounded-sm;
+    @apply bg-accent-lavender px-2 py-1 rounded-sm;
   }
 
   .headline {
@@ -176,7 +172,7 @@
 
   .btn-primary {
     /* The font-family declaration will be removed from here */
-    @apply bg-accent-lime text-ink-obsidian hover:bg-accent-lime/90 focus-visible:ring-accent-lime font-medium text-xl px-6 py-3 rounded-lg transition-colors;
+    @apply bg-accent-lavender text-ink-obsidian hover:bg-accent-lavender/90 focus-visible:ring-accent-lavender font-medium text-xl px-6 py-3 rounded-lg transition-colors;
   }
 
   .btn-secondary {
@@ -196,7 +192,7 @@
   @keyframes fade-in {
     from {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -205,7 +201,7 @@
   }
 
   .animate-fade-in {
-    animation: fade-in 0.5s ease-out;
+    animation: fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -235,5 +231,88 @@
     flex: 1 1 0%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+.animate-lavalamp {
+  animation: lavalamp 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes lavalamp {
+  0% { transform: translate(-50%, 0) scale(1, 1) rotate(0deg); }
+  8% { transform: translate(-50%, -8px) scale(1.02, 0.99) rotate(-0.5deg); }
+  16% { transform: translate(-50%, -16px) scale(0.98, 1.02) rotate(0.8deg); }
+  24% { transform: translate(-50%, -20px) scale(1.03, 0.97) rotate(-1.2deg); }
+  32% { transform: translate(-50%, -18px) scale(0.96, 1.04) rotate(1.5deg); }
+  40% { transform: translate(-50%, -12px) scale(1.05, 0.95) rotate(-1.8deg); }
+  48% { transform: translate(-50%, -6px) scale(0.94, 1.06) rotate(2deg); }
+  56% { transform: translate(-50%, -2px) scale(1.06, 0.94) rotate(-1.5deg); }
+  64% { transform: translate(-50%, -8px) scale(0.97, 1.03) rotate(1.2deg); }
+  72% { transform: translate(-50%, -14px) scale(1.04, 0.98) rotate(-0.8deg); }
+  80% { transform: translate(-50%, -18px) scale(0.99, 1.01) rotate(0.5deg); }
+  88% { transform: translate(-50%, -12px) scale(1.01, 0.99) rotate(-0.3deg); }
+  96% { transform: translate(-50%, -4px) scale(0.98, 1.02) rotate(0.2deg); }
+  100% { transform: translate(-50%, 0) scale(1, 1) rotate(0deg); }
+}
+
+.liquid-blob {
+  animation: blob-morph 18s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes blob-morph {
+  0% {
+    d: path('M350,120 Q470,140 520,250 Q650,300 600,400 Q650,500 520,550 Q470,660 350,620 Q230,660 180,550 Q50,500 100,400 Q50,300 180,250 Q230,140 350,120 Z');
+  }
+  16% {
+    d: path('M350,135 Q485,125 535,245 Q665,315 605,395 Q665,485 535,535 Q485,665 350,625 Q215,665 165,535 Q35,485 95,395 Q35,315 165,245 Q215,125 350,135 Z');
+  }
+  32% {
+    d: path('M350,115 Q455,155 505,235 Q655,325 585,415 Q655,495 505,555 Q455,645 350,605 Q245,645 195,555 Q45,495 115,415 Q45,325 195,235 Q245,155 350,115 Z');
+  }
+  48% {
+    d: path('M350,145 Q475,115 545,265 Q675,305 615,385 Q675,475 545,525 Q475,675 350,635 Q225,675 155,525 Q25,475 85,385 Q25,305 155,265 Q225,115 350,145 Z');
+  }
+  64% {
+    d: path('M350,125 Q465,165 515,225 Q645,335 595,425 Q645,505 515,565 Q465,635 350,595 Q235,635 185,565 Q55,505 105,425 Q55,335 185,225 Q235,165 350,125 Z');
+  }
+  80% {
+    d: path('M350,130 Q480,135 530,255 Q660,295 610,405 Q660,485 530,545 Q480,655 350,615 Q220,655 170,545 Q40,485 90,405 Q40,295 170,255 Q220,135 350,130 Z');
+  }
+  100% {
+    d: path('M350,120 Q470,140 520,250 Q650,300 600,400 Q650,500 520,550 Q470,660 350,620 Q230,660 180,550 Q50,500 100,400 Q50,300 180,250 Q230,140 350,120 Z');
+  }
+}
+
+.animate-liquid-blob {
+  animation: liquid-blob-float 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes liquid-blob-float {
+  0% {
+    transform: translate(-50%, 0) scale(1, 1) rotate(0deg);
+  }
+  12% {
+    transform: translate(-50%, -8px) scale(1.03, 0.98) rotate(-1deg);
+  }
+  24% {
+    transform: translate(-50%, -16px) scale(0.97, 1.04) rotate(1.5deg);
+  }
+  36% {
+    transform: translate(-50%, -20px) scale(1.05, 0.96) rotate(-2deg);
+  }
+  48% {
+    transform: translate(-50%, -18px) scale(0.95, 1.06) rotate(2.5deg);
+  }
+  60% {
+    transform: translate(-50%, -12px) scale(1.06, 0.95) rotate(-1.8deg);
+  }
+  72% {
+    transform: translate(-50%, -6px) scale(0.98, 1.03) rotate(1.2deg);
+  }
+  84% {
+    transform: translate(-50%, -2px) scale(1.02, 0.99) rotate(-0.5deg);
+  }
+  96% {
+    transform: translate(-50%, -4px) scale(0.99, 1.01) rotate(0.3deg);
+  }
+  100% {
+    transform: translate(-50%, 0) scale(1, 1) rotate(0deg);
   }
 }
