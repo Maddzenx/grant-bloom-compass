@@ -106,7 +106,7 @@ export function TopNavigation() {
                     className={cn(
                       "block px-3 py-3 text-base font-newsreader font-medium transition-colors rounded-md",
                       isActive
-                        ? 'bg-white text-ink-obsidian shadow-sm border'
+                        ? 'text-ink-obsidian font-bold'
                         : 'text-ink-secondary hover:text-ink-secondary/70'
                     )}
                     style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
