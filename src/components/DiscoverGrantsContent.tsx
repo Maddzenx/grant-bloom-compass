@@ -27,6 +27,13 @@ interface DiscoverGrantsContentProps {
   isSearching: boolean;
   searchMetrics: any;
   aiMatches?: AIGrantMatch[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
   onSearchChange: (value: string) => void;
   onSearch: () => void;
   onSortChange: (sortBy: SortOption) => void;
@@ -35,6 +42,7 @@ interface DiscoverGrantsContentProps {
   onGrantSelect: (grant: Grant) => void;
   onToggleBookmark: (grantId: string) => void;
   onBackToList: () => void;
+  onPageChange?: (page: number) => void;
 }
 
 export const DiscoverGrantsContent = ({
@@ -50,6 +58,7 @@ export const DiscoverGrantsContent = ({
   isSearching,
   searchMetrics,
   aiMatches,
+  pagination,
   onSearchChange,
   onSearch,
   onSortChange,
@@ -57,7 +66,8 @@ export const DiscoverGrantsContent = ({
   onClearFilters,
   onGrantSelect,
   onToggleBookmark,
-  onBackToList
+  onBackToList,
+  onPageChange
 }: DiscoverGrantsContentProps) => {
   const isMobile = useIsMobile();
   const [filterOpen, setFilterOpen] = React.useState(false);
@@ -194,7 +204,9 @@ export const DiscoverGrantsContent = ({
               onToggleBookmark={onToggleBookmark} 
               searchTerm={searchTerm} 
               isMobile={true} 
-              aiMatches={aiMatches} 
+              aiMatches={aiMatches}
+              pagination={pagination}
+              onPageChange={onPageChange}
             />
             <Sheet open={detailsOpen && !!selectedGrant} onOpenChange={open => { setDetailsOpen(open); if (!open) onBackToList(); }}>
               <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp">
@@ -226,7 +238,9 @@ export const DiscoverGrantsContent = ({
                 onToggleBookmark={onToggleBookmark} 
                 searchTerm={searchTerm} 
                 isMobile={false} 
-                aiMatches={aiMatches} 
+                aiMatches={aiMatches}
+                pagination={pagination}
+                onPageChange={onPageChange}
               />
             </div>
 

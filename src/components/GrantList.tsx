@@ -12,6 +12,14 @@ interface GrantListProps {
   searchTerm: string;
   isMobile: boolean;
   aiMatches?: AIGrantMatch[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+  onPageChange?: (page: number) => void;
 }
 
 const GrantList = ({
@@ -21,7 +29,9 @@ const GrantList = ({
   onToggleBookmark,
   searchTerm,
   isMobile,
-  aiMatches
+  aiMatches,
+  pagination,
+  onPageChange
 }: GrantListProps) => {
   const [numVisibleGrants, setNumVisibleGrants] = React.useState(15);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -76,9 +86,9 @@ const GrantList = ({
           searchTerm={searchTerm}
           isMobile={isMobile}
           aiMatches={aiMatches}
-          currentPage={currentPage}
-          totalPages={Math.ceil(grants.length / grantsPerPage)}
-          onPageChange={setCurrentPage}
+          currentPage={pagination?.page || currentPage}
+          totalPages={pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)}
+          onPageChange={onPageChange || setCurrentPage}
         />
         {isMobile && hasMore && (
           <div ref={observerRef} className="flex justify-center items-center py-4">

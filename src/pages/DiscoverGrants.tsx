@@ -9,28 +9,26 @@ import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline } from "@/utils/grantHelpers";
+import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
 
 const DiscoverGrants = () => {
   const location = useLocation();
-  const {
-    data: grants = [],
-    isLoading,
-    error,
-    isError,
-    refetch,
-  } = useGrants();
   
+  // State for search and pipeline management
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(initialSearchResults?.rankedGrants || undefined);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [hasSearched, setHasSearched] = useState(!!initialSearchTerm);
+  
+  // Determine which pipeline to use
+  const useSemanticPipeline = hasSearched && searchTerm.trim();
+  const useBackendPipeline = !useSemanticPipeline;
 
   console.log('🔥 DiscoverGrants render:', { 
-    grantsCount: grants?.length || 0, 
-    isLoading, 
-    isError,
+    useSemanticPipeline,
+    useBackendPipeline,
     searchTerm,
     semanticMatchesCount: semanticMatches?.length || 0,
     hasSearched
@@ -44,8 +42,36 @@ const DiscoverGrants = () => {
     hasActiveFilters,
   } = useFilterState();
 
-  // Use the semantic search hook
+  // Semantic search hook (for semantic pipeline)
   const { searchGrants, isSearching } = useSemanticSearch();
+
+  // All grants query (for semantic pipeline fallback and filter options)
+  const {
+    data: allGrants = [],
+    isLoading: allGrantsLoading,
+    error: allGrantsError,
+    isError: allGrantsIsError,
+    refetch: refetchAllGrants,
+  } = useGrants();
+
+  // Backend filtered grants hook (for manual browse pipeline)
+  const {
+    grants: backendGrants,
+    pagination: backendPagination,
+    isLoading: backendLoading,
+    isFetching: backendFetching,
+    error: backendError,
+    isError: backendIsError,
+    currentPage,
+    changePage,
+    refresh: refreshBackend,
+  } = useBackendFilteredGrants({
+    filters,
+    sorting: { sortBy, searchTerm },
+    pagination: { page: 1, limit: 15 },
+    searchTerm: useBackendPipeline ? searchTerm : '', // Only pass searchTerm for backend pipeline
+    enabled: useBackendPipeline, // Only enabled for manual browse pipeline
+  });
 
   // Handle semantic search - only when explicitly called
   const handleSearch = async () => {
@@ -94,9 +120,32 @@ const DiscoverGrants = () => {
     }
   }, [initialSearchTerm, hasSearched, initialSearchResults]);
 
-  // Filter grants based on search state
+  // Get the appropriate grants and loading states based on pipeline
+  const { grants, isLoading, isError, error } = useMemo(() => {
+    if (useSemanticPipeline) {
+      // Semantic pipeline: use all grants for filtering options, but results come from semantic search
+      return {
+        grants: allGrants,
+        isLoading: allGrantsLoading,
+        isError: allGrantsIsError,
+        error: allGrantsError
+      };
+    } else {
+      // Backend pipeline: use backend filtered grants
+      return {
+        grants: backendGrants,
+        isLoading: backendLoading,
+        isError: backendIsError,
+        error: backendError
+      };
+    }
+  }, [useSemanticPipeline, allGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError]);
+
+  // Filter grants based on pipeline
   const baseFilteredGrants = useMemo(() => {
-    console.log('🎯 Filtering grants based on search state:', {
+    console.log('🎯 Filtering grants based on pipeline:', {
+      useSemanticPipeline,
+      useBackendPipeline,
       totalGrants: grants.length,
       hasSemanticMatches: !!semanticMatches,
       semanticMatchesCount: semanticMatches?.length || 0,
@@ -104,53 +153,69 @@ const DiscoverGrants = () => {
       hasSearched
     });
 
-    // If no search has been performed or no search term, return all grants
-    if (!hasSearched || !searchTerm.trim()) {
-      console.log('📋 No search performed, returning all grants');
-      return grants;
-    }
-
-    // If we have semantic matches (even if empty array), use those
-    if (semanticMatches !== undefined) {
-      if (semanticMatches.length === 0) {
-        console.log('📋 No semantic matches found, returning empty array');
-        return [];
+    if (useSemanticPipeline) {
+      // Semantic pipeline: filter based on semantic search results
+      if (!hasSearched || !searchTerm.trim()) {
+        console.log('📋 No search performed, returning all grants');
+        return grants;
       }
 
-      // Filter grants to only include those that were semantically matched
-      const matchedGrantIds = semanticMatches.map(match => match.grantId);
-      const filteredGrants = grants.filter(grant => matchedGrantIds.includes(grant.id));
-      
-      console.log('✅ Filtered to semantic matches:', {
-        matchedIds: matchedGrantIds.length,
-        filteredGrants: filteredGrants.length
-      });
+      // If we have semantic matches (even if empty array), use those
+      if (semanticMatches !== undefined) {
+        if (semanticMatches.length === 0) {
+          console.log('📋 No semantic matches found, returning empty array');
+          return [];
+        }
 
-      return filteredGrants;
+        // Filter grants to only include those that were semantically matched
+        const matchedGrantIds = semanticMatches.map(match => match.grantId);
+        const filteredGrants = grants.filter(grant => matchedGrantIds.includes(grant.id));
+        
+        console.log('✅ Filtered to semantic matches:', {
+          matchedIds: matchedGrantIds.length,
+          filteredGrants: filteredGrants.length
+        });
+
+        return filteredGrants;
+      }
+
+      // If semantic search failed but we searched, return all grants as fallback
+      console.log('📋 Search performed but no semantic results, returning all grants as fallback');
+      return grants;
+    } else {
+      // Backend pipeline: grants are already filtered by backend
+      console.log('📋 Using backend filtered grants:', grants.length);
+      return grants;
     }
+  }, [useSemanticPipeline, useBackendPipeline, grants, semanticMatches, searchTerm, hasSearched]);
 
-    // If semantic search failed but we searched, return all grants as fallback
-    console.log('📋 Search performed but no semantic results, returning all grants as fallback');
-    return grants;
-  }, [grants, semanticMatches, searchTerm, hasSearched]);
-
-  // Apply additional filters to the search results
+  // Apply additional frontend filters only for semantic pipeline
   const filteredGrants = useMemo(() => {
     console.log('🔍 Applying additional filters:', { 
       baseCount: baseFilteredGrants?.length || 0,
-      hasActiveFilters
+      hasActiveFilters,
+      useSemanticPipeline,
+      useBackendPipeline
     });
     
     if (!baseFilteredGrants || baseFilteredGrants.length === 0) {
       return [];
     }
 
-    // If no additional filters are active, return the base filtered grants
+    // For backend pipeline, filters are already applied on backend
+    if (useBackendPipeline) {
+      console.log('✅ Backend pipeline - filters already applied');
+      return baseFilteredGrants;
+    }
+
+    // For semantic pipeline, apply frontend filters if active
     if (!hasActiveFilters) {
       return baseFilteredGrants;
     }
 
-    // Apply additional filtering
+    console.log('🔍 Applying frontend filters for semantic pipeline');
+
+    // Apply additional filtering for semantic pipeline
     const filtered = baseFilteredGrants.filter(grant => {
       // Organization filter
       if (filters.organizations.length > 0 && !filters.organizations.includes(grant.organization)) {
@@ -182,22 +247,31 @@ const DiscoverGrants = () => {
 
     console.log('✅ Final filtered count:', filtered.length);
     return filtered;
-  }, [baseFilteredGrants, filters, hasActiveFilters]);
+  }, [baseFilteredGrants, filters, hasActiveFilters, useSemanticPipeline, useBackendPipeline]);
 
-  // Apply sorting based on actual semantic scores
+  // Apply sorting based on pipeline and semantic scores
   const sortedSearchResults = useMemo(() => {
     if (!filteredGrants || filteredGrants.length === 0) {
       return [];
     }
 
     console.log('🎯 Sorting results:', {
+      useSemanticPipeline,
+      useBackendPipeline,
       hasSemanticMatches: !!semanticMatches,
       semanticMatchesCount: semanticMatches?.length || 0,
       sortBy,
       filteredCount: filteredGrants.length
     });
 
-    if (semanticMatches && semanticMatches.length > 0 && sortBy === "default") {
+    // For backend pipeline, sorting is already done on backend
+    if (useBackendPipeline) {
+      console.log('✅ Backend pipeline - sorting already applied');
+      return filteredGrants;
+    }
+
+    // For semantic pipeline, apply frontend sorting
+    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0 && sortBy === "default") {
       // Create a map of grant IDs to their actual semantic scores
       const scoreMap = new Map<string, number>();
       semanticMatches.forEach((match) => {
@@ -225,8 +299,9 @@ const DiscoverGrants = () => {
       return sorted;
     }
     
+    // Default sorting for semantic pipeline (no semantic matches or different sort option)
     return filteredGrants;
-  }, [filteredGrants, semanticMatches, sortBy]);
+  }, [filteredGrants, semanticMatches, sortBy, useSemanticPipeline, useBackendPipeline]);
 
   // Grant selection logic
   const {
@@ -255,8 +330,12 @@ const DiscoverGrants = () => {
 
   const handleRefresh = useCallback(() => {
     console.log('🔄 Manual refresh triggered');
-    refetch();
-  }, [refetch]);
+    if (useBackendPipeline) {
+      refreshBackend();
+    } else {
+      refetchAllGrants();
+    }
+  }, [useBackendPipeline, refreshBackend, refetchAllGrants]);
 
   // Clear search results when search term is cleared
   const handleSearchChange = useCallback((value: string) => {
@@ -267,12 +346,18 @@ const DiscoverGrants = () => {
     }
   }, []);
 
+  // Handle sort change - for backend pipeline, this will trigger a new query
+  const handleSortChange = useCallback((newSortBy: SortOption) => {
+    setSortBy(newSortBy);
+    // Backend pipeline will automatically refetch with new sorting
+  }, []);
+
   // Show loading/error/empty states
   const stateComponent = DiscoverGrantsStates({
-    isLoading,
+    isLoading: isLoading || (useSemanticPipeline && isSearching),
     isError,
     error,
-    grants,
+    grants: useSemanticPipeline ? allGrants : backendGrants,
     onRefresh: handleRefresh,
   });
 
@@ -280,9 +365,20 @@ const DiscoverGrants = () => {
     return stateComponent;
   }
 
+  // Calculate search metrics
+  const searchMetrics = {
+    totalResults: sortedSearchResults.length,
+    searchTime: 0,
+    ...(useBackendPipeline && {
+      currentPage: backendPagination.page,
+      totalPages: backendPagination.totalPages,
+      totalInDatabase: backendPagination.total
+    })
+  };
+
   return (
     <DiscoverGrantsContent
-      grants={grants}
+      grants={useSemanticPipeline ? allGrants : backendGrants}
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}
@@ -291,17 +387,22 @@ const DiscoverGrants = () => {
       filters={filters}
       hasActiveFilters={hasActiveFilters}
       suggestions={[]}
-      isSearching={isSearching}
-      searchMetrics={{ totalResults: sortedSearchResults.length, searchTime: 0 }}
+      isSearching={isSearching || (useBackendPipeline && backendFetching)}
+      searchMetrics={searchMetrics}
       aiMatches={semanticMatches}
       onSearchChange={handleSearchChange}
       onSearch={handleSearch}
-      onSortChange={setSortBy}
+      onSortChange={handleSortChange}
       onFiltersChange={updateFilters}
       onClearFilters={clearFilters}
       onGrantSelect={handleGrantSelect}
       onToggleBookmark={handleToggleBookmark}
       onBackToList={handleBackToList}
+      // Backend pagination props (only for backend pipeline)
+      {...(useBackendPipeline && {
+        pagination: backendPagination,
+        onPageChange: changePage
+      })}
     />
   );
 };
