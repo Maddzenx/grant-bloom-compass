@@ -9,7 +9,6 @@ import { getOrganizationLogo } from '@/utils/organizationLogos';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-
 interface GrantNotionHeaderProps {
   grant: Grant;
   isBookmarked: boolean;
@@ -43,7 +42,7 @@ const GrantNotionHeader = ({
     deadlineDate = new Date(grant.deadline);
     if (isNaN(deadlineDate.getTime())) {
       const [day, monthName, year] = grant.deadline.split(' ');
-      const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+      const months = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
       const month = months.findIndex(m => m === monthName.toLowerCase());
       deadlineDate = new Date(Number(year), month, Number(day));
     }
@@ -51,8 +50,7 @@ const GrantNotionHeader = ({
     deadlineDate = new Date();
   }
   let status: 'open' | 'upcoming' | 'closed' = 'closed';
-  if (today >= opensAt && today <= deadlineDate) status = 'open';
-  else if (today < opensAt) status = 'upcoming';
+  if (today >= opensAt && today <= deadlineDate) status = 'open';else if (today < opensAt) status = 'upcoming';
   // ---
 
   const handleApplyClick = () => {
@@ -120,12 +118,8 @@ const GrantNotionHeader = ({
 
       {/* Status label above title */}
       <div className="mb-2">
-        {status === 'open' && (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>
-        )}
-        {status === 'upcoming' && (
-          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>
-        )}
+        {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
+        {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>}
       </div>
 
       {/* Title in a flex row, no SortingControls */}
@@ -144,7 +138,7 @@ const GrantNotionHeader = ({
       {/* About Grant section (if different from description) */}
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
       {/* Action buttons */}
-      <div className="flex items-center gap-2 mb-2 w-full">
+      <div className="flex items-center gap-2 mb-2 w-full my-0 py-[10px]">
         <Button onClick={handleApplyClick} className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px]">
           Ansök om bidrag
           <ExternalLink className="w-4 h-4 text-black" />
