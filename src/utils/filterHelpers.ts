@@ -1,5 +1,5 @@
 
-import { Grant } from '@/types/grant';
+import { Grant, GrantListItem } from '@/types/grant';
 
 // Helper function to parse funding amounts
 export const parseFundingAmount = (fundingAmount: string): number => {
@@ -27,8 +27,8 @@ export const calculateActiveFilterCount = (filters: any): number => {
 };
 
 // Process organizations with grant counts
-export const processOrganizationOptions = (grants: Grant[]) => {
-  const orgCounts = grants.reduce((acc, grant) => {
+export const processOrganizationOptions = (grants: (Grant | GrantListItem)[]) => {
+  const orgCounts = grants.reduce((acc: Record<string, number>, grant) => {
     acc[grant.organization] = (acc[grant.organization] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);

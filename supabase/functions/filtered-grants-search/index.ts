@@ -67,7 +67,17 @@ serve(async (req) => {
     // Start building the query
     let query = supabase
       .from('grant_call_details')
-      .select('*', { count: 'exact' });
+      .select(`
+        id, title, organisation, subtitle, funding_amount_min, funding_amount_max,
+        application_opening_date, application_closing_date, tags, industry_sectors,
+        eligible_organisations, geographic_scope, created_at
+      `, { count: 'exact' });
+
+    // Filter out grants with passed deadlines
+    const today = new Date().toISOString().split('T')[0];
+    query = query
+      .not('application_closing_date', 'is', null)
+      .gte('application_closing_date', today);
 
     // Apply text search if provided (basic text search, not semantic)
     if (searchTerm && searchTerm.trim()) {

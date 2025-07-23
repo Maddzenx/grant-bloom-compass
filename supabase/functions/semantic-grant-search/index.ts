@@ -300,11 +300,17 @@ serve(async (req) => {
       let grantsQuery = supabase
         .from('grant_call_details')
         .select(`
-          id, title, organisation, description, search_description, 
+          id, title, organisation, subtitle, search_description, 
           geographic_scope, region, eligible_organisations, 
           industry_sectors, embedding
         `)
         .not('embedding', 'is', null);
+
+      // Filter out grants with passed deadlines
+      const today = new Date().toISOString().split('T')[0];
+      grantsQuery = grantsQuery
+        .not('application_closing_date', 'is', null)
+        .gte('application_closing_date', today);
 
       // Apply organization filtering if specified
       if (organizationFilter && organizationFilter.length > 0) {

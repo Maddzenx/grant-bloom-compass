@@ -1,23 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Grant } from '@/types/grant';
+import { GrantListItem } from '@/types/grant';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSavedGrantsContext } from '@/contexts/SavedGrantsContext';
 
 interface UseGrantSelectionProps {
-  searchResults: Grant[];
+  searchResults: GrantListItem[];
 }
 
 interface UseGrantSelectionReturn {
-  selectedGrant: Grant | null;
+  selectedGrant: GrantListItem | null;
   showDetails: boolean;
-  handleGrantSelect: (grant: Grant) => void;
+  handleGrantSelect: (grant: GrantListItem) => void;
   toggleBookmark: (grantId: string) => void;
   handleBackToList: () => void;
-  setSelectedGrant: (grant: Grant | null) => void;
+  setSelectedGrant: (grant: GrantListItem | null) => void;
 }
 
 export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): UseGrantSelectionReturn => {
-  const [selectedGrant, setSelectedGrant] = useState<Grant | null>(null);
+  const [selectedGrant, setSelectedGrant] = useState<GrantListItem | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const isMobile = useIsMobile();
   const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
@@ -42,7 +42,7 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
     }
   }, [searchResults, selectedGrant]);
 
-  const handleGrantSelect = useCallback((grant: Grant) => {
+  const handleGrantSelect = useCallback((grant: GrantListItem) => {
     console.log('🔥 Grant selected:', grant);
     setSelectedGrant(grant);
     // Always show details when a grant is selected, both mobile and desktop

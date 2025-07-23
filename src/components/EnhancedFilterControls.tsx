@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Grant } from "@/types/grant";
+import { GrantListItem } from "@/types/grant";
 import { EnhancedFilterOptions } from "@/hooks/useFilterState";
 import { FilterChips } from "./FilterChips";
 import { FilterHeader } from "./filters/FilterHeader";
@@ -11,8 +11,8 @@ interface EnhancedFilterControlsProps {
   filters: EnhancedFilterOptions;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
   onClearAll: () => void;
-  grants: Grant[];
-  filteredGrants: Grant[];
+  grants: GrantListItem[];
+  filteredGrants: GrantListItem[];
   hasActiveFilters: boolean;
 }
 

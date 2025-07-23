@@ -1,5 +1,5 @@
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantListItem } from "@/types/grant";
 import { Badge } from "@/components/ui/badge";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Bookmark, Clock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ConsolidatedGrantListProps {
-  grants: Grant[];
-  selectedGrant: Grant | null;
-  onGrantSelect: (grant: Grant) => void;
+  grants: GrantListItem[];
+  selectedGrant: GrantListItem | null;
+  onGrantSelect: (grant: GrantListItem) => void;
   onToggleBookmark: (grantId: string) => void;
   searchTerm: string;
   isMobile: boolean;
@@ -75,7 +75,7 @@ const ConsolidatedGrantList = ({
     }
   };
 
-  const handleBookmarkToggle = (e: React.MouseEvent, grant: Grant) => {
+  const handleBookmarkToggle = (e: React.MouseEvent, grant: GrantListItem) => {
     e.stopPropagation();
     const isSaved = isGrantSaved(grant.id);
     if (isSaved) {

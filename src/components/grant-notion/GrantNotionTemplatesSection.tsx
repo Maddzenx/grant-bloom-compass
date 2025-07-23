@@ -2,7 +2,6 @@
 import React from "react";
 import { FileText, ExternalLink } from "lucide-react";
 import { Grant } from "@/types/grant";
-import { handleFileClick } from "./GrantNotionFileHandler";
 
 interface GrantNotionTemplatesSectionProps {
   grant: Grant;
@@ -10,6 +9,38 @@ interface GrantNotionTemplatesSectionProps {
 
 const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps) => {
   if (grant.templates.length === 0 && grant.generalInfo.length === 0) return null;
+
+  const handleTemplateClick = (templateName: string, templateIndex: number, templateLinks: string[]) => {
+    const link = templateLinks[templateIndex];
+    if (link) {
+      // Check if it's a direct URL
+      if (link.startsWith('http://') || link.startsWith('https://')) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+      } else {
+        // If it's not a full URL, try to construct one
+        window.open(`https://${link}`, '_blank', 'noopener,noreferrer');
+      }
+    } else {
+      // Fallback to the old file handler if no link is available
+      console.log('No direct link available for template:', templateName);
+    }
+  };
+
+  const handleGeneralInfoClick = (fileName: string, fileIndex: number, fileLinks: string[]) => {
+    const link = fileLinks[fileIndex];
+    if (link) {
+      // Check if it's a direct URL
+      if (link.startsWith('http://') || link.startsWith('https://')) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+      } else {
+        // If it's not a full URL, try to construct one
+        window.open(`https://${link}`, '_blank', 'noopener,noreferrer');
+      }
+    } else {
+      // Fallback to the old file handler if no link is available
+      console.log('No direct link available for file:', fileName);
+    }
+  };
 
   return (
     <div>
@@ -23,7 +54,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
                 <div
                   key={index}
                   className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => handleFileClick(template)}
+                  onClick={() => handleTemplateClick(template, index, grant.application_templates_links || [])}
                 >
                   <FileText className="w-3 h-3 text-gray-400" />
                   <span className="text-xs text-gray-700 flex-1">{template}</span>
@@ -42,7 +73,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
                 <div
                   key={index}
                   className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => handleFileClick(file)}
+                  onClick={() => handleGeneralInfoClick(file, index, grant.other_templates_links || [])}
                 >
                   <FileText className="w-3 h-3 text-gray-400" />
                   <span className="text-xs text-gray-700 flex-1">{file}</span>
