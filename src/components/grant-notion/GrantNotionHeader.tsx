@@ -63,6 +63,13 @@ const GrantNotionHeader = ({
       }
     });
   };
+
+  const handleReadMoreClick = () => {
+    if (grant.originalUrl) {
+      window.open(grant.originalUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const handleBookmarkToggle = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 Header bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
@@ -85,8 +92,11 @@ const GrantNotionHeader = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
   return <>
-      {/* Organization icon and name inline at the top left */}
-      <div className={`flex items-center gap-2 mb-2 pt-4 ${isMobile ? '' : ''}`}>
+      {/* Status label and organization icon inline */}
+      <div className="flex items-center gap-2 mb-2 pt-4">
+        {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
+        {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>}
+        {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200 w-fit">Stängd</Badge>}
         <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
         <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
       </div>
@@ -116,20 +126,15 @@ const GrantNotionHeader = ({
           </DropdownMenu>
         </div>}
 
-      {/* Status label above title */}
-      <div className="mb-2">
-        {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
-        {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>}
-      </div>
-
-      {/* Title in a flex row, no SortingControls */}
+      {/* Title with wrapping allowed */}
       <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2 w-full">
-        <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 truncate">
+        <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 break-words">
           {grant.title}
         </h1>
       </div>
-      {/* Description from database */}
-      {grant.description && <p className="text-gray-700 mb-4 leading-snug max-w-[80ch] text-sm w-full">
+      
+      {/* Description with full width */}
+      {grant.description && <p className="text-gray-700 mb-4 leading-snug text-sm w-full">
           {grant.description}
         </p>}
       <div className="mb-4">
@@ -139,8 +144,12 @@ const GrantNotionHeader = ({
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
       {/* Action buttons */}
       <div className="flex items-center gap-2 mb-2 w-full my-0 py-[10px]">
-        <Button onClick={handleApplyClick} className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px]">
-          Ansök om bidrag
+        <Button 
+          onClick={handleReadMoreClick} 
+          disabled={!grant.originalUrl}
+          className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Läs mer
           <ExternalLink className="w-4 h-4 text-black" />
         </Button>
         <Button variant="outline" onClick={handleBookmarkToggle} className="flex-1 w-full text-xs font-normal rounded border-[#d7cffc] flex items-center gap-2 bg-white hover:bg-gray-50 h-8 shadow-none px-[2px] py-0">
