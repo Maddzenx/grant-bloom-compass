@@ -4,7 +4,13 @@ import { FilterOptions } from '@/components/FilterControls';
 import { calculateRelevanceScore } from '@/utils/searchAlgorithms';
 
 // Parse funding amount string to number for comparison
-export const parseFundingAmount = (fundingAmount: string): number => {
+export const parseFundingAmount = (fundingAmount: string | number): number => {
+  // If it's already a number, return it
+  if (typeof fundingAmount === 'number') {
+    return fundingAmount;
+  }
+  
+  // If it's a string, parse it
   const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
   if (match) {
     const amount = parseFloat(match[1].replace(',', '.'));

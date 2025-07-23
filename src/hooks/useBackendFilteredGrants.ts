@@ -88,10 +88,10 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     title: grant.title || 'Untitled Grant',
     organization: grant.organisation || 'Unknown Organization',
     aboutGrant: grant.subtitle || grant.description || 'No information available',
-    fundingAmount: formatFundingAmount(grant.funding_amount_min, grant.funding_amount_max),
+    fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project),
     opens_at: grant.application_opening_date || '2024-01-01',
     deadline: grant.application_closing_date || 'Not specified',
-    tags: parseJsonArray(grant.tags) || [],
+    tags: parseJsonArray(grant.keywords) || [],
     industry_sectors: parseJsonArray(grant.industry_sectors),
     eligible_organisations: parseJsonArray(grant.eligible_organisations),
     geographic_scope: parseJsonArray(grant.geographic_scope)
