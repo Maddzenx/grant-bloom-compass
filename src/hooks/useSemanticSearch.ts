@@ -2,14 +2,12 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-export interface SemanticSearchResult {
-  grantId: string;
-  relevanceScore: number;
-  matchingReasons: string[];
-}
-
 export interface SemanticSearchResponse {
-  rankedGrants: SemanticSearchResult[];
+  rankedGrants: Array<{
+    grantId: string;
+    relevanceScore: number;
+    matchingReasons: string[];
+  }>;
   explanation: string;
 }
 
@@ -17,7 +15,7 @@ export const useSemanticSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  const searchGrants = async (query: string): Promise<SemanticSearchResponse | null> => {
+  const searchGrants = async (query: string, organizationFilter: string[] = []): Promise<SemanticSearchResponse | null> => {
     if (!query.trim()) {
       return null;
     }
@@ -27,9 +25,13 @@ export const useSemanticSearch = () => {
 
     try {
       console.log('🔍 Calling semantic search function with query:', query);
+      console.log('🏢 Organization filter:', organizationFilter);
 
       const { data, error } = await supabase.functions.invoke('semantic-grant-search', {
-        body: { query: query.trim() }
+        body: { 
+          query: query.trim(),
+          organizationFilter: organizationFilter
+        }
       });
 
       console.log('📡 Supabase function response:', { data, error });

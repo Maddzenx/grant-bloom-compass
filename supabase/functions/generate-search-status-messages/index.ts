@@ -10,10 +10,9 @@ const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 // Free models to try for message generation (prioritize working models)
 const freeModels = [
-  'google/gemma-3n-e4b-it:free',
   'meta-llama/llama-3.2-3b-instruct:free',
-  'google/gemma-3n-e2b-it:free',
   'qwen/qwen3-4b:free',
+  'mistralai/mistral-small-3.1-24b-instruct:free',
   'nousresearch/deephermes-3-llama-3-8b-preview:free'
 ];
 

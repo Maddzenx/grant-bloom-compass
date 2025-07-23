@@ -22,6 +22,7 @@ import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
+  const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>([]);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -44,10 +45,11 @@ const HomePage = () => {
     }
 
     console.log('🚀 Starting search on home page for:', inputValue);
+    console.log('🏢 With organization filter:', selectedOrganizations);
     
     try {
-      // Perform the search first
-      const searchResult = await searchGrants(inputValue);
+      // Perform the search first with organization filtering
+      const searchResult = await searchGrants(inputValue, selectedOrganizations);
       
       console.log('🔍 Search completed, navigating to discover page with results:', searchResult);
       
@@ -84,6 +86,11 @@ const HomePage = () => {
 
   const handleFileUpload = () => {
     // This will be handled by ChatInput component
+  };
+
+  const handleOrganizationSelectionChange = (organizations: string[]) => {
+    console.log('🏢 Organization selection changed:', organizations);
+    setSelectedOrganizations(organizations);
   };
 
   const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +134,7 @@ const HomePage = () => {
           />
 
           {/* Organization Tabs */}
-          <OrganizationTabs />
+          <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
 
           {/* Status Messages */}
           <StatusMessages

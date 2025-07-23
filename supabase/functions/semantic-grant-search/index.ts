@@ -30,6 +30,9 @@ interface GrantForLLMFiltering {
 
 // Free models to try for LLM filtering, in order of preference (smartest/largest first)
 const llmFilterModels = [
+  'google/gemini-2.0-flash-exp:free',
+  'meta-llama/llama-3.1-405b-instruct:free',
+  'google/gemma-3-27b-it:free',
   'deepseek/deepseek-chat-v3-0324:free',
   'deepseek/deepseek-r1-0528:free',
   'deepseek/deepseek-r1:free',
@@ -225,9 +228,10 @@ serve(async (req) => {
   }
 
   try {
-    const { query } = await req.json();
+    const { query, organizationFilter = [] } = await req.json();
 
     console.log('🔍 Semantic Grant Search - Received query:', query);
+    console.log('🏢 Organization filter:', organizationFilter);
 
     if (!query || typeof query !== 'string') {
       return new Response(JSON.stringify({ error: 'Query is required' }), {
@@ -291,7 +295,9 @@ serve(async (req) => {
     let grants;
     try {
       console.log('🔍 Querying database for grants with embeddings...');
-      const { data, error: grantsError } = await supabase
+      
+      // Build the query - start with base query
+      let grantsQuery = supabase
         .from('grant_call_details')
         .select(`
           id, title, organisation, description, search_description, 
@@ -299,6 +305,23 @@ serve(async (req) => {
           industry_sectors, embedding
         `)
         .not('embedding', 'is', null);
+
+      // Apply organization filtering if specified
+      if (organizationFilter && organizationFilter.length > 0) {
+        console.log('🏢 Applying organization filter:', organizationFilter);
+        
+        // Create OR conditions for each organization type in the filter
+        const orConditions = organizationFilter.map((orgType: string) => 
+          `eligible_organisations.cs.["${orgType}"]`
+        );
+        
+        grantsQuery = grantsQuery.or(orConditions.join(','));
+        console.log('📋 Organization filter applied with conditions:', orConditions);
+      } else {
+        console.log('📋 No organization filter applied - searching all grants');
+      }
+
+      const { data, error: grantsError } = await grantsQuery;
 
       console.log('📊 Database query completed');
 

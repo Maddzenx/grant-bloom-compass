@@ -30,6 +30,7 @@ const ChatInput = ({
   onSubmit
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const {
     t
   } = useLanguage();
@@ -114,13 +115,13 @@ const ChatInput = ({
                     setTimeout(typeLetters, delay);
                   } else {
                     setIsTerminalTyping(false);
-                    // Brief pause before next message (2000ms after typing completes)
+                    // Brief pause before next message (3000ms after typing completes)
                     setTimeout(() => {
                       if (isSearching) {
                         messageIndex++;
                         showNextMessage();
                       }
-                    }, 2000); // 800ms after typing completes
+                    }, 3000); // 3000ms after typing completes
                   }
                 };
                 
@@ -190,6 +191,11 @@ const ChatInput = ({
     }
   }, [inputValue, typedText, showTerminal]);
 
+  // Autofocus the textarea on mount
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -197,6 +203,9 @@ const ChatInput = ({
     if (e.key === 'Enter' && !e.shiftKey && inputValue.trim()) {
       e.preventDefault();
       onSubmit?.();
+    } else if (e.key === 'Tab' && !inputValue && typedText) {
+      e.preventDefault();
+      setInputValue(typedText);
     }
   };
   const handleSubmit = () => {
@@ -245,7 +254,7 @@ const ChatInput = ({
                 className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-[_] placeholder:after:animate-pulse' : ''}`} 
                 value={inputValue} 
                 onChange={handleTextareaChange} 
-                onKeyPress={handleKeyPress} 
+                onKeyDown={handleKeyPress} 
                 onFocus={handleFocus} 
                 disabled={isProcessing} 
                 rows={2} 
@@ -253,6 +262,7 @@ const ChatInput = ({
                   height: 'auto',
                   minHeight: '48px'
                 }} 
+                ref={textareaRef}
               />
             )}
           </div>
