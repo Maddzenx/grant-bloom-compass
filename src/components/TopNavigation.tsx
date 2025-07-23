@@ -61,7 +61,7 @@ export function TopNavigation() {
                     "px-2 py-2 text-xs font-newsreader transition-colors rounded-md",
                     isActive
                       ? 'text-ink-obsidian font-bold' 
-                      : 'text-ink-secondary font-medium hover:border'
+                      : 'text-ink-secondary font-medium hover:text-ink-secondary/70'
                   )}
                   style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                 >
@@ -107,7 +107,7 @@ export function TopNavigation() {
                       "block px-3 py-3 text-base font-newsreader font-medium transition-colors rounded-md",
                       isActive
                         ? 'bg-white text-ink-obsidian shadow-sm border'
-                        : 'text-ink-secondary hover:shadow-sm hover:border'
+                        : 'text-ink-secondary hover:text-ink-secondary/70'
                     )}
                     style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
                   >
