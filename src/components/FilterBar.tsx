@@ -165,19 +165,19 @@ const FilterContent = ({
        {/* Geographic Scope Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-ink-obsidian">Geografiskt område</h3>
-          {filters.geographicScope?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-purple-600 font-semibold" onClick={() => onFiltersChange({
-          geographicScope: []
+          <h3 className="text-xl font-bold text-ink-obsidian">Region</h3>
+          {filters.region?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-purple-600 font-semibold" onClick={() => onFiltersChange({
+          region: []
         })}>
               Återställ
             </Button>}
         </div>
         <div className="space-y-4">
           {geographicScopeOptions.map(scope => <label key={scope} className="flex items-center gap-3 cursor-pointer text-base text-ink-secondary">
-              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500" checked={filters.geographicScope?.includes(scope)} onChange={e => {
-            const newScopes = e.target.checked ? [...(filters.geographicScope || []), scope] : (filters.geographicScope || []).filter(s => s !== scope);
+              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500" checked={filters.region?.includes(scope)} onChange={e => {
+            const newScopes = e.target.checked ? [...(filters.region || []), scope] : (filters.region || []).filter(s => s !== scope);
             onFiltersChange({
-              geographicScope: newScopes
+              region: newScopes
             });
           }} />
               <span>{scope}</span>
@@ -203,7 +203,7 @@ const FilterContent = ({
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.geographicScope?.length].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
+  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
   const TriggerButton = <Button variant="outline" className="flex items-center gap-2 rounded-full px-3 py-1 bg-white border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
       <SlidersHorizontal className="w-4 h-4" />
       <span className="font-semibold">Filter</span>
@@ -252,66 +252,44 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             </SheetContent>
           </Sheet>}
 
-        
         <div className="h-4 border-l border-gray-300 mx-1"></div>
-        {/* Organization Filter */}
+        {/* Organisation Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Organisation <ChevronDown className="w-4 h-4" />
-            </Button>
+            <Button
+  variant="outline"
+  className={`flex items-center gap-1 rounded-full px-3 py-1 border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7 ${filters.organizations?.length > 0 ? 'bg-[#cec5f9] text-white border-[#cec5f9]' : 'bg-white'}`}
+>
+  Organisation <ChevronDown className="w-4 h-4" />
+</Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-3" align="start">
                 {organizationOptions.map(org => <label key={org} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                     <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.organizations?.includes(org)} onChange={e => {
               const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter((o: string) => o !== org);
-              onFiltersChange({
-                organizations: newOrgs
-              });
+              onFiltersChange({ organizations: newOrgs });
             }} />
                     <span>{org}</span>
                     </label>)}
             </PopoverContent>
         </Popover>
 
-        {/* Funding Filter */}
-        
-        {/* Deadline Filter */}
+        {/* Bransch Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Deadline <ChevronDown className="w-4 h-4" />
-            </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
-                <select className="w-full border-gray-300 rounded-md shadow-sm text-sm" value={deadlineValue.preset || ''} onChange={e => onDeadlineChange({
-            type: 'preset',
-            preset: e.target.value
-          })}>
-                  <option value="">Alla</option>
-                  <option value="urgent">Brådskande (7 dagar)</option>
-                  <option value="2weeks">Nästa 2 veckor</option>
-                  <option value="1month">Nästa månad</option>
-                  <option value="3months">Nästa 3 månader</option>
-                </select>
-            </PopoverContent>
-        </Popover>
-
-        {/* Industry Sector Filter */}
-        <Popover>
-            <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Bransch <ChevronDown className="w-4 h-4" />
-            </Button>
+            <Button
+  variant="outline"
+  className={`flex items-center gap-1 rounded-full px-3 py-1 border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7 ${filters.industrySectors?.length > 0 ? 'bg-[#cec5f9] text-white border-[#cec5f9]' : 'bg-white'}`}
+>
+  Bransch <ChevronDown className="w-4 h-4" />
+</Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-3" align="start">
                 <div className="space-y-3">
                   {industryOptions.map(ind => <label key={ind} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.industrySectors?.includes(ind)} onChange={e => {
                 const newInds = e.target.checked ? [...(filters.industrySectors || []), ind] : (filters.industrySectors || []).filter((i: string) => i !== ind);
-                onFiltersChange({
-                  industrySectors: newInds
-                });
+                onFiltersChange({ industrySectors: newInds });
               }} />
                       <span>{ind}</span>
                     </label>)}
@@ -319,70 +297,24 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             </PopoverContent>
         </Popover>
 
-        {/* Eligible Applicant Filter */}
+        {/* Stödberättigad sökande Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Stödberättigad sökande <ChevronDown className="w-4 h-4" />
-            </Button>
+            <Button
+  variant="outline"
+  className={`flex items-center gap-1 rounded-full px-3 py-1 border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7 ${filters.eligibleApplicants?.length > 0 ? 'bg-[#cec5f9] text-white border-[#cec5f9]' : 'bg-white'}`}
+>
+  Stödberättigad sökande <ChevronDown className="w-4 h-4" />
+</Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-3" align="start">
                 <div className="space-y-3">
                   {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
                 const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter((a: string) => a !== app);
-                onFiltersChange({
-                  eligibleApplicants: newApps
-                });
+                onFiltersChange({ eligibleApplicants: newApps });
               }} />
                       <span>{app}</span>
-                    </label>)}
-                </div>
-            </PopoverContent>
-        </Popover>
-
-        {/* Boolean Filters */}
-        <Popover>
-            <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Övrigt <ChevronDown className="w-4 h-4" />
-            </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
-                <div className="space-y-4">
-                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
-                      <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.consortiumRequired === true} onChange={e => onFiltersChange({
-                consortiumRequired: e.target.checked ? true : null
-              })} />
-                      <span>Kräver consortium</span>
-                  </label>
-                   <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
-                      <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.cofinancingRequired === true} onChange={e => onFiltersChange({
-                cofinancingRequired: e.target.checked ? true : null
-              })} />
-                      <span>Kräver medfinansiering</span>
-                  </label>
-                </div>
-            </PopoverContent>
-        </Popover>
-
-        {/* Geographic Scope Filter */}
-        <Popover>
-            <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-3 py-1 bg-white border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
-                Geografiskt område <ChevronDown className="w-4 h-4" />
-            </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
-                <div className="space-y-3">
-                  {geographicScopeOptions.map(scope => <label key={scope} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
-                      <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.geographicScope?.includes(scope)} onChange={e => {
-                const newScopes = e.target.checked ? [...(filters.geographicScope || []), scope] : (filters.geographicScope || []).filter((s: string) => s !== scope);
-                onFiltersChange({
-                  geographicScope: newScopes
-                });
-              }} />
-                      <span>{scope}</span>
                     </label>)}
                 </div>
             </PopoverContent>
