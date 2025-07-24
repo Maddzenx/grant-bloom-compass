@@ -6,7 +6,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useHumorousExamples } from "@/hooks/useHumorousExamples";
 import { useSearchStatusMessages } from "@/hooks/useSearchStatusMessages";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
-
 interface UploadedFile {
   id: string;
   name: string;
@@ -14,7 +13,6 @@ interface UploadedFile {
   size: number;
   file: File;
 }
-
 interface ChatInputProps {
   inputValue: string;
   setInputValue: (value: string) => void;
@@ -26,7 +24,6 @@ interface ChatInputProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit?: () => void; // Add optional submit handler
 }
-
 const ChatInput = ({
   inputValue,
   setInputValue,
@@ -47,8 +44,16 @@ const ChatInput = ({
     example,
     isLoading: isLoadingExample
   } = useHumorousExamples();
-  const { generateMessages } = useSearchStatusMessages();
-  const { isRecording: isVoiceRecording, isTranscribing, startRecording, stopRecording, cancelRecording } = useVoiceRecording();
+  const {
+    generateMessages
+  } = useSearchStatusMessages();
+  const {
+    isRecording: isVoiceRecording,
+    isTranscribing,
+    startRecording,
+    stopRecording,
+    cancelRecording
+  } = useVoiceRecording();
   const [typedText, setTypedText] = useState('');
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
@@ -82,13 +87,13 @@ const ChatInput = ({
       setCurrentTerminalIndex(0);
       setTerminalText('');
       setTerminalTypedText('');
-      
+
       // Show initial "search initiated" message immediately
       const initialMessage = "Sökning påbörjas...";
       setTerminalText(initialMessage);
       setIsTerminalTyping(true);
       setTerminalTypedText('');
-      
+
       // Type out the initial message
       let letterIndex = 0;
       const typeInitialMessage = () => {
@@ -102,20 +107,20 @@ const ChatInput = ({
           setIsTerminalTyping(false);
         }
       };
-      
+
       // Start typing the initial message
       typeInitialMessage();
-      
+
       // Generate AI messages in parallel
       const startMessageCycle = async () => {
         try {
           const dynamicMessages = await generateMessages(inputValue);
           setTerminalMessages(dynamicMessages);
-          
+
           // Wait a moment to ensure initial message has finished, then start AI messages
           setTimeout(() => {
             if (!isSearching) return;
-            
+
             // Start cycling through AI-generated messages
             let messageIndex = 0;
             const showNextMessage = () => {
@@ -123,12 +128,11 @@ const ChatInput = ({
                 setCurrentTerminalIndex(messageIndex);
                 const currentMessage = dynamicMessages[messageIndex];
                 setTerminalText(currentMessage);
-                
+
                 // Start typewriter effect for this message
                 setIsTerminalTyping(true);
                 setTerminalTypedText('');
                 let letterIndex = 0;
-                
                 const typeLetters = () => {
                   if (letterIndex < currentMessage.length && isSearching) {
                     const newText = currentMessage.substring(0, letterIndex + 1);
@@ -148,21 +152,18 @@ const ChatInput = ({
                     }, 3000); // 3000ms after typing completes
                   }
                 };
-                
                 typeLetters();
               }
             };
-            
+
             // Start the AI message cycle
             showNextMessage();
           }, 500); // Small delay to ensure smooth transition
-          
         } catch (error) {
           console.error('Failed to generate messages:', error);
           setShowTerminal(false);
         }
       };
-      
       startMessageCycle();
     } else {
       setShowTerminal(false);
@@ -219,11 +220,9 @@ const ChatInput = ({
   useEffect(() => {
     textareaRef.current?.focus();
   }, []);
-
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
@@ -239,11 +238,9 @@ const ChatInput = ({
     // Reset the input value so the same file can be selected again
     event.target.value = '';
   };
-
   const removeFile = (fileId: string) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
   };
-
   const getFileIcon = (fileType: string) => {
     if (fileType.includes('pdf')) return '📄';
     if (fileType.includes('doc') || fileType.includes('docx')) return '📝';
@@ -251,7 +248,6 @@ const ChatInput = ({
     if (fileType.includes('txt')) return '📄';
     return '📎';
   };
-
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -263,32 +259,30 @@ const ChatInput = ({
   // Real-time audio analysis for waveform
   const analyzeAudio = useCallback(() => {
     if (!analyserRef.current || !dataArrayRef.current) return;
-
     analyserRef.current.getByteFrequencyData(dataArrayRef.current);
-    
+
     // Convert frequency data to waveform levels
     const levels: number[] = [];
     const step = Math.floor(dataArrayRef.current.length / 20);
-    
     for (let i = 0; i < 20; i++) {
       const start = i * step;
       const end = start + step;
       const sum = dataArrayRef.current.slice(start, end).reduce((a, b) => a + b, 0);
       const average = sum / step;
       // Normalize to 0-100 range and scale for visual display
-      const normalizedLevel = Math.min(100, (average / 255) * 300);
+      const normalizedLevel = Math.min(100, average / 255 * 300);
       levels.push(normalizedLevel);
     }
-    
+
     // Create a more realistic waveform that builds from right to left
     const newLevels = [...audioLevels];
     const currentTime = Date.now();
-    const timeIndex = Math.floor((currentTime % 2000) / 100); // Update every 100ms
-    
+    const timeIndex = Math.floor(currentTime % 2000 / 100); // Update every 100ms
+
     // Shift existing levels to the left and add new level at the end
     newLevels.shift();
     newLevels.push(levels[Math.floor(levels.length / 2)]); // Use middle frequency for simplicity
-    
+
     setAudioLevels(newLevels);
     animationFrameRef.current = requestAnimationFrame(analyzeAudio);
   }, [audioLevels]);
@@ -306,7 +300,6 @@ const ChatInput = ({
       }
       setRecordingDuration(0);
     }
-
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -330,7 +323,6 @@ const ChatInput = ({
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      
       const text = await stopRecording();
       if (text) {
         setTranscribedText(text);
@@ -342,7 +334,7 @@ const ChatInput = ({
     } else {
       // Start recording with audio analysis
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             sampleRate: 44100,
             channelCount: 1,
@@ -358,14 +350,13 @@ const ChatInput = ({
         analyserRef.current = audioContextRef.current.createAnalyser();
         analyserRef.current.fftSize = 256;
         analyserRef.current.smoothingTimeConstant = 0.8;
-        
         source.connect(analyserRef.current);
         dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
-        
+
         // Start audio analysis and timer
         analyzeAudio();
         setRecordingStartTime(Date.now());
-        
+
         // Start recording
         await startRecording();
       } catch (error) {
@@ -375,7 +366,6 @@ const ChatInput = ({
       }
     }
   };
-
   const handleCancelRecording = () => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -417,7 +407,7 @@ const ChatInput = ({
     // Auto-resize the textarea with better dynamic sizing
     const textarea = e.target;
     textarea.style.height = 'auto';
-    
+
     // Calculate the new height based on content
     const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400)); // Min 48px, Max 400px
     textarea.style.height = newHeight + 'px';
@@ -439,16 +429,13 @@ const ChatInput = ({
   }, [inputValue]);
 
   // Show the typed text as placeholder only when not searching and user hasn't typed anything
-  const placeholderText = showTerminal ? "" : (!inputValue ? typedText : "");
-
+  const placeholderText = showTerminal ? "" : !inputValue ? typedText : "";
   return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* File Attachments Section */}
-          {uploadedFiles.length > 0 && (
-            <div className="px-4 pt-4 pb-2 border-b border-gray-100">
-              {uploadedFiles.map((file) => (
-                <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
+          {uploadedFiles.length > 0 && <div className="px-4 pt-4 pb-2 border-b border-gray-100">
+              {uploadedFiles.map(file => <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
                       <span className="text-lg">{getFileIcon(file.type)}</span>
@@ -458,116 +445,69 @@ const ChatInput = ({
                       <span className="text-xs text-gray-500">{file.type.toUpperCase()}</span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => removeFile(file.id)}
-                    className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
-                  >
+                  <button onClick={() => removeFile(file.id)} className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors">
                     <X className="w-4 h-4 text-white" />
                   </button>
-                </div>
-              ))}
-            </div>
-          )}
+                </div>)}
+            </div>}
           
           {/* Voice Recording Interface */}
-          {isVoiceRecording ? (
-            <div className="px-4 py-4">
+          {isVoiceRecording ? <div className="px-4 py-4">
               {/* Waveform inside text area */}
               <div className="relative min-h-[48px] flex items-center justify-center">
                 {/* Dotted baseline */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-full h-px bg-gray-300" style={{
-                    backgroundImage: 'repeating-linear-gradient(to right, #d1d5db 0px, #d1d5db 4px, transparent 4px, transparent 8px)'
-                  }}></div>
+                backgroundImage: 'repeating-linear-gradient(to right, #d1d5db 0px, #d1d5db 4px, transparent 4px, transparent 8px)'
+              }}></div>
                 </div>
                 
                 {/* Waveform bars */}
                 <div className="flex items-center gap-1 h-8 relative z-10">
-                  {audioLevels.map((level, i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-black rounded-full transition-all duration-150 ease-out"
-                      style={{
-                        height: `${Math.max(2, level * 0.3)}px`,
-                        opacity: level > 0 ? 1 : 0.2
-                      }}
-                    />
-                  ))}
+                  {audioLevels.map((level, i) => <div key={i} className="w-1 bg-black rounded-full transition-all duration-150 ease-out" style={{
+                height: `${Math.max(2, level * 0.3)}px`,
+                opacity: level > 0 ? 1 : 0.2
+              }} />)}
                 </div>
               </div>
               
               {/* Simple controls at bottom */}
               <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2 text-gray-500">
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Plus className="w-4 h-4 text-gray-600" />
-                  </div>
-                  <span className="text-sm text-gray-600">Tools</span>
-                </div>
+                
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCancelRecording}
-                    className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600"
-                  >
+                  <Button variant="ghost" size="sm" onClick={handleCancelRecording} className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
                     <X className="w-4 h-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleVoiceRecording}
-                    className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600"
-                  >
+                  <Button variant="ghost" size="sm" onClick={handleVoiceRecording} className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
                     <Square className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
-            </div>
-          ) : (
-            /* Text Input Area */
-            <div className="px-4 py-4">
+            </div> : (/* Text Input Area */
+        <div className="px-4 py-4">
               {/* Transcription Status */}
-              {isTranscribing && (
-                <div className="mb-4 flex items-center justify-center">
+              {isTranscribing && <div className="mb-4 flex items-center justify-center">
                   <div className="inline-flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200 rounded-full">
                     <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                     <span className="text-sm font-medium text-blue-700">Transkriberar ljud...</span>
                   </div>
-                </div>
-              )}
+                </div>}
               
-              {showTerminal ? (
-                // Typewriter text display during search (like humorous examples)
-                <div className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden text-gray-400 flex items-start justify-start pt-3 ${isTerminalTyping ? 'after:content-["_"] after:animate-pulse after:ml-1' : ''}`}>
-                  {terminalTypedText && (
-                    <div className="leading-relaxed">
+              {showTerminal ?
+          // Typewriter text display during search (like humorous examples)
+          <div className={`w-full min-h-[48px] max-h-[200px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-hidden text-gray-400 flex items-start justify-start pt-3 ${isTerminalTyping ? 'after:content-["_"] after:animate-pulse after:ml-1' : ''}`}>
+                  {terminalTypedText && <div className="leading-relaxed">
                       {terminalTypedText}
                       {isTerminalTyping && <span className="animate-pulse">_</span>}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                // Normal textarea
-                <Textarea 
-                  placeholder={placeholderText} 
-                  className={`w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-[_] placeholder:after:animate-pulse' : ''}`} 
-                  value={inputValue} 
-                  onChange={handleTextareaChange} 
-                  onKeyDown={handleKeyPress} 
-                  onFocus={handleFocus} 
-                  disabled={isProcessing} 
-                  rows={1} 
-                  style={{
-                    height: 'auto',
-                    minHeight: '48px',
-                    maxHeight: '400px'
-                  }} 
-                  ref={textareaRef}
-                />
-              )}
-            </div>
-          )}
+                    </div>}
+                </div> :
+          // Normal textarea
+          <Textarea placeholder={placeholderText} className={`w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 ${isTyping ? 'placeholder:after:content-[_] placeholder:after:animate-pulse' : ''}`} value={inputValue} onChange={handleTextareaChange} onKeyDown={handleKeyPress} onFocus={handleFocus} disabled={isProcessing} rows={1} style={{
+            height: 'auto',
+            minHeight: '48px',
+            maxHeight: '400px'
+          }} ref={textareaRef} />}
+            </div>)}
 
           {/* Bottom Button Bar */}
           <div className="flex items-center justify-between px-4 py-3">
@@ -578,18 +518,9 @@ const ChatInput = ({
               </Button>
 
               {/* Voice Recording Button - Only show when not recording */}
-              {!isVoiceRecording && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 border hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm" 
-                  onClick={handleVoiceRecording} 
-                  disabled={isProcessing || isTranscribing} 
-                  title="Starta inspelning"
-                >
+              {!isVoiceRecording && <Button variant="ghost" size="sm" className="w-10 h-10 p-0 rounded-full flex-shrink-0 border hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm" onClick={handleVoiceRecording} disabled={isProcessing || isTranscribing} title="Starta inspelning">
                   <Mic className="w-5 h-5" />
-                </Button>
-              )}
+                </Button>}
             </div>
 
             {/* Right Side - Submit Button */}
@@ -612,5 +543,4 @@ const ChatInput = ({
       </div>
     </div>;
 };
-
 export default ChatInput;
