@@ -61,6 +61,9 @@ const AuthPage = () => {
           description: error.message,
           variant: 'destructive',
         });
+      } else if (!isSignup) {
+        // Successful login
+        navigate('/discover');
       }
     } catch (error) {
       toast({
