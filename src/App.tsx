@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { TopNavigation } from "@/components/TopNavigation";
 import { SavedGrantsProvider } from "@/contexts/SavedGrantsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -32,45 +32,9 @@ const queryClient = new QueryClient({
   }
 });
 
-const AuthenticatedApp = () => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-newsreader font-normal mb-4">
-            <span style={{ color: '#000000' }}>gr</span>
-            <span style={{ color: '#8162F4' }}>ai</span>
-            <span style={{ color: '#000000' }}>gent</span>
-          </h1>
-          <p className="text-gray-600">Laddar...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <AuthPage />;
-  }
-
-  return (
-    <div className="min-h-screen w-full bg-[#fafafa]">
-      <TopNavigation />
-      <main className="w-full">
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/discover" element={<DiscoverGrants />} />
-          <Route path="/saved" element={<SavedGrants />} />
-          <Route path="/ongoing" element={<ProgressChecklist />} />
-          <Route path="/progress" element={<ProgressChecklist />} />
-          <Route path="/draft/:draftId" element={<DraftViewer />} />
-          <Route path="/chat" element={<ChatInterface />} />
-          <Route path="/business-plan-editor" element={<BusinessPlanEditor />} />
-        </Routes>
-      </main>
-    </div>
-  );
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" />;
 };
 
 const App = () => (
@@ -80,10 +44,49 @@ const App = () => (
         <SavedGrantsProvider>
           <TooltipProvider>
             <Router>
-              <AuthenticatedApp />
+              <TopNavigation />
+              <main className="w-full">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/discover" element={<DiscoverGrants />} />
+                  <Route path="/login" element={<AuthPage />} />
+                  <Route path="/signup" element={<AuthPage />} />
+                  {/* Protected routes */}
+                  <Route path="/saved" element={
+                    <ProtectedRoute>
+                      <SavedGrants />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/ongoing" element={
+                    <ProtectedRoute>
+                      <ProgressChecklist />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/progress" element={
+                    <ProtectedRoute>
+                      <ProgressChecklist />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/draft/:draftId" element={
+                    <ProtectedRoute>
+                      <DraftViewer />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/chat" element={
+                    <ProtectedRoute>
+                      <ChatInterface />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/business-plan-editor" element={
+                    <ProtectedRoute>
+                      <BusinessPlanEditor />
+                    </ProtectedRoute>
+                  } />
+                </Routes>
+              </main>
+              <Toaster />
+              <Sonner />
             </Router>
-            <Toaster />
-            <Sonner />
           </TooltipProvider>
         </SavedGrantsProvider>
       </AuthProvider>
