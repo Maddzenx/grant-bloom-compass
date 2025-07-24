@@ -115,14 +115,14 @@ const AuthPage = () => {
               <>
                 {/* Signup view (keep as is or style as needed) */}
                 <div className="text-center mb-4">
-                  <h1 className="text-2xl font-bold font-sans">Skapa konto</h1>
+                  <h1 className="text-2xl font-bold font-sans text-left mb-4">Skapa konto</h1>
                 </div>
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
                   className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-blue-50 transition font-sans"
                 >
-                  <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g><path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303C33.962 32.833 29.418 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c2.803 0 5.377.99 7.409 2.626l6.162-6.162C33.527 6.053 28.979 4 24 4 12.954 4 4 12.954 4 24s8.954 20 20 20c10.477 0 19.477-8.053 19.477-20 0-1.341-.138-2.651-.389-3.917z"/><path fill="#34A853" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.001 13 24 13c2.803 0 5.377.99 7.409 2.626l6.162-6.162C33.527 6.053 28.979 4 24 4c-7.732 0-14.41 4.41-17.694 10.691z"/><path fill="#FBBC05" d="M24 44c5.356 0 10.236-1.824 14.045-4.949l-6.484-5.307C29.418 36 24 36 24 36c-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44z"/><path fill="#EA4335" d="M43.611 20.083H42V20H24v8h11.303c-1.13 3.417-4.303 6.083-11.303 6.083-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44c6.268 0 11.522-2.053 15.045-5.256l-6.484-5.307C29.418 36 24 36 24 36c-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44c10.477 0 19.477-8.053 19.477-20 0-1.341-.138-2.651-.389-3.917z"/></g></svg>
+                  <img src="/google-g.png" alt="Google" className="w-6 h-6" />
                   Fortsätt med Google
                 </button>
                 <div className="flex items-center my-4">
@@ -186,9 +186,12 @@ const AuthPage = () => {
               <>
                 <h1 className="text-2xl font-bold mb-4 font-sans">Logga in</h1>
                 {/* Google social login button only */}
-                <button type="button" className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-blue-50 transition font-sans">
-                  {/* New Google SVG icon */}
-                  <svg width="24" height="24" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g><path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303C33.962 32.833 29.418 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c2.803 0 5.377.99 7.409 2.626l6.162-6.162C33.527 6.053 28.979 4 24 4 12.954 4 4 12.954 4 24s8.954 20 20 20c10.477 0 19.477-8.053 19.477-20 0-1.341-.138-2.651-.389-3.917z"/><path fill="#34A853" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.001 13 24 13c2.803 0 5.377.99 7.409 2.626l6.162-6.162C33.527 6.053 28.979 4 24 4c-7.732 0-14.41 4.41-17.694 10.691z"/><path fill="#FBBC05" d="M24 44c5.356 0 10.236-1.824 14.045-4.949l-6.484-5.307C29.418 36 24 36 24 36c-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44z"/><path fill="#EA4335" d="M43.611 20.083H42V20H24v8h11.303c-1.13 3.417-4.303 6.083-11.303 6.083-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44c6.268 0 11.522-2.053 15.045-5.256l-6.484-5.307C29.418 36 24 36 24 36c-5.418 0-9.962-3.167-11.303-7.917l-6.571 5.081C9.59 39.59 16.268 44 24 44c10.477 0 19.477-8.053 19.477-20 0-1.341-.138-2.651-.389-3.917z"/></g></svg>
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-blue-50 transition font-sans"
+                >
+                  <img src="/google-g.png" alt="Google" className="w-6 h-6" />
                   Fortsätt med Google
                 </button>
                 <div className="flex items-center my-4">
