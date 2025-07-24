@@ -1,7 +1,7 @@
 
-import { Grant } from "@/types/grant";
+import { Grant, GrantListItem } from "@/types/grant";
 
-export type SortOption = "default" | "deadline-asc" | "deadline-desc" | "amount-desc" | "amount-asc" | "created-desc" | "relevance";
+export type SortOption = "default" | "deadline-asc" | "deadline-desc" | "amount-desc" | "amount-asc" | "created-desc" | "relevance" | "matching";
 
 // Parse funding amount string to number for comparison
 const parseFundingAmount = (fundingAmount: string | number): number => {
@@ -50,7 +50,7 @@ const parseDeadline = (deadline: string): Date => {
 };
 
 // Calculate relevance score based on various factors
-const calculateRelevanceScore = (grant: Grant, searchTerm: string): number => {
+const calculateRelevanceScore = (grant: GrantListItem, searchTerm: string): number => {
   let score = 0;
   const searchLower = searchTerm.toLowerCase();
   
@@ -86,15 +86,15 @@ const calculateRelevanceScore = (grant: Grant, searchTerm: string): number => {
   const tagMatches = grant.tags.filter(tag => tag.toLowerCase().includes(searchLower)).length;
   score += tagMatches * 3;
   
-  // Description matches (less weight)
-  if (grant.description.toLowerCase().includes(searchLower)) {
+  // Description matches (less weight) - use aboutGrant for GrantListItem
+  if (grant.aboutGrant?.toLowerCase().includes(searchLower)) {
     score += 2;
   }
   
   return score;
 };
 
-export const sortGrants = (grants: Grant[], sortBy: SortOption, searchTerm: string = ""): Grant[] => {
+export const sortGrants = (grants: GrantListItem[], sortBy: SortOption, searchTerm: string = ""): GrantListItem[] => {
   if (sortBy === "default") {
     return grants;
   }
@@ -127,6 +127,7 @@ export const sortGrants = (grants: Grant[], sortBy: SortOption, searchTerm: stri
         return b.id.localeCompare(a.id);
       
       case "relevance":
+      case "matching":
         const scoreA = calculateRelevanceScore(a, searchTerm);
         const scoreB = calculateRelevanceScore(b, searchTerm);
         return scoreB - scoreA; // Highest relevance score first

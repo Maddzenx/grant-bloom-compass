@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Grant } from '@/types/grant';
+import { Grant, GrantListItem } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import { OrganizationMultiSelect } from '../OrganizationMultiSelect';
 import { FundingRangeSlider } from '../FundingRangeSlider';
@@ -20,16 +20,16 @@ interface FilterGridProps {
   pendingFilters: EnhancedFilterOptions;
   onPendingFilterChange: (filters: Partial<EnhancedFilterOptions>) => void;
   organizationOptions: { value: string; label: string; count: number }[];
-  grants: Grant[];
+  grants: GrantListItem[];
   grantsInFundingRange: number;
-  filteredGrants: Grant[];
+  filteredGrants: GrantListItem[];
   hasActiveFilters?: boolean;
   onClearAll?: () => void;
   compact?: boolean;
 }
 
 // Helper to extract unique values from grants
-const getUniqueValues = (grants: Grant[], field: keyof Grant): string[] => {
+const getUniqueValues = (grants: GrantListItem[], field: keyof GrantListItem): string[] => {
   const values = new Set<string>();
   grants.forEach(grant => {
     const value = grant[field];
