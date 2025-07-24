@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2, Paperclip, MicOff, X, FileText, Check } from "lucide-react";
+import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2, Paperclip, MicOff, X, FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -479,7 +479,7 @@ const ChatInput = ({
                     <X className="w-4 h-4" />
                   </Button>
                   <Button variant="ghost" size="sm" onClick={handleVoiceRecording} className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
-                    <Check className="w-4 h-4" />
+                    <Square className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
