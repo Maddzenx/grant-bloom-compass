@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import UserMenu from "@/components/ui/user-menu";
 import { Icon } from '@iconify/react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function TopNavigation() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   // Add scroll effect
   useEffect(() => {
@@ -33,10 +35,11 @@ export function TopNavigation() {
       title: t('nav.discover'),
       url: "/discover"
     },
-    {
+    // Only show 'Sparade' if user is signed in
+    ...(user ? [{
       title: t('nav.saved'),
       url: "/saved"
-    }
+    }] : [])
   ];
 
   const toggleMobileMenu = () => {
@@ -89,21 +92,25 @@ export function TopNavigation() {
               })}
               {/* Auth Buttons */}
               <div className="flex items-center space-x-3 ml-4">
-                <Link
-                  to="/login"
-                  className="text-sm font-newsreader text-ink-secondary font-medium hover:text-ink-obsidian transition-colors"
-                >
-                  Logga in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-sm font-newsreader font-medium px-4 py-2 rounded-full transition-colors"
-                >
-                  Registrera dig
-                </Link>
+                {!user ? (
+                  <>
+                    <Link
+                      to="/login"
+                      className="text-sm font-newsreader text-ink-secondary font-medium hover:text-ink-obsidian transition-colors"
+                    >
+                      Logga in
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-sm font-newsreader font-medium px-4 py-2 rounded-full transition-colors"
+                    >
+                      Registrera dig
+                    </Link>
+                  </>
+                ) : (
+                  <UserMenu />
+                )}
               </div>
-              {/* Language Selector and User Menu */}
-              <UserMenu />
             </div>
           </div>
         </div>
