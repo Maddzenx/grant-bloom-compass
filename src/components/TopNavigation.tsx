@@ -7,13 +7,15 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import UserMenu from "@/components/ui/user-menu";
 import { Icon } from '@iconify/react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 
 export function TopNavigation() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Add scroll effect
   useEffect(() => {
@@ -48,6 +50,10 @@ export function TopNavigation() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigationClick = () => {
+    setIsDrawerOpen(false);
   };
 
   return (
@@ -112,24 +118,67 @@ export function TopNavigation() {
                 )}
               </div>
             </div>
+            {/* Mobile Auth Buttons */}
+                          <div className="flex-1 flex justify-end items-center md:hidden">
+                {!user ? (
+                  <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                    <DrawerTrigger asChild>
+                      <button className="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
+                        <Menu className="w-7 h-7" />
+                      </button>
+                    </DrawerTrigger>
+                    <DrawerContent className="max-h-[80vh] bg-white rounded-t-lg">
+                      <div className="flex flex-col">
+                        <div className="flex justify-end p-4">
+                          <DrawerClose asChild>
+                            <button className="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
+                              <X className="w-6 h-6" />
+                            </button>
+                          </DrawerClose>
+                        </div>
+                        <nav className="flex flex-col gap-4 px-6 pb-4">
+                          <Link to="/" className="text-lg font-medium text-ink-obsidian py-2" onClick={handleNavigationClick}>Hem</Link>
+                          <Link to="/discover" className="text-lg font-medium text-ink-obsidian py-2" onClick={handleNavigationClick}>Upptäck</Link>
+                        </nav>
+                        <div className="p-6 border-t border-gray-200">
+                          <div className="flex flex-col gap-3">
+                            <Link to="/login" className="text-base font-medium text-ink-obsidian py-2 text-center" onClick={handleNavigationClick}>Logga in</Link>
+                            <Link to="/signup" className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-base font-medium py-2 px-4 rounded-full text-center transition-colors" onClick={handleNavigationClick}>Registrera dig</Link>
+                          </div>
+                        </div>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                ) : (
+                  <button 
+                    onClick={() => signOut()} 
+                    className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+                    title="Logga ut"
+                  >
+                    <Icon icon="mdi:logout" className="w-6 h-6" />
+                  </button>
+                )}
+              </div>
           </div>
         </div>
       </nav>
       {/* Bottom Navigation for Mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe] border-t-0 md:hidden flex justify-around items-center h-16">
-        <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
-          <Icon icon="mdi:home" className="text-2xl" />
-          <span className="text-xs mt-1">Hem</span>
-        </Link>
-        <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
-          <Icon icon="mdi:magnify" className="text-2xl" />
-          <span className="text-xs mt-1">Upptäck</span>
-        </Link>
-        <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
-          <Icon icon="mdi:bookmark-outline" className="text-2xl" />
-          <span className="text-xs mt-1">Sparade</span>
-        </Link>
-      </nav>
+      {user ? (
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe] border-t-0 md:hidden flex justify-around items-center h-16">
+          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+            <Icon icon="mdi:home" className="text-2xl" />
+            <span className="text-xs mt-1">Hem</span>
+          </Link>
+          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+            <Icon icon="mdi:magnify" className="text-2xl" />
+            <span className="text-xs mt-1">Upptäck</span>
+          </Link>
+          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+            <Icon icon="mdi:bookmark-outline" className="text-2xl" />
+            <span className="text-xs mt-1">Sparade</span>
+          </Link>
+        </nav>
+      ) : null}
     </>
   );
 }

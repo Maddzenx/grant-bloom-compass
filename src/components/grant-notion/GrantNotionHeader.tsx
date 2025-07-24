@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, Bookmark, X, ExternalLink, MoreHorizontal, Share2 } from "lucide-react";
+import { Calendar, Bookmark, X, ExternalLink, MoreHorizontal, Share2, Link as LinkIcon, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Grant } from "@/types/grant";
@@ -115,13 +115,15 @@ const GrantNotionHeader = ({
                 <Bookmark className={`mr-2 h-4 w-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : ""}`} />
                 <span>{actuallyBookmarked ? "Sparat" : "Spara"}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleShare}>
-                <Share2 className="mr-2 h-4 w-4" />
+              <DropdownMenuItem>
+                <Send className="mr-2 h-4 w-4" />
                 <span>Dela</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleApplyClick}>
-                <ExternalLink className="mr-2 h-4 w-4" />
-                <span>Ansök</span>
+              <DropdownMenuItem asChild>
+                <a href={grant.originalUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <span>Läs mer</span>
+                </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

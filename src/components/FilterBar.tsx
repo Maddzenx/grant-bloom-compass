@@ -206,7 +206,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
   const TriggerButton = <Button variant="outline" className="flex items-center gap-2 rounded-full px-3 py-1 bg-white border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
       <SlidersHorizontal className="w-4 h-4" />
-      <span className="font-semibold">Filter</span>
+      <span className="font-semibold">Alla filter</span>
       {activeFilterCount > 0 && <>
           <div className="h-4 border-l border-gray-300 mx-1"></div>
           <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">{activeFilterCount}</span>
@@ -254,6 +254,50 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
 
         <div className="h-4 border-l border-gray-300 mx-1"></div>
         {/* Organisation Filter */}
+        <Popover>
+            <PopoverTrigger asChild>
+            <Button
+  variant="outline"
+  className={`flex items-center gap-1 rounded-full px-3 py-1 border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7 ${filters.statusFilter ? 'bg-[#cec5f9] text-white border-[#cec5f9]' : 'bg-white'}`}
+>
+  Alla <ChevronDown className="w-4 h-4" />
+</Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-40 p-3" align="start">
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
+                    <input
+                      type="radio"
+                      name="statusFilter"
+                      value=""
+                      checked={!filters.statusFilter}
+                      onChange={() => onFiltersChange({ statusFilter: '' })}
+                    />
+                    Alla
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
+                    <input
+                      type="radio"
+                      name="statusFilter"
+                      value="open"
+                      checked={filters.statusFilter === 'open'}
+                      onChange={() => onFiltersChange({ statusFilter: 'open' })}
+                    />
+                    Öppen
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
+                    <input
+                      type="radio"
+                      name="statusFilter"
+                      value="upcoming"
+                      checked={filters.statusFilter === 'upcoming'}
+                      onChange={() => onFiltersChange({ statusFilter: 'upcoming' })}
+                    />
+                    Kommande
+                  </label>
+                </div>
+            </PopoverContent>
+        </Popover>
         <Popover>
             <PopoverTrigger asChild>
             <Button
