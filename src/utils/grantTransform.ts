@@ -42,6 +42,8 @@ type PartialSupabaseGrantRow = Pick<
   | 'information_webinar_links'
   | 'information_webinar_names'
   | 'consortium_requirement'
+  | 'cofinancing_required'
+  | 'cofinancing_level'
 > & {
   long_description?: string | null;
 };
@@ -209,6 +211,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
       region: supabaseGrant.region || undefined,
       consortium_requirement: supabaseGrant.consortium_requirement === 'true' ? true : supabaseGrant.consortium_requirement === 'false' ? false : undefined,
+      cofinancing_required: supabaseGrant.cofinancing_required || undefined,
+      cofinancing_level: supabaseGrant.cofinancing_level || undefined,
       // New date fields from database
       application_opening_date: supabaseGrant.application_opening_date || undefined,
       application_closing_date: supabaseGrant.application_closing_date || undefined,
@@ -222,6 +226,12 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);
+    console.log('🔍 Transformed cofinancing/consortium data:', {
+      consortium_requirement: transformed.consortium_requirement,
+      cofinancing_required: transformed.cofinancing_required,
+      cofinancing_level: transformed.cofinancing_level,
+      region: transformed.region
+    });
     return transformed;
   } catch (error) {
     console.error('❌ Transformation failed for grant:', supabaseGrant?.id, error);

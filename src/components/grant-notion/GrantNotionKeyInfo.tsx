@@ -13,6 +13,15 @@ const GrantNotionKeyInfo = ({
   isMobile = false,
   section
 }: GrantNotionKeyInfoProps) => {
+  // Debug logging
+  console.log('🔍 GrantNotionKeyInfo - Grant data:', {
+    consortium_requirement: grant.consortium_requirement,
+    cofinancing_required: grant.cofinancing_required,
+    cofinancing_level: grant.cofinancing_level,
+    fundingRules: grant.fundingRules,
+    region: grant.region
+  });
+
   // Format helpers
   const formatArray = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
   const formatConsortium = (val?: boolean | null) => val === true ? "Ja" : val === false ? "Nej" : null;
@@ -22,10 +31,10 @@ const GrantNotionKeyInfo = ({
   const infoFields = [
     grant.fundingAmount ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Bidragsbelopp:</span> {grant.fundingAmount}</li>) : null,
     grant.deadline ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Ansökningsdeadline:</span> {grant.deadline}</li>) : null,
-    grant.cofinancing_required !== undefined && grant.cofinancing_level !== undefined ? (
+    grant.cofinancing_required !== undefined || grant.cofinancing_level !== undefined ? (
       <li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level)}</li>
     ) : null,
-    formatArray(grant.geographic_scope) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
+    // formatArray(grant.geographic_scope) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
     grant.region ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Region:</span> {grant.region}</li>) : null,
   ].filter(Boolean);
 
