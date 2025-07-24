@@ -82,6 +82,16 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
   };
 };
 
+const parseBooleanString = (val: any): boolean | undefined => {
+  if (typeof val === 'boolean') return val;
+  if (typeof val === 'string') {
+    const lowered = val.trim().toLowerCase();
+    if (['true','1','yes','ja','required'].includes(lowered)) return true;
+    if (['false','0','no','nej','not required','none'].includes(lowered)) return false;
+  }
+  return undefined;
+};
+
 const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
   return {
     id: grant.id,
@@ -112,9 +122,9 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     other_templates_links: parseJsonArray(grant.other_templates_links),
     other_sources_links: parseJsonArray(grant.other_sources_links),
     other_sources_names: parseJsonArray(grant.other_sources_names),
-    cofinancing_required: grant.cofinancing_required || false,
-    cofinancing_level: grant.cofinancing_level || null,
-    consortium_requirement: grant.consortium_requirement === 'true' ? true : grant.consortium_requirement === 'false' ? false : undefined,
+    cofinancing_required: parseBooleanString(grant.cofinancing_required),
+    cofinancing_level: grant.cofinancing_level ?? null,
+    consortium_requirement: parseBooleanString(grant.consortium_requirement),
     region: grant.region || null,
     fundingRules: parseJsonArray(grant.eligible_cost_categories) || []
   };
