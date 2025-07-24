@@ -156,9 +156,8 @@ const translations = {
     'nav.discover': 'Upptäck bidrag',
     'nav.saved': 'Sparade bidrag',
     
-    // Hero Section
-    'hero.title': '"Jag älskar att leta bidrag!"\n- sa ingen någonsin.',
-    'hero.subtitle': 'Hitta rätt bidrag med hjälp av AI.',
+          // Hero Section
+      'hero.title': 'Beskriv ditt projekt och matcha det med rätt bidrag',
     'hero.findGrants': 'Hitta bidrag',
     
     // Chat Input

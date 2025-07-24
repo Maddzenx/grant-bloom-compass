@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2, Paperclip, MicOff, X, FileText } from "lucide-react";
+import { Mic, Upload, Square, Sparkles, Plus, ArrowUp, Loader2, Paperclip, MicOff, X, FileText, Check } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -429,7 +429,7 @@ const ChatInput = ({
   }, [inputValue]);
 
   // Show the typed text as placeholder only when not searching and user hasn't typed anything
-  const placeholderText = showTerminal ? "" : !inputValue ? typedText : "";
+  const placeholderText = "";
   return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
@@ -471,18 +471,17 @@ const ChatInput = ({
                 </div>
               </div>
               
-              {/* Simple controls at bottom */}
-              <div className="flex items-center justify-between mt-4">
-                
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={handleCancelRecording} className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
-                    <X className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleVoiceRecording} className="w-8 h-8 p-0 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600">
-                    <Square className="w-4 h-4" />
-                  </Button>
+                              {/* Simple controls at bottom */}
+                <div className="flex items-center justify-end mt-4">
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={handleCancelRecording} className="w-8 h-8 p-0 rounded-full text-gray-600 hover:text-gray-800">
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={handleVoiceRecording} className="w-8 h-8 p-0 rounded-full text-gray-600 hover:text-gray-800">
+                      <Check className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
             </div> : (/* Text Input Area */
         <div className="px-4 py-4">
               {/* Transcription Status */}
