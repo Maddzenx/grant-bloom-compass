@@ -84,6 +84,7 @@ export interface GrantListItem {
   // Cofinancing fields
   cofinancing_required?: boolean;
   cofinancing_level?: number;
+  consortium_requirement?: boolean;
 }
 
 // Full data for grant details (extends GrantListItem)

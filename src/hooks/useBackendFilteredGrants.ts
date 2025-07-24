@@ -113,7 +113,9 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     other_sources_links: parseJsonArray(grant.other_sources_links),
     other_sources_names: parseJsonArray(grant.other_sources_names),
     cofinancing_required: grant.cofinancing_required || false,
-    cofinancing_level: grant.cofinancing_level || null
+    cofinancing_level: grant.cofinancing_level || null,
+    consortium_requirement: grant.consortium_requirement === 'true' ? true : grant.consortium_requirement === 'false' ? false : undefined,
+    region: grant.region || null
   };
 };
 
