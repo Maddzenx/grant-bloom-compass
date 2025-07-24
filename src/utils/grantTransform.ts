@@ -170,6 +170,17 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
 
   const formatArray = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
 
+  // Helper to parse string booleans safely
+  const parseBooleanString = (val: any): boolean | undefined => {
+    if (typeof val === 'boolean') return val;
+    if (typeof val === 'string') {
+      const lowered = val.trim().toLowerCase();
+      if (['true','1','yes','ja','required'].includes(lowered)) return true;
+      if (['false','0','no','nej','not required','none'].includes(lowered)) return false;
+    }
+    return undefined;
+  };
+
   try {
     const transformed: Grant = {
       id: supabaseGrant.id,
@@ -210,9 +221,9 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         ...normalizeGeographicValues((supabaseGrant as any).geographic_scope)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
       region: supabaseGrant.region || undefined,
-      consortium_requirement: supabaseGrant.consortium_requirement === 'true' ? true : supabaseGrant.consortium_requirement === 'false' ? false : undefined,
-      cofinancing_required: supabaseGrant.cofinancing_required || undefined,
-      cofinancing_level: supabaseGrant.cofinancing_level || undefined,
+      consortium_requirement: parseBooleanString(supabaseGrant.consortium_requirement),
+      cofinancing_required: parseBooleanString(supabaseGrant.cofinancing_required),
+      cofinancing_level: supabaseGrant.cofinancing_level ?? undefined,
       // New date fields from database
       application_opening_date: supabaseGrant.application_opening_date || undefined,
       application_closing_date: supabaseGrant.application_closing_date || undefined,
