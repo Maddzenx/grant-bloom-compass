@@ -63,13 +63,11 @@ const GrantNotionHeader = ({
       }
     });
   };
-
   const handleReadMoreClick = () => {
     if (grant.originalUrl) {
       window.open(grant.originalUrl, '_blank', 'noopener,noreferrer');
     }
   };
-
   const handleBookmarkToggle = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
     console.log('🔖 Header bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
@@ -94,14 +92,13 @@ const GrantNotionHeader = ({
 
   // Use subtitle when long_description is available, otherwise use description
   const displayDescription = grant.long_description ? grant.aboutGrant : grant.description;
-
   return <>
       {/* Status label and organization icon inline */}
       <div className="flex items-center gap-2 mb-2 pt-4">
         {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
         {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>}
         {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200 w-fit">Stängd</Badge>}
-        <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
+        
         <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
       </div>
 
@@ -148,11 +145,7 @@ const GrantNotionHeader = ({
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
       {/* Action buttons */}
       <div className="flex items-center gap-2 mb-2 w-full my-0 py-[10px]">
-        <Button 
-          onClick={handleReadMoreClick} 
-          disabled={!grant.originalUrl}
-          className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button onClick={handleReadMoreClick} disabled={!grant.originalUrl} className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed">
           Läs mer
           <ExternalLink className="w-4 h-4 text-black" />
         </Button>
