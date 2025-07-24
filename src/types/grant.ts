@@ -35,6 +35,7 @@ export interface Grant {
   eligible_organisations?: string[];
   consortium_requirement?: boolean;
   geographic_scope?: string[];
+  region?: string;
   cofinancing_required?: boolean;
   cofinancing_level?: number;
   // New date fields from database
@@ -62,6 +63,7 @@ export interface GrantListItem {
   industry_sectors?: string[];
   eligible_organisations?: string[];
   geographic_scope?: string[];
+  region?: string;
   // Date fields for important dates display
   application_opening_date?: string;
   application_closing_date?: string;
@@ -111,6 +113,7 @@ export interface GrantDetails extends GrantListItem {
   consortium_requirement?: boolean;
   cofinancing_required?: boolean;
   cofinancing_level?: number;
+  region?: string;
   application_opening_date?: string;
   application_closing_date?: string;
   project_start_date_min?: string;

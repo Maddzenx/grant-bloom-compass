@@ -5,29 +5,57 @@ import { formatCofinancingText } from "@/utils/grantHelpers";
 interface GrantNotionKeyInfoProps {
   grant: Grant;
   isMobile?: boolean;
+  section?: 'info' | 'krav';
 }
 
 const GrantNotionKeyInfo = ({
   grant,
-  isMobile = false
+  isMobile = false,
+  section
 }: GrantNotionKeyInfoProps) => {
-  return <div className="flex flex-col sm:flex-row gap-2 mb-3 border bg-white rounded-lg justify-center flex-auto py-[20px] mx-0 px-0">
-    {/* Bidragsbelopp */}
-    <div className="flex-1 flex flex-col items-center justify-center text-center">
-      <span className="text-xs text-gray-500">Bidragsbelopp</span>
-      <span className="text-base font-bold text-gray-900">{grant.fundingAmount}</span>
+  // Format helpers
+  const formatArray = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
+  const formatConsortium = (val?: boolean | null) => val === true ? "Ja" : val === false ? "Nej" : null;
+  const formatFundingRules = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
+
+  // Allmän information fields
+  const infoFields = [
+    grant.fundingAmount ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Bidragsbelopp:</span> {grant.fundingAmount}</li>) : null,
+    grant.deadline ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Ansökningsdeadline:</span> {grant.deadline}</li>) : null,
+    grant.cofinancing_required !== undefined && grant.cofinancing_level !== undefined ? (
+      <li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level)}</li>
+    ) : null,
+    formatArray(grant.geographic_scope) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
+    grant.region ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Region:</span> {grant.region}</li>) : null,
+  ].filter(Boolean);
+
+  // Krav fields
+  const kravFields = [
+    formatArray(grant.eligible_organisations) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Mottagare:</span> {formatArray(grant.eligible_organisations)}</li>) : null,
+    formatConsortium(grant.consortium_requirement) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Konsortiekrav:</span> {formatConsortium(grant.consortium_requirement)}</li>) : null,
+    formatFundingRules(grant.fundingRules) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Finansiering:</span> {formatFundingRules(grant.fundingRules)}</li>) : null,
+  ].filter(Boolean);
+
+  return (
+    <div>
+      {(section === 'info' || !section) && infoFields.length > 0 && (
+        <>
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Allmän information</h3>
+          <ul className="space-y-0 mb-4">
+            {infoFields}
+          </ul>
+        </>
+      )}
+      {(section === 'krav' || !section) && kravFields.length > 0 && (
+        <>
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Krav</h3>
+          <ul className="space-y-0">
+            {kravFields}
+          </ul>
+        </>
+      )}
     </div>
-    {/* Ansökningsdeadline */}
-    <div className="flex-1 flex flex-col items-center justify-center text-center">
-      <span className="text-xs text-gray-500">Ansökningsdeadline</span>
-      <span className="text-base font-bold text-gray-900">{grant.deadline}</span>
-    </div>
-    {/* Medfinansiering */}
-    <div className="flex-1 flex flex-col items-center justify-center text-center">
-      <span className="text-xs text-gray-500">Medfinansiering</span>
-      <span className="text-base font-bold text-gray-900">{formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level)}</span>
-    </div>
-  </div>;
+  );
 };
 
 export default GrantNotionKeyInfo;

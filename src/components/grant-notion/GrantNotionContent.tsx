@@ -24,7 +24,6 @@ const GrantNotionContent = ({
       <GrantNotionQualificationsSection grant={grant} />
       <GrantNotionEvaluationSection grant={grant} />
       <GrantNotionApplicationSection grant={grant} />
-      <GrantNotionImportantDatesSection grant={grant} />
       <GrantNotionTemplatesSection grant={grant} />
       <GrantNotionContactSection grant={grant} />
     </div>

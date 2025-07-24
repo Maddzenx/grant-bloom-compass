@@ -214,45 +214,12 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
 };
 
 const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
-  const baseItem = transformGrantListItems([grant])[0];
-  
-  return {
-    ...baseItem,
-    description: grant.description || grant.subtitle || 'No description available',
-    long_description: grant.long_description,
-    qualifications: grant.eligibility || 'Not specified',
-    whoCanApply: grant.eligibility || 'Not specified',
-    importantDates: [], // This will be populated by the frontend component using the individual date fields
-    fundingRules: [], // This field doesn't exist in the schema, using empty array
-    generalInfo: parseJsonArray(grant.other_templates_names) || [],
-    requirements: [], // This field doesn't exist in the schema, using empty array
-    contact: {
-      name: grant.contact_name || '',
-      organization: grant.contact_title || '',
-      email: grant.contact_email || '',
-      phone: grant.contact_phone || ''
-    },
-    templates: parseJsonArray(grant.application_templates_names) || [],
-    application_templates_links: parseJsonArray(grant.application_templates_links),
-    other_templates_links: parseJsonArray(grant.other_templates_links),
-    other_sources_links: parseJsonArray(grant.other_sources_links),
-    other_sources_names: parseJsonArray(grant.other_sources_names),
-    cofinancing_level: grant.cofinancing_level || null,
-    evaluationCriteria: grant.evaluation_criteria || '',
-    applicationProcess: grant.application_process || '',
-    originalUrl: grant.original_url,
-    consortium_requirement: grant.consortium_requirement || false,
-    cofinancing_required: grant.cofinancing_required || false,
-    application_opening_date: grant.application_opening_date,
-    application_closing_date: grant.application_closing_date,
-    project_start_date_min: grant.project_start_date_min,
-    project_start_date_max: grant.project_start_date_max,
-    project_end_date_min: grant.project_end_date_min,
-    project_end_date_max: grant.project_end_date_max,
-    information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
-    information_webinar_links: parseJsonArray(grant.information_webinar_links),
-    information_webinar_names: parseJsonArray(grant.information_webinar_names)
-  };
+  const transformedGrant = transformSupabaseGrant(grant);
+
+  // GrantDetails extends Grant, so we can cast it after transformation,
+  // assuming transformSupabaseGrant populates all necessary fields.
+  // We may need to add fields to Grant or handle them here if they are truly details-only.
+  return transformedGrant as GrantDetails;
 };
 
 const formatFundingAmount = (min?: number, max?: number, total?: number): string => {
