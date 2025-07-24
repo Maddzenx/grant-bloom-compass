@@ -106,10 +106,10 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
   return (
     <div>
       <h3 className="text-base font-semibold text-gray-900 mb-4">Viktiga datum</h3>
-      <ul className="space-y-2">
+      <ul className="space-y-0">
         {importantDates.map((item, index) => (
           <li key={index} className="text-sm text-gray-700 leading-relaxed">
-            {formatDate(item.date)} - {item.label}
+            <span className="font-bold">{formatDate(item.date)}</span>: {item.label}
             {item.link && (
               <a
                 href={item.link}

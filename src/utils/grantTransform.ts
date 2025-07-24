@@ -41,6 +41,7 @@ type PartialSupabaseGrantRow = Pick<
   | 'project_end_date_max'
   | 'information_webinar_links'
   | 'information_webinar_names'
+  | 'consortium_requirement'
 > & {
   long_description?: string | null;
 };
@@ -165,6 +166,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     return values.flatMap(v => v.split(',')).map(v => v.trim()).filter(Boolean);
   };
 
+  const formatArray = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
+
   try {
     const transformed: Grant = {
       id: supabaseGrant.id,
@@ -178,7 +181,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       tags: jsonToStringArray(supabaseGrant.keywords),
       qualifications: supabaseGrant.eligibility || 'Ej specificerat',
       aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
-      whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
+      whoCanApply: formatArray(jsonToStringArray(supabaseGrant.eligible_organisations)) || supabaseGrant.eligibility || 'Ej specificerat',
       importantDates: [], // This will be populated by the frontend component using the individual date fields
       fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
       generalInfo: jsonToStringArray(supabaseGrant.other_templates_names), // Only other_templates_names
@@ -202,9 +205,10 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       industry_sectors: jsonToStringArray(supabaseGrant.industry_sectors),
       eligible_organisations: jsonToStringArray(supabaseGrant.eligible_organisations),
       geographic_scope: [
-        ...normalizeGeographicValues((supabaseGrant as any).geographic_scope),
-        ...normalizeGeographicValues(supabaseGrant.region)
+        ...normalizeGeographicValues((supabaseGrant as any).geographic_scope)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
+      region: supabaseGrant.region || undefined,
+      consortium_requirement: supabaseGrant.consortium_requirement === 'true' ? true : supabaseGrant.consortium_requirement === 'false' ? false : undefined,
       // New date fields from database
       application_opening_date: supabaseGrant.application_opening_date || undefined,
       application_closing_date: supabaseGrant.application_closing_date || undefined,
