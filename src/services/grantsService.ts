@@ -197,7 +197,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         other_sources_names: parseJsonArray(grant.other_sources_names),
         cofinancing_required: parseBooleanString(grant.cofinancing_required),
         cofinancing_level: grant.cofinancing_level ?? null,
-        consortium_requirement: parseBooleanString(grant.consortium_requirement),
+        consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
         region: grant.region || '',
         fundingRules: parseJsonArray(grant.eligible_cost_categories) || []
       };
@@ -261,8 +261,8 @@ const parseBooleanString = (val: any): boolean | undefined => {
   if (typeof val === 'boolean') return val;
   if (typeof val === 'string') {
     const lowered = val.trim().toLowerCase();
-    if (['true','1','yes','ja','required'].includes(lowered)) return true;
-    if (['false','0','no','nej','not required','none'].includes(lowered)) return false;
+    if (['true','1','yes','ja','required','t'].includes(lowered)) return true;
+    if (['false','0','no','nej','not required','none','f'].includes(lowered)) return false;
   }
   return undefined;
 };

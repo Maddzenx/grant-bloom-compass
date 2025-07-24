@@ -175,8 +175,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     if (typeof val === 'boolean') return val;
     if (typeof val === 'string') {
       const lowered = val.trim().toLowerCase();
-      if (['true','1','yes','ja','required'].includes(lowered)) return true;
-      if (['false','0','no','nej','not required','none'].includes(lowered)) return false;
+      if (['true','1','yes','ja','required','t'].includes(lowered)) return true;
+      if (['false','0','no','nej','not required','none','f'].includes(lowered)) return false;
     }
     return undefined;
   };
@@ -221,7 +221,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         ...normalizeGeographicValues((supabaseGrant as any).geographic_scope)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
       region: supabaseGrant.region || undefined,
-      consortium_requirement: parseBooleanString(supabaseGrant.consortium_requirement),
+      consortium_requirement: (typeof supabaseGrant.consortium_requirement === 'string' ? supabaseGrant.consortium_requirement.trim() : supabaseGrant.consortium_requirement) || undefined,
       cofinancing_required: parseBooleanString(supabaseGrant.cofinancing_required),
       cofinancing_level: supabaseGrant.cofinancing_level ?? undefined,
       // New date fields from database

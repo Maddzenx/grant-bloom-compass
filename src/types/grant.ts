@@ -33,7 +33,7 @@ export interface Grant {
   // Additional properties from database
   industry_sectors?: string[];
   eligible_organisations?: string[];
-  consortium_requirement?: boolean;
+  consortium_requirement?: string | boolean;
   geographic_scope?: string[];
   region?: string;
   cofinancing_required?: boolean;
@@ -84,7 +84,7 @@ export interface GrantListItem {
   // Cofinancing fields
   cofinancing_required?: boolean;
   cofinancing_level?: number;
-  consortium_requirement?: boolean;
+  consortium_requirement?: string | boolean;
   fundingRules?: string[];
 }
 
@@ -112,7 +112,7 @@ export interface GrantDetails extends GrantListItem {
   evaluationCriteria?: string;
   applicationProcess?: string;
   originalUrl?: string;
-  consortium_requirement?: boolean;
+  consortium_requirement?: string | boolean;
   cofinancing_required?: boolean;
   cofinancing_level?: number;
   region?: string;

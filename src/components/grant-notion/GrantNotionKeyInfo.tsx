@@ -24,7 +24,12 @@ const GrantNotionKeyInfo = ({
 
   // Format helpers
   const formatArray = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
-  const formatConsortium = (val?: boolean | null) => val === true ? "Ja" : val === false ? "Nej" : null;
+  const formatConsortium = (val: any) => {
+    if (val === true) return 'Ja';
+    if (val === false) return 'Nej';
+    if (typeof val === 'string' && val.trim()) return val.trim();
+    return null;
+  };
   const formatFundingRules = (arr?: string[] | null) => arr && arr.length > 0 ? arr.join(", ") : null;
 
   // Allmän information fields
