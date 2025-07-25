@@ -186,7 +186,8 @@ export type Database = {
           application_process: string | null
           application_templates_links: Json | null
           application_templates_names: Json | null
-          cofinancing_level: number | null
+          cofinancing_level_min: number | null
+          cofinancing_level_max: number | null
           cofinancing_required: boolean | null
           consortium_requirement: string | null
           contact_email: string | null
@@ -203,6 +204,7 @@ export type Database = {
           error_message: string | null
           evaluation_criteria: string | null
           geographic_scope: string | null
+          grant_type: string | null
           id: string
           industry_sectors: Json | null
           information_webinar_dates: Json | null
@@ -210,8 +212,8 @@ export type Database = {
           information_webinar_names: Json | null
           is_original_source: boolean | null
           keywords: Json | null
-          max_grant_per_project: number | null
-          min_grant_per_project: number | null
+          max_funding_per_project: number | null
+          min_funding_per_project: number | null
           organisation: string | null
           original_source_url: string | null
           original_url: string
@@ -221,6 +223,7 @@ export type Database = {
           other_templates_names: Json | null
           processed_at: string | null
           processing_status: string | null
+          program: string | null
           project_duration_months_max: number | null
           project_duration_months_min: number | null
           project_end_date_max: string | null
@@ -232,7 +235,7 @@ export type Database = {
           search_description: string | null
           subtitle: string | null
           title: string | null
-          total_funding_amount: number | null
+          total_funding_per_call: number | null
           updated_at: string | null
         }
         Insert: {
@@ -242,7 +245,8 @@ export type Database = {
           application_process?: string | null
           application_templates_links?: Json | null
           application_templates_names?: Json | null
-          cofinancing_level?: number | null
+          cofinancing_level_min?: number | null
+          cofinancing_level_max?: number | null
           cofinancing_required?: boolean | null
           consortium_requirement?: string | null
           contact_email?: string | null
@@ -259,6 +263,7 @@ export type Database = {
           error_message?: string | null
           evaluation_criteria?: string | null
           geographic_scope?: string | null
+          grant_type?: string | null
           id?: string
           industry_sectors?: Json | null
           information_webinar_dates?: Json | null
@@ -266,8 +271,8 @@ export type Database = {
           information_webinar_names?: Json | null
           is_original_source?: boolean | null
           keywords?: Json | null
-          max_grant_per_project?: number | null
-          min_grant_per_project?: number | null
+          max_funding_per_project?: number | null
+          min_funding_per_project?: number | null
           organisation?: string | null
           original_source_url?: string | null
           original_url: string
@@ -277,6 +282,7 @@ export type Database = {
           other_templates_names?: Json | null
           processed_at?: string | null
           processing_status?: string | null
+          program?: string | null
           project_duration_months_max?: number | null
           project_duration_months_min?: number | null
           project_end_date_max?: string | null
@@ -288,7 +294,7 @@ export type Database = {
           search_description?: string | null
           subtitle?: string | null
           title?: string | null
-          total_funding_amount?: number | null
+          total_funding_per_call?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -298,7 +304,8 @@ export type Database = {
           application_process?: string | null
           application_templates_links?: Json | null
           application_templates_names?: Json | null
-          cofinancing_level?: number | null
+          cofinancing_level_min?: number | null
+          cofinancing_level_max?: number | null
           cofinancing_required?: boolean | null
           consortium_requirement?: string | null
           contact_email?: string | null
@@ -315,6 +322,7 @@ export type Database = {
           error_message?: string | null
           evaluation_criteria?: string | null
           geographic_scope?: string | null
+          grant_type?: string | null
           id?: string
           industry_sectors?: Json | null
           information_webinar_dates?: Json | null
@@ -322,8 +330,8 @@ export type Database = {
           information_webinar_names?: Json | null
           is_original_source?: boolean | null
           keywords?: Json | null
-          max_grant_per_project?: number | null
-          min_grant_per_project?: number | null
+          max_funding_per_project?: number | null
+          min_funding_per_project?: number | null
           organisation?: string | null
           original_source_url?: string | null
           original_url?: string
@@ -333,6 +341,7 @@ export type Database = {
           other_templates_names?: Json | null
           processed_at?: string | null
           processing_status?: string | null
+          program?: string | null
           project_duration_months_max?: number | null
           project_duration_months_min?: number | null
           project_end_date_max?: string | null
@@ -344,7 +353,7 @@ export type Database = {
           search_description?: string | null
           subtitle?: string | null
           title?: string | null
-          total_funding_amount?: number | null
+          total_funding_per_call?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -610,7 +619,8 @@ export type Database = {
           application_process: string | null
           application_templates_links: Json | null
           application_templates_names: Json | null
-          cofinancing_level: number | null
+          cofinancing_level_min: number | null
+          cofinancing_level_max: number | null
           cofinancing_required: boolean | null
           consortium_requirement: string | null
           contact_email: string | null
@@ -627,6 +637,7 @@ export type Database = {
           error_message: string | null
           evaluation_criteria: string | null
           geographic_scope: string | null
+          grant_type: string | null
           id: string
           industry_sectors: Json | null
           information_webinar_dates: Json | null
@@ -634,8 +645,8 @@ export type Database = {
           information_webinar_names: Json | null
           is_original_source: boolean | null
           keywords: Json | null
-          max_grant_per_project: number | null
-          min_grant_per_project: number | null
+          max_funding_per_project: number | null
+          min_funding_per_project: number | null
           organisation: string | null
           original_source_url: string | null
           original_url: string
@@ -645,6 +656,7 @@ export type Database = {
           other_templates_names: Json | null
           processed_at: string | null
           processing_status: string | null
+          program: string | null
           project_duration_months_max: number | null
           project_duration_months_min: number | null
           project_end_date_max: string | null
@@ -656,7 +668,7 @@ export type Database = {
           search_description: string | null
           subtitle: string | null
           title: string | null
-          total_funding_amount: number | null
+          total_funding_per_call: number | null
           updated_at: string | null
         }[]
       }

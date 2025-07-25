@@ -23,5 +23,5 @@ Keywords: ${Array.isArray(grant.keywords) ? grant.keywords.join(', ') : 'N/A'}
 Industry sectors: ${Array.isArray(grant.industry_sectors) ? grant.industry_sectors.join(', ') : 'N/A'}
 Eligibility: ${grant.eligibility || 'N/A'}
 Geographic scope: ${grant.geographic_scope || 'N/A'}
-Funding range: ${grant.min_grant_per_project || 'N/A'}–${grant.max_grant_per_project || 'N/A'}`;
+Funding range: ${grant.min_funding_per_project || 'N/A'}–${grant.max_funding_per_project || 'N/A'}`;
 };

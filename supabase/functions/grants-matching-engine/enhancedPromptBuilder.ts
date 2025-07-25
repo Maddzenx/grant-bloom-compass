@@ -25,7 +25,7 @@ Keywords: ${Array.isArray(grant.keywords) ? grant.keywords.join(', ') : 'N/A'}
 Industry Sectors: ${Array.isArray(grant.industry_sectors) ? grant.industry_sectors.join(', ') : 'N/A'}
 Eligible Organizations: ${Array.isArray(grant.eligible_organisations) ? grant.eligible_organisations.join(', ') : 'N/A'}
 Geographic Scope: ${grant.geographic_scope || 'N/A'}
-Funding Range: ${grant.min_grant_per_project || 'N/A'}–${grant.max_grant_per_project || 'N/A'} ${grant.currency || 'SEK'}
+Funding Range: ${grant.min_funding_per_project || 'N/A'}–${grant.max_funding_per_project || 'N/A'} ${grant.currency || 'SEK'}
 Application Process: ${grant.application_process || 'N/A'}
 Evaluation Criteria: ${grant.evaluation_criteria || 'N/A'}
 
