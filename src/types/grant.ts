@@ -4,7 +4,6 @@ export interface Grant {
   title: string;
   organization: string;
   description: string;
-  long_description?: string;
   fundingAmount: string;
   opens_at: string;
   deadline: string;
@@ -23,31 +22,19 @@ export interface Grant {
     phone: string;
   };
   templates: string[];
-  application_templates_links?: string[];
-  other_templates_links?: string[];
-  other_sources_links?: string[];
-  other_sources_names?: string[];
   evaluationCriteria?: string;
   applicationProcess?: string;
   originalUrl?: string;
   // Additional properties from database
   industry_sectors?: string[];
   eligible_organisations?: string[];
-  consortium_requirement?: string | boolean;
+  consortium_requirement?: boolean;
   geographic_scope?: string[];
-  region?: string;
   cofinancing_required?: boolean;
-  cofinancing_level?: number;
-  // New date fields from database
-  application_opening_date?: string;
-  application_closing_date?: string;
-  project_start_date_min?: string;
-  project_start_date_max?: string;
-  project_end_date_min?: string;
-  project_end_date_max?: string;
-  information_webinar_dates?: string[];
-  information_webinar_links?: string[];
-  information_webinar_names?: string[];
+  cofinancing_level_min?: number;
+  cofinancing_level_max?: number;
+  program?: string;
+  grant_type?: string;
 }
 
 // Minimal data for grant list items

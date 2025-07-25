@@ -7,9 +7,9 @@ INSERT INTO grant_call_details (
   subtitle,
   eligibility,
   application_closing_date,
-  max_grant_per_project,
-  min_grant_per_project,
-  total_funding_amount,
+  max_funding_per_project,
+  min_funding_per_project,
+  total_funding_per_call,
   currency,
   keywords,
   contact_name,
@@ -21,7 +21,12 @@ INSERT INTO grant_call_details (
   application_process,
   eligible_organisations,
   industry_sectors,
-  original_url
+  original_url,
+  cofinancing_required,
+  cofinancing_level_min,
+  cofinancing_level_max,
+  program,
+  grant_type
 ) VALUES 
 (
   'Innovation Grant for SMEs',
@@ -44,7 +49,12 @@ INSERT INTO grant_call_details (
   'Online application through Vinnova portal, two-stage evaluation process',
   '["small enterprises", "medium enterprises", "research institutes"]'::jsonb,
   '["technology", "manufacturing", "healthcare", "environment"]'::jsonb,
-  'https://www.vinnova.se/example-grant-1'
+  'https://www.vinnova.se/example-grant-1',
+  true,
+  20.0,
+  50.0,
+  'Innovation Program',
+  'Innovation Grant'
 ),
 (
   'Green Technology Development Fund',

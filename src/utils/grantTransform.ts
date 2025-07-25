@@ -2,7 +2,6 @@ import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
 
 // Use a partial type that matches what we actually select from the database
-// Note: Using type assertion since the generated types might be outdated
 type PartialSupabaseGrantRow = Pick<
   Database['public']['Tables']['grant_call_details']['Row'],
   | 'id'
@@ -12,9 +11,9 @@ type PartialSupabaseGrantRow = Pick<
   | 'subtitle'
   | 'eligibility'
   | 'application_closing_date'
-  | 'max_grant_per_project'
-  | 'min_grant_per_project'
-  | 'total_funding_amount'
+  | 'max_funding_per_project'
+  | 'min_funding_per_project'
+  | 'total_funding_per_call'
   | 'currency'
   | 'keywords'
   | 'contact_name'
@@ -23,10 +22,9 @@ type PartialSupabaseGrantRow = Pick<
   | 'contact_phone'
   | 'eligible_cost_categories'
   | 'information_webinar_dates'
+  | 'information_webinar_names'
   | 'application_templates_names'
-  | 'application_templates_links'
   | 'other_templates_names'
-  | 'other_templates_links'
   | 'evaluation_criteria'
   | 'application_process'
   | 'eligible_organisations'
@@ -35,18 +33,12 @@ type PartialSupabaseGrantRow = Pick<
   | 'application_opening_date'
   | 'geographic_scope'
   | 'region'
-  | 'project_start_date_min'
-  | 'project_start_date_max'
-  | 'project_end_date_min'
-  | 'project_end_date_max'
-  | 'information_webinar_links'
-  | 'information_webinar_names'
-  | 'consortium_requirement'
+  | 'cofinancing_level_min'
+  | 'cofinancing_level_max'
   | 'cofinancing_required'
-  | 'cofinancing_level'
-> & {
-  long_description?: string | null;
-};
+  | 'program'
+  | 'grant_type'
+>;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
   console.log('🔄 Starting transformation for grant:', supabaseGrant?.id);
@@ -114,21 +106,21 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       return `${amount.toLocaleString()} ${currency}`;
     };
     
-    // Priority: max_grant_per_project if not null, otherwise total_funding_amount
-    if (grant.max_grant_per_project) {
-      if (grant.min_grant_per_project && grant.min_grant_per_project !== grant.max_grant_per_project) {
-        const result = `${formatAmount(grant.min_grant_per_project)} - ${formatAmount(grant.max_grant_per_project)}`;
+    // Priority: max_funding_per_project if not null, otherwise total_funding_per_call
+    if (grant.max_funding_per_project) {
+      if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
+        const result = `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
         console.log('🔍 formatFundingAmount: min-max ->', result);
         return result;
       } else {
-        const result = formatAmount(grant.max_grant_per_project);
+        const result = formatAmount(grant.max_funding_per_project);
         console.log('🔍 formatFundingAmount: max only ->', result);
         return result;
       }
     }
     
-    if (grant.total_funding_amount) {
-      const result = formatAmount(grant.total_funding_amount);
+    if (grant.total_funding_per_call) {
+      const result = formatAmount(grant.total_funding_per_call);
       console.log('🔍 formatFundingAmount: total ->', result);
       return result;
     }
@@ -187,15 +179,14 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       title: supabaseGrant.title || 'Ingen titel',
       organization: supabaseGrant.organisation || 'Okänd organisation',
       description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
-      long_description: supabaseGrant.long_description || undefined,
       fundingAmount: formatFundingAmount(supabaseGrant),
       opens_at: getRawDate((supabaseGrant as any).application_opening_date),
       deadline: formatDate(supabaseGrant.application_closing_date),
       tags: jsonToStringArray(supabaseGrant.keywords),
       qualifications: supabaseGrant.eligibility || 'Ej specificerat',
       aboutGrant: supabaseGrant.subtitle || supabaseGrant.description || 'Ingen information tillgänglig',
-      whoCanApply: formatArray(jsonToStringArray(supabaseGrant.eligible_organisations)) || supabaseGrant.eligibility || 'Ej specificerat',
-      importantDates: [], // This will be populated by the frontend component using the individual date fields
+      whoCanApply: supabaseGrant.eligibility || 'Ej specificerat',
+      importantDates: jsonToStringArray(supabaseGrant.information_webinar_dates),
       fundingRules: jsonToStringArray(supabaseGrant.eligible_cost_categories),
       generalInfo: jsonToStringArray(supabaseGrant.other_templates_names), // Only other_templates_names
       requirements: [
@@ -210,39 +201,23 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         phone: supabaseGrant.contact_phone || ''
       },
       templates: jsonToStringArray(supabaseGrant.application_templates_names), // Only application_templates_names
-      application_templates_links: jsonToStringArray(supabaseGrant.application_templates_links),
-      other_templates_links: jsonToStringArray(supabaseGrant.other_templates_links),
       evaluationCriteria: supabaseGrant.evaluation_criteria || '',
       applicationProcess: supabaseGrant.application_process || '',
       originalUrl: supabaseGrant.original_url || '',
       industry_sectors: jsonToStringArray(supabaseGrant.industry_sectors),
       eligible_organisations: jsonToStringArray(supabaseGrant.eligible_organisations),
       geographic_scope: [
-        ...normalizeGeographicValues((supabaseGrant as any).geographic_scope)
+        ...normalizeGeographicValues((supabaseGrant as any).geographic_scope),
+        ...normalizeGeographicValues(supabaseGrant.region)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
-      region: supabaseGrant.region || undefined,
-      consortium_requirement: (typeof supabaseGrant.consortium_requirement === 'string' ? supabaseGrant.consortium_requirement.trim() : supabaseGrant.consortium_requirement) || undefined,
-      cofinancing_required: parseBooleanString(supabaseGrant.cofinancing_required),
-      cofinancing_level: supabaseGrant.cofinancing_level ?? undefined,
-      // New date fields from database
-      application_opening_date: supabaseGrant.application_opening_date || undefined,
-      application_closing_date: supabaseGrant.application_closing_date || undefined,
-      project_start_date_min: supabaseGrant.project_start_date_min || undefined,
-      project_start_date_max: supabaseGrant.project_start_date_max || undefined,
-      project_end_date_min: supabaseGrant.project_end_date_min || undefined,
-      project_end_date_max: supabaseGrant.project_end_date_max || undefined,
-      information_webinar_dates: jsonToStringArray(supabaseGrant.information_webinar_dates),
-      information_webinar_links: jsonToStringArray(supabaseGrant.information_webinar_links),
-      information_webinar_names: jsonToStringArray(supabaseGrant.information_webinar_names),
+      cofinancing_required: supabaseGrant.cofinancing_required || false,
+      cofinancing_level_min: supabaseGrant.cofinancing_level_min || undefined,
+      cofinancing_level_max: supabaseGrant.cofinancing_level_max || undefined,
+      program: supabaseGrant.program || undefined,
+      grant_type: supabaseGrant.grant_type || undefined,
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);
-    console.log('🔍 Transformed cofinancing/consortium data:', {
-      consortium_requirement: transformed.consortium_requirement,
-      cofinancing_required: transformed.cofinancing_required,
-      cofinancing_level: transformed.cofinancing_level,
-      region: transformed.region
-    });
     return transformed;
   } catch (error) {
     console.error('❌ Transformation failed for grant:', supabaseGrant?.id, error);

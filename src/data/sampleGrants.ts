@@ -13,9 +13,9 @@ export const insertSampleGrantsData = async () => {
         eligibility: 'Small and medium enterprises registered in Sweden with less than 250 employees',
         application_closing_date: '2024-12-31',
         application_opening_date: '2024-07-01',
-        max_grant_per_project: 5000000,
-        min_grant_per_project: 500000,
-        total_funding_amount: 50000000,
+        max_funding_per_project: 5000000,
+        min_funding_per_project: 500000,
+        total_funding_per_call: 50000000,
         currency: 'SEK',
         keywords: ['innovation', 'SME', 'technology', 'sustainability'],
         contact_name: 'Anna Andersson',
@@ -27,65 +27,76 @@ export const insertSampleGrantsData = async () => {
         application_process: 'Online application through Vinnova portal, two-stage evaluation process',
         eligible_organisations: ['small enterprises', 'medium enterprises', 'research institutes'],
         industry_sectors: ['technology', 'manufacturing', 'healthcare', 'environment'],
-        original_url: 'https://www.vinnova.se/example-grant-1'
+        original_url: 'https://www.vinnova.se/example-grant-1',
+        cofinancing_required: true,
+        cofinancing_level_min: 20.0,
+        cofinancing_level_max: 50.0,
+        program: 'Innovation Program',
+        grant_type: 'Innovation Grant'
       },
       {
         title: 'Green Technology Development Fund',
-        organisation: 'Energimyndigheten',
-        description: 'Funding for development of renewable energy and energy efficiency technologies.',
-        subtitle: 'Advancing green technology solutions',
-        eligibility: 'Companies and research organizations working on renewable energy projects',
-        application_closing_date: '2024-11-15',
-        application_opening_date: '2024-08-01',
-        max_grant_per_project: 10000000,
-        min_grant_per_project: 1000000,
-        total_funding_amount: 100000000,
+        organisation: 'Formas',
+        description: 'Funding for research and development of green technologies and sustainable solutions.',
+        subtitle: 'Advancing green technology innovation',
+        eligibility: 'Research institutions, universities, and companies with R&D capabilities',
+        application_closing_date: '2024-11-30',
+        application_opening_date: '2024-06-01',
+        max_funding_per_project: 10000000,
+        min_funding_per_project: 1000000,
+        total_funding_per_call: 100000000,
         currency: 'SEK',
-        keywords: ['renewable energy', 'green technology', 'energy efficiency'],
+        keywords: ['green technology', 'sustainability', 'R&D', 'environment'],
         contact_name: 'Erik Eriksson',
-        contact_title: 'Senior Advisor',
-        contact_email: 'erik.eriksson@energimyndigheten.se',
-        contact_phone: '+46 16 544 200',
-        eligible_cost_categories: ['R&D costs', 'demonstration projects', 'equipment'],
-        evaluation_criteria: 'Environmental impact, commercial potential, technical innovation',
-        application_process: 'Application deadline November 15th, decision in February',
-        eligible_organisations: ['companies', 'research organizations', 'universities'],
-        industry_sectors: ['energy', 'environment', 'technology'],
-        original_url: 'https://www.energimyndigheten.se/example-grant-2'
+        contact_title: 'Research Coordinator',
+        contact_email: 'erik.eriksson@formas.se',
+        contact_phone: '+46 8 775 40 00',
+        eligible_cost_categories: ['research costs', 'equipment', 'personnel', 'travel'],
+        evaluation_criteria: 'Scientific quality, environmental impact, innovation potential',
+        application_process: 'Two-stage application process with peer review',
+        eligible_organisations: ['universities', 'research institutes', 'companies'],
+        industry_sectors: ['environmental technology', 'energy', 'transportation'],
+        original_url: 'https://www.formas.se/example-grant-2',
+        cofinancing_required: false,
+        program: 'Green Technology Program',
+        grant_type: 'Research Grant'
       },
       {
-        title: 'Digital Transformation Initiative', 
+        title: 'Digital Transformation Support',
         organisation: 'Tillväxtverket',
-        description: 'Support for companies implementing digital solutions to improve competitiveness.',
-        subtitle: 'Digitizing Swedish businesses',
-        eligibility: 'Swedish companies looking to implement digital transformation projects',
-        application_closing_date: '2024-10-30',
-        application_opening_date: '2024-07-15',
-        max_grant_per_project: 2000000,
-        min_grant_per_project: 200000,
-        total_funding_amount: 25000000,
+        description: 'Support for SMEs to implement digital transformation initiatives.',
+        subtitle: 'Accelerating digital adoption in Swedish businesses',
+        eligibility: 'Small and medium enterprises with digital transformation needs',
+        application_closing_date: '2024-10-15',
+        application_opening_date: '2024-05-01',
+        max_funding_per_project: 2000000,
+        min_funding_per_project: 200000,
+        total_funding_per_call: 25000000,
         currency: 'SEK',
-        keywords: ['digitalization', 'digital transformation', 'competitiveness'],
+        keywords: ['digital transformation', 'SME', 'technology adoption', 'automation'],
         contact_name: 'Maria Svensson',
-        contact_title: 'Business Development Manager',
+        contact_title: 'Digital Advisor',
         contact_email: 'maria.svensson@tillvaxtverket.se',
         contact_phone: '+46 8 681 91 00',
-        eligible_cost_categories: ['software', 'training', 'consulting', 'hardware'],
+        eligible_cost_categories: ['software licenses', 'consulting', 'training', 'equipment'],
         evaluation_criteria: 'Digital maturity, business impact, implementation plan',
-        application_process: 'Rolling applications, quarterly decisions',
-        eligible_organisations: ['SMEs', 'large enterprises', 'startups'],
-        industry_sectors: ['retail', 'manufacturing', 'services', 'logistics'],
-        original_url: 'https://www.tillvaxtverket.se/example-grant-3'
+        application_process: 'Online application with digital readiness assessment',
+        eligible_organisations: ['small enterprises', 'medium enterprises'],
+        industry_sectors: ['manufacturing', 'retail', 'services', 'technology'],
+        original_url: 'https://www.tillvaxtverket.se/example-grant-3',
+        cofinancing_required: true,
+        cofinancing_level_min: 30.0,
+        program: 'Digital Transformation Program',
+        grant_type: 'Digitalization Grant'
       }
     ])
     .select();
-  
-  console.log('🔄 Insert result:', { insertData, insertError });
-  
+
   if (insertError) {
     console.error('❌ Error inserting sample data:', insertError);
     return null;
   }
-  
+
+  console.log('✅ Sample data inserted successfully:', insertData);
   return insertData;
 };
