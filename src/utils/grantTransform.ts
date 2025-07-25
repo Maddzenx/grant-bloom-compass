@@ -22,6 +22,7 @@ type PartialSupabaseGrantRow = Pick<
   | 'contact_phone'
   | 'eligible_cost_categories'
   | 'information_webinar_dates'
+  | 'information_webinar_links'
   | 'information_webinar_names'
   | 'application_templates_names'
   | 'other_templates_names'
@@ -31,6 +32,10 @@ type PartialSupabaseGrantRow = Pick<
   | 'industry_sectors'
   | 'original_url'
   | 'application_opening_date'
+  | 'project_start_date_min'
+  | 'project_start_date_max'
+  | 'project_end_date_min'
+  | 'project_end_date_max'
   | 'geographic_scope'
   | 'region'
   | 'cofinancing_level_min'
@@ -215,9 +220,30 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       cofinancing_level_max: supabaseGrant.cofinancing_level_max || undefined,
       program: supabaseGrant.program || undefined,
       grant_type: supabaseGrant.grant_type || undefined,
+      // Date fields for important dates display
+      application_opening_date: supabaseGrant.application_opening_date || undefined,
+      application_closing_date: supabaseGrant.application_closing_date || undefined,
+      project_start_date_min: supabaseGrant.project_start_date_min || undefined,
+      project_start_date_max: supabaseGrant.project_start_date_max || undefined,
+      project_end_date_min: supabaseGrant.project_end_date_min || undefined,
+      project_end_date_max: supabaseGrant.project_end_date_max || undefined,
+      information_webinar_dates: jsonToStringArray(supabaseGrant.information_webinar_dates),
+      information_webinar_links: jsonToStringArray(supabaseGrant.information_webinar_links),
+      information_webinar_names: jsonToStringArray(supabaseGrant.information_webinar_names),
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);
+    console.log('📅 Date fields in transformed grant:', {
+      application_opening_date: transformed.application_opening_date,
+      application_closing_date: transformed.application_closing_date,
+      project_start_date_min: transformed.project_start_date_min,
+      project_start_date_max: transformed.project_start_date_max,
+      project_end_date_min: transformed.project_end_date_min,
+      project_end_date_max: transformed.project_end_date_max,
+      information_webinar_dates: transformed.information_webinar_dates,
+      information_webinar_names: transformed.information_webinar_names,
+      information_webinar_links: transformed.information_webinar_links
+    });
     return transformed;
   } catch (error) {
     console.error('❌ Transformation failed for grant:', supabaseGrant?.id, error);

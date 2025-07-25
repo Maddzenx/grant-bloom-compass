@@ -68,12 +68,12 @@ serve(async (req) => {
     let query = supabase
       .from('grant_call_details')
       .select(`
-        id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount,
+        id, title, organisation, subtitle, min_funding_per_project, max_funding_per_project, total_funding_per_call,
         application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
         project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
         information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
         other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
-        geographic_scope, cofinancing_required, cofinancing_level, created_at
+        geographic_scope, cofinancing_required, cofinancing_level_min, created_at
       `, { count: 'exact' });
 
     // Filter out grants with passed deadlines
@@ -162,10 +162,10 @@ serve(async (req) => {
         break;
       case 'amount-desc':
         // Note: This is a simplified approach. In production, you might want to store parsed amounts
-        query = query.order('max_grant_per_project', { ascending: false, nullsLast: true });
+        query = query.order('max_funding_per_project', { ascending: false, nullsLast: true });
         break;
       case 'amount-asc':
-        query = query.order('max_grant_per_project', { ascending: true, nullsLast: true });
+        query = query.order('max_funding_per_project', { ascending: true, nullsLast: true });
         break;
       case 'created-desc':
         query = query.order('created_at', { ascending: false });
@@ -199,8 +199,8 @@ serve(async (req) => {
     let filteredGrants = grants || [];
     if (filters.fundingRange && (filters.fundingRange.min || filters.fundingRange.max)) {
       filteredGrants = filteredGrants.filter(grant => {
-        // Use max_grant_per_project as the primary funding amount, fallback to min_grant_per_project
-        const fundingAmount = grant.max_grant_per_project || grant.min_grant_per_project || 0;
+        // Use max_funding_per_project as the primary funding amount, fallback to min_funding_per_project
+        const fundingAmount = grant.max_funding_per_project || grant.min_funding_per_project || 0;
         
         if (filters.fundingRange.min && fundingAmount < filters.fundingRange.min) {
           return false;
