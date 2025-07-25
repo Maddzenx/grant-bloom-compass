@@ -35,6 +35,16 @@ export interface Grant {
   cofinancing_level_max?: number;
   program?: string;
   grant_type?: string;
+  // Date fields for important dates display
+  application_opening_date?: string;
+  application_closing_date?: string;
+  project_start_date_min?: string;
+  project_start_date_max?: string;
+  project_end_date_min?: string;
+  project_end_date_max?: string;
+  information_webinar_dates?: string[];
+  information_webinar_links?: string[];
+  information_webinar_names?: string[];
 }
 
 // Minimal data for grant list items

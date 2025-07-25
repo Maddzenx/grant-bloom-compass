@@ -27,6 +27,19 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
   const getImportantDates = (): DateItem[] => {
     const dates: DateItem[] = [];
 
+    // Debug logging
+    console.log('🔍 GrantNotionImportantDatesSection - Grant date fields:', {
+      application_opening_date: grant.application_opening_date,
+      application_closing_date: grant.application_closing_date,
+      project_start_date_min: grant.project_start_date_min,
+      project_start_date_max: grant.project_start_date_max,
+      project_end_date_min: grant.project_end_date_min,
+      project_end_date_max: grant.project_end_date_max,
+      information_webinar_dates: grant.information_webinar_dates,
+      information_webinar_names: grant.information_webinar_names,
+      information_webinar_links: grant.information_webinar_links
+    });
+
     // Application opening date
     if (grant.application_opening_date) {
       dates.push({
