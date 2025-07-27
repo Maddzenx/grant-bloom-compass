@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Grant, GrantListItem, GrantDetails } from '@/types/grant';
 import { transformSupabaseGrant } from '@/utils/grantTransform';
 import { insertSampleGrantsData } from '@/data/sampleGrants';
+import { formatFundingAmount } from '@/utils/grantHelpers';
 
 export const fetchGrantsData = async (): Promise<Grant[]> => {
   console.log('🔍 Starting grants fetch from grant_call_details...');
@@ -61,7 +62,7 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
     .select(`
-      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount,
+      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount, currency,
       application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
       project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
       information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
@@ -171,7 +172,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         title: grant.title || 'Untitled Grant',
         organization: grant.organisation || 'Unknown Organization',
         aboutGrant: grant.subtitle || grant.description || 'No information available',
-        fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project, grant.total_funding_amount),
+        fundingAmount: formatFundingAmount(grant),
         opens_at: grant.application_opening_date || '2024-01-01',
         deadline: grant.application_closing_date || 'Not specified',
         tags: parseJsonArray(grant.keywords) || [],
@@ -271,26 +272,7 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
   return grantDetails;
 };
 
-const formatFundingAmount = (min?: number, max?: number, total?: number): string => {
-  // Priority: max_grant_per_project if not null, otherwise total_funding_amount
-  if (max) {
-    if (min && min !== max) {
-      return `${min.toLocaleString()} - ${max.toLocaleString()} kr`;
-    } else {
-      return `${max.toLocaleString()} kr`;
-    }
-  }
-  
-  if (total) {
-    return `${total.toLocaleString()} kr`;
-  }
-  
-  if (min) {
-    return `${min.toLocaleString()} kr`;
-  }
-  
-  return 'Ej specificerat';
-};
+
 
 const parseJsonArray = (jsonValue: any): string[] | undefined => {
   if (!jsonValue) return undefined;

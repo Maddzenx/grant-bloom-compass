@@ -22,6 +22,52 @@ export const parseFundingAmount = (fundingAmount: string | number): number => {
   return parseInt(firstNumber, 10) || 0;
 };
 
+// Sophisticated funding amount formatter that matches grantTransform.ts logic
+export const formatFundingAmount = (
+  grant: {
+    max_funding_per_project?: number | null;
+    min_funding_per_project?: number | null;
+    total_funding_per_call?: number | null;
+    total_funding_amount?: number | null;
+    currency?: string | null;
+  }
+): string => {
+  const currency = grant.currency || 'SEK';
+  
+  // Helper to format large amounts in millions
+  const formatAmount = (amount: number): string => {
+    if (amount >= 1000000) {
+      const millions = amount / 1000000;
+      return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+    }
+    return `${amount.toLocaleString()} ${currency}`;
+  };
+  
+  // Priority: max_funding_per_project if not null, otherwise total_funding_per_call
+  if (grant.max_funding_per_project) {
+    if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
+      const result = `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
+      console.log('🔍 formatFundingAmount: min-max ->', result);
+      return result;
+    } else {
+      const result = formatAmount(grant.max_funding_per_project);
+      console.log('🔍 formatFundingAmount: max only ->', result);
+      return result;
+    }
+  }
+  
+  // Fallback to total_funding_per_call (from grantTransform.ts) or total_funding_amount (from services)
+  const totalAmount = grant.total_funding_per_call || grant.total_funding_amount;
+  if (totalAmount) {
+    const result = formatAmount(totalAmount);
+    console.log('🔍 formatFundingAmount: total ->', result);
+    return result;
+  }
+  
+  console.log('🔍 formatFundingAmount: no amount specified');
+  return 'Ej specificerat';
+};
+
 // Parse deadline string to Date object
 export const parseDeadline = (deadline: string): Date | null => {
   if (deadline === 'Ej specificerat' || !deadline) return null;

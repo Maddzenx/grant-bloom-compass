@@ -1,5 +1,6 @@
 import { Grant } from '@/types/grant';
 import { Database } from '@/integrations/supabase/types';
+import { formatFundingAmount } from '@/utils/grantHelpers';
 
 // Use a partial type that matches what we actually select from the database
 type PartialSupabaseGrantRow = Pick<
@@ -100,41 +101,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
     }
   };
 
-  // Helper function to format funding amount with MSEK format
-  const formatFundingAmount = (grant: PartialSupabaseGrantRow): string => {
-    const currency = grant.currency || 'SEK';
-    
-    // Helper to format large amounts in millions
-    const formatAmount = (amount: number): string => {
-      if (amount >= 1000000) {
-        const millions = amount / 1000000;
-        return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
-      }
-      return `${amount.toLocaleString()} ${currency}`;
-    };
-    
-    // Priority: max_funding_per_project if not null, otherwise total_funding_per_call
-    if (grant.max_funding_per_project) {
-      if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
-        const result = `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
-        console.log('🔍 formatFundingAmount: min-max ->', result);
-        return result;
-      } else {
-        const result = formatAmount(grant.max_funding_per_project);
-        console.log('🔍 formatFundingAmount: max only ->', result);
-        return result;
-      }
-    }
-    
-    if (grant.total_funding_per_call) {
-      const result = formatAmount(grant.total_funding_per_call);
-      console.log('🔍 formatFundingAmount: total ->', result);
-      return result;
-    }
-    
-    console.log('🔍 formatFundingAmount: no amount specified');
-    return 'Ej specificerat';
-  };
+
 
   // Helper function to get raw date (ISO string or null)
   const getRawDate = (dateValue: string | null): string => {

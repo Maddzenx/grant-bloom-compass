@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { GrantListItem } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import { SortOption } from '@/components/SortingControls';
+import { formatFundingAmount } from '@/utils/grantHelpers';
 
 interface BackendFilterOptions {
   organizations?: string[];
@@ -98,7 +99,7 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     title: grant.title || 'Untitled Grant',
     organization: grant.organisation || 'Unknown Organization',
     aboutGrant: grant.subtitle || grant.description || 'No information available',
-    fundingAmount: formatFundingAmount(grant.min_grant_per_project, grant.max_grant_per_project, grant.total_funding_amount),
+    fundingAmount: formatFundingAmount(grant),
     opens_at: grant.application_opening_date || '2024-01-01',
     deadline: grant.application_closing_date || 'Not specified',
     tags: parseJsonArray(grant.keywords) || [],
@@ -130,26 +131,7 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
   };
 };
 
-const formatFundingAmount = (min?: number, max?: number, total?: number): string => {
-  // Priority: max_grant_per_project if not null, otherwise total_funding_amount
-  if (max) {
-    if (min && min !== max) {
-      return `${min.toLocaleString()} - ${max.toLocaleString()} kr`;
-    } else {
-      return `${max.toLocaleString()} kr`;
-    }
-  }
-  
-  if (total) {
-    return `${total.toLocaleString()} kr`;
-  }
-  
-  if (min) {
-    return `${min.toLocaleString()} kr`;
-  }
-  
-  return 'Ej specificerat';
-};
+
 
 const parseJsonArray = (jsonValue: any): string[] | undefined => {
   if (!jsonValue) return undefined;

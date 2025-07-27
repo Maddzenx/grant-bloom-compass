@@ -68,7 +68,7 @@ serve(async (req) => {
     let query = supabase
       .from('grant_call_details')
       .select(`
-        id, title, organisation, subtitle, min_funding_per_project, max_funding_per_project, total_funding_per_call,
+        id, title, organisation, subtitle, min_funding_per_project, max_funding_per_project, total_funding_per_call, currency,
         application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
         project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
         information_webinar_names, application_templates_names, application_templates_links, other_templates_names,

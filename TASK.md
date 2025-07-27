@@ -80,6 +80,32 @@
 
 **Status**: ✅ Completed
 
+### Currency Display Fix for Grant Cards - 2024-12-19
+**Description**: Fixed issue where grant cards were always showing "SEK" instead of the actual currency from the database.
+
+**Problem Identified**:
+- Grant cards were displaying funding amounts with hardcoded "SEK" currency instead of using the actual currency from the database
+- Root cause: Database queries for grant list items were missing the `currency` field in SELECT statements
+- The `formatFundingAmount` function was correctly using `grant.currency || 'SEK'` but the currency field was never being fetched
+
+**Changes Made**:
+- **Frontend Service**: Added `currency` field to SELECT statement in `fetchGrantListItems` function in `grantsService.ts`
+- **Backend Function**: Added `currency` field to SELECT statement in `filtered-grants-search` Edge Function
+- **Consistent Currency**: Both grant cards and grant details now use the same currency formatting logic
+- **Shared Function**: All components now use the same `formatFundingAmount` function from `grantHelpers.ts`
+
+**Technical Details**:
+- Updated `src/services/grantsService.ts` - Added `currency` to database query in `fetchGrantListItems`
+- Updated `supabase/functions/filtered-grants-search/index.ts` - Added `currency` to database query
+- The `formatFundingAmount` function in `grantHelpers.ts` correctly handles currency with fallback to 'SEK'
+- Grants with different currencies (EUR, USD, NOK, etc.) will now display correctly
+
+**Files Modified**:
+- `src/services/grantsService.ts` - Added `currency` to SELECT statement in `fetchGrantListItems`
+- `supabase/functions/filtered-grants-search/index.ts` - Added `currency` to SELECT statement in main query
+
+**Status**: ✅ Completed
+
 ### Date Handling and Display Improvements - 2024-12-19
 **Description**: Fixed date handling issues and improved the display of important dates in grant details.
 
