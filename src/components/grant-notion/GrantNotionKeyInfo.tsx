@@ -1,9 +1,9 @@
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 import { formatCofinancingText } from "@/utils/grantHelpers";
 
 interface GrantNotionKeyInfoProps {
-  grant: Grant;
+  grant: GrantDetailsType;
   isMobile?: boolean;
   section?: 'info' | 'krav';
 }
@@ -19,7 +19,9 @@ const GrantNotionKeyInfo = ({
     cofinancing_required: grant.cofinancing_required,
     cofinancing_level: grant.cofinancing_level,
     fundingRules: grant.fundingRules,
-    region: grant.region
+    region: grant.region,
+    regionType: typeof grant.region,
+    regionExists: grant.region !== undefined && grant.region !== null
   });
 
   // Format helpers

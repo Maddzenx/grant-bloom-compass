@@ -1,8 +1,8 @@
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 
 interface GrantNotionImportantDatesSectionProps {
-  grant: Grant;
+  grant: GrantDetailsType;
 }
 
 interface DateItem {
@@ -37,7 +37,9 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
       project_end_date_max: grant.project_end_date_max,
       information_webinar_dates: grant.information_webinar_dates,
       information_webinar_names: grant.information_webinar_names,
-      information_webinar_links: grant.information_webinar_links
+      information_webinar_links: grant.information_webinar_links,
+      other_important_dates: grant.other_important_dates,
+      other_important_dates_labels: grant.other_important_dates_labels
     });
 
     // Application opening date
@@ -99,6 +101,21 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
           date: displayDate,
           label: webinarName,
           link: webinarLink
+        });
+      });
+    }
+
+    // Other important dates
+    if (grant.other_important_dates && grant.other_important_dates.length > 0) {
+      grant.other_important_dates.forEach((importantDate, index) => {
+        const dateLabel = grant.other_important_dates_labels?.[index] || "Viktigt datum";
+        
+        // Skip null dates or show "Datum saknas"
+        const displayDate = importantDate || "Datum saknas";
+        
+        dates.push({
+          date: displayDate,
+          label: dateLabel
         });
       });
     }

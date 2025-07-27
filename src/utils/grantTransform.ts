@@ -24,6 +24,8 @@ type PartialSupabaseGrantRow = Pick<
   | 'information_webinar_dates'
   | 'information_webinar_links'
   | 'information_webinar_names'
+  | 'other_important_dates'
+  | 'other_important_dates_labels'
   | 'application_templates_names'
   | 'other_templates_names'
   | 'evaluation_criteria'
@@ -215,6 +217,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
         ...normalizeGeographicValues((supabaseGrant as any).geographic_scope),
         ...normalizeGeographicValues(supabaseGrant.region)
       ].filter((item, index, arr) => arr.indexOf(item) === index), // Remove duplicates
+      region: supabaseGrant.region || undefined,
       cofinancing_required: supabaseGrant.cofinancing_required || false,
       cofinancing_level_min: supabaseGrant.cofinancing_level_min || undefined,
       cofinancing_level_max: supabaseGrant.cofinancing_level_max || undefined,
@@ -230,6 +233,8 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       information_webinar_dates: jsonToStringArray(supabaseGrant.information_webinar_dates),
       information_webinar_links: jsonToStringArray(supabaseGrant.information_webinar_links),
       information_webinar_names: jsonToStringArray(supabaseGrant.information_webinar_names),
+      other_important_dates: jsonToStringArray(supabaseGrant.other_important_dates),
+      other_important_dates_labels: jsonToStringArray(supabaseGrant.other_important_dates_labels),
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);
@@ -242,7 +247,9 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       project_end_date_max: transformed.project_end_date_max,
       information_webinar_dates: transformed.information_webinar_dates,
       information_webinar_names: transformed.information_webinar_names,
-      information_webinar_links: transformed.information_webinar_links
+      information_webinar_links: transformed.information_webinar_links,
+      other_important_dates: transformed.other_important_dates,
+      other_important_dates_labels: transformed.other_important_dates_labels
     });
     return transformed;
   } catch (error) {

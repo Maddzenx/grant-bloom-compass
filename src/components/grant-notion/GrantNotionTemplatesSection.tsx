@@ -1,10 +1,10 @@
 
 import React from "react";
 import { FileText, ExternalLink } from "lucide-react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 
 interface GrantNotionTemplatesSectionProps {
-  grant: Grant;
+  grant: GrantDetailsType;
 }
 
 const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps) => {

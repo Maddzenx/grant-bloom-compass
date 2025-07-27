@@ -188,6 +188,8 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
         information_webinar_links: parseJsonArray(grant.information_webinar_links),
         information_webinar_names: parseJsonArray(grant.information_webinar_names),
+        other_important_dates: parseJsonArray(grant.other_important_dates),
+        other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels),
         // Template fields for files and documents
         templates: parseJsonArray(grant.application_templates_names) || [],
         generalInfo: parseJsonArray(grant.other_templates_names) || [],
@@ -219,10 +221,54 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
 const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
   const transformedGrant = transformSupabaseGrant(grant);
 
-  // GrantDetails extends Grant, so we can cast it after transformation,
-  // assuming transformSupabaseGrant populates all necessary fields.
-  // We may need to add fields to Grant or handle them here if they are truly details-only.
-  return transformedGrant as GrantDetails;
+  // Create a GrantDetails object that includes the region field
+  const grantDetails: GrantDetails = {
+    ...transformedGrant,
+    region: grant.region || '',
+    // Ensure all GrantDetails specific fields are properly set
+    description: grant.description || grant.subtitle || 'No description available',
+    long_description: grant.long_description || undefined,
+    qualifications: grant.eligibility || 'Not specified',
+    whoCanApply: grant.eligibility || 'Not specified',
+    importantDates: parseJsonArray(grant.information_webinar_dates) || [],
+    fundingRules: parseJsonArray(grant.eligible_cost_categories) || [],
+    generalInfo: parseJsonArray(grant.other_templates_names) || [],
+    requirements: [
+      ...(parseJsonArray(grant.eligible_cost_categories) || []),
+      ...(parseJsonArray(grant.eligible_organisations) || []),
+      ...(parseJsonArray(grant.industry_sectors) || [])
+    ].filter(Boolean),
+    contact: {
+      name: grant.contact_name || '',
+      organization: grant.contact_title || '',
+      email: grant.contact_email || '',
+      phone: grant.contact_phone || ''
+    },
+    templates: parseJsonArray(grant.application_templates_names) || [],
+    application_templates_links: parseJsonArray(grant.application_templates_links),
+    other_templates_links: parseJsonArray(grant.other_templates_links),
+    other_sources_links: parseJsonArray(grant.other_sources_links),
+    other_sources_names: parseJsonArray(grant.other_sources_names),
+    evaluationCriteria: grant.evaluation_criteria || '',
+    applicationProcess: grant.application_process || '',
+    originalUrl: grant.original_url || '',
+    consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
+    cofinancing_required: parseBooleanString(grant.cofinancing_required),
+    cofinancing_level: grant.cofinancing_level ?? null,
+    application_opening_date: grant.application_opening_date,
+    application_closing_date: grant.application_closing_date,
+    project_start_date_min: grant.project_start_date_min,
+    project_start_date_max: grant.project_start_date_max,
+    project_end_date_min: grant.project_end_date_min,
+    project_end_date_max: grant.project_end_date_max,
+    information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
+    information_webinar_links: parseJsonArray(grant.information_webinar_links),
+    information_webinar_names: parseJsonArray(grant.information_webinar_names),
+    other_important_dates: parseJsonArray(grant.other_important_dates),
+    other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels)
+  };
+
+  return grantDetails;
 };
 
 const formatFundingAmount = (min?: number, max?: number, total?: number): string => {

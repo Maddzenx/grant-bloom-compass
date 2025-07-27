@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 import GrantNotionDescriptionSection from "./GrantNotionDescriptionSection";
 import GrantNotionQualificationsSection from "./GrantNotionQualificationsSection";
 import GrantNotionEvaluationSection from "./GrantNotionEvaluationSection";
@@ -10,7 +10,7 @@ import GrantNotionTemplatesSection from "./GrantNotionTemplatesSection";
 import GrantNotionContactSection from "./GrantNotionContactSection";
 
 interface GrantNotionContentProps {
-  grant: Grant;
+  grant: GrantDetailsType;
   isMobile?: boolean;
 }
 

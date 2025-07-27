@@ -1,7 +1,7 @@
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 interface GrantNotionContactSectionProps {
-  grant: Grant;
+  grant: GrantDetailsType;
 }
 const GrantNotionContactSection = ({
   grant
