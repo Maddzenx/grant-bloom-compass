@@ -64,8 +64,8 @@ const GrantNotionKeyInfo = ({
         <span className="font-bold">Projekttid:</span> {formatProjectDuration(grant.project_duration_months_min, grant.project_duration_months_max)}
       </li>
     ) : null,
-    grant.cofinancing_required !== undefined || grant.cofinancing_level !== undefined ? (
-      <li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level)}</li>
+    grant.cofinancing_required !== undefined || grant.cofinancing_level_min !== undefined || grant.cofinancing_level_max !== undefined ? (
+      <li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level_min, grant.cofinancing_level_max)}</li>
     ) : null,
     // formatArray(grant.geographic_scope) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
     grant.region ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Region:</span> {grant.region}</li>) : null,

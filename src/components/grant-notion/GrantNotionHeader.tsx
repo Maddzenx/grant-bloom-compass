@@ -1,14 +1,15 @@
 import React from "react";
-import { Calendar, Bookmark, X, ExternalLink, MoreHorizontal, Share2, Link as LinkIcon, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Bookmark, ExternalLink, MoreHorizontal, Send } from "lucide-react";
 import { GrantDetails as GrantDetailsType } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import SortingControls, { SortOption } from "@/components/SortingControls";
-import { getOrganizationLogo } from '@/utils/organizationLogos';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
+import { calculateGrantStatus } from "@/utils/grantHelpers";
+import { getOrganizationLogo } from '@/utils/organizationLogos';
 interface GrantNotionHeaderProps {
   grant: GrantDetailsType;
   isBookmarked: boolean;
@@ -35,22 +36,7 @@ const GrantNotionHeader = ({
   } = useSavedGrantsContext();
   const orgLogo = getOrganizationLogo(grant.organization);
   // --- Status logic ---
-  const today = new Date();
-  const opensAt = new Date(grant.opens_at);
-  let deadlineDate: Date;
-  try {
-    deadlineDate = new Date(grant.deadline);
-    if (isNaN(deadlineDate.getTime())) {
-      const [day, monthName, year] = grant.deadline.split(' ');
-      const months = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
-      const month = months.findIndex(m => m === monthName.toLowerCase());
-      deadlineDate = new Date(Number(year), month, Number(day));
-    }
-  } catch {
-    deadlineDate = new Date();
-  }
-  let status: 'open' | 'upcoming' | 'closed' = 'closed';
-  if (today >= opensAt && today <= deadlineDate) status = 'open';else if (today < opensAt) status = 'upcoming';
+  const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
   // ---
 
   const handleApplyClick = () => {
