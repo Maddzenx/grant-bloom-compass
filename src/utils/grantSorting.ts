@@ -122,9 +122,10 @@ export const sortGrants = (grants: GrantListItem[], sortBy: SortOption, searchTe
         return amountA2 - amountB2; // Lowest funding first
       
       case "created-desc":
-        // For now, sort by grant ID as a proxy for creation date
-        // In a real app, you'd have a proper created_at field
-        return b.id.localeCompare(a.id);
+        // Sort by updated_at field for "Nyast publicerat" (newest published)
+        const updatedA = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+        const updatedB = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+        return updatedB - updatedA; // Most recently updated first
       
       case "relevance":
       case "matching":

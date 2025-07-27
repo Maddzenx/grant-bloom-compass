@@ -67,7 +67,8 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
       project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
       information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
       other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
-      geographic_scope, cofinancing_required, cofinancing_level, consortium_requirement, region, eligible_cost_categories
+      geographic_scope, cofinancing_required, cofinancing_level, consortium_requirement, region, eligible_cost_categories,
+      created_at, updated_at
     `)
     .order('created_at', { ascending: false });
 
@@ -202,7 +203,10 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         cofinancing_level: grant.cofinancing_level ?? null,
         consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
         region: grant.region || '',
-        fundingRules: parseJsonArray(grant.eligible_cost_categories) || []
+        fundingRules: parseJsonArray(grant.eligible_cost_categories) || [],
+        // Timestamp fields
+        created_at: grant.created_at,
+        updated_at: grant.updated_at
       };
       
       transformedItems.push(transformed);

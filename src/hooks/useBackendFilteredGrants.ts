@@ -127,7 +127,10 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     cofinancing_level: grant.cofinancing_level ?? null,
     consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
     region: grant.region || null,
-    fundingRules: parseJsonArray(grant.eligible_cost_categories) || []
+    fundingRules: parseJsonArray(grant.eligible_cost_categories) || [],
+    // Timestamp fields
+    created_at: grant.created_at,
+    updated_at: grant.updated_at
   };
 };
 
