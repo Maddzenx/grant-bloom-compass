@@ -2,7 +2,7 @@ import React from "react";
 import { Calendar, Bookmark, X, ExternalLink, MoreHorizontal, Share2, Link as LinkIcon, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
 import SortingControls, { SortOption } from "@/components/SortingControls";
 import { getOrganizationLogo } from '@/utils/organizationLogos';
@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 interface GrantNotionHeaderProps {
-  grant: Grant;
+  grant: GrantDetailsType;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;
@@ -90,8 +90,8 @@ const GrantNotionHeader = ({
   // Always use the context to determine the actual saved state
   const actuallyBookmarked = isGrantSaved(grant.id);
 
-  // Use subtitle when long_description is available, otherwise use description
-  const displayDescription = grant.long_description ? grant.aboutGrant : grant.description;
+  // Always use subtitle (aboutGrant) for the header description
+  const displayDescription = grant.aboutGrant;
   return <>
       {/* Status label and organization icon inline */}
       <div className="flex items-center gap-2 mb-2 pt-4">

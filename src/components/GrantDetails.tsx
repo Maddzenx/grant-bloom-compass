@@ -1,11 +1,11 @@
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 import GrantNotionHeader from "./grant-notion/GrantNotionHeader";
 import GrantNotionKeyInfo from "./grant-notion/GrantNotionKeyInfo";
 import GrantNotionContent from "./grant-notion/GrantNotionContent";
 import GrantNotionImportantDatesSection from "./grant-notion/GrantNotionImportantDatesSection";
 interface GrantDetailsProps {
-  grant: Grant;
+  grant: GrantDetailsType;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
   isMobile?: boolean;

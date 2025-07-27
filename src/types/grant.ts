@@ -30,6 +30,7 @@ export interface Grant {
   eligible_organisations?: string[];
   consortium_requirement?: boolean;
   geographic_scope?: string[];
+  region?: string;
   cofinancing_required?: boolean;
   cofinancing_level_min?: number;
   cofinancing_level_max?: number;
@@ -45,6 +46,8 @@ export interface Grant {
   information_webinar_dates?: string[];
   information_webinar_links?: string[];
   information_webinar_names?: string[];
+  other_important_dates?: string[];
+  other_important_dates_labels?: string[];
 }
 
 // Minimal data for grant list items
@@ -71,6 +74,8 @@ export interface GrantListItem {
   information_webinar_dates?: string[];
   information_webinar_links?: string[];
   information_webinar_names?: string[];
+  other_important_dates?: string[];
+  other_important_dates_labels?: string[];
   // Template fields for files and documents
   templates?: string[];
   generalInfo?: string[];
@@ -122,4 +127,6 @@ export interface GrantDetails extends GrantListItem {
   information_webinar_dates?: string[];
   information_webinar_links?: string[];
   information_webinar_names?: string[];
+  other_important_dates?: string[];
+  other_important_dates_labels?: string[];
 }

@@ -1,9 +1,9 @@
 
 import React from "react";
-import { Grant } from "@/types/grant";
+import { GrantDetails as GrantDetailsType } from "@/types/grant";
 
 interface GrantNotionFundingRulesSectionProps {
-  grant: Grant;
+  grant: GrantDetailsType;
 }
 
 const GrantNotionFundingRulesSection = ({ grant }: GrantNotionFundingRulesSectionProps) => {

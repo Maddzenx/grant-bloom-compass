@@ -221,6 +221,8 @@ export type Database = {
           other_sources_names: Json | null
           other_templates_links: Json | null
           other_templates_names: Json | null
+          other_important_dates: Json | null
+          other_important_dates_labels: Json | null
           processed_at: string | null
           processing_status: string | null
           program: string | null
@@ -280,6 +282,8 @@ export type Database = {
           other_sources_names?: Json | null
           other_templates_links?: Json | null
           other_templates_names?: Json | null
+          other_important_dates?: Json | null
+          other_important_dates_labels?: Json | null
           processed_at?: string | null
           processing_status?: string | null
           program?: string | null
@@ -339,6 +343,8 @@ export type Database = {
           other_sources_names?: Json | null
           other_templates_links?: Json | null
           other_templates_names?: Json | null
+          other_important_dates?: Json | null
+          other_important_dates_labels?: Json | null
           processed_at?: string | null
           processing_status?: string | null
           program?: string | null
@@ -654,6 +660,8 @@ export type Database = {
           other_sources_names: Json | null
           other_templates_links: Json | null
           other_templates_names: Json | null
+          other_important_dates: Json | null
+          other_important_dates_labels: Json | null
           processed_at: string | null
           processing_status: string | null
           program: string | null
