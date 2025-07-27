@@ -116,6 +116,9 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
     information_webinar_links: parseJsonArray(grant.information_webinar_links),
     information_webinar_names: parseJsonArray(grant.information_webinar_names),
+    // Project duration fields
+    project_duration_months_min: grant.project_duration_months_min || undefined,
+    project_duration_months_max: grant.project_duration_months_max || undefined,
     // Template fields for files and documents
     templates: parseJsonArray(grant.application_templates_names) || [],
     generalInfo: parseJsonArray(grant.other_templates_names) || [],

@@ -192,6 +192,9 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         information_webinar_names: parseJsonArray(grant.information_webinar_names),
         other_important_dates: parseJsonArray(grant.other_important_dates),
         other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels),
+        // Project duration fields
+        project_duration_months_min: grant.project_duration_months_min || undefined,
+        project_duration_months_max: grant.project_duration_months_max || undefined,
         // Template fields for files and documents
         templates: parseJsonArray(grant.application_templates_names) || [],
         generalInfo: parseJsonArray(grant.other_templates_names) || [],
@@ -270,7 +273,9 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
     information_webinar_links: parseJsonArray(grant.information_webinar_links),
     information_webinar_names: parseJsonArray(grant.information_webinar_names),
     other_important_dates: parseJsonArray(grant.other_important_dates),
-    other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels)
+    other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels),
+    project_duration_months_min: grant.project_duration_months_min || undefined,
+    project_duration_months_max: grant.project_duration_months_max || undefined
   };
 
   return grantDetails;

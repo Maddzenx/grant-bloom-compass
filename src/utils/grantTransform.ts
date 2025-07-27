@@ -46,6 +46,8 @@ type PartialSupabaseGrantRow = Pick<
   | 'cofinancing_required'
   | 'program'
   | 'grant_type'
+  | 'project_duration_months_min'
+  | 'project_duration_months_max'
 >;
 
 export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): Grant => {
@@ -202,6 +204,9 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       information_webinar_names: jsonToStringArray(supabaseGrant.information_webinar_names),
       other_important_dates: jsonToStringArray(supabaseGrant.other_important_dates),
       other_important_dates_labels: jsonToStringArray(supabaseGrant.other_important_dates_labels),
+      // Project duration fields
+      project_duration_months_min: supabaseGrant.project_duration_months_min || undefined,
+      project_duration_months_max: supabaseGrant.project_duration_months_max || undefined,
     };
 
     console.log('✅ Transformation successful for:', transformed.id, transformed.title);
