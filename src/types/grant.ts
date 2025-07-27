@@ -88,6 +88,9 @@ export interface GrantListItem {
   cofinancing_level?: number;
   consortium_requirement?: string | boolean;
   fundingRules?: string[];
+  // Timestamp fields
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Full data for grant details (extends GrantListItem)

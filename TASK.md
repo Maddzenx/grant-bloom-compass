@@ -106,6 +106,34 @@
 
 **Status**: ✅ Completed
 
+### Sorting Fix for "Nyast publicerat" - 2024-12-19
+**Description**: Fixed the sorting function for "Nyast publicerat" (newest published) to use the correct `updated_at` field instead of incorrect data points.
+
+**Problem Identified**:
+- The "Nyast publicerat" sorting option was not accurately determining the newest published grants
+- **Backend**: Was using `created_at` instead of `updated_at` for sorting
+- **Frontend**: Was using `b.id.localeCompare(a.id)` as a proxy for creation date, which is completely wrong
+- **Database Queries**: Missing `updated_at` field in SELECT statements
+
+**Changes Made**:
+- **Backend Function**: Updated `filtered-grants-search` to use `updated_at` instead of `created_at` for `created-desc` sorting
+- **Database Queries**: Added `updated_at` field to SELECT statements in both frontend and backend
+- **Frontend Sorting**: Fixed `grantSorting.ts` to use actual `updated_at` timestamps instead of ID comparison
+- **Type Definitions**: Added `created_at` and `updated_at` fields to `GrantListItem` interface
+- **Data Transformation**: Updated all transformation functions to include timestamp fields
+
+**Technical Details**:
+- Updated `supabase/functions/filtered-grants-search/index.ts` - Changed sorting logic and added `updated_at` to SELECT
+- Updated `src/services/grantsService.ts` - Added `updated_at` to SELECT and transformation
+- Updated `src/hooks/useBackendFilteredGrants.ts` - Added `updated_at` to transformation
+- Updated `src/types/grant.ts` - Added timestamp fields to GrantListItem interface
+- Updated `src/utils/grantSorting.ts` - Fixed frontend sorting to use actual timestamps
+
+**Result**:
+Now when users select "Nyast publicerat" (newest published), the grants will be sorted by their actual `updated_at` timestamp, showing the most recently updated/published grants first.
+
+**Status**: ✅ Completed
+
 ### Date Handling and Display Improvements - 2024-12-19
 **Description**: Fixed date handling issues and improved the display of important dates in grant details.
 

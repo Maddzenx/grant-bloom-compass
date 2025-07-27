@@ -73,7 +73,7 @@ serve(async (req) => {
         project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
         information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
         other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
-        geographic_scope, cofinancing_required, cofinancing_level_min, created_at
+        geographic_scope, cofinancing_required, cofinancing_level_min, created_at, updated_at
       `, { count: 'exact' });
 
     // Filter out grants with passed deadlines
@@ -168,11 +168,11 @@ serve(async (req) => {
         query = query.order('max_funding_per_project', { ascending: true, nullsLast: true });
         break;
       case 'created-desc':
-        query = query.order('created_at', { ascending: false });
+        query = query.order('updated_at', { ascending: false });
         break;
       default:
-        // Default sorting by created_at descending
-        query = query.order('created_at', { ascending: false });
+        // Default sorting by updated_at descending
+        query = query.order('updated_at', { ascending: false });
         break;
     }
 
