@@ -7,6 +7,7 @@ import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bookmark, Clock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { calculateGrantStatus } from "@/utils/grantHelpers";
 
 interface ConsolidatedGrantListProps {
   grants: GrantListItem[];
@@ -116,29 +117,11 @@ const ConsolidatedGrantList = ({
               const isSelected = selectedGrant?.id === grant.id;
 
               // --- Status logic ---
-              const today = new Date();
-              const opensAt = new Date(grant.opens_at);
-              // Try to parse deadline as ISO, fallback to Swedish date
-              let deadlineDate: Date;
-              try {
-                deadlineDate = new Date(grant.deadline);
-                if (isNaN(deadlineDate.getTime())) {
-                  // Fallback for Swedish format (e.g., '15 mars 2025')
-                  const [day, monthName, year] = grant.deadline.split(' ');
-                  const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
-                  const month = months.findIndex(m => m === monthName.toLowerCase());
-                  deadlineDate = new Date(Number(year), month, Number(day));
-                }
-              } catch {
-                deadlineDate = new Date();
-              }
-              let status: 'open' | 'upcoming' | 'closed' = 'closed';
-              if (today >= opensAt && today <= deadlineDate) status = 'open';
-              else if (today < opensAt) status = 'upcoming';
+              const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
               // ---
               console.log('Status:', status, grant.title, grant.opens_at, grant.deadline);
 
-              const daysLeft = Math.max(0, Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+              const daysLeft = Math.max(0, Math.ceil((new Date(grant.application_closing_date || grant.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
               const actualDeadline = formatDate(grant.deadline);
 
               return (
@@ -172,6 +155,9 @@ const ConsolidatedGrantList = ({
                         )}
                         {status === 'upcoming' && (
                           <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>
+                        )}
+                        {status === 'closed' && (
+                          <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Stängt</Badge>
                         )}
                         <Button
                           variant="ghost"
@@ -208,7 +194,7 @@ const ConsolidatedGrantList = ({
                     </div>
 
                     {/* Status component at bottom with smaller font and subtle separation */}
-                    {/* {status === 'open' && (
+                    {status === 'open' && (
                       <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
                         <div className="flex items-center gap-2 text-green-600">
                           <Clock className="h-3 w-3" />
@@ -216,18 +202,18 @@ const ConsolidatedGrantList = ({
                         </div>
                         <div className="flex items-center gap-2 text-green-600 mt-1">
                           <Calendar className="h-3 w-3" />
-                          <span>Sök senast: {deadlineDate.toISOString().split('T')[0]}</span>
+                          <span>Sök senast: {new Date(grant.application_closing_date || grant.deadline).toISOString().split('T')[0]}</span>
                         </div>
                       </div>
                     )}
-                    {status === 'upcoming' && (
+                    {status === 'closed' && (
                       <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
-                        <div className="flex items-center gap-2 text-amber-600">
+                        <div className="flex items-center gap-2 text-red-600">
                           <Calendar className="h-3 w-3" />
-                          <span>Kommande: Öppnar för ansökningar {opensAt.toISOString().split('T')[0]}</span>
+                          <span>Stängt: {actualDeadline}</span>
                         </div>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 </div>
               );

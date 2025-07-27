@@ -128,6 +128,8 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     other_sources_names: parseJsonArray(grant.other_sources_names),
     cofinancing_required: parseBooleanString(grant.cofinancing_required),
     cofinancing_level: grant.cofinancing_level ?? null,
+    cofinancing_level_min: grant.cofinancing_level_min || undefined,
+    cofinancing_level_max: grant.cofinancing_level_max || undefined,
     consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
     region: grant.region || null,
     fundingRules: parseJsonArray(grant.eligible_cost_categories) || [],

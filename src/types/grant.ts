@@ -89,6 +89,8 @@ export interface GrantListItem {
   // Cofinancing fields
   cofinancing_required?: boolean;
   cofinancing_level?: number;
+  cofinancing_level_min?: number;
+  cofinancing_level_max?: number;
   consortium_requirement?: string | boolean;
   fundingRules?: string[];
   // Timestamp fields

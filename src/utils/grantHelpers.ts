@@ -139,23 +139,109 @@ export const isGrantWithinDeadline = (grant: Grant | GrantListItem, deadlineFilt
 };
 
 /**
- * Formats cofinancing text based on cofinancing_required and cofinancing_level
+ * Formats cofinancing text based on cofinancing_required and cofinancing level range
  * @param cofinancing_required - Whether cofinancing is required
- * @param cofinancing_level - The cofinancing percentage level
+ * @param cofinancing_level_min - The minimum cofinancing percentage level
+ * @param cofinancing_level_max - The maximum cofinancing percentage level
  * @returns Formatted cofinancing text
  */
-export const formatCofinancingText = (cofinancing_required?: boolean, cofinancing_level?: number): string => {
+export const formatCofinancingText = (
+  cofinancing_required?: boolean, 
+  cofinancing_level_min?: number, 
+  cofinancing_level_max?: number
+): string => {
   if (cofinancing_required === false) {
     return 'Ingen medfinansiering krävs';
   }
   
-  if (cofinancing_required === true && cofinancing_level !== null && cofinancing_level !== undefined) {
-    return `${cofinancing_level}% medfinansiering krävs`;
-  }
-  
   if (cofinancing_required === true) {
+    // Check if we have any cofinancing level data
+    if (cofinancing_level_min !== undefined || cofinancing_level_max !== undefined) {
+      if (cofinancing_level_min !== undefined && cofinancing_level_max !== undefined) {
+        if (cofinancing_level_min === cofinancing_level_max) {
+          return `${cofinancing_level_min}% medfinansiering krävs`;
+        } else {
+          return `${cofinancing_level_min}-${cofinancing_level_max}% medfinansiering krävs`;
+        }
+      } else if (cofinancing_level_min !== undefined) {
+        return `min ${cofinancing_level_min}% medfinansiering krävs`;
+      } else if (cofinancing_level_max !== undefined) {
+        return `max ${cofinancing_level_max}% medfinansiering krävs`;
+      }
+    }
+    
+    // Fallback when cofinancing is required but no specific levels are available
     return 'Medfinansiering krävs';
   }
   
   return 'Ej specificerat';
+};
+
+/**
+ * Calculates grant status based on application opening and closing dates
+ * @param application_opening_date - The application opening date
+ * @param application_closing_date - The application closing date
+ * @returns 'upcoming' | 'open' | 'closed' - Grant status
+ */
+export const calculateGrantStatus = (
+  application_opening_date?: string, 
+  application_closing_date?: string
+): 'upcoming' | 'open' | 'closed' => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
+
+  // Parse opening date
+  let openingDate: Date | null = null;
+  if (application_opening_date) {
+    try {
+      openingDate = new Date(application_opening_date);
+      if (isNaN(openingDate.getTime())) {
+        // Try to parse Swedish date format (e.g., '15 mars 2025')
+        const [day, monthName, year] = application_opening_date.split(' ');
+        const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+        const month = months.findIndex(m => m === monthName.toLowerCase());
+        if (month !== -1) {
+          openingDate.setFullYear(Number(year), month, Number(day));
+        } else {
+          openingDate = null; // Invalid date format
+        }
+      }
+      openingDate.setHours(0, 0, 0, 0);
+    } catch (error) {
+      console.warn('Error parsing application opening date:', application_opening_date, error);
+      openingDate = null;
+    }
+  }
+
+  // Parse closing date
+  let closingDate: Date | null = null;
+  if (application_closing_date) {
+    try {
+      closingDate = new Date(application_closing_date);
+      if (isNaN(closingDate.getTime())) {
+        // Try to parse Swedish date format (e.g., '15 mars 2025')
+        const [day, monthName, year] = application_closing_date.split(' ');
+        const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+        const month = months.findIndex(m => m === monthName.toLowerCase());
+        if (month !== -1) {
+          closingDate.setFullYear(Number(year), month, Number(day));
+        } else {
+          closingDate = null; // Invalid date format
+        }
+      }
+      closingDate.setHours(0, 0, 0, 0);
+    } catch (error) {
+      console.warn('Error parsing application closing date:', application_closing_date, error);
+      closingDate = null;
+    }
+  }
+
+  // Determine status
+  if (openingDate && today < openingDate) {
+    return 'upcoming'; // Grant hasn't opened yet
+  } else if (closingDate && today <= closingDate) {
+    return 'open'; // Grant is currently open
+  } else {
+    return 'closed'; // Grant is closed (either no dates or deadline passed)
+  }
 };

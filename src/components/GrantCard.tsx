@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getOrganizationLogo } from "@/utils/organizationLogos";
 import { useSavedGrantsContext } from "@/contexts/SavedGrantsContext";
+import { calculateGrantStatus } from "@/utils/grantHelpers";
 
 interface GrantCardProps {
   grant: Grant;
@@ -111,25 +112,7 @@ const GrantCard = ({
   });
 
   // --- Status logic ---
-  const today = new Date();
-  const opensAt = new Date(grant.opens_at);
-  // Try to parse deadline as ISO, fallback to Swedish date
-  let deadlineDate: Date;
-  try {
-    deadlineDate = new Date(grant.deadline);
-    if (isNaN(deadlineDate.getTime())) {
-      // Fallback for Swedish format (e.g., '15 mars 2025')
-      const [day, monthName, year] = grant.deadline.split(' ');
-      const months = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
-      const month = months.findIndex(m => m === monthName.toLowerCase());
-      deadlineDate = new Date(Number(year), month, Number(day));
-    }
-  } catch {
-    deadlineDate = new Date();
-  }
-  let status: 'open' | 'upcoming' | 'closed' = 'closed';
-  if (today >= opensAt && today <= deadlineDate) status = 'open';
-  else if (today < opensAt) status = 'upcoming';
+  const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
   // ---
 
   return (
@@ -150,6 +133,9 @@ const GrantCard = ({
             )}
             {status === 'upcoming' && (
               <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>
+            )}
+            {status === 'closed' && (
+              <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Stängd</Badge>
             )}
             <button 
               onClick={handleBookmarkToggle} 
