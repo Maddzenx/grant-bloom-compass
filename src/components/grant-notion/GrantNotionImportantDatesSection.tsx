@@ -24,8 +24,9 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     return `${day} ${month} ${year}`;
   };
 
-  const getImportantDates = (): DateItem[] => {
-    const dates: DateItem[] = [];
+  const getImportantDates = (): { validDates: DateItem[], otherEvents: DateItem[] } => {
+    const validDates: DateItem[] = [];
+    const otherEvents: DateItem[] = [];
 
     // Debug logging
     console.log('🔍 GrantNotionImportantDatesSection - Grant date fields:', {
@@ -44,7 +45,7 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
 
     // Application opening date
     if (grant.application_opening_date) {
-      dates.push({
+      validDates.push({
         date: grant.application_opening_date,
         label: "Ansökan öppnar"
       });
@@ -52,7 +53,7 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
 
     // Application closing date
     if (grant.application_closing_date) {
-      dates.push({
+      validDates.push({
         date: grant.application_closing_date,
         label: "Ansökan stänger"
       });
@@ -60,14 +61,14 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
 
     // Project start dates
     if (grant.project_start_date_min) {
-      dates.push({
+      validDates.push({
         date: grant.project_start_date_min,
         label: "Tidigaste projektstart"
       });
     }
 
     if (grant.project_start_date_max && grant.project_start_date_max !== grant.project_start_date_min) {
-      dates.push({
+      validDates.push({
         date: grant.project_start_date_max,
         label: "Senaste projektstart"
       });
@@ -75,14 +76,14 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
 
     // Project end dates
     if (grant.project_end_date_min) {
-      dates.push({
+      validDates.push({
         date: grant.project_end_date_min,
         label: "Tidigaste projektslut"
       });
     }
 
     if (grant.project_end_date_max && grant.project_end_date_max !== grant.project_end_date_min) {
-      dates.push({
+      validDates.push({
         date: grant.project_end_date_max,
         label: "Senaste projektslut"
       });
@@ -94,14 +95,19 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
         const webinarName = grant.information_webinar_names?.[index] || "Informationsmöte";
         const webinarLink = grant.information_webinar_links?.[index];
         
-        // Skip null dates or show "Datum saknas"
-        const displayDate = webinarDate || "Datum saknas";
-        
-        dates.push({
-          date: displayDate,
-          label: webinarName,
-          link: webinarLink
-        });
+        if (webinarDate) {
+          validDates.push({
+            date: webinarDate,
+            label: webinarName,
+            link: webinarLink
+          });
+        } else {
+          otherEvents.push({
+            date: "",
+            label: webinarName,
+            link: webinarLink
+          });
+        }
       });
     }
 
@@ -110,49 +116,80 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
       grant.other_important_dates.forEach((importantDate, index) => {
         const dateLabel = grant.other_important_dates_labels?.[index] || "Viktigt datum";
         
-        // Skip null dates or show "Datum saknas"
-        const displayDate = importantDate || "Datum saknas";
-        
-        dates.push({
-          date: displayDate,
-          label: dateLabel
-        });
+        if (importantDate) {
+          validDates.push({
+            date: importantDate,
+            label: dateLabel
+          });
+        } else {
+          otherEvents.push({
+            date: "",
+            label: dateLabel
+          });
+        }
       });
     }
 
-    // Sort dates chronologically, but handle "Datum saknas" by putting them at the end
-    return dates.sort((a, b) => {
-      if (a.date === "Datum saknas" && b.date === "Datum saknas") return 0;
-      if (a.date === "Datum saknas") return 1;
-      if (b.date === "Datum saknas") return -1;
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
+    // Sort valid dates chronologically
+    validDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return { validDates, otherEvents };
   };
 
-  const importantDates = getImportantDates();
+  const { validDates, otherEvents } = getImportantDates();
 
-  if (importantDates.length === 0) return null;
+  if (validDates.length === 0 && otherEvents.length === 0) return null;
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Viktiga datum</h3>
-      <ul className="space-y-0">
-        {importantDates.map((item, index) => (
-          <li key={index} className="text-sm text-gray-700 leading-relaxed">
-            <span className="font-bold">{formatDate(item.date)}</span>: {item.label}
-            {item.link && (
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline hover:text-blue-800 ml-1"
-              >
-                (länk)
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
+      {validDates.length > 0 && (
+        <div className="mb-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Viktiga datum</h3>
+          <ul className="space-y-0">
+            {validDates.map((item, index) => (
+              <li key={index} className="text-sm text-gray-700 leading-relaxed">
+                <span className="font-bold">{formatDate(item.date)}</span>: {item.label}
+                {item.link && (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline hover:text-blue-800 ml-1"
+                  >
+                    (länk)
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {otherEvents.length > 0 && (
+        <div>
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Andra händelser</h3>
+          <ul className="space-y-0">
+            {otherEvents.map((item, index) => (
+              <li key={index} className="text-sm text-gray-700 leading-relaxed flex items-start">
+                <span className="mr-2 text-gray-500">•</span>
+                <span>
+                  {item.label}
+                  {item.link && (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline hover:text-blue-800 ml-1"
+                    >
+                      (länk)
+                    </a>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

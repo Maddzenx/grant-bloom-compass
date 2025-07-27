@@ -48,6 +48,9 @@ export interface Grant {
   information_webinar_names?: string[];
   other_important_dates?: string[];
   other_important_dates_labels?: string[];
+  // Project duration fields
+  project_duration_months_min?: number;
+  project_duration_months_max?: number;
 }
 
 // Minimal data for grant list items
@@ -91,6 +94,9 @@ export interface GrantListItem {
   // Timestamp fields
   created_at?: string;
   updated_at?: string;
+  // Project duration fields
+  project_duration_months_min?: number;
+  project_duration_months_max?: number;
 }
 
 // Full data for grant details (extends GrantListItem)
@@ -132,4 +138,7 @@ export interface GrantDetails extends GrantListItem {
   information_webinar_names?: string[];
   other_important_dates?: string[];
   other_important_dates_labels?: string[];
+  // Project duration fields
+  project_duration_months_min?: number;
+  project_duration_months_max?: number;
 }
