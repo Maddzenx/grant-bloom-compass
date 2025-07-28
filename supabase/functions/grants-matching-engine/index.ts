@@ -1,20 +1,52 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { EnhancedGrantScorer } from './enhancedGrantScorer.ts';
 import { MatchingResponse } from './types.ts';
-
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+// Language utility functions
+const getGrantLanguage = (organisation: string | null): 'sv' | 'en' => {
+  if (!organisation) return 'sv';
+  
+  const orgLower = organisation.toLowerCase();
+  
+  // EU grants use English
+  if (orgLower.includes('eu') || orgLower.includes('european')) {
+    return 'en';
+  }
+  
+  // All other grants use Swedish
+  return 'sv';
+};
+
+const createLanguageAwareSelect = (fields: string[], language: 'sv' | 'en'): string => {
+  const languageSpecificFields = [
+    'title', 'subtitle', 'description', 'eligibility', 'evaluation_criteria',
+    'application_process', 'consortium_requirement', 'region',
+    'eligible_organisations', 'eligible_cost_categories', 'information_webinar_names',
+    'application_templates_names', 'other_sources_names', 'contact_title',
+    'other_templates_names', 'other_important_dates_labels'
+  ];
+  
+  return fields.map(field => {
+    if (languageSpecificFields.includes(field)) {
+      return `${field}_${language} as ${field}`;
+    }
+    return field;
+  }).join(', ');
+};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -46,8 +78,31 @@ serve(async (req) => {
     console.log('🔍 AI Grants Matching Engine - Query:', query);
     console.log('🎯 Filtering by sectors:', relevantSectors);
 
+    // Define fields to select for matching engine
+    const selectFields = [
+      'id', 'organisation', 'original_url', 'application_closing_date', 'application_opening_date',
+      'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max',
+      'information_webinar_dates', 'information_webinar_links', 'project_duration_months_min',
+      'project_duration_months_max', 'max_funding_per_project', 'min_funding_per_project',
+      'total_funding_per_call', 'currency', 'cofinancing_level_min', 'application_templates_links',
+      'other_sources_links', 'contact_name', 'contact_email', 'contact_phone', 'processing_status',
+      'scraped_at', 'processed_at', 'created_at', 'updated_at', 'ai_enabled', 'other_templates_links',
+      'is_original_source', 'original_source_url', 'cofinancing_required', 'embedding',
+      'cofinancing_level_max', 'program', 'grant_type', 'comments', 'other_important_dates',
+      'eligible_organisations_standardized', 'eligible_cost_categories_standardized',
+      'keywords', 'industry_sectors', 'geographic_scope',
+      // Language-specific fields
+      'title', 'region', 'eligible_organisations', 'consortium_requirement', 'subtitle',
+      'description', 'eligibility', 'evaluation_criteria', 'application_process',
+      'information_webinar_names', 'eligible_cost_categories', 'application_templates_names',
+      'other_sources_names', 'contact_title', 'other_templates_names', 'other_important_dates_labels'
+    ];
+
+    // For matching engine, we'll use Swedish as default and handle language selection in transformation
+    const selectStatement = createLanguageAwareSelect(selectFields, 'sv');
+
     // Build the query to filter by relevant sectors
-    let grantsQuery = supabase.from('grant_call_details').select('*');
+    let grantsQuery = supabase.from('grant_call_details').select(selectStatement);
     
     if (relevantSectors && relevantSectors.length > 0) {
       // Filter grants that have at least one matching sector
@@ -76,28 +131,103 @@ serve(async (req) => {
 
     console.log('📊 Processing filtered grants with AI:', grants.length);
 
+    // Transform grants to use correct language based on organization
+    const transformedGrants = grants.map(grant => {
+      const language = getGrantLanguage(grant.organisation);
+      
+      return {
+        ...grant,
+        // Ensure we have the correct language fields for AI processing
+        title: grant.title || 'No title available',
+        subtitle: grant.subtitle || '',
+        description: grant.description || '',
+        eligibility: grant.eligibility || '',
+        evaluation_criteria: grant.evaluation_criteria || '',
+        application_process: grant.application_process || '',
+        consortium_requirement: grant.consortium_requirement || '',
+        region: grant.region || '',
+        eligible_organisations: grant.eligible_organisations || [],
+        eligible_cost_categories: grant.eligible_cost_categories || [],
+        information_webinar_names: grant.information_webinar_names || [],
+        application_templates_names: grant.application_templates_names || [],
+        other_sources_names: grant.other_sources_names || [],
+        contact_title: grant.contact_title || '',
+        other_templates_names: grant.other_templates_names || [],
+        other_important_dates_labels: grant.other_important_dates_labels || []
+      };
+    });
+
     // Use AI scorer for filtered grants
     const scorer = new EnhancedGrantScorer(openAIApiKey);
-    const scoredGrants = await scorer.scoreAllGrants(query, grants);
+    const rankedGrants = await scorer.scoreAllGrants(query, transformedGrants);
 
-    // Sort by relevance score
-    const finalSortedGrants = scoredGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
+    console.log(`✅ AI matching completed, found ${rankedGrants.length} relevant grants`);
+
+    // Transform the ranked grants to use correct language for display
+    const finalRankedGrants = rankedGrants.map(scoredGrant => {
+      // Find the original grant data
+      const originalGrant = transformedGrants.find(g => g.id === scoredGrant.grantId);
+      if (!originalGrant) {
+        console.warn(`⚠️ Could not find original grant data for scored grant: ${scoredGrant.grantId}`);
+        return null;
+      }
+      
+      const language = getGrantLanguage(originalGrant.organisation);
+      
+      return {
+        id: originalGrant.id,
+        title: originalGrant.title || 'No title available',
+        organization: originalGrant.organisation || 'Unknown organization',
+        description: originalGrant.description || originalGrant.subtitle || 'No description available',
+        aboutGrant: originalGrant.subtitle || originalGrant.description || 'No description available',
+        fundingAmount: formatFundingAmount(originalGrant),
+        opens_at: originalGrant.application_opening_date || '',
+        deadline: originalGrant.application_closing_date || '',
+        tags: Array.isArray(originalGrant.keywords) ? originalGrant.keywords : [],
+        industry_sectors: Array.isArray(originalGrant.industry_sectors) ? originalGrant.industry_sectors : [],
+        eligible_organisations: Array.isArray(originalGrant.eligible_organisations) ? originalGrant.eligible_organisations : [],
+        geographic_scope: originalGrant.geographic_scope ? [originalGrant.geographic_scope] : [],
+        region: originalGrant.region || undefined,
+        cofinancing_required: originalGrant.cofinancing_required || false,
+        cofinancing_level_min: originalGrant.cofinancing_level_min || undefined,
+        consortium_requirement: originalGrant.consortium_requirement || undefined,
+        fundingRules: Array.isArray(originalGrant.eligible_cost_categories) ? originalGrant.eligible_cost_categories : [],
+        application_opening_date: originalGrant.application_opening_date,
+        application_closing_date: originalGrant.application_closing_date,
+        project_start_date_min: originalGrant.project_start_date_min,
+        project_start_date_max: originalGrant.project_start_date_max,
+        project_end_date_min: originalGrant.project_end_date_min,
+        project_end_date_max: originalGrant.project_end_date_max,
+        information_webinar_dates: Array.isArray(originalGrant.information_webinar_dates) ? originalGrant.information_webinar_dates : [],
+        information_webinar_links: Array.isArray(originalGrant.information_webinar_links) ? originalGrant.information_webinar_links : [],
+        information_webinar_names: Array.isArray(originalGrant.information_webinar_names) ? originalGrant.information_webinar_names : [],
+        templates: Array.isArray(originalGrant.application_templates_names) ? originalGrant.application_templates_names : [],
+        generalInfo: Array.isArray(originalGrant.other_templates_names) ? originalGrant.other_templates_names : [],
+        application_templates_links: Array.isArray(originalGrant.application_templates_links) ? originalGrant.application_templates_links : [],
+        other_templates_links: Array.isArray(originalGrant.other_templates_links) ? originalGrant.other_templates_links : [],
+        other_sources_links: Array.isArray(originalGrant.other_sources_links) ? originalGrant.other_sources_links : [],
+        other_sources_names: Array.isArray(originalGrant.other_sources_names) ? originalGrant.other_sources_names : [],
+        created_at: originalGrant.created_at,
+        updated_at: originalGrant.updated_at,
+        relevanceScore: scoredGrant.relevanceScore,
+        matchingReasons: scoredGrant.matchingReasons
+      };
+    }).filter(Boolean); // Remove null entries
 
     const response: MatchingResponse = {
-      rankedGrants: finalSortedGrants,
-      explanation: `AI analysis completed - analyzed ${finalSortedGrants.length} grants from ${relevantSectors?.length || 0} relevant sectors`
+      rankedGrants: finalRankedGrants,
+      explanation: `Found ${finalRankedGrants.length} relevant grants using AI matching for query: "${query}"`
     };
 
-    console.log(`✅ AI grants matching completed - scored grants: ${finalSortedGrants.length}`);
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in grants-matching-engine:', error);
+    console.error('❌ Error in grants matching engine:', error);
     const errorResponse: MatchingResponse = {
       rankedGrants: [],
-      explanation: 'AI search failed - please try again'
+      explanation: 'AI matching failed - please try again'
     };
     return new Response(JSON.stringify(errorResponse), {
       status: 500,
@@ -105,3 +235,23 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to format funding amount
+function formatFundingAmount(grant: any): string {
+  if (grant.max_funding_per_project) {
+    if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
+      return `${grant.min_funding_per_project.toLocaleString()} - ${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    }
+    return `${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+  }
+  
+  if (grant.total_funding_per_call) {
+    return `${grant.total_funding_per_call.toLocaleString()} ${grant.currency || 'SEK'}`;
+  }
+  
+  if (grant.min_funding_per_project) {
+    return `${grant.min_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+  }
+  
+  return 'Not specified';
+}
