@@ -139,7 +139,7 @@ serve(async (req) => {
 
     if (!grants || grants.length === 0) {
       console.log('📭 No grants found in database');
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         rankedGrants: [],
         explanation: 'No grants found in database'
       }), {
@@ -204,7 +204,7 @@ serve(async (req) => {
 
     if (!matchedGrants || matchedGrants.length === 0) {
       console.log('📭 No semantic matches found');
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         rankedGrants: [],
         explanation: 'No grants found matching your query'
       }), {
@@ -266,7 +266,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('❌ Error in semantic grant search:', error);
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       error: 'Semantic search failed',
       details: error.message 
     }), {

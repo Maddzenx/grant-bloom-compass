@@ -71,14 +71,14 @@ serve(async (req) => {
       searchTerm: searchTerm ? `"${searchTerm}"` : 'none'
     });
 
-    // Define fields to select
+    // Define fields to select - use language-specific fields for display
     const selectFields = [
       'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
       'total_funding_per_call', 'currency', 'application_opening_date', 'application_closing_date', 
       'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max', 
       'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
       'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
-      // Language-specific fields
+      // Language-specific fields for display
       'title', 'subtitle', 'information_webinar_names', 'application_templates_names', 
       'application_templates_links', 'other_templates_names', 'other_templates_links', 
       'other_sources_names', 'other_sources_links', 'keywords', 'industry_sectors', 
@@ -128,7 +128,7 @@ serve(async (req) => {
       }
     }
 
-    // Apply industry sectors filter
+    // Apply industry sectors filter - use the original field
     if (filters.industrySectors && filters.industrySectors.length > 0) {
       console.log('🏭 Applying industry sectors filter:', filters.industrySectors);
       const sectorConditions = filters.industrySectors.map((sector: string) => 
@@ -137,19 +137,25 @@ serve(async (req) => {
       query = query.or(sectorConditions.join(','));
     }
 
-    // Apply eligible applicants filter
+    // Apply eligible applicants filter - use the original field for filtering
     if (filters.eligibleApplicants && filters.eligibleApplicants.length > 0) {
       console.log('👥 Applying eligible applicants filter:', filters.eligibleApplicants);
       const applicantConditions = filters.eligibleApplicants.map((applicant: string) => 
-        `eligible_organisations_sv.cs.["${applicant}"]`
+        `eligible_organisations_standardized.cs.["${applicant}"]`
       );
       query = query.or(applicantConditions.join(','));
     }
 
-    // Apply consortium requirement filter
+    // Apply consortium requirement filter - use the original field for filtering
     if (filters.consortiumRequired !== undefined) {
       console.log('🤝 Applying consortium requirement filter:', filters.consortiumRequired);
-      query = query.eq('consortium_requirement_sv', filters.consortiumRequired ? 'true' : 'false');
+      // Use the Swedish field for filtering since we're defaulting to Swedish
+      // The field contains text, so we need to search for the appropriate text
+      if (filters.consortiumRequired) {
+        query = query.or('consortium_requirement_sv.ilike.%konsortium%,consortium_requirement_sv.ilike.%required%,consortium_requirement_sv.ilike.%krävs%');
+      } else {
+        query = query.or('consortium_requirement_sv.is.null,consortium_requirement_sv.ilike.%optional%,consortium_requirement_sv.ilike.%valfritt%');
+      }
     }
 
     // Apply geographic scope filter
