@@ -64,7 +64,6 @@ serve(async (req) => {
       title: grant.title,
       subtitle: grant.subtitle,
       description: grant.description,
-      search_description: grant.search_description,
       keywords: grant.keywords,
       industry_sectors: grant.industry_sectors
     }));
@@ -76,7 +75,7 @@ User Query: "${query}"
 Available Grants:
 ${JSON.stringify(grantsForAI, null, 2)}
 
-Please analyze the user query against the grant information including title, subtitle, description, search_description, keywords, and industry_sectors. 
+Please analyze the user query against the grant information including title, subtitle, description, keywords, and industry_sectors. 
 
 Return a JSON response with the following structure:
 {
@@ -97,7 +96,7 @@ Rules:
 Consider:
 - Relevance to the user's project description
 - Focus area alignment based on keywords and industry sectors
-- Content match with title, subtitle, description, and search_description`;
+- Content match with title, subtitle, and description`;
 
 
 

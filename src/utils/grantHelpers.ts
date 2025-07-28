@@ -28,7 +28,6 @@ export const formatFundingAmount = (
     max_funding_per_project?: number | null;
     min_funding_per_project?: number | null;
     total_funding_per_call?: number | null;
-    total_funding_amount?: number | null;
     currency?: string | null;
   }
 ): string => {
@@ -56,8 +55,8 @@ export const formatFundingAmount = (
     }
   }
   
-  // Fallback to total_funding_per_call (from grantTransform.ts) or total_funding_amount (from services)
-  const totalAmount = grant.total_funding_per_call || grant.total_funding_amount;
+  // Fallback to total_funding_per_call
+  const totalAmount = grant.total_funding_per_call;
   if (totalAmount) {
     const result = formatAmount(totalAmount);
     console.log('🔍 formatFundingAmount: total ->', result);

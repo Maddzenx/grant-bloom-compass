@@ -17,7 +17,7 @@ const GrantNotionKeyInfo = ({
   console.log('🔍 GrantNotionKeyInfo - Grant data:', {
     consortium_requirement: grant.consortium_requirement,
     cofinancing_required: grant.cofinancing_required,
-    cofinancing_level: grant.cofinancing_level,
+    cofinancing_level: grant.cofinancing_level_min,
     fundingRules: grant.fundingRules,
     region: grant.region,
     regionType: typeof grant.region,
