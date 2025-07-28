@@ -62,12 +62,12 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
     .select(`
-      id, title, organisation, subtitle, min_grant_per_project, max_grant_per_project, total_funding_amount, currency,
+      id, title, organisation, subtitle, min_funding_per_project, max_funding_per_project, total_funding_per_call, currency,
       application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
       project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
       information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
       other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
-      geographic_scope, cofinancing_required, cofinancing_level, consortium_requirement, region, eligible_cost_categories,
+      geographic_scope, cofinancing_required, cofinancing_level_min, consortium_requirement, region, eligible_cost_categories,
       created_at, updated_at
     `)
     .order('created_at', { ascending: false });
@@ -203,7 +203,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         other_sources_links: parseJsonArray(grant.other_sources_links),
         other_sources_names: parseJsonArray(grant.other_sources_names),
         cofinancing_required: parseBooleanString(grant.cofinancing_required),
-        cofinancing_level: grant.cofinancing_level ?? null,
+        cofinancing_level: grant.cofinancing_level_min ?? null,
         cofinancing_level_min: grant.cofinancing_level_min || undefined,
         cofinancing_level_max: grant.cofinancing_level_max || undefined,
         consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
@@ -264,7 +264,7 @@ const transformSupabaseGrantToDetails = (grant: any): GrantDetails => {
     originalUrl: grant.original_url || '',
     consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
     cofinancing_required: parseBooleanString(grant.cofinancing_required),
-    cofinancing_level: grant.cofinancing_level ?? null,
+          cofinancing_level: grant.cofinancing_level_min ?? null,
     cofinancing_level_min: grant.cofinancing_level_min || undefined,
     cofinancing_level_max: grant.cofinancing_level_max || undefined,
     application_opening_date: grant.application_opening_date,

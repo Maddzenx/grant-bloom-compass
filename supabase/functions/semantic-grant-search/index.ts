@@ -14,17 +14,10 @@ const corsHeaders = {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// Interface for LLM filtering
+// Interface for LLM filtering - simplified to only include description
 interface GrantForLLMFiltering {
   id: string;
-  title: string;
-  search_description: string | null;
   description: string | null;
-  geographic_scope: string | null;
-  region: string | null;
-  eligible_organisations: any;
-  industry_sectors: any;
-  organisation: string | null;
   relevanceScore: number;
 }
 
@@ -52,61 +45,37 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
     throw new Error('OpenRouter API key not configured');
   }
   
-  // Prepare grants data for LLM
+  // Prepare grants data for LLM - simplified to only include description
   console.log('📋 Preparing grant data for LLM...');
   const grantsForLLM = grants.map(grant => {
-    try {
-      return {
-        id: grant.id,
-        title: grant.title || 'No title',
-        organisation: grant.organisation || 'Unknown',
-        search_description: grant.search_description || 'No description available',
-        geographic_scope: grant.geographic_scope || 'Not specified',
-        region: grant.region || 'Not specified',
-        eligible_organisations: Array.isArray(grant.eligible_organisations) ? grant.eligible_organisations : 
-                               (typeof grant.eligible_organisations === 'string' ? 
-                                JSON.parse(grant.eligible_organisations || '[]') : []),
-        currentRelevanceScore: Math.round(grant.relevanceScore * 100)
-      };
-    } catch (parseError) {
-      console.error(`⚠️ Error parsing grant ${grant.id}:`, parseError);
-      return {
-        id: grant.id,
-        title: grant.title || 'No title',
-        organisation: grant.organisation || 'Unknown',
-        search_description: 'No description available',
-        geographic_scope: grant.geographic_scope || 'Not specified',
-        region: grant.region || 'Not specified',
-        eligible_organisations: [],
-        currentRelevanceScore: Math.round(grant.relevanceScore * 100)
-      };
-    }
+    return {
+      id: grant.id,
+      description: grant.description || 'No description available',
+      currentRelevanceScore: Math.round(grant.relevanceScore * 100)
+    };
   });
   console.log(`✅ Prepared ${grantsForLLM.length} grants for LLM prompt`);
 
-  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query and filter out irrelevant results.
+  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query based solely on the grant description.
 
 USER SEARCH QUERY: "${query}"
 
 EVALUATION CRITERIA:
-1. RELEVANCE MATCH: Does the grant's purpose, industry, and scope align with the search query? In case the grant has a non-specific purpose, or a broad scope which the search query could apply to, it should be considered relevant.
-2. ORGANIZATIONAL ELIGIBILITY: Could the searching organization potentially be eligible?
-3. SCOPE COMPATIBILITY: Do geographic/regional restrictions make sense for the search context?
+1. RELEVANCE MATCH: Does the grant description align with the search query? Consider the purpose, industry focus, and scope mentioned in the description.
+2. CONTENT RELEVANCE: Does the description contain information that would be useful for someone searching with this query?
 
 SCORING GUIDELINES:
-- 100%: Perfect match - organization, project, and purpose align perfectly
-- 75-99%: Excellent match - strong alignment with minor gaps
-- 50-74%: Good match - correct industry/area but may not be the exact right project type, etc.
-- 25-49%: Partial match - tangentially related or very broad eligibility
-- 1-24%: Weak match - minimal connection, mostly irrelevant
-- 0%: No match - completely irrelevant or organization clearly not eligible
+- 100%: Perfect match - description directly addresses the search query
+- 75-99%: Excellent match - strong alignment with the search intent
+- 50-74%: Good match - relevant content but may not be the exact focus
+- 25-49%: Partial match - tangentially related content
+- 1-24%: Weak match - minimal connection to the search query
+- 0%: No match - completely irrelevant content
 
 SPECIAL CONSIDERATIONS:
-- Some grants are industry non-specific (e.g., "Innovativa Startups" for any innovative startup). This should be a strong match for any startup with an innovative idea.
-- Some grants are region-specific but otherwise broad. This should be a strong match for essentially any organisation in the region.
-- If a grant has a specific industry and the search query is in another industry, it should generally not be considered a match at all.
-- Consider both explicit eligibility and implicit suitability
-- Be generous with broad/general grants that could apply to many situations, but be strict with specific grants that are only relevant for a specific industry or region.
+- Be generous with broad/general descriptions that could apply to many situations
+- Focus on the actual content and meaning of the description
+- Consider both explicit mentions and implicit relevance
 
 GRANTS TO EVALUATE:
 ${JSON.stringify(grantsForLLM, null, 2)}
@@ -300,9 +269,7 @@ serve(async (req) => {
       let grantsQuery = supabase
         .from('grant_call_details')
         .select(`
-          id, title, organisation, subtitle, search_description, 
-          geographic_scope, region, eligible_organisations, 
-          industry_sectors, embedding
+          id, description, embedding
         `)
         .not('embedding', 'is', null);
 
@@ -477,18 +444,11 @@ serve(async (req) => {
       });
     }
 
-    // Prepare grants for LLM filtering
+    // Prepare grants for LLM filtering - simplified to only include description
     console.log('🔍 Preparing grants for LLM filtering...');
     const grantsForLLMFiltering: GrantForLLMFiltering[] = topMatches.map(({ grant, similarity }) => ({
       id: grant.id,
-      title: grant.title,
-      search_description: grant.search_description,
       description: grant.description,
-      geographic_scope: grant.geographic_scope,
-      region: grant.region,
-      eligible_organisations: grant.eligible_organisations,
-      industry_sectors: grant.industry_sectors,
-      organisation: grant.organisation,
       relevanceScore: similarity
     }));
     console.log(`✅ Prepared ${grantsForLLMFiltering.length} grants for LLM filtering`);
