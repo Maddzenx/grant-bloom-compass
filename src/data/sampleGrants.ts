@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export const insertSampleGrantsData = async () => {
@@ -89,7 +88,7 @@ export const insertSampleGrantsData = async () => {
         program: 'Digital Transformation Program',
         grant_type: 'Digitalization Grant'
       }
-    ])
+    ] as any[])
     .select();
 
   if (insertError) {

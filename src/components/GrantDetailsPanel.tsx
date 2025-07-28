@@ -80,7 +80,7 @@ const GrantDetailsPanel = ({
                 </div>
               ) : fullGrantDetails ? (
                 <GrantDetails 
-                  grant={fullGrantDetails} 
+                  grant={fullGrantDetails as any} 
                   isBookmarked={isGrantSaved(selectedGrant.id)} 
                   onToggleBookmark={() => onToggleBookmark(selectedGrant.id)} 
                   isMobile={isMobile} 
