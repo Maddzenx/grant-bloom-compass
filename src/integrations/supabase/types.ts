@@ -6,50 +6,58 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       application_drafts: {
         Row: {
           compliance_score: number | null
-          created_at: string
-          generated_sections: Json | null
+          created_at: string | null
           generation_metadata: Json | null
           generation_status: string | null
+          generated_sections: Json | null
           grant_id: string | null
           id: string
           total_word_count: number | null
-          updated_at: string
+          updated_at: string | null
           uploaded_files: Json | null
           user_context: Json | null
         }
         Insert: {
           compliance_score?: number | null
-          created_at?: string
-          generated_sections?: Json | null
+          created_at?: string | null
           generation_metadata?: Json | null
           generation_status?: string | null
+          generated_sections?: Json | null
           grant_id?: string | null
           id?: string
           total_word_count?: number | null
-          updated_at?: string
+          updated_at?: string | null
           uploaded_files?: Json | null
           user_context?: Json | null
         }
         Update: {
           compliance_score?: number | null
-          created_at?: string
-          generated_sections?: Json | null
+          created_at?: string | null
           generation_metadata?: Json | null
           generation_status?: string | null
+          generated_sections?: Json | null
           grant_id?: string | null
           id?: string
           total_word_count?: number | null
-          updated_at?: string
+          updated_at?: string | null
           uploaded_files?: Json | null
           user_context?: Json | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "application_drafts_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "grant_call_details"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       document_metadata: {
         Row: {
@@ -108,26 +116,26 @@ export type Database = {
         Row: {
           changes_summary: string | null
           content: Json
-          created_at: string
+          created_at: string | null
           draft_id: string | null
           id: string
-          version_number: number
+          version_number: number | null
         }
         Insert: {
           changes_summary?: string | null
           content: Json
-          created_at?: string
+          created_at?: string | null
           draft_id?: string | null
           id?: string
-          version_number: number
+          version_number?: number | null
         }
         Update: {
           changes_summary?: string | null
           content?: Json
-          created_at?: string
+          created_at?: string | null
           draft_id?: string | null
           id?: string
-          version_number?: number
+          version_number?: number | null
         }
         Relationships: [
           {
@@ -141,40 +149,40 @@ export type Database = {
       }
       file_extractions: {
         Row: {
-          created_at: string
+          created_at: string | null
           error_message: string | null
-          extracted_text: string | null
           extraction_method: string | null
           extraction_status: string | null
-          file_id: string
-          file_type: string
+          extracted_text: string | null
+          file_id: string | null
+          file_type: string | null
           id: string
-          original_filename: string
-          updated_at: string
+          original_filename: string | null
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           error_message?: string | null
-          extracted_text?: string | null
           extraction_method?: string | null
           extraction_status?: string | null
-          file_id: string
-          file_type: string
+          extracted_text?: string | null
+          file_id?: string | null
+          file_type?: string | null
           id?: string
-          original_filename: string
-          updated_at?: string
+          original_filename?: string | null
+          updated_at?: string | null
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           error_message?: string | null
-          extracted_text?: string | null
           extraction_method?: string | null
           extraction_status?: string | null
-          file_id?: string
-          file_type?: string
+          extracted_text?: string | null
+          file_id?: string | null
+          file_type?: string | null
           id?: string
-          original_filename?: string
-          updated_at?: string
+          original_filename?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -239,6 +247,43 @@ export type Database = {
           title: string | null
           total_funding_per_call: number | null
           updated_at: string | null
+          // Language-specific fields
+          title_en: string | null
+          title_sv: string | null
+          region_en: string | null
+          region_sv: string | null
+          eligible_organisations_en: Json | null
+          eligible_organisations_sv: Json | null
+          consortium_requirement_en: string | null
+          consortium_requirement_sv: string | null
+          subtitle_en: string | null
+          subtitle_sv: string | null
+          description_en: string | null
+          description_sv: string | null
+          eligibility_en: string | null
+          eligibility_sv: string | null
+          evaluation_criteria_en: string | null
+          evaluation_criteria_sv: string | null
+          application_process_en: string | null
+          application_process_sv: string | null
+          information_webinar_names_en: Json | null
+          information_webinar_names_sv: Json | null
+          eligible_cost_categories_en: Json | null
+          eligible_cost_categories_sv: Json | null
+          application_templates_names_en: Json | null
+          application_templates_names_sv: Json | null
+          other_sources_names_en: Json | null
+          other_sources_names_sv: Json | null
+          contact_title_en: string | null
+          contact_title_sv: string | null
+          other_templates_names_en: Json | null
+          other_templates_names_sv: Json | null
+          other_important_dates_labels_en: Json | null
+          other_important_dates_labels_sv: Json | null
+          // Additional fields
+          comments: Json | null
+          eligible_organisations_standardized: Json | null
+          eligible_cost_categories_standardized: Json | null
         }
         Insert: {
           ai_enabled?: boolean | null
@@ -298,8 +343,45 @@ export type Database = {
           search_description?: string | null
           subtitle?: string | null
           title?: string | null
-          total_funding_per_call?: number | null
+          total_funding_per_call?: string | null
           updated_at?: string | null
+          // Language-specific fields
+          title_en?: string | null
+          title_sv?: string | null
+          region_en?: string | null
+          region_sv?: string | null
+          eligible_organisations_en?: Json | null
+          eligible_organisations_sv?: Json | null
+          consortium_requirement_en?: string | null
+          consortium_requirement_sv?: string | null
+          subtitle_en?: string | null
+          subtitle_sv?: string | null
+          description_en?: string | null
+          description_sv?: string | null
+          eligibility_en?: string | null
+          eligibility_sv?: string | null
+          evaluation_criteria_en?: string | null
+          evaluation_criteria_sv?: string | null
+          application_process_en?: string | null
+          application_process_sv?: string | null
+          information_webinar_names_en?: Json | null
+          information_webinar_names_sv?: Json | null
+          eligible_cost_categories_en?: Json | null
+          eligible_cost_categories_sv?: Json | null
+          application_templates_names_en?: Json | null
+          application_templates_names_sv?: Json | null
+          other_sources_names_en?: Json | null
+          other_sources_names_sv?: Json | null
+          contact_title_en?: string | null
+          contact_title_sv?: string | null
+          other_templates_names_en?: Json | null
+          other_templates_names_sv?: Json | null
+          other_important_dates_labels_en?: Json | null
+          other_important_dates_labels_sv?: Json | null
+          // Additional fields
+          comments?: Json | null
+          eligible_organisations_standardized?: Json | null
+          eligible_cost_categories_standardized?: Json | null
         }
         Update: {
           ai_enabled?: boolean | null
@@ -361,6 +443,43 @@ export type Database = {
           title?: string | null
           total_funding_per_call?: string | null
           updated_at?: string | null
+          // Language-specific fields
+          title_en?: string | null
+          title_sv?: string | null
+          region_en?: string | null
+          region_sv?: string | null
+          eligible_organisations_en?: Json | null
+          eligible_organisations_sv?: Json | null
+          consortium_requirement_en?: string | null
+          consortium_requirement_sv?: string | null
+          subtitle_en?: string | null
+          subtitle_sv?: string | null
+          description_en?: string | null
+          description_sv?: string | null
+          eligibility_en?: string | null
+          eligibility_sv?: string | null
+          evaluation_criteria_en?: string | null
+          evaluation_criteria_sv?: string | null
+          application_process_en?: string | null
+          application_process_sv?: string | null
+          information_webinar_names_en?: Json | null
+          information_webinar_names_sv?: Json | null
+          eligible_cost_categories_en?: Json | null
+          eligible_cost_categories_sv?: Json | null
+          application_templates_names_en?: Json | null
+          application_templates_names_sv?: Json | null
+          other_sources_names_en?: Json | null
+          other_sources_names_sv?: Json | null
+          contact_title_en?: string | null
+          contact_title_sv?: string | null
+          other_templates_names_en?: Json | null
+          other_templates_names_sv?: Json | null
+          other_important_dates_labels_en?: Json | null
+          other_important_dates_labels_sv?: Json | null
+          // Additional fields
+          comments?: Json | null
+          eligible_organisations_standardized?: Json | null
+          eligible_cost_categories_standardized?: Json | null
         }
         Relationships: []
       }
@@ -393,27 +512,29 @@ export type Database = {
       }
       profiles: {
         Row: {
-          created_at: string
           email: string | null
           full_name: string | null
           id: string
-          updated_at: string
         }
         Insert: {
-          created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
-          updated_at?: string
         }
         Update: {
-          created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
-          updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       template_analysis: {
         Row: {
@@ -678,6 +799,44 @@ export type Database = {
           title: string | null
           total_funding_per_call: number | null
           updated_at: string | null
+          // Language-specific fields
+          title_en: string | null
+          title_sv: string | null
+          region_en: string | null
+          region_sv: string | null
+          eligible_organisations_en: Json | null
+          eligible_organisations_sv: Json | null
+          consortium_requirement_en: string | null
+          consortium_requirement_sv: string | null
+          subtitle_en: string | null
+          subtitle_sv: string | null
+          description_en: string | null
+          description_sv: string | null
+          eligibility_en: string | null
+          eligibility_sv: string | null
+          evaluation_criteria_en: string | null
+          evaluation_criteria_sv: string | null
+          application_process_en: string | null
+          application_process_sv: string | null
+          information_webinar_names_en: Json | null
+          information_webinar_names_sv: Json | null
+          eligible_cost_categories_en: Json | null
+          eligible_cost_categories_sv: Json | null
+          application_templates_names_en: Json | null
+          application_templates_names_sv: Json | null
+          other_sources_names_en: Json | null
+          other_sources_names_sv: Json | null
+          contact_title_en: string | null
+          contact_title_sv: string | null
+          other_templates_names_en: Json | null
+          other_templates_names_sv: Json | null
+          other_important_dates_labels_en: Json | null
+          other_important_dates_labels_sv: Json | null
+          // Additional fields
+          comments: Json | null
+          eligible_organisations_standardized: Json | null
+          eligible_cost_categories_standardized: Json | null
+          distance: number
         }[]
       }
     }

@@ -4,6 +4,7 @@ import { Grant, GrantListItem, GrantDetails } from '@/types/grant';
 import { transformSupabaseGrant } from '@/utils/grantTransform';
 import { insertSampleGrantsData } from '@/data/sampleGrants';
 import { formatFundingAmount } from '@/utils/grantHelpers';
+import { getGrantLanguage, createLanguageAwareSelect } from '@/utils/grantLanguageUtils';
 
 export const fetchGrantsData = async (): Promise<Grant[]> => {
   console.log('🔍 Starting grants fetch from grant_call_details...');
@@ -15,9 +16,32 @@ export const fetchGrantsData = async (): Promise<Grant[]> => {
   
   console.log('🔍 Database connection test:', { testData, testError });
   
+  // Use language-aware select for all grants
+  const selectFields = [
+    'id', 'organisation', 'original_url', 'application_closing_date', 'application_opening_date',
+    'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max',
+    'information_webinar_dates', 'information_webinar_links', 'project_duration_months_min',
+    'project_duration_months_max', 'max_funding_per_project', 'min_funding_per_project',
+    'total_funding_per_call', 'currency', 'cofinancing_level_min', 'application_templates_links',
+    'other_sources_links', 'contact_name', 'contact_email', 'contact_phone', 'processing_status',
+    'scraped_at', 'processed_at', 'created_at', 'updated_at', 'ai_enabled', 'other_templates_links',
+    'is_original_source', 'original_source_url', 'cofinancing_required', 'embedding',
+    'cofinancing_level_max', 'program', 'grant_type', 'comments', 'other_important_dates',
+    'eligible_organisations_standardized', 'eligible_cost_categories_standardized',
+    'keywords', 'industry_sectors', 'geographic_scope',
+    // Language-specific fields
+    'title', 'region', 'eligible_organisations', 'consortium_requirement', 'subtitle',
+    'description', 'eligibility', 'evaluation_criteria', 'application_process',
+    'information_webinar_names', 'eligible_cost_categories', 'application_templates_names',
+    'other_sources_names', 'contact_title', 'other_templates_names', 'other_important_dates_labels'
+  ];
+
+  // For the main fetch, we'll use Swedish as default and handle language selection in transformation
+  const selectStatement = createLanguageAwareSelect(selectFields, 'sv');
+  
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
-    .select('*')
+    .select(selectStatement)
     .order('created_at', { ascending: false });
 
   console.log('✅ Grant call details query result:', { 
@@ -59,17 +83,25 @@ export const fetchGrantsData = async (): Promise<Grant[]> => {
 export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
   console.log('🔍 Starting grant list items fetch...');
   
+  const selectFields = [
+    'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
+    'total_funding_per_call', 'currency', 'application_opening_date', 'application_closing_date', 
+    'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max', 
+    'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
+    'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
+    // Language-specific fields
+    'title', 'subtitle', 'information_webinar_names', 'application_templates_names', 
+    'application_templates_links', 'other_templates_names', 'other_templates_links', 
+    'other_sources_names', 'other_sources_links', 'keywords', 'industry_sectors', 
+    'eligible_organisations', 'region', 'eligible_cost_categories'
+  ];
+
+  // For list items, we'll use Swedish as default and handle language selection in transformation
+  const selectStatement = createLanguageAwareSelect(selectFields, 'sv');
+  
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
-    .select(`
-      id, title, organisation, subtitle, min_funding_per_project, max_funding_per_project, total_funding_per_call, currency,
-      application_opening_date, application_closing_date, project_start_date_min, project_start_date_max,
-      project_end_date_min, project_end_date_max, information_webinar_dates, information_webinar_links,
-      information_webinar_names, application_templates_names, application_templates_links, other_templates_names,
-      other_templates_links, other_sources_names, other_sources_links, keywords, industry_sectors, eligible_organisations, 
-      geographic_scope, cofinancing_required, cofinancing_level_min, consortium_requirement, region, eligible_cost_categories,
-      created_at, updated_at
-    `)
+    .select(selectStatement)
     .order('created_at', { ascending: false });
 
   if (grantError) {
@@ -90,9 +122,44 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
 export const fetchGrantDetails = async (grantId: string): Promise<GrantDetails> => {
   console.log('🔍 Fetching full grant details for ID:', grantId);
   
+  // First, get the organization to determine the language
+  const { data: orgData, error: orgError } = await supabase
+    .from('grant_call_details')
+    .select('organisation')
+    .eq('id', grantId)
+    .single();
+
+  if (orgError || !orgData) {
+    throw new Error(`Grant with ID ${grantId} not found`);
+  }
+
+  const language = getGrantLanguage(orgData.organisation);
+  console.log(`🔍 Using language '${language}' for organization: ${orgData.organisation}`);
+
+  const selectFields = [
+    'id', 'organisation', 'original_url', 'application_closing_date', 'application_opening_date',
+    'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max',
+    'information_webinar_dates', 'information_webinar_links', 'project_duration_months_min',
+    'project_duration_months_max', 'max_funding_per_project', 'min_funding_per_project',
+    'total_funding_per_call', 'currency', 'cofinancing_level_min', 'application_templates_links',
+    'other_sources_links', 'contact_name', 'contact_email', 'contact_phone', 'processing_status',
+    'scraped_at', 'processed_at', 'created_at', 'updated_at', 'ai_enabled', 'other_templates_links',
+    'is_original_source', 'original_source_url', 'cofinancing_required', 'embedding',
+    'cofinancing_level_max', 'program', 'grant_type', 'comments', 'other_important_dates',
+    'eligible_organisations_standardized', 'eligible_cost_categories_standardized',
+    'keywords', 'industry_sectors', 'geographic_scope',
+    // Language-specific fields
+    'title', 'region', 'eligible_organisations', 'consortium_requirement', 'subtitle',
+    'description', 'eligibility', 'evaluation_criteria', 'application_process',
+    'information_webinar_names', 'eligible_cost_categories', 'application_templates_names',
+    'other_sources_names', 'contact_title', 'other_templates_names', 'other_important_dates_labels'
+  ];
+
+  const selectStatement = createLanguageAwareSelect(selectFields, language);
+  
   const { data: grantData, error: grantError } = await supabase
     .from('grant_call_details')
-    .select('*')
+    .select(selectStatement)
     .eq('id', grantId)
     .single();
 
