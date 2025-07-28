@@ -5,6 +5,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { EnhancedGrantScorer } from './enhancedGrantScorer.ts';
 import { MatchingResponse } from './types.ts';
 
+// Deno types for edge functions
+declare const Deno: {
+  env: {
+    get(key: string): string | undefined;
+  };
+};
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -212,7 +219,7 @@ serve(async (req) => {
         relevanceScore: scoredGrant.relevanceScore,
         matchingReasons: scoredGrant.matchingReasons
       };
-    }).filter(Boolean); // Remove null entries
+    }).filter((grant): grant is NonNullable<typeof grant> => grant !== null); // Remove null entries
 
     const response: MatchingResponse = {
       rankedGrants: finalRankedGrants,
