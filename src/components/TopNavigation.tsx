@@ -61,8 +61,8 @@ export function TopNavigation() {
       <nav className={cn(
         "backdrop-blur sticky top-0 z-40 transition-all duration-300",
         isScrolled 
-          ? "bg-[#fefefe] border-b shadow-sm" 
-          : "bg-[#fafafa] border-b border-transparent"
+          ? "bg-[#fefefe]/80 border-b shadow-sm" 
+          : "bg-[#fafafa]/80 border-b border-transparent"
       )} style={{ borderColor: isScrolled ? '#F0F1F3' : 'transparent' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -164,16 +164,16 @@ export function TopNavigation() {
       </nav>
       {/* Bottom Navigation for Mobile */}
       {user ? (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe] border-t-0 md:hidden flex justify-around items-center h-16">
-          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe]/80 border-t-0 md:hidden flex justify-around items-center h-16">
+          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
             <Icon icon="mdi:home" className="text-2xl" />
             <span className="text-xs mt-1">Hem</span>
           </Link>
-          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
             <Icon icon="mdi:magnify" className="text-2xl" />
             <span className="text-xs mt-1">Upptäck</span>
           </Link>
-          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'text-indigo-600 font-bold' : 'text-gray-500')}>
+          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
             <Icon icon="mdi:bookmark-outline" className="text-2xl" />
             <span className="text-xs mt-1">Sparade</span>
           </Link>

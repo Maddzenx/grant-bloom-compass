@@ -103,12 +103,12 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#f0f1f3' }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
         className="absolute left-1/2 top-0 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
-        draggable="false"
+        draggable={false}
       />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
