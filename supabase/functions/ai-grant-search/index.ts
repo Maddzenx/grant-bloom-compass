@@ -159,7 +159,7 @@ ${index + 1}. ${grant.title}
    Eligibility: ${grant.eligibility || 'Not specified'}
    Keywords: ${Array.isArray(grant.keywords) ? grant.keywords.join(', ') : 'None'}
    Industry Sectors: ${Array.isArray(grant.industry_sectors) ? grant.industry_sectors.join(', ') : 'None'}
-   Funding: ${grant.max_funding_per_project ? `${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}` : 'Not specified'}
+   Funding: ${grant.max_funding_per_project ? formatFundingAmount(grant) : 'Not specified'}
 `).join('\n')}
 
 Please rank these grants by relevance to the query and provide a brief explanation for each ranking. Consider:
@@ -290,19 +290,31 @@ Example format:
 
 // Helper function to format funding amount
 function formatFundingAmount(grant: any): string {
+  const currency = grant.currency || 'SEK';
+  
+  // Helper to format large amounts in millions
+  const formatAmount = (amount: number): string => {
+    if (amount >= 1000000) {
+      const millions = amount / 1000000;
+      return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+    }
+    // Use spaces instead of commas for thousand separators (Swedish format)
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`;
+  };
+  
   if (grant.max_funding_per_project) {
     if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
-      return `${grant.min_funding_per_project.toLocaleString()} - ${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+      return `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
     }
-    return `${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.max_funding_per_project);
   }
   
   if (grant.total_funding_per_call) {
-    return `${grant.total_funding_per_call.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.total_funding_per_call);
   }
   
   if (grant.min_funding_per_project) {
-    return `${grant.min_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.min_funding_per_project);
   }
   
   return 'Not specified';
