@@ -276,7 +276,11 @@ const ConsolidatedGrantList = ({
                 <div className="flex items-center gap-2">
                   
                   <div className="flex items-center gap-1">
-                    {[1, Math.ceil(totalPages / 4), Math.ceil(totalPages / 2), Math.ceil(totalPages * 3 / 4), totalPages].filter((page, index, arr) => arr.indexOf(page) === index && page <= totalPages).map(page => {})}
+                    {[1, Math.ceil(totalPages / 4), Math.ceil(totalPages / 2), Math.ceil(totalPages * 3 / 4), totalPages].filter((page, index, arr) => arr.indexOf(page) === index && page <= totalPages).map(page => (
+                      <Button key={page} variant="outline" size="sm" onClick={() => onPageChange(page)}>
+                        {page}
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </div>

@@ -108,6 +108,7 @@ export const EnhancedFilterControls = ({
       consortiumRequired: null,
       geographicScope: [],
       cofinancingRequired: null,
+      statusFilter: '',
     };
     setPendingFilters(defaultFilters);
     onClearAll();

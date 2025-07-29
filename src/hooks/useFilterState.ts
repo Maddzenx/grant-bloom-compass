@@ -21,6 +21,7 @@ export interface EnhancedFilterOptions {
   consortiumRequired: boolean | null;
   geographicScope: string[];
   cofinancingRequired: boolean | null;
+  statusFilter: string;
 }
 
 const defaultFilters: EnhancedFilterOptions = {
@@ -33,6 +34,7 @@ const defaultFilters: EnhancedFilterOptions = {
   consortiumRequired: null,
   geographicScope: [],
   cofinancingRequired: null,
+  statusFilter: '',
 };
 
 export const useFilterState = () => {
@@ -119,6 +121,7 @@ const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptio
     consortiumRequired: searchParams.get('consortiumRequired') === 'true',
     geographicScope: searchParams.get('geographicScope')?.split(',').filter(Boolean) || [],
     cofinancingRequired: searchParams.get('cofinancingRequired') === 'true',
+    statusFilter: searchParams.get('statusFilter') || '',
   };
 };
 
