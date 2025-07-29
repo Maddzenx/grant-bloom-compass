@@ -107,14 +107,16 @@ const HomePage = () => {
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
-        className="absolute left-1/2 top-0 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
+        className="absolute left-1/2 top-20 z-0 w-[900px] h-[900px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
         draggable={false}
       />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
-        <div className="w-full max-w-4xl mx-auto text-center">
+        <div className="w-full max-w-4xl mx-auto">
           {/* Hero Section */}
-          <HeroSection />
+          <div className="text-center">
+            <HeroSection /> 
+          </div>
 
           {/* Chat Input Section */}
           <ChatInput
@@ -134,15 +136,17 @@ const HomePage = () => {
           <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
 
           {/* Status Messages */}
-          <StatusMessages
-            isRecording={isRecording}
-            isTranscribing={isTranscribing}
-            isUploading={isUploading}
-            isMatching={isMatching}
-            grantsLoading={false}
-            isSearching={isSearching}
-            matchingError={matchingError}
-          />
+          <div className="text-center">
+            <StatusMessages
+              isRecording={isRecording}
+              isTranscribing={isTranscribing}
+              isUploading={isUploading}
+              isMatching={isMatching}
+              grantsLoading={false}
+              isSearching={isSearching}
+              matchingError={matchingError}
+            />
+          </div>
         </div>
       </div>
 

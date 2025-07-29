@@ -283,35 +283,53 @@
 }
 
 .animate-liquid-blob {
-  animation: liquid-blob-float 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: liquid-blob-float 36s cubic-bezier(0.42, 0, 0.58, 1) infinite;
 }
 @keyframes liquid-blob-float {
   0% {
     transform: translate(-50%, 0) scale(1, 1) rotate(0deg);
   }
-  12% {
-    transform: translate(-50%, -8px) scale(1.03, 0.98) rotate(-1deg);
+  7% {
+    transform: translate(-50%, -12px) scale(1.02, 0.99) rotate(-0.8deg);
   }
-  24% {
-    transform: translate(-50%, -16px) scale(0.97, 1.04) rotate(1.5deg);
+  14% {
+    transform: translate(-50%, -8px) scale(0.98, 1.03) rotate(1.3deg);
   }
-  36% {
-    transform: translate(-50%, -20px) scale(1.05, 0.96) rotate(-2deg);
+  21% {
+    transform: translate(-50%, -24px) scale(1.06, 0.97) rotate(-2.1deg);
   }
-  48% {
-    transform: translate(-50%, -18px) scale(0.95, 1.06) rotate(2.5deg);
+  28% {
+    transform: translate(-50%, -16px) scale(0.96, 1.05) rotate(2.8deg);
   }
-  60% {
-    transform: translate(-50%, -12px) scale(1.06, 0.95) rotate(-1.8deg);
+  35% {
+    transform: translate(-50%, -32px) scale(1.04, 0.95) rotate(-1.5deg);
   }
-  72% {
-    transform: translate(-50%, -6px) scale(0.98, 1.03) rotate(1.2deg);
+  42% {
+    transform: translate(-50%, -6px) scale(0.99, 1.02) rotate(3.2deg);
+  }
+  49% {
+    transform: translate(-50%, -28px) scale(1.07, 0.98) rotate(-2.7deg);
+  }
+  56% {
+    transform: translate(-50%, -14px) scale(0.94, 1.06) rotate(1.9deg);
+  }
+  63% {
+    transform: translate(-50%, -20px) scale(1.03, 0.96) rotate(-1.2deg);
+  }
+  70% {
+    transform: translate(-50%, -4px) scale(0.97, 1.04) rotate(2.4deg);
+  }
+  77% {
+    transform: translate(-50%, -18px) scale(1.05, 0.99) rotate(-0.6deg);
   }
   84% {
-    transform: translate(-50%, -2px) scale(1.02, 0.99) rotate(-0.5deg);
+    transform: translate(-50%, -10px) scale(0.98, 1.01) rotate(1.7deg);
   }
-  96% {
-    transform: translate(-50%, -4px) scale(0.99, 1.01) rotate(0.3deg);
+  91% {
+    transform: translate(-50%, -22px) scale(1.01, 0.97) rotate(-1.9deg);
+  }
+  98% {
+    transform: translate(-50%, -2px) scale(0.99, 1.02) rotate(0.4deg);
   }
   100% {
     transform: translate(-50%, 0) scale(1, 1) rotate(0deg);

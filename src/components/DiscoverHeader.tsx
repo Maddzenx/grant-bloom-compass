@@ -46,10 +46,10 @@ const DiscoverHeader = ({
   };
 
   return (
-    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center sticky top-0 z-30 px-0">
+    <div className="w-full bg-canvas-cloud flex-shrink-0 flex items-center px-0">
       <div className="w-full px-0 pt-0 pb-0">
         <div className="flex items-center gap-2 mt-2 mb-2">
-          <div className="relative flex-1">
+          <div className={`relative flex-1 ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
             <input
               className="w-full pl-4 pr-12 py-3 rounded-full border border-[#E0E0E0] bg-white text-sm font-medium text-ink-obsidian focus:ring-accent-lavender focus:outline-none placeholder:text-gray-500"
               placeholder="Search grants..."
@@ -58,7 +58,6 @@ const DiscoverHeader = ({
               onKeyPress={handleKeyPress}
               aria-label="Search grants"
             />
-            
             {/* Right side icons container */}
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {searchTerm && (
