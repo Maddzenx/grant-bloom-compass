@@ -256,16 +256,55 @@ const ChatInput = ({
             {/* Text Input Area */}
           <div className="px-4 py-4">
             <div className="relative">
-              {/* Normal textarea */}
-              <div className="flex-1 relative">
-                <Textarea placeholder="" className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left" value={inputValue} onChange={handleTextareaChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={handleKeyPress} ref={textareaRef} rows={1} disabled={isProcessing} style={{
-                textAlign: 'left'
-              }} />
-                {/* Animated placeholder overlay */}
-                {!inputValue && !isFocused && animatedPlaceholder && <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
-                    {animatedPlaceholder}
-                  </div>}
-              </div>
+              {!isRecording ? (
+                <>
+                  {/* Normal textarea */}
+                  <div className="flex-1 relative">
+                    <Textarea placeholder="" className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left" value={inputValue} onChange={handleTextareaChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={handleKeyPress} ref={textareaRef} rows={1} disabled={isProcessing} style={{
+                    textAlign: 'left'
+                  }} />
+                    {/* Animated placeholder overlay */}
+                    {!inputValue && !isFocused && animatedPlaceholder && <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
+                        {animatedPlaceholder}
+                      </div>}
+                  </div>
+                </>
+              ) : (
+                /* Recording waveform that fills the entire input area */
+                <div className="flex items-center justify-between w-full min-h-[48px] py-2">
+                  {/* Waveform visualization - fills most of the space */}
+                  <div className="flex-1 flex items-center justify-center gap-[1px] h-8 mx-4">
+                    {Array.from({ length: 80 }).map((_, i) => {
+                      const baseHeight = 2;
+                      const maxHeight = 24;
+
+                      // Create more realistic waveform with varied heights
+                      const wavePhase = (Date.now() * 0.003 + i * 0.2) % (Math.PI * 2);
+                      const audioWave = Math.sin(wavePhase) * audioLevel;
+                      const randomVariation = Math.sin(Date.now() * 0.01 + i * 0.3) * 0.3;
+                      const height = Math.max(baseHeight, Math.min(maxHeight, baseHeight + (audioWave + randomVariation) * maxHeight * 0.7));
+                      
+                      return (
+                        <div 
+                          key={i} 
+                          className="w-[2px] bg-black transition-all duration-75" 
+                          style={{ height: `${height}px` }} 
+                        />
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Control buttons on the right */}
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Avbryt inspelning">
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Slutför inspelning">
+                      <Check className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Bottom Left Corner - Upload and Voice Buttons + Submit Button */}
@@ -279,43 +318,7 @@ const ChatInput = ({
                 {/* Voice Recording Interface */}
                 {!isRecording ? <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300" onClick={handleVoiceInput} disabled={isProcessing} title="Starta röstinspelning">
                     <Mic className="w-4 h-4" />
-                  </Button> : <div className="flex items-center bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm min-w-[400px]">
-                    {/* Plus icon */}
-                    
-                    
-                    {/* Tools text */}
-                    
-                    
-                    {/* Waveform visualization */}
-                    <div className="flex-1 flex items-center justify-center gap-[1px] h-8">
-                      {Array.from({
-                    length: 60
-                  }).map((_, i) => {
-                    const delay = i * 0.05;
-                    const baseHeight = 2;
-                    const maxHeight = 24;
-
-                    // Create more realistic waveform with varied heights
-                    const wavePhase = (Date.now() * 0.003 + i * 0.2) % (Math.PI * 2);
-                    const audioWave = Math.sin(wavePhase) * audioLevel;
-                    const randomVariation = Math.sin(Date.now() * 0.01 + i * 0.3) * 0.3;
-                    const height = Math.max(baseHeight, Math.min(maxHeight, baseHeight + (audioWave + randomVariation) * maxHeight * 0.7));
-                    return <div key={i} className="w-[1px] bg-black transition-all duration-75" style={{
-                      height: `${height}px`
-                    }} />;
-                  })}
-                    </div>
-                    
-                    {/* Control buttons on the right */}
-                    <div className="flex items-center gap-2 ml-4">
-                      <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Avbryt inspelning">
-                        <X className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Slutför inspelning">
-                        <Check className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>}
+                  </Button> : null}
               </div>
 
               {/* Submit Button */}
