@@ -119,51 +119,51 @@ const normalizeGrantData = (grant: any): any => {
 };
 
 const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
-  // Normalize the grant data to use base field names
-  const normalizedGrant = normalizeGrantData(grant);
+  // The filtered-grants-search function now returns data with correct language already selected
+  // No need to normalize - just use the data as-is
   
   return {
-    id: normalizedGrant.id,
-    title: normalizedGrant.title || 'Untitled Grant',
-    organization: normalizedGrant.organisation || 'Unknown Organization',
-    aboutGrant: normalizedGrant.subtitle || normalizedGrant.description || 'No information available',
-    fundingAmount: formatFundingAmount(normalizedGrant),
-    opens_at: normalizedGrant.application_opening_date || '2024-01-01',
-    deadline: normalizedGrant.application_closing_date || 'Not specified',
-    tags: parseJsonArray(normalizedGrant.keywords) || [],
-    industry_sectors: parseJsonArray(normalizedGrant.industry_sectors),
-    eligible_organisations: parseJsonArray(normalizedGrant.eligible_organisations),
-    geographic_scope: parseJsonArray(normalizedGrant.geographic_scope),
+    id: grant.id,
+    title: grant.title || 'Untitled Grant',
+    organization: grant.organization || 'Unknown Organization',
+    aboutGrant: grant.aboutGrant || 'No information available',
+    fundingAmount: grant.fundingAmount || 'Not specified',
+    opens_at: grant.opens_at || '2024-01-01',
+    deadline: grant.deadline || 'Not specified',
+    tags: parseJsonArray(grant.tags) || [],
+    industry_sectors: parseJsonArray(grant.industry_sectors),
+    eligible_organisations: parseJsonArray(grant.eligible_organisations),
+    geographic_scope: parseJsonArray(grant.geographic_scope),
     // Date fields for important dates display
-    application_opening_date: normalizedGrant.application_opening_date,
-    application_closing_date: normalizedGrant.application_closing_date,
-    project_start_date_min: normalizedGrant.project_start_date_min,
-    project_start_date_max: normalizedGrant.project_start_date_max,
-    project_end_date_min: normalizedGrant.project_end_date_min,
-    project_end_date_max: normalizedGrant.project_end_date_max,
-    information_webinar_dates: parseJsonArray(normalizedGrant.information_webinar_dates),
-    information_webinar_links: parseJsonArray(normalizedGrant.information_webinar_links),
-    information_webinar_names: parseJsonArray(normalizedGrant.information_webinar_names),
+    application_opening_date: grant.application_opening_date,
+    application_closing_date: grant.application_closing_date,
+    project_start_date_min: grant.project_start_date_min,
+    project_start_date_max: grant.project_start_date_max,
+    project_end_date_min: grant.project_end_date_min,
+    project_end_date_max: grant.project_end_date_max,
+    information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
+    information_webinar_links: parseJsonArray(grant.information_webinar_links),
+    information_webinar_names: parseJsonArray(grant.information_webinar_names),
     // Project duration fields
-    project_duration_months_min: normalizedGrant.project_duration_months_min || undefined,
-    project_duration_months_max: normalizedGrant.project_duration_months_max || undefined,
+    project_duration_months_min: grant.project_duration_months_min || undefined,
+    project_duration_months_max: grant.project_duration_months_max || undefined,
     // Template fields for files and documents
-    templates: parseJsonArray(normalizedGrant.application_templates_names) || [],
-    generalInfo: parseJsonArray(normalizedGrant.other_templates_names) || [],
-    application_templates_links: parseJsonArray(normalizedGrant.application_templates_links),
-    other_templates_links: parseJsonArray(normalizedGrant.other_templates_links),
-    other_sources_links: parseJsonArray(normalizedGrant.other_sources_links),
-    other_sources_names: parseJsonArray(normalizedGrant.other_sources_names),
-    cofinancing_required: parseBooleanString(normalizedGrant.cofinancing_required),
-          cofinancing_level: normalizedGrant.cofinancing_level_min ?? null,
-    cofinancing_level_min: normalizedGrant.cofinancing_level_min || undefined,
-    cofinancing_level_max: normalizedGrant.cofinancing_level_max || undefined,
-    consortium_requirement: (typeof normalizedGrant.consortium_requirement === 'string' ? normalizedGrant.consortium_requirement.trim() : normalizedGrant.consortium_requirement) || undefined,
-    region: normalizedGrant.region || null,
-    fundingRules: parseJsonArray(normalizedGrant.eligible_cost_categories) || [],
+    templates: parseJsonArray(grant.templates) || [],
+    generalInfo: parseJsonArray(grant.generalInfo) || [],
+    application_templates_links: parseJsonArray(grant.application_templates_links),
+    other_templates_links: parseJsonArray(grant.other_templates_links),
+    other_sources_links: parseJsonArray(grant.other_sources_links),
+    other_sources_names: parseJsonArray(grant.other_sources_names),
+    cofinancing_required: parseBooleanString(grant.cofinancing_required),
+    cofinancing_level: grant.cofinancing_level_min ?? null,
+    cofinancing_level_min: grant.cofinancing_level_min || undefined,
+    cofinancing_level_max: grant.cofinancing_level_max || undefined,
+    consortium_requirement: (typeof grant.consortium_requirement === 'string' ? grant.consortium_requirement.trim() : grant.consortium_requirement) || undefined,
+    region: grant.region || null,
+    fundingRules: parseJsonArray(grant.fundingRules) || [],
     // Timestamp fields
-    created_at: normalizedGrant.created_at,
-    updated_at: normalizedGrant.updated_at
+    created_at: grant.created_at,
+    updated_at: grant.updated_at
   };
 };
 

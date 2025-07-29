@@ -75,6 +75,18 @@ const GrantList = ({
     setCurrentPage(1);
   }, [grants]);
 
+  // Debug pagination data
+  console.log('🔍 GrantList pagination debug:', {
+    pagination,
+    currentPage: pagination?.page || currentPage,
+    totalPages: pagination?.totalPages || Math.ceil(grants.length / grantsPerPage),
+    grantsLength: grants.length,
+    grantsPerPage,
+    calculatedTotalPages: Math.ceil(grants.length / grantsPerPage),
+    isMobile,
+    showPagination: !isMobile && (pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)) > 1
+  });
+
   return (
     <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
