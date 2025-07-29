@@ -338,43 +338,76 @@ const ChatInput = ({
                   <Paperclip className="w-4 h-4" />
                 </Button>
 
-                {/* Voice Recording Button + Waveform */}
-                <div className="relative flex items-center">
+                {/* Voice Recording Interface */}
+                {!isRecording ? (
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${
-                      isRecording ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 animate-pulse' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
-                    }`}
+                    className="w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300"
                     onClick={handleVoiceInput}
                     disabled={isProcessing}
-                    title={isRecording ? 'Spelar in...' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
+                    title="Starta röstinspelning"
                   >
                     <Mic className="w-4 h-4" />
-                    {isRecording && (
-                      <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-                    )}
                   </Button>
-                  {/* Waveform animation when recording */}
-                  {isRecording && (
-                    <div className="flex items-end gap-[1px] ml-2 h-4">
-                      {Array.from({ length: 12 }).map((_, i) => {
-                        const delay = i * 0.08;
-                        const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.04 + i) * 4);
+                ) : (
+                  <div className="flex items-center bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm min-w-[400px]">
+                    {/* Plus icon */}
+                    <Plus className="w-4 h-4 text-gray-400 mr-3" />
+                    
+                    {/* Tools text */}
+                    <span className="text-gray-400 text-sm mr-4">Tools</span>
+                    
+                    {/* Waveform visualization */}
+                    <div className="flex-1 flex items-center justify-center gap-[1px] h-8">
+                      {Array.from({ length: 60 }).map((_, i) => {
+                        const delay = i * 0.05;
+                        const baseHeight = 2;
+                        const maxHeight = 24;
+                        
+                        // Create more realistic waveform with varied heights
+                        const wavePhase = (Date.now() * 0.003 + i * 0.2) % (Math.PI * 2);
+                        const audioWave = Math.sin(wavePhase) * audioLevel;
+                        const randomVariation = Math.sin(Date.now() * 0.01 + i * 0.3) * 0.3;
+                        const height = Math.max(baseHeight, Math.min(maxHeight, 
+                          baseHeight + (audioWave + randomVariation) * maxHeight * 0.7
+                        ));
+                        
                         return (
                           <div
                             key={i}
-                            className="w-[1px] rounded bg-gradient-to-t from-purple-400 to-purple-600 transition-all duration-100"
+                            className="w-[1px] bg-black transition-all duration-75"
                             style={{
                               height: `${height}px`,
-                              animationDelay: `${delay}s`
                             }}
                           />
                         );
                       })}
                     </div>
-                  )}
-                </div>
+                    
+                    {/* Control buttons on the right */}
+                    <div className="flex items-center gap-2 ml-4">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600"
+                        onClick={handleVoiceInput}
+                        title="Avbryt inspelning"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600"
+                        onClick={handleVoiceInput}
+                        title="Slutför inspelning"
+                      >
+                        <Check className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Submit Button */}
