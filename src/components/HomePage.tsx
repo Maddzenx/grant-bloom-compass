@@ -112,9 +112,11 @@ const HomePage = () => {
       />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
-        <div className="w-full max-w-4xl mx-auto text-center">
+        <div className="w-full max-w-4xl mx-auto">
           {/* Hero Section */}
-          <HeroSection />
+          <div className="text-center">
+            <HeroSection />
+          </div>
 
           {/* Chat Input Section */}
           <ChatInput
@@ -134,15 +136,17 @@ const HomePage = () => {
           <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
 
           {/* Status Messages */}
-          <StatusMessages
-            isRecording={isRecording}
-            isTranscribing={isTranscribing}
-            isUploading={isUploading}
-            isMatching={isMatching}
-            grantsLoading={false}
-            isSearching={isSearching}
-            matchingError={matchingError}
-          />
+          <div className="text-center">
+            <StatusMessages
+              isRecording={isRecording}
+              isTranscribing={isTranscribing}
+              isUploading={isUploading}
+              isMatching={isMatching}
+              grantsLoading={false}
+              isSearching={isSearching}
+              matchingError={matchingError}
+            />
+          </div>
         </div>
       </div>
 
