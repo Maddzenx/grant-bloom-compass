@@ -43,6 +43,7 @@ const GrantList = ({
   const hasMoreBackend = pagination?.hasMore || false;
   const hasMoreLocal = numVisibleGrants < grants.length;
   const hasMore = isMobile ? hasMoreBackend : hasMoreLocal;
+  const totalPages = pagination?.totalPages || Math.ceil(grants.length / grantsPerPage);
   
   const grantsToShow = isMobile ? grants.slice(0, numVisibleGrants) : grants.slice((currentPage - 1) * grantsPerPage, currentPage * grantsPerPage);
 
@@ -113,6 +114,25 @@ const GrantList = ({
 
   return (
     <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
+      {/* Mobile Progress Indicator */}
+      {isMobile && pagination && totalPages > 1 && (
+        <div className="px-4 py-2 bg-white border-b border-gray-100">
+          <div className="flex items-center justify-between text-xs text-gray-600">
+            <span>
+              Visar {grants.length} av {pagination.total} bidrag
+            </span>
+            <span>
+              {Math.ceil((grants.length / pagination.total) * 100)}% laddat
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
+            <div 
+              className="bg-purple-600 h-1 rounded-full transition-all duration-300"
+              style={{ width: `${(grants.length / pagination.total) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <ConsolidatedGrantList
           grants={grantsToShow}
@@ -128,8 +148,14 @@ const GrantList = ({
           onPageChange={onPageChange || setCurrentPage}
         />
         {isMobile && hasMore && (
-          <div ref={observerRef} className="flex justify-center items-center py-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400"></div>
+          <div ref={observerRef} className="flex flex-col items-center justify-center py-6">
+            <div className="flex items-center gap-2 text-gray-500 mb-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+              <span className="text-sm">Laddar fler bidrag...</span>
+            </div>
+            <div className="text-xs text-gray-400">
+              Scrolla för att ladda fler automatiskt
+            </div>
           </div>
         )}
       </ScrollArea>
