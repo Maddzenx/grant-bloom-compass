@@ -259,9 +259,7 @@ const ChatInput = ({
               {!isRecording ? <>
                   {/* Normal textarea */}
                   <div className="flex-1 relative">
-                    <Textarea placeholder="" value={inputValue} onChange={handleTextareaChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={handleKeyPress} ref={textareaRef} rows={1} disabled={isProcessing} style={{
-                  textAlign: 'left'
-                }} className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 w-full " />
+                    <Textarea placeholder="" value={inputValue} onChange={handleTextareaChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={handleKeyPress} ref={textareaRef} rows={1} disabled={isProcessing} className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left" />
                     {/* Animated placeholder overlay */}
                     {!inputValue && !isFocused && animatedPlaceholder && <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
                         {animatedPlaceholder}
