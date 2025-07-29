@@ -296,11 +296,11 @@ const ChatInput = ({
             </div>
           )}
 
-          {/* Text Input Area */}
+            {/* Text Input Area */}
           <div className="px-4 py-4">
-            <div className="flex items-end gap-2">
+            <div className="relative">
               {/* Normal textarea */}
-              <div className="flex-1 relative">
+              <div className="flex-1 relative pr-12">
                 <Textarea
                   placeholder=""
                   className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left"
@@ -322,13 +322,13 @@ const ChatInput = ({
                 )}
               </div>
 
-              {/* Submit Button */}
+              {/* Submit Button - Bottom Right Corner */}
               <Button
                 onClick={handleSubmit}
                 disabled={isProcessing || !inputValue.trim()}
                 size="sm"
                 title="Hitta bidrag"
-                className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                className="absolute bottom-0 right-0 w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
               >
                 {isProcessing ? (
                   <Loader2 className="w-7 h-7 animate-spin" />
