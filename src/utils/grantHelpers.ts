@@ -39,7 +39,8 @@ export const formatFundingAmount = (
       const millions = amount / 1000000;
       return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
     }
-    return `${amount.toLocaleString()} ${currency}`;
+    // Use spaces instead of commas for thousand separators (Swedish format)
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`;
   };
   
   // Priority: max_funding_per_project if not null, otherwise total_funding_per_call
