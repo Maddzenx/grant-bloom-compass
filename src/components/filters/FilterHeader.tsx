@@ -22,19 +22,37 @@ export const FilterHeader = ({
   activeFilterCount,
   className = ""
 }: FilterHeaderProps) => {
-  return <div style={{
-    borderColor: '#f0f1f3'
-  }} className={`rounded-none py-2 bg-[#f0f1f3] border border-[#f0f1f3] px-10 md:px-20 ${className}`}>
-      <div className="flex items-center">
-        <Button variant="ghost" size="sm" onClick={onToggleExpanded} className="flex items-center gap-1 text-gray-900 hover:text-gray-700 hover:bg-gray-50 p-0 h-auto font-normal text-sm">
-          <Filter className="w-4 h-4" />
-          <span className="font-normal text-sm">Avancerat filter</span>
-          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </Button>
-      </div>
+  return <div className={`bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 ${className}`}>
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onToggleExpanded} 
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-white/50 p-3 h-auto font-medium text-sm rounded-lg transition-all duration-200"
+          >
+            <Filter className="w-5 h-5 text-purple-600" />
+            <span className="font-medium">Avancerat filter</span>
+            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </Button>
+          
+          <div className="flex items-center gap-4 text-sm">
+            <span className="text-gray-600">
+              {filteredCount} av {totalCount} bidrag
+            </span>
+            {hasActiveFilters && (
+              <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
+                {activeFilterCount} aktiva filter
+              </span>
+            )}
+          </div>
+        </div>
 
-      {!isExpanded && hasActiveFilters && <div className="mt-1 text-xs text-gray-500">
-          {activeFilterCount} active filters
-        </div>}
+        {!isExpanded && hasActiveFilters && (
+          <div className="mt-3 text-sm text-gray-600">
+            {activeFilterCount} filter aktiva • {filteredCount} resultat visade
+          </div>
+        )}
+      </div>
     </div>;
 };

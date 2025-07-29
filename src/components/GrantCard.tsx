@@ -115,6 +115,19 @@ const GrantCard = ({
   const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
   // ---
 
+  const getDaysLeftText = (deadline: string) => {
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const timeDiff = deadlineDate.getTime() - now.getTime();
+
+    if (timeDiff < 0) {
+      return 'Slut';
+    }
+
+    const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return `${days} dagar kvar`;
+  };
+
   return (
     <Card className={`p-6 min-h-[120px] rounded-xl shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
@@ -158,13 +171,23 @@ const GrantCard = ({
         </p>
 
         {/* Footer with funding and deadline */}
-        <div className="flex items-center justify-between text-xs">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs mt-2">
           <span className="font-semibold text-accent-1">
             {grant.fundingAmount}
           </span>
-          <div className="flex items-center gap-1 text-ink-obsidian/60">
-            <Calendar className="w-3 h-3" />
-            <span>{formatDate(grant.deadline)}</span>
+          <div className="flex flex-col md:flex-row md:items-center gap-2 text-ink-obsidian/60">
+            {status === 'open' && grant.deadline && (
+              <span className="flex items-center gap-1 text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Öppen: {getDaysLeftText(grant.deadline)}
+              </span>
+            )}
+            {grant.deadline && (
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                Sök senast: <span className="font-semibold">{formatDate(grant.deadline)}</span>
+              </span>
+            )}
           </div>
         </div>
 

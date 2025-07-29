@@ -26,6 +26,7 @@ interface BackendFilterOptions {
   consortiumRequired?: boolean;
   geographicScope?: string[];
   cofinancingRequired?: boolean;
+  statusFilter?: 'open' | 'upcoming' | '';
 }
 
 interface BackendSortOptions {

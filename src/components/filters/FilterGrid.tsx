@@ -62,23 +62,80 @@ export const FilterGrid = ({
 
   return (
     <TooltipProvider>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Sticky result count and clear all */}
-        <div className="flex items-center justify-between sticky top-0 z-10 bg-white py-2 border-b border-gray-100">
-          <span className="text-xs font-medium text-gray-700">{filteredGrants.length} results found</span>
+        <div className="flex items-center justify-between sticky top-0 z-10 bg-white/80 backdrop-blur-sm py-3 border-b border-gray-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-900">{filteredGrants.length} resultat hittade</span>
+            <span className="text-xs text-gray-500">•</span>
+            <span className="text-xs text-gray-500">Totalt {grants.length} bidrag</span>
+          </div>
           {hasActiveFilters && onClearAll && (
-            <Button size="sm" variant="ghost" onClick={onClearAll} className="text-xs text-gray-600 border border-gray-200 px-2 py-1 rounded hover:bg-gray-50">Clear all filters</Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={onClearAll} 
+              className="text-xs text-gray-600 border-gray-300 px-3 py-1 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors"
+            >
+              Rensa alla filter
+            </Button>
           )}
         </div>
 
+        {/* Status Section */}
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            Status
+          </h4>
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700">
+              <input
+                type="radio"
+                name="statusFilter"
+                value=""
+                checked={!pendingFilters.statusFilter}
+                onChange={() => onPendingFilterChange({ statusFilter: '' })}
+                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+              />
+              Alla
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700">
+              <input
+                type="radio"
+                name="statusFilter"
+                value="open"
+                checked={pendingFilters.statusFilter === 'open'}
+                onChange={() => onPendingFilterChange({ statusFilter: 'open' })}
+                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+              />
+              Öppen
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700">
+              <input
+                type="radio"
+                name="statusFilter"
+                value="upcoming"
+                checked={pendingFilters.statusFilter === 'upcoming'}
+                onChange={() => onPendingFilterChange({ statusFilter: 'upcoming' })}
+                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+              />
+              Kommande
+            </label>
+          </div>
+        </div>
+
         {/* Applicant Section */}
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 tracking-wider">Applicant</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+            Ansökande
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Organizations Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">
-                {selectedCountLabel(pendingFilters.organizations, 'Organizations')}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                {selectedCountLabel(pendingFilters.organizations, 'Organisationer')}
               </label>
               <OrganizationMultiSelect
                 organizations={organizationOptions}
@@ -90,9 +147,9 @@ export const FilterGrid = ({
               />
             </div>
             {/* Eligible Applicants Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">
-                {selectedCountLabel(pendingFilters.eligibleApplicants, 'Eligible Applicants')}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                {selectedCountLabel(pendingFilters.eligibleApplicants, 'Stödberättigade sökande')}
               </label>
               <MultiSelect
                 options={eligibleApplicantOptions}
@@ -103,16 +160,17 @@ export const FilterGrid = ({
             </div>
           </div>
         </div>
-        <hr className="my-2 border-gray-200" />
-
         {/* Project Section */}
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 tracking-wider">Project</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            Projekt
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Industry Sectors Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">
-                {selectedCountLabel(pendingFilters.industrySectors, 'Industry Sectors')}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                {selectedCountLabel(pendingFilters.industrySectors, 'Branscher')}
               </label>
               <MultiSelect
                 options={industrySectorOptions}
@@ -122,9 +180,9 @@ export const FilterGrid = ({
               />
             </div>
             {/* Geographic Scope Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">
-                {selectedCountLabel(pendingFilters.geographicScope, 'Geographic Scope')}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">
+                {selectedCountLabel(pendingFilters.geographicScope, 'Geografiskt område')}
               </label>
               <MultiSelect
                 options={geographicScopeOptions}
@@ -134,9 +192,9 @@ export const FilterGrid = ({
               />
             </div>
             {/* Tags/Keywords Filter */}
-            <div className="space-y-1 col-span-2">
-              <label className="text-xs font-medium text-gray-700">
-                {selectedCountLabel(pendingFilters.tags, 'Tags/Keywords')}
+            <div className="space-y-2 col-span-2">
+              <label className="text-sm font-medium text-gray-900">
+                {selectedCountLabel(pendingFilters.tags, 'Taggar/Nyckelord')}
               </label>
               <MultiSelect
                 options={tagOptions}
@@ -147,63 +205,77 @@ export const FilterGrid = ({
             </div>
           </div>
         </div>
-        <hr className="my-2 border-gray-200" />
-
         {/* Requirements Section */}
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 tracking-wider">Requirements</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+            Krav
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Consortium Requirement Filter */}
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-gray-700 flex items-center gap-1">
-                Consortium Required
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="w-3 h-3 text-gray-400" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Filter grants that require a consortium or collaboration.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </label>
-              <Switch
-                checked={pendingFilters.consortiumRequired === true}
-                onCheckedChange={val => onPendingFilterChange({ consortiumRequired: val ? true : null })}
-                aria-label="Consortium Required"
-              />
-              <span className="text-xs text-gray-500 ml-2">{pendingFilters.consortiumRequired ? 'Required' : 'Not Required'}</span>
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                  Konsortium krävs
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Filtrera bidrag som kräver konsortium eller samarbete.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </label>
+              </div>
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={pendingFilters.consortiumRequired === true}
+                  onCheckedChange={val => onPendingFilterChange({ consortiumRequired: val ? true : null })}
+                  aria-label="Consortium Required"
+                />
+                <span className="text-sm text-gray-600 font-medium">
+                  {pendingFilters.consortiumRequired ? 'Krävs' : 'Krävs inte'}
+                </span>
+              </div>
             </div>
             {/* Co-financing Requirement Filter */}
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-gray-700 flex items-center gap-1">
-                Co-financing Required
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="w-3 h-3 text-gray-400" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Filter grants that require own funding or co-financing.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </label>
-              <Switch
-                checked={pendingFilters.cofinancingRequired === true}
-                onCheckedChange={val => onPendingFilterChange({ cofinancingRequired: val ? true : null })}
-                aria-label="Co-financing Required"
-              />
-              <span className="text-xs text-gray-500 ml-2">{pendingFilters.cofinancingRequired ? 'Required' : 'Not Required'}</span>
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                  Medfinansiering krävs
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Filtrera bidrag som kräver egen finansiering eller medfinansiering.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </label>
+              </div>
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={pendingFilters.cofinancingRequired === true}
+                  onCheckedChange={val => onPendingFilterChange({ cofinancingRequired: val ? true : null })}
+                  aria-label="Co-financing Required"
+                />
+                <span className="text-sm text-gray-600 font-medium">
+                  {pendingFilters.cofinancingRequired ? 'Krävs' : 'Krävs inte'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-        <hr className="my-2 border-gray-200" />
-
         {/* Funding & Deadline Section */}
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 tracking-wider">Funding & Deadline</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+            Finansiering & Deadline
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Funding Range Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">Funding Amount</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">Finansieringsbelopp</label>
               <FundingRangeSlider
                 value={pendingFilters.fundingRange}
                 onChange={(range) => onPendingFilterChange({ fundingRange: range })}
@@ -212,8 +284,8 @@ export const FilterGrid = ({
               />
             </div>
             {/* Deadline Filter */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">Application Deadline</label>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">Ansökningsdeadline</label>
               <EnhancedDeadlineFilter
                 value={pendingFilters.deadline}
                 onChange={(deadline) => onPendingFilterChange({ deadline })}

@@ -18,6 +18,7 @@ interface ConsolidatedGrantListProps {
   aiMatches?: AIGrantMatch[];
   currentPage?: number;
   totalPages?: number;
+  totalCount?: number;
   onPageChange?: (page: number) => void;
 }
 const ConsolidatedGrantList = ({
@@ -30,6 +31,7 @@ const ConsolidatedGrantList = ({
   aiMatches,
   currentPage = 1,
   totalPages = 1,
+  totalCount = 0,
   onPageChange = () => {}
 }: ConsolidatedGrantListProps) => {
   const {
@@ -75,6 +77,54 @@ const ConsolidatedGrantList = ({
     onToggleBookmark(grant.id);
   };
 
+  // Generate smart page numbers with ellipsis
+  const generatePageNumbers = (current: number, total: number): (number | string)[] => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 4) {
+      return [1, 2, 3, 4, 5, '...', total];
+    }
+
+    if (current >= total - 3) {
+      return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, '...', current - 1, current, current + 1, '...', total];
+  };
+
+  // Keyboard navigation for pagination
+  React.useEffect(() => {
+    if (isMobile || totalPages <= 1) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey) {
+        switch (e.key) {
+          case 'Home':
+            e.preventDefault();
+            if (currentPage > 1) onPageChange(1);
+            break;
+          case 'End':
+            e.preventDefault();
+            if (currentPage < totalPages) onPageChange(totalPages);
+            break;
+          case 'ArrowLeft':
+            e.preventDefault();
+            if (currentPage > 1) onPageChange(currentPage - 1);
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            if (currentPage < totalPages) onPageChange(currentPage + 1);
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage, totalPages, onPageChange, isMobile]);
+
   // Create a map for quick lookup of match scores
   const matchScoreMap = React.useMemo(() => new Map(aiMatches?.map(match => [match.grantId, match.relevanceScore]) || []), [aiMatches]);
   return <div className="bg-white">
@@ -86,6 +136,17 @@ const ConsolidatedGrantList = ({
             Försök att justera dina filter eller söktermer.
           </div>
         </div> : <>
+          {/* Grant counter header */}
+          {!isMobile && totalPages > 1 && totalCount > 0 && (
+            <div className="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
+              <span className="text-sm text-gray-600">
+                Visar {((currentPage - 1) * 15) + 1}-{Math.min(currentPage * 15, totalCount)} av {totalCount} bidrag
+              </span>
+              <span className="text-xs text-gray-500">
+                Sida {currentPage} av {totalPages}
+              </span>
+            </div>
+          )}
           {/* Full-width rows layout */}
           <div className="divide-y divide-gray-100">
             {grants.map(grant => {
@@ -163,18 +224,138 @@ const ConsolidatedGrantList = ({
         })}
           </div>
           
-          {/* Pagination Controls */}
-          {!isMobile && totalPages > 1 && <div className="flex items-center justify-center gap-4 py-4 px-6 border-t border-gray-100">
-              <Button variant="ghost" size="icon" onClick={() => onPageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="h-8 w-8 p-0" aria-label="Föregående sida">
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <span className="text-sm text-gray-700 min-w-[90px] text-center">
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button variant="ghost" size="icon" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="h-8 w-8 p-0" aria-label="Nästa sida">
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-            </div>}
+          {/* Enhanced Pagination Controls */}
+          {!isMobile && totalPages > 1 && (
+            <div className="border-t border-gray-100 bg-gray-50">
+              {/* Pagination Info Bar */}
+              <div className="flex items-center justify-between px-6 py-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span>Visar {((currentPage - 1) * 15) + 1}-{Math.min(currentPage * 15, totalCount)} av {totalCount} bidrag</span>
+                  <span className="text-gray-400">•</span>
+                  <span>Sida {currentPage} av {totalPages}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500">
+                    {Math.ceil((currentPage / totalPages) * 100)}% visat
+                  </span>
+                </div>
+              </div>
+              
+              {/* Pagination Controls */}
+              <div className="flex items-center justify-center gap-2 py-4 px-6">
+                {/* First Page Button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => onPageChange(1)} 
+                  disabled={currentPage === 1}
+                  className="h-8 px-2 text-xs hover:bg-gray-100"
+                  aria-label="Första sidan"
+                  title="Första sidan (Alt + Home)"
+                >
+                  <ChevronLeft className="h-3 w-3 mr-1" />
+                  <ChevronLeft className="h-3 w-3 -ml-2" />
+                  Första
+                </Button>
+                
+                {/* Previous Page Button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => onPageChange(Math.max(1, currentPage - 1))} 
+                  disabled={currentPage === 1}
+                  className="h-8 px-3 text-xs hover:bg-gray-100"
+                  aria-label="Föregående sida"
+                  title="Föregående sida (Alt + ←)"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Föregående
+                </Button>
+                
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1 mx-4">
+                  {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => (
+                    <React.Fragment key={index}>
+                      {pageNum === '...' ? (
+                        <span className="px-2 py-1 text-gray-400">...</span>
+                      ) : (
+                        <Button
+                          variant={pageNum === currentPage ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => onPageChange(pageNum as number)}
+                          className={`h-8 w-8 p-0 text-xs font-medium ${
+                            pageNum === currentPage 
+                              ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                              : 'hover:bg-gray-100'
+                          }`}
+                          aria-label={`Sida ${pageNum}`}
+                          aria-current={pageNum === currentPage ? "page" : undefined}
+                        >
+                          {pageNum}
+                        </Button>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+                
+                {/* Next Page Button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} 
+                  disabled={currentPage === totalPages}
+                  className="h-8 px-3 text-xs hover:bg-gray-100"
+                  aria-label="Nästa sida"
+                  title="Nästa sida (Alt + →)"
+                >
+                  Nästa
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+                
+                {/* Last Page Button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => onPageChange(totalPages)} 
+                  disabled={currentPage === totalPages}
+                  className="h-8 px-2 text-xs hover:bg-gray-100"
+                  aria-label="Sista sidan"
+                  title="Sista sidan (Alt + End)"
+                >
+                  Sista
+                  <ChevronRight className="h-3 w-3 ml-1" />
+                  <ChevronRight className="h-3 w-3 -mr-2" />
+                </Button>
+              </div>
+              
+              {/* Quick Jump Controls */}
+              <div className="flex items-center justify-center gap-4 pb-4 px-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-600">Hoppa till:</span>
+                  <div className="flex items-center gap-1">
+                    {[1, Math.ceil(totalPages / 4), Math.ceil(totalPages / 2), Math.ceil(totalPages * 3 / 4), totalPages]
+                      .filter((page, index, arr) => arr.indexOf(page) === index && page <= totalPages)
+                      .map(page => (
+                        <Button
+                          key={page}
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onPageChange(page)}
+                          disabled={page === currentPage}
+                          className="h-6 px-2 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                        >
+                          {page === 1 ? '1' : 
+                           page === Math.ceil(totalPages / 4) ? '25%' :
+                           page === Math.ceil(totalPages / 2) ? '50%' :
+                           page === Math.ceil(totalPages * 3 / 4) ? '75%' :
+                           page === totalPages ? `${totalPages}` : page}
+                        </Button>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </>}
     </div>;
 };

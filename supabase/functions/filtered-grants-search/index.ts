@@ -166,6 +166,27 @@ serve(async (req) => {
       query = query.eq('cofinancing_required', filters.cofinancingRequired);
     }
 
+    // Apply status filter (open/upcoming)
+    if (filters.statusFilter) {
+      console.log('📅 Applying status filter:', filters.statusFilter);
+      const now = new Date();
+      const today = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      if (filters.statusFilter === 'open') {
+        // Open grants: application_opening_date <= today <= application_closing_date
+        query = query
+          .not('application_opening_date', 'is', null)
+          .not('application_closing_date', 'is', null)
+          .lte('application_opening_date', today)
+          .gte('application_closing_date', today);
+      } else if (filters.statusFilter === 'upcoming') {
+        // Upcoming grants: application_opening_date > today
+        query = query
+          .not('application_opening_date', 'is', null)
+          .gt('application_opening_date', today);
+      }
+    }
+
     // Apply deadline filter
     if (filters.deadline) {
       if (filters.deadline.type === 'preset') {
@@ -338,10 +359,13 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({
       grants: transformedGrants,
-      totalCount: count || 0,
-      page: pagination.page,
-      limit: pagination.limit,
-      totalPages
+      pagination: {
+        page: pagination.page,
+        limit: pagination.limit,
+        total: count || 0,
+        totalPages,
+        hasMore: pagination.page < totalPages
+      }
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

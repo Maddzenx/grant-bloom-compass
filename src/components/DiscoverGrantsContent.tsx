@@ -225,11 +225,11 @@ export const DiscoverGrantsContent = ({
               onPageChange={onPageChange}
             />
             <Sheet open={detailsOpen && !!selectedGrant} onOpenChange={open => { setDetailsOpen(open); if (!open) onBackToList(); }}>
-              <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp">
-                <div className="flex flex-col items-center pt-3 pb-2">
+              <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp pointer-events-none">
+                <div className="flex flex-col items-center pt-3 pb-2 pointer-events-auto">
                   <div className="w-12 h-1.5 rounded-full bg-gray-300 mb-2" />
                 </div>
-                <div className="flex-1 overflow-y-auto px-0 pb-4">
+                <div className="flex-1 overflow-y-auto px-0 pb-4 pointer-events-auto">
                   <GrantDetailsPanel 
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 
