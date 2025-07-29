@@ -35,22 +35,7 @@ const getGrantLanguage = (organisation: string | null): 'sv' | 'en' => {
   return 'sv';
 };
 
-const createLanguageAwareSelect = (fields: string[], language: 'sv' | 'en'): string => {
-  const languageSpecificFields = [
-    'title', 'subtitle', 'description', 'eligibility', 'evaluation_criteria',
-    'application_process', 'consortium_requirement', 'region',
-    'eligible_organisations', 'eligible_cost_categories', 'information_webinar_names',
-    'application_templates_names', 'other_sources_names', 'contact_title',
-    'other_templates_names', 'other_important_dates_labels'
-  ];
-  
-  return fields.map(field => {
-    if (languageSpecificFields.includes(field)) {
-      return `${field}_${language} as ${field}`;
-    }
-    return field;
-  }).join(', ');
-};
+
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -82,22 +67,22 @@ serve(async (req) => {
     try {
       console.log('🔍 Querying database for grants with embeddings...');
       
-      // Define fields to select for semantic search
+      // Define fields to select for semantic search - load both language versions
       const selectFields = [
         'id', 'organisation', 'embedding',
-        // Language-specific fields
-        'title', 'description', 'subtitle', 'eligibility', 'evaluation_criteria',
-        'application_process', 'keywords', 'industry_sectors', 'eligible_organisations',
-        'geographic_scope', 'region', 'eligible_cost_categories'
+        // Language-specific fields in both languages
+        'title_sv', 'title_en', 'description_sv', 'description_en', 'subtitle_sv', 'subtitle_en',
+        'eligibility_sv', 'eligibility_en', 'evaluation_criteria_sv', 'evaluation_criteria_en',
+        'application_process_sv', 'application_process_en',
+        // Other fields that don't need language selection
+        'keywords', 'industry_sectors', 'eligible_organisations_sv', 'eligible_organisations_en',
+        'geographic_scope', 'region_sv', 'region_en', 'eligible_cost_categories_sv', 'eligible_cost_categories_en'
       ];
-
-      // For semantic search, we'll use Swedish as default and handle language selection in transformation
-      const selectStatement = createLanguageAwareSelect(selectFields, 'sv');
       
       // Build the query - start with base query
       let grantsQuery = supabase
         .from('grant_call_details')
-        .select(selectStatement)
+        .select(selectFields.join(', '))
         .not('embedding', 'is', null);
 
       // Filter out grants with passed deadlines (but include grants with null closing dates)
@@ -111,9 +96,11 @@ serve(async (req) => {
         console.log('🏢 Applying organization filter:', organizationFilter);
         
         // Create OR conditions for each organization type in the filter
-        const orConditions = organizationFilter.map((orgType: string) => 
-          `eligible_organisations_sv.cs.["${orgType}"]`
-        );
+        // Use both Swedish and English fields for organization filtering
+        const orConditions = organizationFilter.flatMap((orgType: string) => [
+          `eligible_organisations_sv.cs.["${orgType}"]`,
+          `eligible_organisations_en.cs.["${orgType}"]`
+        ]);
         
         grantsQuery = grantsQuery.or(orConditions.join(','));
         console.log('📋 Organization filter applied with conditions:', orConditions);
@@ -148,29 +135,40 @@ serve(async (req) => {
     }
 
     console.log(`📊 Processing ${grants.length} grants with AI semantic search`);
+    console.log(`🔍 About to create embeddings for query: "${query}"`);
 
     // Transform grants to use correct language based on organization
     const transformedGrants = grants.map(grant => {
       const language = getGrantLanguage(grant.organisation);
       
-      // For semantic search, we need to use the correct language description
-      const description = language === 'en' ? 
-        (grant.description || grant.subtitle || '') : 
-        (grant.description || grant.subtitle || '');
+      // Select the correct language fields based on organization
+      const title = language === 'en' ? grant.title_en : grant.title_sv;
+      const subtitle = language === 'en' ? grant.subtitle_en : grant.subtitle_sv;
+      const description = language === 'en' ? grant.description_en : grant.description_sv;
+      const eligibility = language === 'en' ? grant.eligibility_en : grant.eligibility_sv;
+      const evaluation_criteria = language === 'en' ? grant.evaluation_criteria_en : grant.evaluation_criteria_sv;
+      const application_process = language === 'en' ? grant.application_process_en : grant.application_process_sv;
+      const region = language === 'en' ? grant.region_en : grant.region_sv;
+      const eligible_organisations = language === 'en' ? grant.eligible_organisations_en : grant.eligible_organisations_sv;
+      const eligible_cost_categories = language === 'en' ? grant.eligible_cost_categories_en : grant.eligible_cost_categories_sv;
       
       return {
         ...grant,
-        description,
-        // Ensure we have the correct language fields for display
-        title: grant.title || 'No title available',
-        subtitle: grant.subtitle || '',
-        eligibility: grant.eligibility || '',
-        evaluation_criteria: grant.evaluation_criteria || '',
-        application_process: grant.application_process || ''
+        title: title || 'No title available',
+        subtitle: subtitle || '',
+        description: description || subtitle || 'No description available',
+        eligibility: eligibility || '',
+        evaluation_criteria: evaluation_criteria || '',
+        application_process: application_process || '',
+        region: region || undefined,
+        eligible_organisations: eligible_organisations || grant.eligible_organisations_sv,
+        eligible_cost_categories: eligible_cost_categories || grant.eligible_cost_categories_sv
       };
     });
 
     // Create embeddings for the query
+    console.log(`🔍 Creating OpenAI embedding for query: "${query}"`);
+    
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -184,26 +182,130 @@ serve(async (req) => {
     });
 
     if (!embeddingResponse.ok) {
+      console.error(`❌ OpenAI API error: ${embeddingResponse.status} ${embeddingResponse.statusText}`);
       throw new Error(`OpenAI embedding API error: ${embeddingResponse.statusText}`);
     }
 
     const embeddingData = await embeddingResponse.json();
+    console.log(`✅ OpenAI embedding created successfully`);
+    
     const queryEmbedding = embeddingData.data[0].embedding;
+    
+    console.log(`🔍 Query embedding length: ${queryEmbedding.length}`);
+    console.log(`🔍 Query embedding sample: [${queryEmbedding.slice(0, 5).map(x => x.toFixed(4)).join(', ')}...]`);
+    console.log(`🔍 Starting semantic search with ${transformedGrants.length} transformed grants`);
 
-    // Use the match_grant_call_details function for semantic search
-    const { data: matchedGrants, error: matchError } = await supabase.rpc('match_grant_call_details', {
-      query_embedding: queryEmbedding,
-      match_threshold: 0.7,
-      match_count: 10
-    });
-
-    if (matchError) {
-      console.error('❌ Semantic search error:', matchError);
-      throw new Error(`Semantic search failed: ${matchError.message}`);
+    // Use the already fetched grants for semantic search
+    const allGrantsWithEmbeddings = transformedGrants.filter(grant => grant.embedding);
+    
+    console.log(`📊 Found ${allGrantsWithEmbeddings.length} grants with embeddings from transformed grants`);
+    
+    // Debug: Check first grant's embedding
+    if (allGrantsWithEmbeddings.length > 0) {
+      const firstGrant = allGrantsWithEmbeddings[0];
+      console.log(`🔍 First grant embedding type: ${typeof firstGrant.embedding}`);
+      console.log(`🔍 First grant embedding length: ${firstGrant.embedding?.length || 0}`);
+      
+      if (firstGrant.embedding) {
+        if (Array.isArray(firstGrant.embedding)) {
+          console.log(`🔍 First grant embedding sample: [${firstGrant.embedding.slice(0, 5).map(x => x.toFixed(4)).join(', ')}...]`);
+        } else if (typeof firstGrant.embedding === 'string') {
+          console.log(`🔍 First grant embedding is a string, attempting to parse...`);
+          try {
+            const parsedEmbedding = JSON.parse(firstGrant.embedding);
+            console.log(`🔍 Parsed embedding type: ${typeof parsedEmbedding}, length: ${parsedEmbedding?.length || 0}`);
+            if (Array.isArray(parsedEmbedding)) {
+              console.log(`🔍 Parsed embedding sample: [${parsedEmbedding.slice(0, 5).map(x => x.toFixed(4)).join(', ')}...]`);
+            }
+          } catch (error) {
+            console.log(`🔍 Failed to parse embedding: ${error.message}`);
+          }
+        } else {
+          console.log(`🔍 First grant embedding is not an array, type: ${typeof firstGrant.embedding}`);
+          console.log(`🔍 First grant embedding value: ${JSON.stringify(firstGrant.embedding).substring(0, 100)}...`);
+        }
+      }
     }
 
-    if (!matchedGrants || matchedGrants.length === 0) {
-      console.log('📭 No semantic matches found');
+    if (allGrantsWithEmbeddings.length === 0) {
+      console.log('📭 No grants with embeddings found');
+      return new Response(JSON.stringify({
+        rankedGrants: [],
+        explanation: 'No grants found in database'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log(`🔍 Calculating similarity for ${allGrantsWithEmbeddings.length} grants...`);
+    
+    // Calculate cosine similarity for each grant
+    const grantsWithSimilarity = allGrantsWithEmbeddings.map(grant => {
+      let grantEmbedding = grant.embedding;
+      
+      // Check if embedding is valid
+      if (!grantEmbedding) {
+        console.warn(`⚠️ No embedding for grant ${grant.id}`);
+        return { ...grant, similarity: 0 };
+      }
+      
+      // Parse embedding if it's a string (JSON format)
+      if (typeof grantEmbedding === 'string') {
+        try {
+          grantEmbedding = JSON.parse(grantEmbedding);
+        } catch (error) {
+          console.warn(`⚠️ Failed to parse embedding JSON for grant ${grant.id}: ${error.message}`);
+          return { ...grant, similarity: 0 };
+        }
+      }
+      
+      // Check if embedding is an array after parsing
+      if (!Array.isArray(grantEmbedding)) {
+        console.warn(`⚠️ Embedding is not an array for grant ${grant.id} after parsing, type: ${typeof grantEmbedding}`);
+        return { ...grant, similarity: 0 };
+      }
+      
+      if (grantEmbedding.length !== queryEmbedding.length) {
+        console.warn(`⚠️ Embedding length mismatch for grant ${grant.id}: query=${queryEmbedding.length}, grant=${grantEmbedding.length}`);
+        return { ...grant, similarity: 0 };
+      }
+
+      // Calculate cosine similarity
+      let dotProduct = 0;
+      let queryMagnitude = 0;
+      let grantMagnitude = 0;
+
+      for (let i = 0; i < queryEmbedding.length; i++) {
+        dotProduct += queryEmbedding[i] * grantEmbedding[i];
+        queryMagnitude += queryEmbedding[i] * queryEmbedding[i];
+        grantMagnitude += grantEmbedding[i] * grantEmbedding[i];
+      }
+
+      queryMagnitude = Math.sqrt(queryMagnitude);
+      grantMagnitude = Math.sqrt(grantMagnitude);
+
+      const similarity = dotProduct / (queryMagnitude * grantMagnitude);
+      
+      // Debug logging for first few grants
+      if (allGrantsWithEmbeddings.indexOf(grant) < 3) {
+        console.log(`🔍 Grant ${grant.id} similarity: ${similarity.toFixed(4)}`);
+      }
+      
+      return { ...grant, similarity };
+    });
+
+    // Sort by similarity and take top results with a lower threshold
+    const sortedGrants = grantsWithSimilarity
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 20); // Take top 20 for debugging
+
+    console.log(`📊 Top similarities: ${sortedGrants.slice(0, 5).map(g => `${g.similarity.toFixed(4)}`).join(', ')}`);
+    
+    // Use a much lower threshold - cosine similarity for text embeddings is typically much lower
+    const matchedGrants = sortedGrants.filter(grant => grant.similarity >= 0.1);
+
+    if (matchedGrants.length === 0) {
+      console.log('📭 No semantic matches found above threshold');
       return new Response(JSON.stringify({
         rankedGrants: [],
         explanation: 'No grants found matching your query'
@@ -212,48 +314,111 @@ serve(async (req) => {
       });
     }
 
+    // Get the full grant details for the matched grants
+    const matchedGrantIds = matchedGrants.map((grant: any) => grant.id);
+    
+    // Define fields to select for the full grant details
+    const fullGrantFields = [
+      'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
+      'total_funding_per_call', 'currency', 'application_opening_date', 'application_closing_date', 
+      'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max', 
+      'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
+      'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
+      // Language-specific fields in both languages
+      'title_sv', 'title_en', 'subtitle_sv', 'subtitle_en', 'description_sv', 'description_en',
+      'eligibility_sv', 'eligibility_en', 'evaluation_criteria_sv', 'evaluation_criteria_en',
+      'application_process_sv', 'application_process_en',
+      // Other fields
+      'keywords', 'industry_sectors', 'eligible_organisations_sv', 'eligible_organisations_en',
+      'region_sv', 'region_en', 'eligible_cost_categories_sv', 'eligible_cost_categories_en',
+      'consortium_requirement_sv', 'consortium_requirement_en',
+      'information_webinar_names_sv', 'information_webinar_names_en',
+      'application_templates_names_sv', 'application_templates_names_en',
+      'other_templates_names_sv', 'other_templates_names_en',
+      'other_sources_names_sv', 'other_sources_names_en',
+      'application_templates_links', 'other_templates_links', 'other_sources_links'
+    ];
+
+    const { data: fullGrants, error: fullGrantsError } = await supabase
+      .from('grant_call_details')
+      .select(fullGrantFields.join(', '))
+      .in('id', matchedGrantIds);
+
+    if (fullGrantsError) {
+      console.error('❌ Error fetching full grant details:', fullGrantsError);
+      throw new Error(`Failed to fetch full grant details: ${fullGrantsError.message}`);
+    }
+
+    // Create a map of grants by ID for easy lookup
+    const grantsMap = new Map();
+    fullGrants?.forEach(grant => {
+      grantsMap.set(grant.id, grant);
+    });
+
     // Transform the matched grants to use correct language
-    const rankedGrants = matchedGrants.map((grant: any) => {
-      const language = getGrantLanguage(grant.organisation);
+    const rankedGrants = matchedGrants.map((matchedGrant: any) => {
+      const fullGrant = grantsMap.get(matchedGrant.id);
+      if (!fullGrant) {
+        console.warn(`⚠️ Full grant details not found for ID: ${matchedGrant.id}`);
+        return null;
+      }
+
+      const language = getGrantLanguage(fullGrant.organisation);
+      
+      // Select the correct language fields based on organization
+      const title = language === 'en' ? fullGrant.title_en : fullGrant.title_sv;
+      const subtitle = language === 'en' ? fullGrant.subtitle_en : fullGrant.subtitle_sv;
+      const description = language === 'en' ? fullGrant.description_en : fullGrant.description_sv;
+      const eligibility = language === 'en' ? fullGrant.eligibility_en : fullGrant.eligibility_sv;
+      const evaluation_criteria = language === 'en' ? fullGrant.evaluation_criteria_en : fullGrant.evaluation_criteria_sv;
+      const application_process = language === 'en' ? fullGrant.application_process_en : fullGrant.application_process_sv;
+      const region = language === 'en' ? fullGrant.region_en : fullGrant.region_sv;
+      const eligible_organisations = language === 'en' ? fullGrant.eligible_organisations_en : fullGrant.eligible_organisations_sv;
+      const eligible_cost_categories = language === 'en' ? fullGrant.eligible_cost_categories_en : fullGrant.eligible_cost_categories_sv;
+      const consortium_requirement = language === 'en' ? fullGrant.consortium_requirement_en : fullGrant.consortium_requirement_sv;
+      const information_webinar_names = language === 'en' ? fullGrant.information_webinar_names_en : fullGrant.information_webinar_names_sv;
+      const application_templates_names = language === 'en' ? fullGrant.application_templates_names_en : fullGrant.application_templates_names_sv;
+      const other_templates_names = language === 'en' ? fullGrant.other_templates_names_en : fullGrant.other_templates_names_sv;
+      const other_sources_names = language === 'en' ? fullGrant.other_sources_names_en : fullGrant.other_sources_names_sv;
       
       return {
-        id: grant.id,
-        title: grant.title || 'No title available',
-        organization: grant.organisation || 'Unknown organization',
-        description: grant.description || grant.subtitle || 'No description available',
-        aboutGrant: grant.subtitle || grant.description || 'No description available',
-        fundingAmount: formatFundingAmount(grant),
-        opens_at: grant.application_opening_date || '',
-        deadline: grant.application_closing_date || '',
-        tags: Array.isArray(grant.keywords) ? grant.keywords : [],
-        industry_sectors: Array.isArray(grant.industry_sectors) ? grant.industry_sectors : [],
-        eligible_organisations: Array.isArray(grant.eligible_organisations) ? grant.eligible_organisations : [],
-        geographic_scope: grant.geographic_scope ? [grant.geographic_scope] : [],
-        region: grant.region || undefined,
-        cofinancing_required: grant.cofinancing_required || false,
-        cofinancing_level_min: grant.cofinancing_level_min || undefined,
-        consortium_requirement: grant.consortium_requirement || undefined,
-        fundingRules: Array.isArray(grant.eligible_cost_categories) ? grant.eligible_cost_categories : [],
-        application_opening_date: grant.application_opening_date,
-        application_closing_date: grant.application_closing_date,
-        project_start_date_min: grant.project_start_date_min,
-        project_start_date_max: grant.project_start_date_max,
-        project_end_date_min: grant.project_end_date_min,
-        project_end_date_max: grant.project_end_date_max,
-        information_webinar_dates: Array.isArray(grant.information_webinar_dates) ? grant.information_webinar_dates : [],
-        information_webinar_links: Array.isArray(grant.information_webinar_links) ? grant.information_webinar_links : [],
-        information_webinar_names: Array.isArray(grant.information_webinar_names) ? grant.information_webinar_names : [],
-        templates: Array.isArray(grant.application_templates_names) ? grant.application_templates_names : [],
-        generalInfo: Array.isArray(grant.other_templates_names) ? grant.other_templates_names : [],
-        application_templates_links: Array.isArray(grant.application_templates_links) ? grant.application_templates_links : [],
-        other_templates_links: Array.isArray(grant.other_templates_links) ? grant.other_templates_links : [],
-        other_sources_links: Array.isArray(grant.other_sources_links) ? grant.other_sources_links : [],
-        other_sources_names: Array.isArray(grant.other_sources_names) ? grant.other_sources_names : [],
-        created_at: grant.created_at,
-        updated_at: grant.updated_at,
-        distance: grant.distance
+        id: fullGrant.id,
+        title: title || 'No title available',
+        organization: fullGrant.organisation || 'Unknown organization',
+        description: description || subtitle || 'No description available',
+        aboutGrant: subtitle || description || 'No description available',
+        fundingAmount: formatFundingAmount(fullGrant),
+        opens_at: fullGrant.application_opening_date || '',
+        deadline: fullGrant.application_closing_date || '',
+        tags: Array.isArray(fullGrant.keywords) ? fullGrant.keywords : [],
+        industry_sectors: Array.isArray(fullGrant.industry_sectors) ? fullGrant.industry_sectors : [],
+        eligible_organisations: Array.isArray(eligible_organisations) ? eligible_organisations : [],
+        geographic_scope: fullGrant.geographic_scope ? [fullGrant.geographic_scope] : [],
+        region: region || undefined,
+        cofinancing_required: fullGrant.cofinancing_required || false,
+        cofinancing_level_min: fullGrant.cofinancing_level_min || undefined,
+        consortium_requirement: consortium_requirement || undefined,
+        fundingRules: Array.isArray(eligible_cost_categories) ? eligible_cost_categories : [],
+        application_opening_date: fullGrant.application_opening_date,
+        application_closing_date: fullGrant.application_closing_date,
+        project_start_date_min: fullGrant.project_start_date_min,
+        project_start_date_max: fullGrant.project_start_date_max,
+        project_end_date_min: fullGrant.project_end_date_min,
+        project_end_date_max: fullGrant.project_end_date_max,
+        information_webinar_dates: Array.isArray(fullGrant.information_webinar_dates) ? fullGrant.information_webinar_dates : [],
+        information_webinar_links: Array.isArray(fullGrant.information_webinar_links) ? fullGrant.information_webinar_links : [],
+        information_webinar_names: Array.isArray(information_webinar_names) ? information_webinar_names : [],
+        templates: Array.isArray(application_templates_names) ? application_templates_names : [],
+        generalInfo: Array.isArray(other_templates_names) ? other_templates_names : [],
+        application_templates_links: Array.isArray(fullGrant.application_templates_links) ? fullGrant.application_templates_links : [],
+        other_templates_links: Array.isArray(fullGrant.other_templates_links) ? fullGrant.other_templates_links : [],
+        other_sources_links: Array.isArray(fullGrant.other_sources_links) ? fullGrant.other_sources_links : [],
+        other_sources_names: Array.isArray(other_sources_names) ? other_sources_names : [],
+        created_at: fullGrant.created_at,
+        updated_at: fullGrant.updated_at,
+        distance: 1 - matchedGrant.similarity // Convert similarity to distance for consistency
       };
-    });
+    }).filter(grant => grant !== null); // Remove any null grants
 
     console.log(`✅ Semantic search completed, found ${rankedGrants.length} matches`);
 
