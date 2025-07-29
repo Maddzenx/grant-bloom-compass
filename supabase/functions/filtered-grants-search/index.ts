@@ -90,11 +90,11 @@ serve(async (req) => {
       .from('grant_call_details')
       .select(selectFields.join(', '), { count: 'exact' });
 
-    // Filter out grants with passed deadlines
+    // Filter out grants with passed deadlines (but include grants with null closing dates)
     const today = new Date().toISOString().split('T')[0];
-    query = query
-      .not('application_closing_date', 'is', null)
-      .gte('application_closing_date', today);
+    query = query.or(
+      `application_closing_date.is.null,application_closing_date.gte.${today}`
+    );
 
     // Apply text search if provided (basic text search, not semantic)
     if (searchTerm && searchTerm.trim()) {
@@ -390,19 +390,29 @@ function formatFundingAmount(grant: any): string {
   const totalFunding = grant.total_funding_per_call;
   const currency = grant.currency || 'SEK';
   
+  // Helper to format large amounts in millions
+  const formatAmount = (amount: number): string => {
+    if (amount >= 1000000) {
+      const millions = amount / 1000000;
+      return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+    }
+    // Use spaces instead of commas for thousand separators (Swedish format)
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`;
+  };
+  
   if (maxFunding && maxFunding > 0) {
     if (minFunding && minFunding > 0 && minFunding !== maxFunding) {
-      return `${minFunding.toLocaleString()} - ${maxFunding.toLocaleString()} ${currency}`;
+      return `${formatAmount(minFunding)} - ${formatAmount(maxFunding)}`;
     }
-    return `${maxFunding.toLocaleString()} ${currency}`;
+    return formatAmount(maxFunding);
   }
   
   if (totalFunding && totalFunding > 0) {
-    return `${totalFunding.toLocaleString()} ${currency}`;
+    return formatAmount(totalFunding);
   }
   
   if (minFunding && minFunding > 0) {
-    return `${minFunding.toLocaleString()} ${currency}`;
+    return formatAmount(minFunding);
   }
   
   return 'Not specified';

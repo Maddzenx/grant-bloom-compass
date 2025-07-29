@@ -81,6 +81,7 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     consortiumRequired: filters.consortiumRequired,
     geographicScope: filters.geographicScope.length > 0 ? filters.geographicScope : undefined,
     cofinancingRequired: filters.cofinancingRequired,
+    statusFilter: (filters.statusFilter === 'open' || filters.statusFilter === 'upcoming' || filters.statusFilter === '') ? filters.statusFilter : undefined,
   };
 };
 

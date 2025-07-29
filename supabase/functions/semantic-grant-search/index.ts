@@ -100,11 +100,11 @@ serve(async (req) => {
         .select(selectStatement)
         .not('embedding', 'is', null);
 
-      // Filter out grants with passed deadlines
+      // Filter out grants with passed deadlines (but include grants with null closing dates)
       const today = new Date().toISOString().split('T')[0];
-      grantsQuery = grantsQuery
-        .not('application_closing_date', 'is', null)
-        .gte('application_closing_date', today);
+      grantsQuery = grantsQuery.or(
+        `application_closing_date.is.null,application_closing_date.gte.${today}`
+      );
 
       // Apply organization filtering if specified
       if (organizationFilter && organizationFilter.length > 0) {
@@ -278,19 +278,31 @@ serve(async (req) => {
 
 // Helper function to format funding amount
 function formatFundingAmount(grant: any): string {
+  const currency = grant.currency || 'SEK';
+  
+  // Helper to format large amounts in millions
+  const formatAmount = (amount: number): string => {
+    if (amount >= 1000000) {
+      const millions = amount / 1000000;
+      return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+    }
+    // Use spaces instead of commas for thousand separators (Swedish format)
+    return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`;
+  };
+  
   if (grant.max_funding_per_project) {
     if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
-      return `${grant.min_funding_per_project.toLocaleString()} - ${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+      return `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
     }
-    return `${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.max_funding_per_project);
   }
   
   if (grant.total_funding_per_call) {
-    return `${grant.total_funding_per_call.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.total_funding_per_call);
   }
   
   if (grant.min_funding_per_project) {
-    return `${grant.min_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return formatAmount(grant.min_funding_per_project);
   }
   
   return 'Not specified';
