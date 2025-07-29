@@ -134,14 +134,7 @@ const ConsolidatedGrantList = ({
           </div>
         </div> : <>
           {/* Grant counter header */}
-          {!isMobile && totalPages > 1 && totalCount > 0 && <div className="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
-              <span className="text-sm text-gray-600">
-                Visar {(currentPage - 1) * 15 + 1}-{Math.min(currentPage * 15, totalCount)} av {totalCount} bidrag
-              </span>
-              <span className="text-xs text-gray-500">
-                Sida {currentPage} av {totalPages}
-              </span>
-            </div>}
+          {!isMobile && totalPages > 1 && totalCount > 0}
           {/* Full-width rows layout */}
           <div className="divide-y divide-gray-100">
             {grants.map(grant => {
@@ -272,18 +265,7 @@ const ConsolidatedGrantList = ({
               </div>
               
               {/* Quick Jump Controls */}
-              <div className="flex items-center justify-center gap-4 pb-4 px-6">
-                <div className="flex items-center gap-2">
-                  
-                  <div className="flex items-center gap-1">
-                    {[1, Math.ceil(totalPages / 4), Math.ceil(totalPages / 2), Math.ceil(totalPages * 3 / 4), totalPages].filter((page, index, arr) => arr.indexOf(page) === index && page <= totalPages).map(page => (
-                      <Button key={page} variant="outline" size="sm" onClick={() => onPageChange(page)}>
-                        {page}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              
             </div>}
         </>}
     </div>;
