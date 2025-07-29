@@ -71,27 +71,24 @@ serve(async (req) => {
       searchTerm: searchTerm ? `"${searchTerm}"` : 'none'
     });
 
-    // Define fields to select - use language-specific fields for display
+    // Define fields to select - load basic card info in both languages
     const selectFields = [
       'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
       'total_funding_per_call', 'currency', 'application_opening_date', 'application_closing_date', 
       'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max', 
       'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
       'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
-      // Language-specific fields for display
-      'title', 'subtitle', 'information_webinar_names', 'application_templates_names', 
-      'application_templates_links', 'other_templates_names', 'other_templates_links', 
-      'other_sources_names', 'other_sources_links', 'keywords', 'industry_sectors', 
-      'eligible_organisations', 'region', 'eligible_cost_categories'
+      // Basic card info in both languages
+      'title_sv', 'title_en', 'subtitle_sv', 'subtitle_en',
+      // Other fields that don't need language selection
+      'keywords', 'industry_sectors', 'eligible_organisations_standardized', 'region_sv', 'region_en',
+      'eligible_cost_categories_standardized'
     ];
-
-    // For filtered search, we'll use Swedish as default and handle language selection in transformation
-    const selectFieldsWithLanguage = createLanguageAwareSelect(selectFields, 'sv');
 
     // Start building the query
     let query = supabase
       .from('grant_call_details')
-      .select(selectFieldsWithLanguage.join(', '), { count: 'exact' });
+      .select(selectFields.join(', '), { count: 'exact' });
 
     // Filter out grants with passed deadlines
     const today = new Date().toISOString().split('T')[0];
@@ -147,15 +144,11 @@ serve(async (req) => {
     }
 
     // Apply consortium requirement filter - use the original field for filtering
-    if (filters.consortiumRequired !== undefined) {
-      console.log('🤝 Applying consortium requirement filter:', filters.consortiumRequired);
-      // Use the Swedish field for filtering since we're defaulting to Swedish
-      // The field contains text, so we need to search for the appropriate text
-      if (filters.consortiumRequired) {
-        query = query.or('consortium_requirement_sv.ilike.%konsortium%,consortium_requirement_sv.ilike.%required%,consortium_requirement_sv.ilike.%krävs%');
-      } else {
-        query = query.or('consortium_requirement_sv.is.null,consortium_requirement_sv.ilike.%optional%,consortium_requirement_sv.ilike.%valfritt%');
-      }
+    // Temporarily disabled due to boolean parsing issues
+    if (filters.consortiumRequired !== undefined && filters.consortiumRequired !== null) {
+      console.log('🤝 Consortium requirement filter received:', filters.consortiumRequired, 'Type:', typeof filters.consortiumRequired);
+      // TODO: Re-enable this filter once the boolean parsing issue is resolved
+      // For now, we'll skip this filter to avoid the "invalid input syntax for type boolean" error
     }
 
     // Apply geographic scope filter
@@ -168,8 +161,8 @@ serve(async (req) => {
     }
 
     // Apply cofinancing requirement filter
-    if (filters.cofinancingRequired !== undefined) {
-      console.log('💰 Applying cofinancing requirement filter:', filters.cofinancingRequired);
+    if (filters.cofinancingRequired !== undefined && filters.cofinancingRequired !== null) {
+      console.log('💰 Applying cofinancing requirement filter:', filters.cofinancingRequired, 'Type:', typeof filters.cofinancingRequired);
       query = query.eq('cofinancing_required', filters.cofinancingRequired);
     }
 
@@ -247,29 +240,20 @@ serve(async (req) => {
       throw new Error(`Failed to fetch grants: ${grantsError.message}`);
     }
 
-    // Helper function to normalize field names from language-specific to base names
-    const normalizeGrantData = (grant: any): any => {
-      const normalized = { ...grant };
+    // Helper function to select the correct language fields based on organization
+    const selectLanguageFields = (grant: any): any => {
+      const language = getGrantLanguage(grant.organisation);
       
-      // Map language-specific fields back to base field names
-      const languageFields = [
-        'title', 'subtitle', 'description', 'eligibility', 'evaluation_criteria',
-        'application_process', 'consortium_requirement', 'region',
-        'eligible_organisations', 'eligible_cost_categories', 'information_webinar_names',
-        'application_templates_names', 'other_sources_names', 'contact_title',
-        'other_templates_names', 'other_important_dates_labels'
-      ];
-      
-      languageFields.forEach(field => {
-        // Check if the language-specific field exists and map it to the base field
-        if (grant[`${field}_sv`] !== undefined) {
-          normalized[field] = grant[`${field}_sv`];
-        } else if (grant[`${field}_en`] !== undefined) {
-          normalized[field] = grant[`${field}_en`];
-        }
-      });
-      
-      return normalized;
+      return {
+        ...grant,
+        // Select the correct language for title and subtitle
+        title: language === 'en' ? grant.title_en : grant.title_sv,
+        subtitle: language === 'en' ? grant.subtitle_en : grant.subtitle_sv,
+        region: language === 'en' ? grant.region_en : grant.region_sv,
+        // Use standardized fields for other data
+        eligible_organisations: grant.eligible_organisations_standardized,
+        eligible_cost_categories: grant.eligible_cost_categories_standardized
+      };
     };
 
     console.log('✅ Query executed successfully:', {
@@ -281,56 +265,83 @@ serve(async (req) => {
 
     // Transform the grants data
     const transformedGrants = grants?.map((grant: any) => {
-      // Normalize the grant data to use base field names
-      const normalizedGrant = normalizeGrantData(grant);
+      // Select the correct language fields based on organization
+      const languageGrant = selectLanguageFields(grant);
       
-      // Determine language based on organization
-      const language = getGrantLanguage(normalizedGrant.organisation);
+      // Debug logging for the first few grants
+      if (grants?.indexOf(grant) < 3) {
+        console.log('🔍 Grant transformation debug:', {
+          id: languageGrant.id,
+          organisation: languageGrant.organisation,
+          title_sv: grant.title_sv,
+          title_en: grant.title_en,
+          subtitle_sv: grant.subtitle_sv,
+          subtitle_en: grant.subtitle_en,
+          selected_title: languageGrant.title,
+          selected_subtitle: languageGrant.subtitle,
+          funding_fields: {
+            max_funding: languageGrant.max_funding_per_project,
+            min_funding: languageGrant.min_funding_per_project,
+            total_funding: languageGrant.total_funding_per_call,
+            currency: languageGrant.currency
+          }
+        });
+      }
       
       // Transform the grant data to use the correct language fields
       return {
-        id: normalizedGrant.id,
-        title: normalizedGrant.title || 'No title available',
-        organization: normalizedGrant.organisation || 'Unknown organization',
-        aboutGrant: normalizedGrant.subtitle || normalizedGrant.description || 'No description available',
-        fundingAmount: formatFundingAmount(normalizedGrant),
-        opens_at: normalizedGrant.application_opening_date || '',
-        deadline: normalizedGrant.application_closing_date || '',
-        tags: Array.isArray(normalizedGrant.keywords) ? normalizedGrant.keywords : [],
-        industry_sectors: Array.isArray(normalizedGrant.industry_sectors) ? normalizedGrant.industry_sectors : [],
-        eligible_organisations: Array.isArray(normalizedGrant.eligible_organisations) ? normalizedGrant.eligible_organisations : [],
-        geographic_scope: normalizedGrant.geographic_scope ? [normalizedGrant.geographic_scope] : [],
-        region: normalizedGrant.region || undefined,
-        cofinancing_required: normalizedGrant.cofinancing_required || false,
-        cofinancing_level_min: normalizedGrant.cofinancing_level_min || undefined,
-        consortium_requirement: normalizedGrant.consortium_requirement || undefined,
-        fundingRules: Array.isArray(normalizedGrant.eligible_cost_categories) ? normalizedGrant.eligible_cost_categories : [],
-        application_opening_date: normalizedGrant.application_opening_date,
-        application_closing_date: normalizedGrant.application_closing_date,
-        project_start_date_min: normalizedGrant.project_start_date_min,
-        project_start_date_max: normalizedGrant.project_start_date_max,
-        project_end_date_min: normalizedGrant.project_end_date_min,
-        project_end_date_max: normalizedGrant.project_end_date_max,
-        information_webinar_dates: Array.isArray(normalizedGrant.information_webinar_dates) ? normalizedGrant.information_webinar_dates : [],
-        information_webinar_links: Array.isArray(normalizedGrant.information_webinar_links) ? normalizedGrant.information_webinar_links : [],
-        information_webinar_names: Array.isArray(normalizedGrant.information_webinar_names) ? normalizedGrant.information_webinar_names : [],
-        templates: Array.isArray(normalizedGrant.application_templates_names) ? normalizedGrant.application_templates_names : [],
-        generalInfo: Array.isArray(normalizedGrant.other_templates_names) ? normalizedGrant.other_templates_names : [],
-        application_templates_links: Array.isArray(normalizedGrant.application_templates_links) ? normalizedGrant.application_templates_links : [],
-        other_templates_links: Array.isArray(normalizedGrant.other_templates_links) ? normalizedGrant.other_templates_links : [],
-        other_sources_links: Array.isArray(normalizedGrant.other_sources_links) ? normalizedGrant.other_sources_links : [],
-        other_sources_names: Array.isArray(normalizedGrant.other_sources_names) ? normalizedGrant.other_sources_names : [],
-        created_at: normalizedGrant.created_at,
-        updated_at: normalizedGrant.updated_at
+        id: languageGrant.id,
+        title: languageGrant.title || 'No title available',
+        organization: languageGrant.organisation || 'Unknown organization',
+        aboutGrant: languageGrant.subtitle || 'No description available',
+        fundingAmount: formatFundingAmount(languageGrant),
+        opens_at: languageGrant.application_opening_date || '',
+        deadline: languageGrant.application_closing_date || '',
+        tags: Array.isArray(languageGrant.keywords) ? languageGrant.keywords : [],
+        industry_sectors: Array.isArray(languageGrant.industry_sectors) ? languageGrant.industry_sectors : [],
+        eligible_organisations: Array.isArray(languageGrant.eligible_organisations) ? languageGrant.eligible_organisations : [],
+        geographic_scope: languageGrant.geographic_scope ? [languageGrant.geographic_scope] : [],
+        region: languageGrant.region || undefined,
+        cofinancing_required: languageGrant.cofinancing_required || false,
+        cofinancing_level_min: languageGrant.cofinancing_level_min || undefined,
+        consortium_requirement: undefined, // Not available in card view
+        fundingRules: Array.isArray(languageGrant.eligible_cost_categories) ? languageGrant.eligible_cost_categories : [],
+        application_opening_date: languageGrant.application_opening_date,
+        application_closing_date: languageGrant.application_closing_date,
+        project_start_date_min: languageGrant.project_start_date_min,
+        project_start_date_max: languageGrant.project_start_date_max,
+        project_end_date_min: languageGrant.project_end_date_max,
+        project_end_date_max: languageGrant.project_end_date_max,
+        information_webinar_dates: Array.isArray(languageGrant.information_webinar_dates) ? languageGrant.information_webinar_dates : [],
+        information_webinar_links: Array.isArray(languageGrant.information_webinar_links) ? languageGrant.information_webinar_links : [],
+        information_webinar_names: [], // Not available in card view
+        templates: [], // Not available in card view
+        generalInfo: [], // Not available in card view
+        application_templates_links: [], // Not available in card view
+        other_templates_links: [], // Not available in card view
+        other_sources_links: [], // Not available in card view
+        other_sources_names: [], // Not available in card view
+        created_at: languageGrant.created_at,
+        updated_at: languageGrant.updated_at
       };
     }) || [];
 
+    const totalPages = Math.ceil((count || 0) / pagination.limit);
+    
+    console.log('📄 Pagination response:', {
+      totalCount: count || 0,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPages,
+      grantsReturned: transformedGrants.length
+    });
+    
     return new Response(JSON.stringify({
       grants: transformedGrants,
       totalCount: count || 0,
       page: pagination.page,
       limit: pagination.limit,
-      totalPages: Math.ceil((count || 0) / pagination.limit)
+      totalPages
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -349,19 +360,25 @@ serve(async (req) => {
 
 // Helper function to format funding amount
 function formatFundingAmount(grant: any): string {
-  if (grant.max_funding_per_project) {
-    if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
-      return `${grant.min_funding_per_project.toLocaleString()} - ${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+  // Handle null/undefined values safely
+  const maxFunding = grant.max_funding_per_project;
+  const minFunding = grant.min_funding_per_project;
+  const totalFunding = grant.total_funding_per_call;
+  const currency = grant.currency || 'SEK';
+  
+  if (maxFunding && maxFunding > 0) {
+    if (minFunding && minFunding > 0 && minFunding !== maxFunding) {
+      return `${minFunding.toLocaleString()} - ${maxFunding.toLocaleString()} ${currency}`;
     }
-    return `${grant.max_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+    return `${maxFunding.toLocaleString()} ${currency}`;
   }
   
-  if (grant.total_funding_per_call) {
-    return `${grant.total_funding_per_call.toLocaleString()} ${grant.currency || 'SEK'}`;
+  if (totalFunding && totalFunding > 0) {
+    return `${totalFunding.toLocaleString()} ${currency}`;
   }
   
-  if (grant.min_funding_per_project) {
-    return `${grant.min_funding_per_project.toLocaleString()} ${grant.currency || 'SEK'}`;
+  if (minFunding && minFunding > 0) {
+    return `${minFunding.toLocaleString()} ${currency}`;
   }
   
   return 'Not specified';
