@@ -300,7 +300,7 @@ const ChatInput = ({
           <div className="px-4 py-4">
             <div className="relative">
               {/* Normal textarea */}
-              <div className="flex-1 relative pr-12">
+              <div className="flex-1 relative">
                 <Textarea
                   placeholder=""
                   className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left"
@@ -321,14 +321,69 @@ const ChatInput = ({
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Submit Button - Bottom Right Corner */}
+            {/* Bottom Left Corner - Upload and Voice Buttons + Submit Button */}
+            <div className="flex items-center gap-2 mt-2 justify-between">
+              <div className="flex items-center gap-2">
+                {/* File Upload Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 p-0 rounded-full hover:bg-canvas-bg flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm"
+                  onClick={handleFileUploadClick}
+                  disabled={isProcessing}
+                  title={t('chat.uploadFile')}
+                >
+                  <Paperclip className="w-4 h-4" />
+                </Button>
+
+                {/* Voice Recording Button + Waveform */}
+                <div className="relative flex items-center">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${
+                      isRecording ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 animate-pulse' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={handleVoiceInput}
+                    disabled={isProcessing}
+                    title={isRecording ? 'Spelar in...' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
+                  >
+                    <Mic className="w-4 h-4" />
+                    {isRecording && (
+                      <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
+                    )}
+                  </Button>
+                  {/* Waveform animation when recording */}
+                  {isRecording && (
+                    <div className="flex items-end gap-[1px] ml-2 h-4">
+                      {Array.from({ length: 12 }).map((_, i) => {
+                        const delay = i * 0.08;
+                        const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.04 + i) * 4);
+                        return (
+                          <div
+                            key={i}
+                            className="w-[1px] rounded bg-gradient-to-t from-purple-400 to-purple-600 transition-all duration-100"
+                            style={{
+                              height: `${height}px`,
+                              animationDelay: `${delay}s`
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit Button */}
               <Button
                 onClick={handleSubmit}
                 disabled={isProcessing || !inputValue.trim()}
                 size="sm"
                 title="Hitta bidrag"
-                className="absolute bottom-0 right-0 w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
               >
                 {isProcessing ? (
                   <Loader2 className="w-7 h-7 animate-spin" />
@@ -336,59 +391,6 @@ const ChatInput = ({
                   <ArrowUp className="w-7 h-7" />
                 )}
               </Button>
-            </div>
-
-            {/* Bottom Left Corner - Upload and Voice Buttons */}
-            <div className="flex items-center gap-2 mt-2">
-              {/* File Upload Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-8 h-8 p-0 rounded-full hover:bg-canvas-bg flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm"
-                onClick={handleFileUploadClick}
-                disabled={isProcessing}
-                title={t('chat.uploadFile')}
-              >
-                <Paperclip className="w-4 h-4" />
-              </Button>
-
-              {/* Voice Recording Button + Waveform */}
-              <div className="relative flex items-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${
-                    isRecording ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 animate-pulse' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={handleVoiceInput}
-                  disabled={isProcessing}
-                  title={isRecording ? 'Spelar in...' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
-                >
-                  <Mic className="w-4 h-4" />
-                  {isRecording && (
-                    <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-                  )}
-                </Button>
-                {/* Waveform animation when recording */}
-                {isRecording && (
-                  <div className="flex items-end gap-[1px] ml-2 h-4">
-                    {Array.from({ length: 12 }).map((_, i) => {
-                      const delay = i * 0.08;
-                      const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.04 + i) * 4);
-                      return (
-                        <div
-                          key={i}
-                          className="w-[1px] rounded bg-gradient-to-t from-purple-400 to-purple-600 transition-all duration-100"
-                          style={{
-                            height: `${height}px`,
-                            animationDelay: `${delay}s`
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
 
