@@ -1,10 +1,6 @@
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useVoiceRecording } from "@/hooks/useVoiceRecording";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import { useGrants } from "@/hooks/useGrantsQuery";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
@@ -17,6 +13,8 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
+import { useVoiceRecording } from "@/hooks/useVoiceRecording";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
 import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 
@@ -26,7 +24,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  const { data: grants, isLoading: grantsLoading } = useGrants();
   const { matchGrants, isMatching, matchingError } = useGrantsMatchingEngine();
   const { searchGrants, isSearching } = useSemanticSearch();
   const {
@@ -103,10 +100,10 @@ const HomePage = () => {
     }
   };
 
-  const isProcessing = isTranscribing || isUploading || isMatching || grantsLoading || isSearching;
+  const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: '#f0f1f3' }}>
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
@@ -124,6 +121,7 @@ const HomePage = () => {
             inputValue={inputValue}
             setInputValue={setInputValue}
             isRecording={isRecording}
+            isTranscribing={isTranscribing}
             isProcessing={isProcessing}
             isSearching={isSearching}
             handleVoiceInput={handleVoiceInput}
@@ -141,7 +139,7 @@ const HomePage = () => {
             isTranscribing={isTranscribing}
             isUploading={isUploading}
             isMatching={isMatching}
-            grantsLoading={grantsLoading}
+            grantsLoading={false}
             isSearching={isSearching}
             matchingError={matchingError}
           />
