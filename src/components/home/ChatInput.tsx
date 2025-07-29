@@ -6,32 +6,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dynamic humorous example generator
 const generateHumorousExample = () => {
-  const examples = [
-    "Vi utvecklar en AI som hjälper föräldrar att förstå tonåringars memes och på så sätt rädda familjefester från pinsam tystnad",
-    "Vi bygger en app som identifierar fåglar baserat på hur dömande de ser ut och hjälper ornitologer att förstå fågelpsykologi",
-    "Vi forskar på varför USB-kablar alltid sitter åt fel håll första gången och skapar en revolutionerande lösning för USB-frustration",
-    "Vi skapar en plattform som hjälper människor att hitta försvunna sockor i tvättmaskiner genom avancerad AI-analys",
-    "Vi utvecklar en lösning som förklarar varför toast alltid landar med smöret nedåt och på så sätt räddar frukostar över hela landet",
-    "Vi bygger en AI som analyserar hur länge folk stirrar på Netflix utan att välja något och hjälper dem att fatta beslut",
-    "Vi forskar på varför katter alltid sitter på tangentbord när man jobbar och skapar kattvänliga arbetsplatser",
-    "Vi utvecklar en app som hjälper personer att komma ihåg var de la sina bilnycklar genom avancerad minnesträning",
-    "Vi skapar en lösning som förutsäger vilken kö i mataffären som kommer gå snabbast och minskar stress i vardagen",
-    "Vi bygger en AI som översätter kattens mjau till mänskligt språk och förbättrar kommunikationen mellan husdjur och ägare",
-    "Vi forskar på varför WI-FI aldrig fungerar när man verkligen behöver det och skapar stabilare internetlösningar",
-    "Vi utvecklar en plattform som hjälper folk att förstå IKEA-instruktioner utan att gråta av frustration",
-    "Vi skapar en app som analyserar varför män aldrig hittar saker som ligger framför dem och förbättrar synskärpan",
-    "Vi bygger en AI som hjälper människor att välja rätt emoji för pinsamma situationer och förbättrar digital kommunikation",
-    "Vi forskar på varför printers bara fungerar när IT-supporten kommer och skapar självfixande skrivare",
-    "Vi utvecklar en lösning som förklarar varför klockan alltid känns långsammare när man väntar på något viktigt",
-    "Vi skapar en app som hjälper folk att komma ihåg varför de gick in i ett rum och minskar förvirring i hemmet",
-    "Vi bygger en AI som analyserar varför människor alltid kollar klockan flera gånger trots att den inte ändrats",
-    "Vi forskar på varför kaffe aldrig smakar lika bra som på kaféet och skapar hembryggningslösningar",
-    "Vi utvecklar en plattform som hjälper personer att komma ihåg varför de öppnade kylskåpet och minskar energiförbrukning"
-  ];
-  
+  const examples = ["Vi utvecklar en AI som hjälper föräldrar att förstå tonåringars memes och på så sätt rädda familjefester från pinsam tystnad", "Vi bygger en app som identifierar fåglar baserat på hur dömande de ser ut och hjälper ornitologer att förstå fågelpsykologi", "Vi forskar på varför USB-kablar alltid sitter åt fel håll första gången och skapar en revolutionerande lösning för USB-frustration", "Vi skapar en plattform som hjälper människor att hitta försvunna sockor i tvättmaskiner genom avancerad AI-analys", "Vi utvecklar en lösning som förklarar varför toast alltid landar med smöret nedåt och på så sätt räddar frukostar över hela landet", "Vi bygger en AI som analyserar hur länge folk stirrar på Netflix utan att välja något och hjälper dem att fatta beslut", "Vi forskar på varför katter alltid sitter på tangentbord när man jobbar och skapar kattvänliga arbetsplatser", "Vi utvecklar en app som hjälper personer att komma ihåg var de la sina bilnycklar genom avancerad minnesträning", "Vi skapar en lösning som förutsäger vilken kö i mataffären som kommer gå snabbast och minskar stress i vardagen", "Vi bygger en AI som översätter kattens mjau till mänskligt språk och förbättrar kommunikationen mellan husdjur och ägare", "Vi forskar på varför WI-FI aldrig fungerar när man verkligen behöver det och skapar stabilare internetlösningar", "Vi utvecklar en plattform som hjälper folk att förstå IKEA-instruktioner utan att gråta av frustration", "Vi skapar en app som analyserar varför män aldrig hittar saker som ligger framför dem och förbättrar synskärpan", "Vi bygger en AI som hjälper människor att välja rätt emoji för pinsamma situationer och förbättrar digital kommunikation", "Vi forskar på varför printers bara fungerar när IT-supporten kommer och skapar självfixande skrivare", "Vi utvecklar en lösning som förklarar varför klockan alltid känns långsammare när man väntar på något viktigt", "Vi skapar en app som hjälper folk att komma ihåg varför de gick in i ett rum och minskar förvirring i hemmet", "Vi bygger en AI som analyserar varför människor alltid kollar klockan flera gånger trots att den inte ändrats", "Vi forskar på varför kaffe aldrig smakar lika bra som på kaféet och skapar hembryggningslösningar", "Vi utvecklar en plattform som hjälper personer att komma ihåg varför de öppnade kylskåpet och minskar energiförbrukning"];
   return examples[Math.floor(Math.random() * examples.length)];
 };
-
 const PLACEHOLDER_TYPING_SPEED = 28; // ms per char when typing
 const PLACEHOLDER_DELETE_SPEED = 15; // ms per char when deleting (faster)
 const PLACEHOLDER_PAUSE_AFTER_TYPING = 2000; // pause after finishing typing
@@ -44,7 +21,6 @@ function useAnimatedPlaceholder(isInputActive: boolean) {
   const charIndex = useRef(0);
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
   const pauseTimeout = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     if (isInputActive) {
       setPlaceholder("");
@@ -53,7 +29,7 @@ function useAnimatedPlaceholder(isInputActive: boolean) {
       if (pauseTimeout.current) clearTimeout(pauseTimeout.current);
       return;
     }
-    
+
     // Generate a new example if we don't have one or we're starting fresh
     if (!currentExample) {
       const newExample = generateHumorousExample();
@@ -62,10 +38,8 @@ function useAnimatedPlaceholder(isInputActive: boolean) {
       setIsDeleting(false);
       setPlaceholder("");
     }
-    
     function animate() {
       const current = currentExample;
-      
       if (!isDeleting) {
         // Typing phase
         setPlaceholder(current.slice(0, charIndex.current + 1));
@@ -97,18 +71,15 @@ function useAnimatedPlaceholder(isInputActive: boolean) {
         }
       }
     }
-    
     typingTimeout.current = setTimeout(animate, 600); // initial delay
-    
+
     return () => {
       if (typingTimeout.current) clearTimeout(typingTimeout.current);
       if (pauseTimeout.current) clearTimeout(pauseTimeout.current);
     };
   }, [currentExample, isDeleting, isInputActive]);
-  
   return placeholder;
 }
-
 interface UploadedFile {
   id: string;
   name: string;
@@ -116,7 +87,6 @@ interface UploadedFile {
   size: number;
   file: File;
 }
-
 interface ChatInputProps {
   inputValue: string;
   setInputValue: (value: string) => void;
@@ -129,7 +99,6 @@ interface ChatInputProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
 }
-
 const ChatInput = ({
   inputValue,
   setInputValue,
@@ -144,8 +113,10 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
+
   // File upload state
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -187,7 +158,6 @@ const ChatInput = ({
     const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400)); // Min 48px, Max 400px
     textarea.style.height = newHeight + 'px';
   };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey && inputValue.trim()) {
       e.preventDefault();
@@ -197,17 +167,14 @@ const ChatInput = ({
       setInputValue(animatedPlaceholder);
     }
   };
-
   const handleSubmit = () => {
     if (inputValue.trim()) {
       onSubmit();
     }
   };
-
   const handleFileUploadClick = () => {
     fileInputRef.current?.click();
   };
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
@@ -226,11 +193,9 @@ const ChatInput = ({
       onFileSelect(event);
     }
   };
-
   const removeFile = (fileId: string) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
   };
-
   const getFileIcon = (fileType: string) => {
     if (fileType.includes('pdf')) return '📄';
     if (fileType.includes('doc') || fileType.includes('docx')) return '📝';
@@ -250,7 +215,6 @@ const ChatInput = ({
   const handleFocus = () => {
     setIsFocused(true);
   };
-
   const handleBlur = () => {
     setIsFocused(false);
   };
@@ -266,8 +230,7 @@ const ChatInput = ({
   }, [inputValue]);
 
   // Show the typed text as placeholder only when not searching and user hasn't typed anything
-  const placeholderText = (!inputValue && !isFocused && animatedPlaceholder) ? animatedPlaceholder : "";
-
+  const placeholderText = !inputValue && !isFocused && animatedPlaceholder ? animatedPlaceholder : "";
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -275,51 +238,33 @@ const ChatInput = ({
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-
-  return (
-    <div className="mb-8">
+  return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* File Attachments Section */}
-          {uploadedFiles.length > 0 && (
-            <div className="px-4 pt-4 pb-2 flex flex-wrap gap-2">
-              {uploadedFiles.map(file => (
-                <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-xs">
+          {uploadedFiles.length > 0 && <div className="px-4 pt-4 pb-2 flex flex-wrap gap-2">
+              {uploadedFiles.map(file => <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-xs">
                   <span>{getFileIcon(file.type)}</span>
                   <span>{file.name}</span>
                   <span className="text-gray-400">({formatFileSize(file.size)})</span>
                   <button onClick={() => removeFile(file.id)} className="ml-1 text-gray-400 hover:text-red-500">
                     <X className="w-3 h-3" />
                   </button>
-                </div>
-              ))}
-            </div>
-          )}
+                </div>)}
+            </div>}
 
             {/* Text Input Area */}
           <div className="px-4 py-4">
             <div className="relative">
               {/* Normal textarea */}
               <div className="flex-1 relative">
-                <Textarea
-                  placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left"
-                  value={inputValue}
-                  onChange={handleTextareaChange}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  onKeyDown={handleKeyPress}
-                  ref={textareaRef}
-                  rows={1}
-                  disabled={isProcessing}
-                  style={{ textAlign: 'left' }}
-                />
+                <Textarea placeholder="" className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left" value={inputValue} onChange={handleTextareaChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} onKeyDown={handleKeyPress} ref={textareaRef} rows={1} disabled={isProcessing} style={{
+                textAlign: 'left'
+              }} />
                 {/* Animated placeholder overlay */}
-                {(!inputValue && !isFocused && animatedPlaceholder) && (
-                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
+                {!inputValue && !isFocused && animatedPlaceholder && <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
                     {animatedPlaceholder}
-                  </div>
-                )}
+                  </div>}
               </div>
             </div>
 
@@ -327,118 +272,63 @@ const ChatInput = ({
             <div className="flex items-center gap-2 mt-2 justify-between">
               <div className="flex items-center gap-2">
                 {/* File Upload Button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-8 h-8 p-0 rounded-full hover:bg-canvas-bg flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm"
-                  onClick={handleFileUploadClick}
-                  disabled={isProcessing}
-                  title={t('chat.uploadFile')}
-                >
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-canvas-bg flex-shrink-0 text-gray-600 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm" onClick={handleFileUploadClick} disabled={isProcessing} title={t('chat.uploadFile')}>
                   <Paperclip className="w-4 h-4" />
                 </Button>
 
                 {/* Voice Recording Interface */}
-                {!isRecording ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300"
-                    onClick={handleVoiceInput}
-                    disabled={isProcessing}
-                    title="Starta röstinspelning"
-                  >
+                {!isRecording ? <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300" onClick={handleVoiceInput} disabled={isProcessing} title="Starta röstinspelning">
                     <Mic className="w-4 h-4" />
-                  </Button>
-                ) : (
-                  <div className="flex items-center bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm min-w-[400px]">
+                  </Button> : <div className="flex items-center bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm min-w-[400px]">
                     {/* Plus icon */}
-                    <Plus className="w-4 h-4 text-gray-400 mr-3" />
+                    
                     
                     {/* Tools text */}
-                    <span className="text-gray-400 text-sm mr-4">Tools</span>
+                    
                     
                     {/* Waveform visualization */}
                     <div className="flex-1 flex items-center justify-center gap-[1px] h-8">
-                      {Array.from({ length: 60 }).map((_, i) => {
-                        const delay = i * 0.05;
-                        const baseHeight = 2;
-                        const maxHeight = 24;
-                        
-                        // Create more realistic waveform with varied heights
-                        const wavePhase = (Date.now() * 0.003 + i * 0.2) % (Math.PI * 2);
-                        const audioWave = Math.sin(wavePhase) * audioLevel;
-                        const randomVariation = Math.sin(Date.now() * 0.01 + i * 0.3) * 0.3;
-                        const height = Math.max(baseHeight, Math.min(maxHeight, 
-                          baseHeight + (audioWave + randomVariation) * maxHeight * 0.7
-                        ));
-                        
-                        return (
-                          <div
-                            key={i}
-                            className="w-[1px] bg-black transition-all duration-75"
-                            style={{
-                              height: `${height}px`,
-                            }}
-                          />
-                        );
-                      })}
+                      {Array.from({
+                    length: 60
+                  }).map((_, i) => {
+                    const delay = i * 0.05;
+                    const baseHeight = 2;
+                    const maxHeight = 24;
+
+                    // Create more realistic waveform with varied heights
+                    const wavePhase = (Date.now() * 0.003 + i * 0.2) % (Math.PI * 2);
+                    const audioWave = Math.sin(wavePhase) * audioLevel;
+                    const randomVariation = Math.sin(Date.now() * 0.01 + i * 0.3) * 0.3;
+                    const height = Math.max(baseHeight, Math.min(maxHeight, baseHeight + (audioWave + randomVariation) * maxHeight * 0.7));
+                    return <div key={i} className="w-[1px] bg-black transition-all duration-75" style={{
+                      height: `${height}px`
+                    }} />;
+                  })}
                     </div>
                     
                     {/* Control buttons on the right */}
                     <div className="flex items-center gap-2 ml-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600"
-                        onClick={handleVoiceInput}
-                        title="Avbryt inspelning"
-                      >
+                      <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Avbryt inspelning">
                         <X className="w-4 h-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600"
-                        onClick={handleVoiceInput}
-                        title="Slutför inspelning"
-                      >
+                      <Button variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-full hover:bg-gray-100 text-gray-600" onClick={handleVoiceInput} title="Slutför inspelning">
                         <Check className="w-4 h-4" />
                       </Button>
                     </div>
-                  </div>
-                )}
+                  </div>}
               </div>
 
               {/* Submit Button */}
-              <Button
-                onClick={handleSubmit}
-                disabled={isProcessing || !inputValue.trim()}
-                size="sm"
-                title="Hitta bidrag"
-                className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
-              >
-                {isProcessing ? (
-                  <Loader2 className="w-7 h-7 animate-spin" />
-                ) : (
-                  <ArrowUp className="w-7 h-7" />
-                )}
+              <Button onClick={handleSubmit} disabled={isProcessing || !inputValue.trim()} size="sm" title="Hitta bidrag" className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]">
+                {isProcessing ? <Loader2 className="w-7 h-7 animate-spin" /> : <ArrowUp className="w-7 h-7" />}
               </Button>
             </div>
           </div>
 
           {/* Hidden File Input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
+          <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" onChange={handleFileSelect} className="hidden" />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ChatInput;
