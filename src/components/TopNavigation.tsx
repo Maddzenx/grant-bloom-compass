@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -152,10 +152,10 @@ export function TopNavigation() {
                 ) : (
                   <button 
                     onClick={() => signOut()} 
-                    className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+                    className="p-2 rounded-full hover:bg-gray-100 focus:outline-none transition-all duration-200 hover:scale-105"
                     title="Logga ut"
                   >
-                    <Icon icon="mdi:logout" className="w-6 h-6" />
+                    <LogOut className="w-5 h-5 text-gray-600 hover:text-red-500 transition-colors" />
                   </button>
                 )}
               </div>

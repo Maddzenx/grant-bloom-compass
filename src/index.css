@@ -335,3 +335,37 @@
     transform: translate(-50%, 0) scale(1, 1) rotate(0deg);
   }
 }
+
+/* Remove yellow background from sheet/modal header and close button */
+.sheet-modal-header, .sheet-modal-header * {
+  background: #fff !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.sheet-modal-header .close, .sheet-modal-header button, .sheet-modal-header [role="button"] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.sheet-modal-header .close:focus, .sheet-modal-header .close:active, .sheet-modal-header .close:hover,
+.sheet-modal-header button:focus, .sheet-modal-header button:active, .sheet-modal-header button:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Also target the SheetContent top bar if needed */
+[data-side="top"], [data-side="bottom"] {
+  background: #fff !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Remove any yellow background from the drag handle */
+.w-12.h-1\.5.rounded-full {
+  background: #e5e7eb !important;
+}

@@ -18,6 +18,7 @@ interface ConsolidatedGrantListProps {
   aiMatches?: AIGrantMatch[];
   currentPage?: number;
   totalPages?: number;
+  totalCount?: number;
   onPageChange?: (page: number) => void;
 }
 const ConsolidatedGrantList = ({
@@ -30,6 +31,7 @@ const ConsolidatedGrantList = ({
   aiMatches,
   currentPage = 1,
   totalPages = 1,
+  totalCount = 0,
   onPageChange = () => {}
 }: ConsolidatedGrantListProps) => {
   const {
@@ -86,6 +88,17 @@ const ConsolidatedGrantList = ({
             Försök att justera dina filter eller söktermer.
           </div>
         </div> : <>
+          {/* Grant counter header */}
+          {!isMobile && totalPages > 1 && totalCount > 0 && (
+            <div className="flex items-center justify-between px-6 py-3 border-b border-gray-100 bg-gray-50">
+              <span className="text-sm text-gray-600">
+                Visar {((currentPage - 1) * 15) + 1}-{Math.min(currentPage * 15, totalCount)} av {totalCount} bidrag
+              </span>
+              <span className="text-xs text-gray-500">
+                Sida {currentPage} av {totalPages}
+              </span>
+            </div>
+          )}
           {/* Full-width rows layout */}
           <div className="divide-y divide-gray-100">
             {grants.map(grant => {

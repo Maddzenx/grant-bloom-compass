@@ -18,18 +18,18 @@ const SortingControls = ({
   return <div className="flex items-center justify-end gap-2">
       <span className="text-gray-600 font-medium text-xs">Sortera:</span>
       <Select value={sortBy} onValueChange={onSortChange}>
-        <SelectTrigger className="w-44 bg-white border-gray-200 text-xs h-8 min-h-0 focus:outline-none focus:ring-0">
-          <SelectValue placeholder="Välj sortering" className="text-xs" />
+        <SelectTrigger className="w-44 bg-white border-gray-200 text-xs h-8 min-h-0 focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none rounded-lg transition-all duration-200 hover:border-gray-300" style={{ outline: 'none', borderColor: '#e5e7eb' }}>
+          <SelectValue placeholder="Välj sortering" className="text-xs text-gray-700" />
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+        <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">
           {hasSearchTerm && hasSemanticMatches && (
-            <SelectItem value="matching" className="bg-white hover:bg-gray-50 text-black text-xs">Matchning</SelectItem>
+            <SelectItem value="matching" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Matchning</SelectItem>
           )}
-          <SelectItem value="deadline-asc" className="bg-white hover:bg-gray-50 text-black text-xs">Närmast deadline först</SelectItem>
-          <SelectItem value="deadline-desc" className="bg-white hover:bg-gray-50 text-black text-xs">Senast deadline först</SelectItem>
-          <SelectItem value="amount-desc" className="bg-white hover:bg-gray-50 text-black text-xs">Störst belopp först</SelectItem>
-          <SelectItem value="amount-asc" className="bg-white hover:bg-gray-50 text-black text-xs">Minst belopp först</SelectItem>
-          <SelectItem value="created-desc" className="bg-white hover:bg-gray-50 text-black text-xs">Nyast publicerat</SelectItem>
+          <SelectItem value="deadline-asc" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Närmast deadline först</SelectItem>
+          <SelectItem value="deadline-desc" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Senast deadline först</SelectItem>
+          <SelectItem value="amount-desc" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Störst belopp först</SelectItem>
+          <SelectItem value="amount-asc" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Minst belopp först</SelectItem>
+          <SelectItem value="created-desc" className="bg-white hover:bg-gray-50 text-gray-900 text-xs cursor-pointer">Nyast publicerat</SelectItem>
         </SelectContent>
       </Select>
     </div>;

@@ -119,18 +119,18 @@ export const EnhancedFilterControls = ({
 
   const activeFilterCount = calculateActiveFilterCount(filters);
 
-  return <div className="border border-gray-200 rounded-lg shadow-sm bg-white px-2 py-2 md:px-4 md:py-3 max-w-5xl mx-auto">
+  return <div className="border border-gray-200 rounded-xl shadow-lg bg-white max-w-6xl mx-auto overflow-hidden">
       {/* Filter chips */}
-      {hasActiveFilters && <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={onClearAll} organizations={organizationOptions} className="mb-2" />}
+      {hasActiveFilters && <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={onClearAll} organizations={organizationOptions} className="mb-0" />}
 
       {/* Header with expand/collapse toggle */}
-      <FilterHeader isExpanded={isExpanded} onToggleExpanded={() => setIsExpanded(!isExpanded)} hasActiveFilters={hasActiveFilters} filteredCount={filteredGrants.length} totalCount={grants.length} activeFilterCount={activeFilterCount} className="mb-1" />
+      <FilterHeader isExpanded={isExpanded} onToggleExpanded={() => setIsExpanded(!isExpanded)} hasActiveFilters={hasActiveFilters} filteredCount={filteredGrants.length} totalCount={grants.length} activeFilterCount={activeFilterCount} className="mb-0" />
 
       {/* Filter controls - only show when expanded */}
-      {isExpanded && <div className="p-2 pt-2 border border-gray-100 bg-[#f7f7fa] rounded-lg">
+      {isExpanded && <div className="p-6 bg-gradient-to-br from-gray-50 to-white">
           <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} compact />
 
-          <div className="flex justify-end gap-2 mt-2">
+          <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
             <FilterActions hasPendingChanges={hasPendingChanges} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} compact />
           </div>
         </div>}

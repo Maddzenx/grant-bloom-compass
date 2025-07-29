@@ -17,26 +17,26 @@ export const FilterActions = ({
   compact = false,
 }: FilterActionsProps) => {
   return (
-    <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-200">
+    <div className="flex justify-end gap-3">
       <Button
         variant="outline"
-        size="sm"
+        size="default"
         onClick={onClearFilters}
-        className="flex items-center gap-2 bg-white hover:bg-gray-50 border-gray-300"
+        className="flex items-center gap-2 bg-white hover:bg-gray-50 border-gray-300 text-gray-700 hover:text-gray-900 px-6 py-2 rounded-lg transition-all duration-200"
       >
         <RotateCcw className="w-4 h-4" />
-        Clear Filters
+        Rensa filter
       </Button>
       <Button
-        size="sm"
+        size="default"
         onClick={onApplyFilters}
         disabled={!hasPendingChanges}
-        className="flex items-center gap-2 bg-white hover:bg-gray-50 text-black border border-gray-300"
+        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Apply Filters
+        Tillämpa filter
         {hasPendingChanges && (
-          <span className="ml-1 text-xs bg-canvas-bg text-black px-1.5 py-0.5 rounded-full border border-gray-300">
-            New
+          <span className="ml-2 text-xs bg-white/20 text-white px-2 py-1 rounded-full border border-white/30">
+            Ny
           </span>
         )}
       </Button>

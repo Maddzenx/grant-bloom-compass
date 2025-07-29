@@ -10,9 +10,11 @@ import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline, isGrantActive } from "@/utils/grantHelpers";
 import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DiscoverGrants = () => {
   const location = useLocation();
+  const isMobile = useIsMobile();
   
   // State for search and pipeline management
   const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Changed default to deadline-asc
@@ -21,6 +23,9 @@ const DiscoverGrants = () => {
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(initialSearchResults?.rankedGrants || undefined);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [hasSearched, setHasSearched] = useState(!!initialSearchTerm);
+  
+  // Mobile-specific grant accumulation for infinite scroll
+  const [accumulatedGrants, setAccumulatedGrants] = useState<GrantListItem[]>([]);
   
   // Determine which pipeline to use
   const useSemanticPipeline = hasSearched && searchTerm.trim();
@@ -133,6 +138,42 @@ const DiscoverGrants = () => {
     return allGrants.filter(grant => isGrantActive(grant));
   }, [allGrants]);
 
+  // Handle grant accumulation for mobile infinite scroll
+  useEffect(() => {
+    if (useBackendPipeline && isMobile && backendGrants.length > 0) {
+      setAccumulatedGrants(prev => {
+        // If this is page 1 or filters changed, replace all grants
+        if (currentPage === 1) {
+          console.log('📱 Mobile: Starting fresh with page 1 grants', { grantsCount: backendGrants.length });
+          return [...backendGrants];
+        }
+        
+        // For subsequent pages, append new grants
+        const newGrants = backendGrants.filter(newGrant => 
+          !prev.some(existingGrant => existingGrant.id === newGrant.id)
+        );
+        
+        if (newGrants.length > 0) {
+          console.log('📱 Mobile: Adding grants from page', currentPage, { 
+            newGrants: newGrants.length, 
+            totalAfter: prev.length + newGrants.length 
+          });
+          return [...prev, ...newGrants];
+        }
+        
+        return prev;
+      });
+    }
+  }, [useBackendPipeline, isMobile, backendGrants, currentPage]);
+
+  // Reset accumulated grants when filters change
+  useEffect(() => {
+    if (useBackendPipeline && isMobile) {
+      console.log('📱 Mobile: Resetting accumulated grants due to filter change');
+      setAccumulatedGrants([]);
+    }
+  }, [useBackendPipeline, isMobile, filters, sortBy, searchTerm]);
+
   // Get the appropriate grants and loading states based on pipeline
   const { grants, isLoading, isError, error } = useMemo(() => {
     if (useSemanticPipeline) {
@@ -144,16 +185,16 @@ const DiscoverGrants = () => {
         error: allGrantsError
       };
     } else {
-      // Backend pipeline: use backend filtered grants (backend should already filter expired grants)
-      // Note: React Query's placeholderData should keep previous data during loading
+      // Backend pipeline: use accumulated grants for mobile infinite scroll, regular grants for desktop
+      const grantsToUse = (isMobile && accumulatedGrants.length > 0) ? accumulatedGrants : backendGrants;
       return {
-        grants: backendGrants,
+        grants: grantsToUse,
         isLoading: backendLoading,
         isError: backendIsError,
         error: backendError
       };
     }
-  }, [useSemanticPipeline, activeGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError]);
+  }, [useSemanticPipeline, activeGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError, isMobile, accumulatedGrants]);
 
   // Filter grants based on pipeline
   const baseFilteredGrants = useMemo(() => {

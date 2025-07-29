@@ -203,7 +203,7 @@ const FilterContent = ({
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
+  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length, props.filters.statusFilter ? 1 : 0].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
   const TriggerButton = <Button variant="outline" className="flex items-center gap-2 rounded-full px-3 py-1 bg-white border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7">
       <SlidersHorizontal className="w-4 h-4" />
       <span className="font-semibold">Alla filter</span>
@@ -260,10 +260,10 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   variant="outline"
   className={`flex items-center gap-1 rounded-full px-3 py-1 border border-gray-300 text-ink-obsidian font-medium text-xs shadow-none hover:bg-gray-50 min-h-0 h-7 ${filters.statusFilter ? 'bg-[#cec5f9] text-white border-[#cec5f9]' : 'bg-white'}`}
 >
-  Alla <ChevronDown className="w-4 h-4" />
+  {filters.statusFilter === 'open' ? 'Öppen' : filters.statusFilter === 'upcoming' ? 'Kommande' : 'Alla'} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-40 p-3" align="start">
+            <PopoverContent className="w-40 p-3 bg-white border border-gray-200" align="start">
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                     <input
@@ -307,7 +307,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   Organisation <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
+            <PopoverContent className="w-56 p-3 bg-white border border-gray-200" align="start">
                 {organizationOptions.map(org => <label key={org} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                     <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.organizations?.includes(org)} onChange={e => {
               const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter((o: string) => o !== org);
@@ -328,7 +328,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   Bransch <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
+            <PopoverContent className="w-56 p-3 bg-white border border-gray-200" align="start">
                 <div className="space-y-3">
                   {industryOptions.map(ind => <label key={ind} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.industrySectors?.includes(ind)} onChange={e => {
@@ -351,7 +351,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   Stödberättigad sökande <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-3" align="start">
+            <PopoverContent className="w-56 p-3 bg-white border border-gray-200" align="start">
                 <div className="space-y-3">
                   {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
