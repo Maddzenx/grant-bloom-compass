@@ -51,7 +51,7 @@ const OrganizationTabs = ({ onSelectionChange }: OrganizationTabsProps) => {
             onClick={() => toggleOrganization(org.key)}
             className={`px-3 py-1.5 rounded-full font-[Basic] font-normal text-sm transition-all duration-200 hover:shadow-sm ${
               selectedOrganizations.includes(org.key)
-                ? 'bg-[#cec5f9] text-white'
+                ? 'bg-white text-black'
                 : 'bg-white/50 hover:bg-white/100 text-gray-700'
             }`}
           >
