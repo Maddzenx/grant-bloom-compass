@@ -299,7 +299,8 @@ export const useBackendFilteredGrants = ({
     dataType: typeof data,
     dataKeys: data ? Object.keys(data) : 'no data',
     dataPagination: data?.pagination,
-    grantsLength: data?.grants?.length || 0
+    grantsLength: data?.grants?.length || 0,
+    fullDataStructure: data ? JSON.stringify(data, null, 2) : 'no data'
   });
 
   const changePage = useCallback((newPage: number) => {
