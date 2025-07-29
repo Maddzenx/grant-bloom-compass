@@ -293,6 +293,15 @@ export const useBackendFilteredGrants = ({
     }
   }, [pagination.page]);
 
+  // Debug the data structure
+  console.log('🔍 useBackendFilteredGrants data debug:', {
+    data,
+    dataType: typeof data,
+    dataKeys: data ? Object.keys(data) : 'no data',
+    dataPagination: data?.pagination,
+    grantsLength: data?.grants?.length || 0
+  });
+
   const changePage = useCallback((newPage: number) => {
     console.log('📄 Changing page:', newPage);
     setCurrentPage(newPage);
