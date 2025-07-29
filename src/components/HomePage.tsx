@@ -74,7 +74,7 @@ const HomePage = () => {
     if (isRecording) {
       const transcribedText = await stopRecording();
       if (transcribedText) {
-        setInputValue(transcribedText);
+        setInputValue(prev => prev ? `${prev} ${transcribedText}` : transcribedText);
       }
     } else {
       await startRecording();
