@@ -87,11 +87,6 @@ export const useVoiceRecording = () => {
               }
 
               console.log('Transcription result:', data.text);
-              toast({
-                title: "Transcription Complete",
-                description: "Audio has been successfully transcribed.",
-              });
-
               resolve(data.text);
             } catch (err) {
               console.error('Error processing transcription:', err);

@@ -36,11 +36,6 @@ const StatusMessages = ({
         
       </div>;
   }
-  if (isTranscribing) {
-    return <div className="text-center text-blue-600 mt-4">
-        <p>{t('status.transcribing')}</p>
-      </div>;
-  }
   if (isUploading) {
     return <div className="text-center text-blue-600 mt-4">
         <p>{t('status.uploading')}</p>
