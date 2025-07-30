@@ -1,5 +1,6 @@
 
 import { Grant, GrantListItem } from '@/types/grant';
+import { debugFundingAmount } from './debug';
 
 // Parse funding amount string or number to number for comparison
 export const parseFundingAmount = (fundingAmount: string | number): number => {
@@ -47,11 +48,11 @@ export const formatFundingAmount = (
   if (grant.max_funding_per_project) {
     if (grant.min_funding_per_project && grant.min_funding_per_project !== grant.max_funding_per_project) {
       const result = `${formatAmount(grant.min_funding_per_project)} - ${formatAmount(grant.max_funding_per_project)}`;
-      console.log('🔍 formatFundingAmount: min-max ->', result);
+      debugFundingAmount('min-max', result);
       return result;
     } else {
       const result = formatAmount(grant.max_funding_per_project);
-      console.log('🔍 formatFundingAmount: max only ->', result);
+      debugFundingAmount('max only', result);
       return result;
     }
   }
@@ -60,11 +61,11 @@ export const formatFundingAmount = (
   const totalAmount = grant.total_funding_per_call;
   if (totalAmount) {
     const result = formatAmount(totalAmount);
-    console.log('🔍 formatFundingAmount: total ->', result);
+    debugFundingAmount('total', result);
     return result;
   }
   
-  console.log('🔍 formatFundingAmount: no amount specified');
+  debugFundingAmount('no amount specified', 'Ej specificerat');
   return 'Ej specificerat';
 };
 

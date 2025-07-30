@@ -5,16 +5,17 @@ import { transformSupabaseGrant } from '@/utils/grantTransform';
 import { insertSampleGrantsData } from '@/data/sampleGrants';
 import { formatFundingAmount } from '@/utils/grantHelpers';
 import { getGrantLanguage, createLanguageAwareSelect } from '@/utils/grantLanguageUtils';
+import { debugLog, debugGrant } from '@/utils/debug';
 
 export const fetchGrantsData = async (): Promise<Grant[]> => {
-  console.log('🔍 Starting grants fetch from grant_call_details...');
+  debugLog('Starting grants fetch from grant_call_details...');
   
   // First, let's check if we can connect to the database at all
   const { data: testData, error: testError } = await supabase
     .from('grant_call_details')
     .select('count', { count: 'exact' });
   
-  console.log('🔍 Database connection test:', { testData, testError });
+  debugLog('Database connection test:', { testData, testError });
   
   // Use language-aware select for all grants
   const selectFields = [
@@ -89,13 +90,13 @@ export const fetchGrantsData = async (): Promise<Grant[]> => {
     return [];
   }
 
-  console.log('🔍 Processing grant_call_details data...');
+  debugLog('Processing grant_call_details data...');
   return transformGrantsData(grantData);
 };
 
 // New function to fetch minimal grant data for list view
 export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
-  console.log('🔍 Starting grant list items fetch with language debugging...');
+  debugLog('Starting grant list items fetch with language debugging...');
   
   const selectFields = [
     'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
@@ -126,18 +127,18 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
     return [];
   }
 
-  console.log('🔍 Processing grant list items...', {
+  debugLog('Processing grant list items...', {
     totalGrants: grantData.length,
-          sampleEUGrants: grantData.filter(g => g.organisation && (g.organisation.toLowerCase().includes('eu') || g.organisation.toLowerCase().includes('european'))).slice(0, 2).map(g => ({
-        id: g.id,
-        organisation: g.organisation,
-        title_sv: g.title_sv,
-        title_en: g.title_en,
-        subtitle_sv: g.subtitle_sv,
-        subtitle_en: g.subtitle_en,
-        information_webinar_names_sv: g.information_webinar_names_sv,
-        information_webinar_names_en: g.information_webinar_names_en
-      }))
+    sampleEUGrants: grantData.filter((g: any) => g.organisation && (g.organisation.toLowerCase().includes('eu') || g.organisation.toLowerCase().includes('european'))).slice(0, 2).map((g: any) => ({
+      id: g.id,
+      organisation: g.organisation,
+      title_sv: g.title_sv,
+      title_en: g.title_en,
+      subtitle_sv: g.subtitle_sv,
+      subtitle_en: g.subtitle_en,
+      information_webinar_names_sv: g.information_webinar_names_sv,
+      information_webinar_names_en: g.information_webinar_names_en
+    }))
   });
   
   return transformGrantListItems(grantData);
@@ -145,7 +146,7 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
 
 // New function to fetch full grant details by ID
 export const fetchGrantDetails = async (grantId: string): Promise<GrantDetails> => {
-  console.log('🔍 Fetching full grant details for ID:', grantId);
+  debugLog('Fetching full grant details for ID:', grantId);
   
   // First, get the organization to determine the language
   const { data: orgData, error: orgError } = await supabase
@@ -159,7 +160,7 @@ export const fetchGrantDetails = async (grantId: string): Promise<GrantDetails> 
   }
 
   const language = getGrantLanguage(orgData.organisation);
-  console.log(`🔍 Using language '${language}' for organization: ${orgData.organisation}`);
+  debugLog(`Using language '${language}' for organization: ${orgData.organisation}`);
 
   const selectFields = [
     'id', 'organisation', 'original_url', 'application_closing_date', 'application_opening_date',
@@ -211,7 +212,7 @@ export const fetchGrantDetails = async (grantId: string): Promise<GrantDetails> 
     throw new Error(`Grant with ID ${grantId} not found`);
   }
 
-  console.log('✅ Grant details fetched successfully');
+  debugLog('Grant details fetched successfully');
   return transformSupabaseGrantToDetails(grantData);
 };
 
@@ -311,7 +312,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
       // Debug logging for EU grants or grants with missing titles
       const isEUGrant = grant.organisation && (grant.organisation.toLowerCase().includes('eu') || grant.organisation.toLowerCase().includes('european'));
       if (isEUGrant || !title || title === 'Untitled Grant') {
-        console.log('🔍 Debug grant language selection:', {
+        debugGrant('language selection', {
           id: grant.id,
           organisation: grant.organisation,
           isEUGrant,
@@ -379,7 +380,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
     }
   }
 
-  console.log('✅ Final transformed grant list items:', {
+  debugLog('Final transformed grant list items:', {
     originalCount: grantData.length,
     transformedCount: transformedItems.length
   });

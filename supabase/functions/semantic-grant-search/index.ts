@@ -30,6 +30,7 @@ interface GrantForLLMFiltering {
 
 // Free models to try for LLM filtering, in order of preference (smartest/largest first)
 const llmFilterModels = [
+  'google/gemini-2.5-flash-lite-preview-06-17',
   'google/gemini-2.0-flash-exp:free',
   'meta-llama/llama-3.1-405b-instruct:free',
   'google/gemma-3-27b-it:free',
