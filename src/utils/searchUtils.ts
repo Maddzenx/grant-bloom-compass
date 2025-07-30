@@ -85,7 +85,7 @@ export const applyFilters = (grants: Grant[], filters: FilterOptions): Grant[] =
 
     // Funding amount filters
     if (filters.minFunding || filters.maxFunding) {
-      const grantAmount = parseFundingAmount(grant.fundingAmount);
+      const grantAmount = grant.funding_amount_eur ?? parseFundingAmount(grant.fundingAmount);
       
       if (filters.minFunding) {
         const minAmount = parseInt(filters.minFunding, 10);
@@ -120,8 +120,8 @@ export const applySorting = (grants: Grant[], sortBy: string, searchTerm: string
         return dateA.getTime() - dateB.getTime();
       
       case "funding":
-        const amountA = parseFundingAmount(a.fundingAmount);
-        const amountB = parseFundingAmount(b.fundingAmount);
+        const amountA = a.funding_amount_eur ?? parseFundingAmount(a.fundingAmount);
+        const amountB = b.funding_amount_eur ?? parseFundingAmount(b.fundingAmount);
         return amountB - amountA;
       
       case "relevance":

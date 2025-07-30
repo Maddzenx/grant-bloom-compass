@@ -6,6 +6,7 @@ export interface Grant {
   description: string;
   long_description?: string;
   fundingAmount: string;
+  funding_amount_eur?: number; // New field for efficient sorting/filtering
   opens_at: string;
   deadline: string;
   tags: string[];
@@ -67,6 +68,7 @@ export interface GrantListItem {
   organization: string;
   aboutGrant: string;
   fundingAmount: string;
+  funding_amount_eur?: number; // New field for efficient sorting/filtering
   opens_at: string;
   deadline: string;
   tags: string[];

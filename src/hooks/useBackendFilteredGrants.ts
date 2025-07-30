@@ -130,6 +130,7 @@ const transformSupabaseGrantToListItem = (grant: any): GrantListItem => {
     organization: grant.organization || 'Unknown Organization',
     aboutGrant: grant.aboutGrant || 'No information available',
     fundingAmount: grant.fundingAmount || 'Not specified',
+    funding_amount_eur: grant.funding_amount_eur || null,
     opens_at: grant.opens_at || '2024-01-01',
     deadline: grant.deadline || 'Not specified',
     tags: parseJsonArray(grant.tags) || [],
