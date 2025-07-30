@@ -95,7 +95,7 @@ export const fetchGrantsData = async (): Promise<Grant[]> => {
 
 // New function to fetch minimal grant data for list view
 export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
-  console.log('🔍 Starting grant list items fetch...');
+  console.log('🔍 Starting grant list items fetch with language debugging...');
   
   const selectFields = [
     'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
@@ -125,7 +125,18 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
     return [];
   }
 
-  console.log('🔍 Processing grant list items...');
+  console.log('🔍 Processing grant list items...', {
+    totalGrants: grantData.length,
+    sampleEUGrants: grantData.filter(g => g.organisation && (g.organisation.toLowerCase().includes('eu') || g.organisation.toLowerCase().includes('european'))).slice(0, 2).map(g => ({
+      id: g.id,
+      organisation: g.organisation,
+      title_sv: g.title_sv,
+      title_en: g.title_en,
+      subtitle_sv: g.subtitle_sv,
+      subtitle_en: g.subtitle_en
+    }))
+  });
+  
   return transformGrantListItems(grantData);
 };
 
@@ -288,11 +299,30 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
 
   for (const grant of grantData) {
     try {
-      // Apply language selection based on organization (same as filtered grants search)
+      // Apply language selection based on organization (exactly like filtered grants search)
       const language = getGrantLanguage(grant.organisation);
       const title = language === 'en' ? grant.title_en : grant.title_sv;
       const subtitle = language === 'en' ? grant.subtitle_en : grant.subtitle_sv;
       const region = language === 'en' ? grant.region_en : grant.region_sv;
+      
+      // Debug logging for EU grants or grants with missing titles
+      const isEUGrant = grant.organisation && (grant.organisation.toLowerCase().includes('eu') || grant.organisation.toLowerCase().includes('european'));
+      if (isEUGrant || !title || title === 'Untitled Grant') {
+        console.log('🔍 Debug grant language selection:', {
+          id: grant.id,
+          organisation: grant.organisation,
+          isEUGrant,
+          detectedLanguage: language,
+          title_sv: grant.title_sv,
+          title_en: grant.title_en,
+          subtitle_sv: grant.subtitle_sv,
+          subtitle_en: grant.subtitle_en,
+          selectedTitle: title,
+          selectedSubtitle: subtitle,
+          titleSource: language === 'en' ? 'title_en' : 'title_sv',
+          subtitleSource: language === 'en' ? 'subtitle_en' : 'subtitle_sv'
+        });
+      }
       
       const transformed: GrantListItem = {
         id: grant.id,
