@@ -61,28 +61,85 @@ export interface UseBackendFilteredGrantsOptions {
 }
 
 const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilterOptions => {
-  return {
-    organizations: filters.organizations.length > 0 ? filters.organizations : undefined,
-    fundingRange: (filters.fundingRange.min !== null || filters.fundingRange.max !== null) ? {
-      min: filters.fundingRange.min || undefined,
-      max: filters.fundingRange.max || undefined,
-    } : undefined,
-    deadline: filters.deadline.preset || filters.deadline.customRange?.start ? {
-      type: filters.deadline.type,
-      preset: filters.deadline.preset || undefined,
-      customRange: filters.deadline.customRange ? {
-        start: filters.deadline.customRange.start?.toISOString().split('T')[0],
-        end: filters.deadline.customRange.end?.toISOString().split('T')[0],
-      } : undefined,
-    } : undefined,
-    tags: filters.tags.length > 0 ? filters.tags : undefined,
-    industrySectors: filters.industrySectors.length > 0 ? filters.industrySectors : undefined,
-    eligibleApplicants: filters.eligibleApplicants.length > 0 ? filters.eligibleApplicants : undefined,
-    consortiumRequired: filters.consortiumRequired,
-    geographicScope: filters.geographicScope.length > 0 ? filters.geographicScope : undefined,
-    cofinancingRequired: filters.cofinancingRequired,
-    statusFilter: (filters.statusFilter === 'open' || filters.statusFilter === 'upcoming' || filters.statusFilter === '') ? filters.statusFilter : undefined,
-  };
+  const backendFilters: BackendFilterOptions = {};
+  
+  // Only include organizations if there are actually selected
+  if (filters.organizations && filters.organizations.length > 0) {
+    backendFilters.organizations = filters.organizations;
+  }
+  
+  // Only include funding range if both min and max are meaningful values
+  if (filters.fundingRange && 
+      (filters.fundingRange.min !== null && filters.fundingRange.min !== undefined && filters.fundingRange.min > 0) ||
+      (filters.fundingRange.max !== null && filters.fundingRange.max !== undefined && filters.fundingRange.max > 0)) {
+    backendFilters.fundingRange = {};
+    if (filters.fundingRange.min !== null && filters.fundingRange.min !== undefined && filters.fundingRange.min > 0) {
+      backendFilters.fundingRange.min = filters.fundingRange.min;
+    }
+    if (filters.fundingRange.max !== null && filters.fundingRange.max !== undefined && filters.fundingRange.max > 0) {
+      backendFilters.fundingRange.max = filters.fundingRange.max;
+    }
+  }
+  
+  // Only include deadline if there's actually a preset or custom range
+  if (filters.deadline && 
+      (filters.deadline.preset || 
+       (filters.deadline.customRange && 
+        (filters.deadline.customRange.start || filters.deadline.customRange.end)))) {
+    backendFilters.deadline = {
+      type: filters.deadline.type
+    };
+    if (filters.deadline.preset) {
+      backendFilters.deadline.preset = filters.deadline.preset;
+    }
+    if (filters.deadline.customRange && 
+        (filters.deadline.customRange.start || filters.deadline.customRange.end)) {
+      backendFilters.deadline.customRange = {};
+      if (filters.deadline.customRange.start) {
+        backendFilters.deadline.customRange.start = filters.deadline.customRange.start.toISOString().split('T')[0];
+      }
+      if (filters.deadline.customRange.end) {
+        backendFilters.deadline.customRange.end = filters.deadline.customRange.end.toISOString().split('T')[0];
+      }
+    }
+  }
+  
+  // Only include tags if there are actually selected
+  if (filters.tags && filters.tags.length > 0) {
+    backendFilters.tags = filters.tags;
+  }
+  
+  // Only include industry sectors if there are actually selected
+  if (filters.industrySectors && filters.industrySectors.length > 0) {
+    backendFilters.industrySectors = filters.industrySectors;
+  }
+  
+  // Only include eligible applicants if there are actually selected
+  if (filters.eligibleApplicants && filters.eligibleApplicants.length > 0) {
+    backendFilters.eligibleApplicants = filters.eligibleApplicants;
+  }
+  
+  // Only include consortium required if it's explicitly set (not null/undefined)
+  if (filters.consortiumRequired !== null && filters.consortiumRequired !== undefined) {
+    backendFilters.consortiumRequired = filters.consortiumRequired;
+  }
+  
+  // Only include geographic scope if there are actually selected
+  if (filters.geographicScope && filters.geographicScope.length > 0) {
+    backendFilters.geographicScope = filters.geographicScope;
+  }
+  
+  // Only include cofinancing required if it's explicitly set (not null/undefined)
+  if (filters.cofinancingRequired !== null && filters.cofinancingRequired !== undefined) {
+    backendFilters.cofinancingRequired = filters.cofinancingRequired;
+  }
+  
+  // Only include status filter if it's a meaningful value
+  if (filters.statusFilter && (filters.statusFilter === 'open' || filters.statusFilter === 'upcoming')) {
+    backendFilters.statusFilter = filters.statusFilter;
+  }
+  
+  return backendFilters;
 };
 
 const parseBooleanString = (val: any): boolean | undefined => {
@@ -190,7 +247,7 @@ const fetchBackendFilteredGrants = async (
   searchTerm?: string
 ): Promise<{ grants: GrantListItem[]; pagination: BackendGrantsResponse['pagination'] }> => {
   console.log('🔍 Fetching backend filtered grants:', {
-    filters,
+    filters: JSON.stringify(filters, null, 2),
     sorting,
     pagination,
     searchTerm: searchTerm ? `"${searchTerm}"` : 'none'

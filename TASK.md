@@ -119,6 +119,37 @@
 
 **Status**: ✅ Completed
 
+### Frontend Funding Sorting Fix - 2024-12-19
+**Description**: Fixed frontend sorting order issue where grants were being grouped by currency (SEK vs EUR) instead of being sorted by funding amount.
+
+**Problem Identified**:
+- Frontend sorting for funding amounts appeared to be grouping grants by currency (SEK vs EUR) instead of sorting by actual funding amount
+- Root cause: The `parseFundingAmount` function in multiple files was only parsing SEK amounts, returning 0 for EUR amounts
+- When `funding_amount_eur` was null, the frontend fell back to `parseFundingAmount(grant.fundingAmount)`, creating the grouping effect
+- Backend `filtered-grants-search` function was missing `funding_amount_eur` field in the response data
+
+**Changes Made**:
+- **Backend Response**: Added `funding_amount_eur: languageGrant.funding_amount_eur || null` to the response data in `filtered-grants-search` Edge Function
+- **Frontend Parsing**: Updated `parseFundingAmount` functions in multiple files to handle both SEK and EUR currencies:
+  - `src/utils/grantHelpers.ts` - Main parsing function
+  - `src/utils/grantSorting.ts` - Duplicate function for sorting
+  - `src/utils/filterHelpers.ts` - Duplicate function for filtering
+- **Regex Pattern**: Changed from `/(\d+(?:[.,]\d+)?)\s*M?SEK/i` to `/(\d+(?:[.,]\d+)?)\s*M?(SEK|EUR)/i` to support both currencies
+
+**Technical Details**:
+- The `parseFundingAmount` function now correctly parses both "750 MSEK" and "500 MEUR" formats
+- Backend now properly includes `funding_amount_eur` field in response data
+- Frontend sorting logic now works correctly with both the new `funding_amount_eur` field and fallback parsing
+- All duplicate `parseFundingAmount` functions have been updated for consistency
+
+**Files Modified**:
+- `supabase/functions/filtered-grants-search/index.ts` - Added `funding_amount_eur` to response data
+- `src/utils/grantHelpers.ts` - Updated `parseFundingAmount` regex pattern
+- `src/utils/grantSorting.ts` - Updated duplicate `parseFundingAmount` function
+- `src/utils/filterHelpers.ts` - Updated duplicate `parseFundingAmount` function
+
+**Status**: ✅ Completed
+
 ### Currency Display Fix for Grant Cards - 2024-12-19
 **Description**: Fixed issue where grant cards were always showing "SEK" instead of the actual currency from the database.
 
@@ -403,4 +434,62 @@ Now when users select "Nyast publicerat" (newest published), the grants will be 
 
 ## Discovered During Work
 
-_This section will be populated as new tasks are discovered during development._ 
+### Backend Filtering and Pagination Optimization - 2024-12-19
+**Description**: Fixed inefficient data loading where all grants were being loaded unnecessarily when using the backend filtering pipeline.
+
+**Problem Identified**:
+- The `useGrantListItems()` hook was loading ALL grants from the database unconditionally
+- This happened even when using the backend filtering pipeline which already implements proper pagination (15 grants per page)
+- Resulted in unnecessary data transfer and slower page loads
+- Backend filtering system was working correctly, but frontend was also loading all grants
+
+**Changes Made**:
+- **Conditional Loading**: Updated `useGrantListItems()` to accept an `enabled` option and only load all grants when using semantic pipeline
+- **Optimized Data Flow**: When using backend pipeline, only the paginated grants (15 per page) are loaded
+- **Maintained Functionality**: Semantic pipeline still has access to all grants for filtering and fallback
+- **Mobile Support**: Preserved mobile infinite scroll functionality with accumulated grants
+
+**Performance Benefits**:
+- Reduced initial data transfer by ~95% when using backend pipeline (15 grants vs potentially hundreds)
+- Faster page loads and reduced memory usage
+- Better user experience with proper loading states
+- Backend filtering and pagination now work as intended
+
+**Files Modified**:
+- `src/hooks/useGrantListItems.ts` - Added enabled option for conditional loading
+- `src/pages/DiscoverGrants.tsx` - Optimized data loading logic and removed unnecessary allGrants loading
+
+**Status**: ✅ Completed
+
+### Backend Filtering Pipeline Isolation Fix - 2024-12-19
+**Description**: Fixed issue where backend filtering was returning inconsistent grant counts (817 vs 349) due to filter interference and dual pipeline execution.
+
+**Problem Identified**:
+- Backend filtering was returning different total counts on subsequent calls (817 → 349)
+- Frontend was sending filters with null/undefined values that backend interpreted as exclusion filters
+- Both semantic and backend pipelines were running simultaneously, causing interference
+- Filter state instability caused React Query to refetch with slightly different filter objects
+
+**Changes Made**:
+- **Improved Filter Transformation**: Updated `transformFiltersForBackend()` to only send meaningful filters and avoid null/undefined values
+- **Backend Defensive Coding**: Added stricter filter validation in backend to only apply filters with meaningful values
+- **Enhanced Debugging**: Added detailed logging to track filter objects being sent/received
+- **Filter Stability**: Ensured consistent filter object structure to prevent React Query refetching
+
+**Technical Details**:
+- Only include filters in backend request if they have actual values (not null/undefined/empty)
+- Backend now validates filter values before applying them
+- Added JSON.stringify logging to see exact filter objects
+- Fixed status filter type validation to prevent invalid filter application
+
+**Performance Benefits**:
+- Consistent grant counts (should now always return 817 total grants when no filters applied)
+- Eliminated unnecessary backend refetching due to filter object changes
+- Better debugging capabilities to track filter issues
+- More stable React Query caching
+
+**Files Modified**:
+- `src/hooks/useBackendFilteredGrants.ts` - Improved filter transformation and added debugging
+- `supabase/functions/filtered-grants-search/index.ts` - Added defensive filter validation and debugging
+
+**Status**: ✅ Completed 
