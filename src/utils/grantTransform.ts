@@ -15,6 +15,7 @@ type PartialSupabaseGrantRow = Pick<
   | 'max_funding_per_project'
   | 'min_funding_per_project'
   | 'total_funding_per_call'
+  | 'funding_amount_eur'
   | 'currency'
   | 'keywords'
   | 'contact_name'
@@ -156,6 +157,7 @@ export const transformSupabaseGrant = (supabaseGrant: PartialSupabaseGrantRow): 
       organization: supabaseGrant.organisation || 'Okänd organisation',
       description: supabaseGrant.description || supabaseGrant.subtitle || 'Ingen beskrivning tillgänglig',
       fundingAmount: formatFundingAmount(supabaseGrant),
+      funding_amount_eur: supabaseGrant.funding_amount_eur || null,
       opens_at: getRawDate((supabaseGrant as any).application_opening_date),
       deadline: formatDate(supabaseGrant.application_closing_date),
       tags: jsonToStringArray(supabaseGrant.keywords),

@@ -56,7 +56,7 @@ const calculateRelevanceScore = (grant: GrantListItem, searchTerm: string): numb
   
   if (!searchTerm) {
     // If no search term, score by funding amount and deadline
-    const fundingAmount = parseFundingAmount(grant.fundingAmount);
+    const fundingAmount = grant.funding_amount_eur ?? parseFundingAmount(grant.fundingAmount);
     const deadline = parseDeadline(grant.deadline);
     const daysUntilDeadline = Math.max(0, (deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     
@@ -112,13 +112,15 @@ export const sortGrants = (grants: GrantListItem[], sortBy: SortOption, searchTe
         return dateB2.getTime() - dateA2.getTime(); // Latest deadline first
       
       case "amount-desc":
-        const amountA = parseFundingAmount(a.fundingAmount);
-        const amountB = parseFundingAmount(b.fundingAmount);
+        // Use the new funding_amount_eur field for efficient sorting
+        const amountA = a.funding_amount_eur ?? parseFundingAmount(a.fundingAmount);
+        const amountB = b.funding_amount_eur ?? parseFundingAmount(b.fundingAmount);
         return amountB - amountA; // Highest funding first
       
       case "amount-asc":
-        const amountA2 = parseFundingAmount(a.fundingAmount);
-        const amountB2 = parseFundingAmount(b.fundingAmount);
+        // Use the new funding_amount_eur field for efficient sorting
+        const amountA2 = a.funding_amount_eur ?? parseFundingAmount(a.fundingAmount);
+        const amountB2 = b.funding_amount_eur ?? parseFundingAmount(b.fundingAmount);
         return amountA2 - amountB2; // Lowest funding first
       
       case "created-desc":

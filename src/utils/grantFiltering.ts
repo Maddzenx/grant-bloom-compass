@@ -72,7 +72,7 @@ export const filterGrants = (grants: Grant[], searchTerm: string, filters: Filte
     }
 
     // Funding amount filters
-    const grantAmount = parseFundingAmount(grant.fundingAmount);
+    const grantAmount = grant.funding_amount_eur ?? parseFundingAmount(grant.fundingAmount);
     
     if (filters.minFunding) {
       const minAmount = parseInt(filters.minFunding, 10);

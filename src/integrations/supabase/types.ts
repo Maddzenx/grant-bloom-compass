@@ -222,6 +222,7 @@ export interface Database {
           keywords: Json | null
           max_funding_per_project: number | null
           min_funding_per_project: number | null
+          funding_amount_eur: number | null
           organisation: string | null
           original_source_url: string | null
           original_url: string
@@ -320,6 +321,7 @@ export interface Database {
           keywords?: Json | null
           max_funding_per_project?: number | null
           min_funding_per_project?: number | null
+          funding_amount_eur?: number | null
           organisation?: string | null
           original_source_url?: string | null
           original_url: string
@@ -774,6 +776,7 @@ export interface Database {
           keywords: Json | null
           max_funding_per_project: number | null
           min_funding_per_project: number | null
+          funding_amount_eur: number | null
           organisation: string | null
           original_source_url: string | null
           original_url: string

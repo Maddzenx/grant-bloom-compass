@@ -279,7 +279,7 @@ const DiscoverGrants = () => {
 
       // Funding range filter
       if (filters.fundingRange.min !== null || filters.fundingRange.max !== null) {
-        const amount = parseFundingAmount(grant.fundingAmount);
+        const amount = grant.funding_amount_eur ?? parseFundingAmount(grant.fundingAmount);
         if (filters.fundingRange.min && amount < filters.fundingRange.min) return false;
         if (filters.fundingRange.max && amount > filters.fundingRange.max) return false;
       }

@@ -80,6 +80,45 @@
 
 **Status**: ✅ Completed
 
+### Simplified Funding Sorting and Filtering with funding_amount_eur - 2024-12-19
+**Description**: Replaced complex funding sorting and filtering logic with a new simplified approach using a single `funding_amount_eur` field.
+
+**Problem Identified**:
+- Current funding sorting and filtering was inefficient, requiring calculations across three different funding fields (`max_funding_per_project`, `min_funding_per_project`, `total_funding_per_call`)
+- Sorting algorithm had to load multiple datapoints and make calculations for each grant before sorting could be done
+- This approach was computationally expensive and not scalable
+
+**Changes Made**:
+- **Database Migration**: Added new `funding_amount_eur` field (bigint) to `grant_call_details` table for efficient sorting/filtering
+- **Database Index**: Created index on `funding_amount_eur` for optimal query performance
+- **Backend Functions**: Updated `filtered-grants-search` to use `funding_amount_eur` for sorting and filtering
+- **Frontend Services**: Updated all service functions to include `funding_amount_eur` in SELECT statements
+- **Type Definitions**: Added `funding_amount_eur` field to `Grant`, `GrantListItem`, and database types
+- **Utility Functions**: Updated all sorting and filtering utilities to use `funding_amount_eur` as primary field with fallback to legacy parsing
+- **Data Transformation**: Updated all transformation functions to include the new field
+
+**Technical Details**:
+- New field `funding_amount_eur` contains a single EUR amount for sorting/filtering purposes
+- Field is not displayed in UI, only used for backend operations
+- All sorting and filtering now uses this single field instead of complex calculations
+- Maintains backward compatibility with fallback to legacy parsing when field is null
+- Database queries are now much more efficient with direct field comparison
+
+**Files Modified**:
+- `supabase/migrations/20250703130000-add-funding-amount-eur.sql` - New migration file
+- `src/integrations/supabase/types.ts` - Added field to database types
+- `src/types/grant.ts` - Added field to Grant and GrantListItem interfaces
+- `supabase/functions/filtered-grants-search/index.ts` - Updated sorting and filtering logic
+- `src/services/grantsService.ts` - Updated SELECT statements and transformations
+- `src/utils/grantSorting.ts` - Updated sorting logic to use new field
+- `src/utils/searchUtils.ts` - Updated filtering logic to use new field
+- `src/utils/grantFiltering.ts` - Updated filtering logic to use new field
+- `src/utils/grantTransform.ts` - Updated transformation functions
+- `src/hooks/useBackendFilteredGrants.ts` - Updated transformation functions
+- `src/pages/DiscoverGrants.tsx` - Updated frontend filtering logic
+
+**Status**: ✅ Completed
+
 ### Currency Display Fix for Grant Cards - 2024-12-19
 **Description**: Fixed issue where grant cards were always showing "SEK" instead of the actual currency from the database.
 

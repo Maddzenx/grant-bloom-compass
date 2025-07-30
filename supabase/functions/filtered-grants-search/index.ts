@@ -74,7 +74,7 @@ serve(async (req) => {
     // Define fields to select - load basic card info in both languages
     const selectFields = [
       'id', 'organisation', 'min_funding_per_project', 'max_funding_per_project', 
-      'total_funding_per_call', 'currency', 'application_opening_date', 'application_closing_date', 
+      'total_funding_per_call', 'funding_amount_eur', 'currency', 'application_opening_date', 'application_closing_date', 
       'project_start_date_min', 'project_start_date_max', 'project_end_date_min', 'project_end_date_max', 
       'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
       'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
@@ -114,14 +114,14 @@ serve(async (req) => {
       query = query.in('organisation', filters.organizations);
     }
 
-    // Apply funding range filter
+    // Apply funding range filter using the new funding_amount_eur field
     if (filters.fundingRange) {
       const { min, max } = filters.fundingRange;
       if (min !== undefined && min > 0) {
-        query = query.gte('max_funding_per_project', min);
+        query = query.gte('funding_amount_eur', min);
       }
       if (max !== undefined && max > 0) {
-        query = query.lte('max_funding_per_project', max);
+        query = query.lte('funding_amount_eur', max);
       }
     }
 
@@ -234,11 +234,11 @@ serve(async (req) => {
         query = query.order('application_closing_date', { ascending: false, nullsFirst: true });
         break;
       case 'amount-desc':
-        // Note: This is a simplified approach. In production, you might want to store parsed amounts
-        query = query.order('max_funding_per_project', { ascending: false, nullsLast: true });
+        // Use the new funding_amount_eur field for efficient sorting
+        query = query.order('funding_amount_eur', { ascending: false, nullsLast: true });
         break;
       case 'amount-asc':
-        query = query.order('max_funding_per_project', { ascending: true, nullsLast: true });
+        query = query.order('funding_amount_eur', { ascending: true, nullsLast: true });
         break;
       case 'created-desc':
         query = query.order('updated_at', { ascending: false });
