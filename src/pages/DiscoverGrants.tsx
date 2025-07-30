@@ -57,7 +57,9 @@ const DiscoverGrants = () => {
     error: allGrantsError,
     isError: allGrantsIsError,
     refetch: refetchAllGrants,
-  } = useGrantListItems();
+  } = useGrantListItems({
+    enabled: useSemanticPipeline, // Only load all grants when using semantic pipeline
+  });
 
   // Backend filtered grants hook (for manual browse pipeline)
   const {
@@ -133,10 +135,7 @@ const DiscoverGrants = () => {
     }
   }, [initialSearchTerm, hasSearched, initialSearchResults]);
 
-  // Filter out expired grants from all grants
-  const activeGrants = useMemo(() => {
-    return allGrants.filter(grant => isGrantActive(grant));
-  }, [allGrants]);
+
 
   // Handle grant accumulation for mobile infinite scroll
   useEffect(() => {
@@ -174,34 +173,24 @@ const DiscoverGrants = () => {
     }
   }, [useBackendPipeline, isMobile, filters, sortBy, searchTerm]);
 
-  // Get the appropriate grants and loading states based on pipeline
-  const { grants, isLoading, isError, error } = useMemo(() => {
+  // Get the appropriate grants for filtering and display based on pipeline
+  const grantsForFiltering = useMemo(() => {
     if (useSemanticPipeline) {
-      // Semantic pipeline: use active grants for filtering options, but results come from semantic search
-      return {
-        grants: activeGrants,
-        isLoading: allGrantsLoading,
-        isError: allGrantsIsError,
-        error: allGrantsError
-      };
+      // For semantic pipeline, use all grants (filtered for active grants)
+      return allGrants.filter(grant => isGrantActive(grant));
     } else {
-      // Backend pipeline: use accumulated grants for mobile infinite scroll, regular grants for desktop
+      // For backend pipeline, use accumulated grants for mobile infinite scroll, regular grants for desktop
       const grantsToUse = (isMobile && accumulatedGrants.length > 0) ? accumulatedGrants : backendGrants;
-      return {
-        grants: grantsToUse,
-        isLoading: backendLoading,
-        isError: backendIsError,
-        error: backendError
-      };
+      return grantsToUse;
     }
-  }, [useSemanticPipeline, activeGrants, allGrantsLoading, allGrantsIsError, allGrantsError, backendGrants, backendLoading, backendIsError, backendError, isMobile, accumulatedGrants]);
+  }, [useSemanticPipeline, allGrants, backendGrants, isMobile, accumulatedGrants]);
 
   // Filter grants based on pipeline
   const baseFilteredGrants = useMemo(() => {
     console.log('🎯 Filtering grants based on pipeline:', {
       useSemanticPipeline,
       useBackendPipeline,
-      totalGrants: grants.length,
+      totalGrants: grantsForFiltering.length,
       hasSemanticMatches: !!semanticMatches,
       semanticMatchesCount: semanticMatches?.length || 0,
       searchTerm: searchTerm.trim(),
@@ -212,7 +201,7 @@ const DiscoverGrants = () => {
       // Semantic pipeline: filter based on semantic search results
       if (!hasSearched || !searchTerm.trim()) {
         console.log('📋 No search performed, returning all active grants');
-        return grants;
+        return grantsForFiltering;
       }
 
       // If we have semantic matches (even if empty array), use those
@@ -224,7 +213,7 @@ const DiscoverGrants = () => {
 
         // Filter grants to only include those that were semantically matched
         const matchedGrantIds = semanticMatches.map(match => match.grantId);
-        const filteredGrants = grants.filter(grant => matchedGrantIds.includes(grant.id));
+        const filteredGrants = grantsForFiltering.filter(grant => matchedGrantIds.includes(grant.id));
         
         console.log('✅ Filtered to semantic matches:', {
           matchedIds: matchedGrantIds.length,
@@ -236,13 +225,13 @@ const DiscoverGrants = () => {
 
       // If semantic search failed but we searched, return all grants as fallback
       console.log('📋 Search performed but no semantic results, returning all active grants as fallback');
-      return grants;
+      return grantsForFiltering;
     } else {
       // Backend pipeline: grants are already filtered by backend
-      console.log('📋 Using backend filtered grants:', grants.length);
-      return grants;
+      console.log('📋 Using backend filtered grants:', grantsForFiltering.length);
+      return grantsForFiltering;
     }
-  }, [useSemanticPipeline, useBackendPipeline, grants, semanticMatches, searchTerm, hasSearched]);
+  }, [useSemanticPipeline, useBackendPipeline, grantsForFiltering, semanticMatches, searchTerm, hasSearched]);
 
   // Apply additional frontend filters only for semantic pipeline
   const filteredGrants = useMemo(() => {
@@ -407,6 +396,23 @@ const DiscoverGrants = () => {
     // Backend pipeline will automatically refetch with new sorting
   }, []);
 
+  // Get the appropriate loading and error states based on pipeline
+  const { isLoading, isError, error } = useMemo(() => {
+    if (useSemanticPipeline) {
+      return {
+        isLoading: allGrantsLoading || isSearching,
+        isError: allGrantsIsError,
+        error: allGrantsError
+      };
+    } else {
+      return {
+        isLoading: backendLoading,
+        isError: backendIsError,
+        error: backendError
+      };
+    }
+  }, [useSemanticPipeline, allGrantsLoading, isSearching, allGrantsIsError, allGrantsError, backendLoading, backendIsError, backendError]);
+
   // Show loading/error/empty states - but NEVER for backend filtering/sorting operations
   const showFullPageLoading = useSemanticPipeline 
     ? (allGrantsLoading || isSearching) 
@@ -420,7 +426,7 @@ const DiscoverGrants = () => {
     isFetching: useBackendPipeline && backendFetching,
     isError,
     error,
-    grants: useSemanticPipeline ? activeGrants : backendGrants,
+    grants: useSemanticPipeline ? grantsForFiltering : backendGrants,
     onRefresh: handleRefresh,
   });
 
@@ -441,7 +447,7 @@ const DiscoverGrants = () => {
 
   return (
     <DiscoverGrantsContent
-      grants={useSemanticPipeline ? activeGrants : backendGrants}
+      grants={useSemanticPipeline ? grantsForFiltering : backendGrants}
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}

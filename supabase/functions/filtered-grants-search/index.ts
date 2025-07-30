@@ -65,7 +65,7 @@ serve(async (req) => {
     } = await req.json();
 
     console.log('🔍 Filtered grants search request:', {
-      filters,
+      filters: JSON.stringify(filters, null, 2),
       sorting,
       pagination,
       searchTerm: searchTerm ? `"${searchTerm}"` : 'none'
@@ -167,7 +167,7 @@ serve(async (req) => {
     }
 
     // Apply status filter (open/upcoming)
-    if (filters.statusFilter) {
+    if (filters.statusFilter && (filters.statusFilter === 'open' || filters.statusFilter === 'upcoming')) {
       console.log('📅 Applying status filter:', filters.statusFilter);
       const now = new Date();
       const today = now.toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -253,6 +253,12 @@ serve(async (req) => {
     const offset = (pagination.page - 1) * pagination.limit;
     query = query.range(offset, offset + pagination.limit - 1);
 
+    console.log('🔍 About to execute query with filters:', {
+      filtersApplied: Object.keys(filters).filter(key => filters[key] !== undefined),
+      pagination: { page: pagination.page, limit: pagination.limit, offset },
+      searchTerm: searchTerm ? `"${searchTerm}"` : 'none'
+    });
+
     // Execute the query
     const { data: grants, error: grantsError, count } = await query;
 
@@ -316,6 +322,7 @@ serve(async (req) => {
         organization: languageGrant.organisation || 'Unknown organization',
         aboutGrant: languageGrant.subtitle || 'No description available',
         fundingAmount: formatFundingAmount(languageGrant),
+        funding_amount_eur: languageGrant.funding_amount_eur || null,
         opens_at: languageGrant.application_opening_date || '',
         deadline: languageGrant.application_closing_date || '',
         tags: Array.isArray(languageGrant.keywords) ? languageGrant.keywords : [],

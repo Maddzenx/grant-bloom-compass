@@ -2,12 +2,19 @@ import { useQuery } from '@tanstack/react-query';
 import { GrantListItem } from '@/types/grant';
 import { fetchGrantListItems } from '@/services/grantsService';
 
-export const useGrantListItems = () => {
+interface UseGrantListItemsOptions {
+  enabled?: boolean;
+}
+
+export const useGrantListItems = (options: UseGrantListItemsOptions = {}) => {
+  const { enabled = true } = options;
+  
   return useQuery({
     queryKey: ['grant-list-items'],
     queryFn: async (): Promise<GrantListItem[]> => {
       return await fetchGrantListItems();
     },
+    enabled,
     retry: 1,
     retryDelay: 500,
     refetchOnWindowFocus: false,

@@ -8,13 +8,14 @@ export const parseFundingAmount = (fundingAmount: string | number): number => {
     return fundingAmount;
   }
   
-  // If it's a string, parse it
-  const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?SEK/i);
+  // If it's a string, parse it - handle both SEK and EUR currencies
+  const match = fundingAmount.match(/(\d+(?:[.,]\d+)?)\s*M?(SEK|EUR)/i);
   if (match) {
     const amount = parseFloat(match[1].replace(',', '.'));
     return fundingAmount.includes('M') ? amount * 1000000 : amount;
   }
   
+  // Fallback: try to extract any number from the string
   const numbers = fundingAmount.match(/\d+(?:\s*\d+)*/g);
   if (!numbers) return 0;
   
