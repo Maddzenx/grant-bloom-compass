@@ -104,9 +104,10 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
     'information_webinar_dates', 'information_webinar_links', 'geographic_scope', 
     'cofinancing_required', 'cofinancing_level_min', 'created_at', 'updated_at',
     // Language-specific fields - fetch both languages
-    'title_sv', 'title_en', 'subtitle_sv', 'subtitle_en', 'information_webinar_names', 'application_templates_names', 
-    'application_templates_links', 'other_templates_names', 'other_templates_links', 
-    'other_sources_names', 'other_sources_links', 'keywords', 'industry_sectors', 
+    'title_sv', 'title_en', 'subtitle_sv', 'subtitle_en', 'information_webinar_names_sv', 'information_webinar_names_en', 
+    'application_templates_names_sv', 'application_templates_names_en', 'application_templates_links', 
+    'other_templates_names_sv', 'other_templates_names_en', 'other_templates_links', 
+    'other_sources_names_sv', 'other_sources_names_en', 'other_sources_links', 'keywords', 'industry_sectors', 
     'eligible_organisations_standardized', 'region_sv', 'region_en', 'eligible_cost_categories_standardized'
   ];
   
@@ -127,14 +128,16 @@ export const fetchGrantListItems = async (): Promise<GrantListItem[]> => {
 
   console.log('🔍 Processing grant list items...', {
     totalGrants: grantData.length,
-    sampleEUGrants: grantData.filter(g => g.organisation && (g.organisation.toLowerCase().includes('eu') || g.organisation.toLowerCase().includes('european'))).slice(0, 2).map(g => ({
-      id: g.id,
-      organisation: g.organisation,
-      title_sv: g.title_sv,
-      title_en: g.title_en,
-      subtitle_sv: g.subtitle_sv,
-      subtitle_en: g.subtitle_en
-    }))
+          sampleEUGrants: grantData.filter(g => g.organisation && (g.organisation.toLowerCase().includes('eu') || g.organisation.toLowerCase().includes('european'))).slice(0, 2).map(g => ({
+        id: g.id,
+        organisation: g.organisation,
+        title_sv: g.title_sv,
+        title_en: g.title_en,
+        subtitle_sv: g.subtitle_sv,
+        subtitle_en: g.subtitle_en,
+        information_webinar_names_sv: g.information_webinar_names_sv,
+        information_webinar_names_en: g.information_webinar_names_en
+      }))
   });
   
   return transformGrantListItems(grantData);
@@ -345,19 +348,19 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         project_end_date_max: grant.project_end_date_max,
         information_webinar_dates: parseJsonArray(grant.information_webinar_dates),
         information_webinar_links: parseJsonArray(grant.information_webinar_links),
-        information_webinar_names: parseJsonArray(grant.information_webinar_names),
+        information_webinar_names: parseJsonArray(language === 'en' ? grant.information_webinar_names_en : grant.information_webinar_names_sv),
         other_important_dates: parseJsonArray(grant.other_important_dates),
         other_important_dates_labels: parseJsonArray(grant.other_important_dates_labels),
         // Project duration fields
         project_duration_months_min: grant.project_duration_months_min || undefined,
         project_duration_months_max: grant.project_duration_months_max || undefined,
         // Template fields for files and documents
-        templates: parseJsonArray(grant.application_templates_names) || [],
-        generalInfo: parseJsonArray(grant.other_templates_names) || [],
+        templates: parseJsonArray(language === 'en' ? grant.application_templates_names_en : grant.application_templates_names_sv) || [],
+        generalInfo: parseJsonArray(language === 'en' ? grant.other_templates_names_en : grant.other_templates_names_sv) || [],
         application_templates_links: parseJsonArray(grant.application_templates_links),
         other_templates_links: parseJsonArray(grant.other_templates_links),
         other_sources_links: parseJsonArray(grant.other_sources_links),
-        other_sources_names: parseJsonArray(grant.other_sources_names),
+        other_sources_names: parseJsonArray(language === 'en' ? grant.other_sources_names_en : grant.other_sources_names_sv),
         cofinancing_required: parseBooleanString(grant.cofinancing_required),
         cofinancing_level: grant.cofinancing_level_min ?? null,
         cofinancing_level_min: grant.cofinancing_level_min || undefined,
