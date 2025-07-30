@@ -45,9 +45,9 @@ const OrganizationTabs = ({
       }
     });
   };
-  return <div className="mb-16">
-      <h3 className="text-base font-[Basic] font-normal mb-4 text-center text-black">
-        Sökande organisation:
+  return <div className="mb-3">
+      <h3 className="text-base font-[Basic] font-normal mb-2 text-center text-black">
+        Vem kan ansöka?
       </h3>
       <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
         {organizationTypes.map(org => (

@@ -6,13 +6,14 @@ import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
 import OrganizationTabs from "@/components/home/OrganizationTabs";
 import StatusMessages from "@/components/home/StatusMessages";
-import VideoDemo from "@/components/home/VideoDemo";
-import MetricsSection from "@/components/home/MetricsSection";
-import SecurityTrustSection from "@/components/home/SecurityTrustSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import PricingSection from "@/components/home/PricingSection";
-import FAQSection from "@/components/home/FAQSection";
-import CTASection from "@/components/home/CTASection";
+// Temporarily commented out imports
+// import VideoDemo from "@/components/home/VideoDemo";
+// import MetricsSection from "@/components/home/MetricsSection";
+// import SecurityTrustSection from "@/components/home/SecurityTrustSection";
+// import TestimonialsSection from "@/components/home/TestimonialsSection";
+// import PricingSection from "@/components/home/PricingSection";
+// import FAQSection from "@/components/home/FAQSection";
+// import CTASection from "@/components/home/CTASection";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
@@ -103,7 +104,7 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
+    <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden" style={{ backgroundColor: '#fafafa' }}>
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
@@ -111,29 +112,33 @@ const HomePage = () => {
         draggable={false}
       />
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
-        <div className="w-full max-w-4xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center">
+      <div className="relative z-10 h-full flex items-center justify-center px-8 md:px-12 lg:px-16 overflow-hidden">
+        <div className="w-full max-w-4xl mx-auto overflow-hidden">
+          {/* Hero Section - Reduced margin */}
+          <div className="text-center mb-8">
             <HeroSection />
           </div>
 
-          {/* Chat Input Section */}
-          <ChatInput
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            isRecording={isRecording}
-            isTranscribing={isTranscribing}
-            isProcessing={isProcessing}
-            isSearching={isSearching}
-            handleVoiceInput={handleVoiceInput}
-            handleFileUpload={handleFileUpload}
-            onFileSelect={onFileSelect}
-            onSubmit={handleRedirect}
-          />
+          {/* Chat Input Section - Reduced margin */}
+          <div className="mb-4">
+            <ChatInput
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              isRecording={isRecording}
+              isTranscribing={isTranscribing}
+              isProcessing={isProcessing}
+              isSearching={isSearching}
+              handleVoiceInput={handleVoiceInput}
+              handleFileUpload={handleFileUpload}
+              onFileSelect={onFileSelect}
+              onSubmit={handleRedirect}
+            />
+          </div>
 
-          {/* Organization Tabs */}
-          <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
+          {/* Organization Tabs - Reduced margin */}
+          <div className="mb-4">
+            <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
+          </div>
 
           {/* Status Messages */}
           <div className="text-center">
@@ -149,27 +154,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Video Demo Section */}
-      <VideoDemo />
-
-      {/* Metrics Section */}
-      <MetricsSection />
-
-      {/* Security & Trust Section */}
-      <SecurityTrustSection />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* Pricing Section */}
-      <PricingSection />
-
-      {/* FAQ Section */}
-      <FAQSection />
-
-      {/* CTA Section */}
-      <CTASection />
     </div>
   );
 };

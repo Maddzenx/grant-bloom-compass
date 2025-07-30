@@ -13,9 +13,9 @@ const TopNavigation = () => {
         </a>
         <a 
           href="/discover" 
-          className="font-newsreader font-medium text-gray-700 hover:text-gray-900 transition-colors text-lg"
+          className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg text-lg"
         >
-          Upptäck bidrag
+          Upptäck bidrag här
         </a>
         <a 
           href="/saved" 

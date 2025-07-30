@@ -53,11 +53,11 @@ const CTASection = () => {
           >
             Contact us at{' '}
             <a 
-              href="mailto:graigent@graigent.com"
+                              href="mailto:info@bidragsspranget.se"
               className="hover:underline transition-colors duration-200"
               style={{ color: '#78797A' }}
             >
-              graigent@graigent.com
+                              info@bidragsspranget.se
             </a>
           </p>
         </div>
@@ -68,7 +68,7 @@ const CTASection = () => {
             className="font-[Basic] font-normal inline-block"
             style={{ fontSize: 'clamp(36px, 5vw, 46px)' }}
             role="img"
-            aria-label="Graigent logo"
+                            aria-label="Bidragssprånget logo"
           >
             <span className="text-black">gr</span>
             <span style={{ color: '#8162F4' }}>ai</span>

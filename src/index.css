@@ -369,3 +369,72 @@
 .w-12.h-1\.5.rounded-full {
   background: #e5e7eb !important;
 }
+
+/* Animation for dictation dotted line */
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Logo animations */
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(12deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(12deg);
+  }
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(236, 72, 153, 0.4);
+  }
+}
+
+.logo-icon {
+  animation: logoFloat 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite;
+}
+
+.logo-icon:hover {
+  animation: none;
+  transform: rotate(0deg) scale(1.05);
+}
+
+/* Circular Logo Styling */
+@keyframes circularRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.circular-logo-icon {
+  transition: all 0.3s ease;
+}
+
+.circular-logo-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
+.circular-logo-icon svg {
+  transition: all 0.3s ease;
+}
+
+.circular-logo-icon:hover svg {
+  animation: circularRotate 20s linear infinite;
+}
+
+

@@ -69,11 +69,30 @@ export function TopNavigation() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
-                <span className="text-3xl font-newsreader font-normal">
-                  <span style={{ color: '#000000' }}>gr</span>
-                  <span style={{ color: '#8162F4' }}>ai</span>
-                  <span style={{ color: '#000000' }}>gent</span>
-                </span>
+                <div className="flex items-center">
+                  {/* Circular Logo Icon */}
+                  <div className="mr-3">
+                    <div className="circular-logo-icon w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
+                      <svg className="w-10 h-10" viewBox="0 0 100 100" fill="none">
+                        {/* Circular text path for "BIDRAGSSPRÅNGET" */}
+                        <defs>
+                          <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
+                        </defs>
+                        <text fill="#8B5CF6" font-family="Arial, sans-serif" font-size="10" font-weight="bold">
+                          <textPath href="#circlePath" startOffset="50%" text-anchor="middle">
+                            BIDRAGSSPRÅNGET
+                          </textPath>
+                        </text>
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Clean Typography */}
+                  <div className="flex flex-col">
+                    <span className="text-lg font-inter font-semibold leading-tight text-gray-900">
+                      Bidragssprånget
+                    </span>
+                  </div>
+                </div>
               </Link>
             </div>
             {/* Desktop Navigation */}
@@ -99,20 +118,7 @@ export function TopNavigation() {
               {/* Auth Buttons */}
               <div className="flex items-center space-x-3 ml-4">
                 {!user ? (
-                  <>
-                    <Link
-                      to="/login"
-                      className="text-sm font-newsreader text-ink-secondary font-medium hover:text-ink-obsidian transition-colors"
-                    >
-                      Logga in
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-sm font-newsreader font-medium px-4 py-2 rounded-full transition-colors"
-                    >
-                      Registrera dig
-                    </Link>
-                  </>
+                  <>{/* Sign in/register buttons temporarily hidden */}</>
                 ) : (
                   <UserMenu />
                 )}
@@ -142,8 +148,7 @@ export function TopNavigation() {
                         </nav>
                         <div className="p-6 border-t border-gray-200">
                           <div className="flex flex-col gap-3">
-                            <Link to="/login" className="text-base font-medium text-ink-obsidian py-2 text-center" onClick={handleNavigationClick}>Logga in</Link>
-                            <Link to="/signup" className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-base font-medium py-2 px-4 rounded-full text-center transition-colors" onClick={handleNavigationClick}>Registrera dig</Link>
+                            {/* Mobile sign in/register buttons temporarily hidden */}
                           </div>
                         </div>
                       </div>

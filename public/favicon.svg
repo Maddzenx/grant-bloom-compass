@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="16" fill="black"/>
+  
+  <!-- Circular text path -->
+  <defs>
+    <path id="circlePath" d="M16,16 m-12,0 a12,12 0 1,1 24,0 a12,12 0 1,1 -24,0" />
+  </defs>
+  
+  <!-- Text on circular path -->
+  <text fill="#8B5CF6" font-family="Arial, sans-serif" font-size="6" font-weight="bold">
+    <textPath href="#circlePath" startOffset="50%" text-anchor="middle">
+      BIDRAGSSPRÅNGET
+    </textPath>
+  </text>
+</svg> 
