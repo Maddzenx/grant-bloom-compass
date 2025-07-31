@@ -53,18 +53,7 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
   return (
     <div className={`border-t border-accent-lavender/30 ${isMobile ? 'pt-3 mt-4' : 'pt-6 mt-6'}`}>
       <div className={`flex gap-3 ${isMobile ? 'flex-col' : 'justify-center'}`}>
-        <Button
-          variant="outline"
-          onClick={handleBookmarkToggle}
-          className={`${isMobile ? 'w-full justify-center' : ''} flex items-center gap-2`}
-        >
-          <Bookmark
-            className={`w-4 h-4 ${
-              actuallyBookmarked ? "fill-accent-lavender text-accent-lavender" : "text-ink-obsidian/60"
-            }`}
-          />
-          {actuallyBookmarked ? "Sparad" : "Spara bidrag"}
-        </Button>
+        {/* Bookmark button hidden */}
         <Button
           onClick={handleApplyClick}
           className={`${isMobile ? 'w-full' : ''} flex items-center gap-2`}

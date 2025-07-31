@@ -158,6 +158,7 @@ const translations = {
     
           // Hero Section
       'hero.title': 'Beskriv ditt projekt och matcha det med rätt bidrag',
+      'hero.subtitle': 'En översikt över bidrag inom Sverige och EU samlat på ett ställe.',
     'hero.findGrants': 'Hitta bidrag',
     
     // Chat Input

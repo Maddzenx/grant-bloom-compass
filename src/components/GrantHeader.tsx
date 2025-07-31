@@ -82,9 +82,10 @@ const GrantHeader = ({
         </Button>
         <Button 
           onClick={handleApplyClick}
-          className={`bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm ${
+          className={`text-white rounded-lg font-semibold text-sm transition-all duration-200 ${
             isMobile ? 'flex-1 px-4 py-2' : 'px-6 py-2'
           }`}
+          style={{ backgroundColor: '#8B5CF6' }}
         >
           Ansök
         </Button>

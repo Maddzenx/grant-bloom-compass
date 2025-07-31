@@ -120,7 +120,7 @@ export const EnhancedFilterControls = ({
 
   const activeFilterCount = calculateActiveFilterCount(filters);
 
-  return <div className="border border-gray-200 rounded-xl shadow-lg bg-white max-w-6xl mx-auto overflow-hidden">
+  return <div className="border border-gray-200 rounded-lg shadow-lg bg-white max-w-6xl mx-auto overflow-hidden">
       {/* Filter chips */}
       {hasActiveFilters && <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={onClearAll} organizations={organizationOptions} className="mb-0" />}
 

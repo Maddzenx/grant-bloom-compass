@@ -129,7 +129,7 @@ const GrantCard = ({
   };
 
   return (
-    <Card className={`p-6 min-h-[120px] rounded-xl shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
+    <Card className={`p-6 min-h-[120px] rounded-lg shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 text-xs text-ink-obsidian/70 flex-shrink-0">
@@ -150,13 +150,7 @@ const GrantCard = ({
             {status === 'closed' && (
               <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Stängd</Badge>
             )}
-            <button 
-              onClick={handleBookmarkToggle} 
-              className="p-1 hover:bg-accent-2/10 rounded transition-colors flex-shrink-0"
-              aria-label={actuallyBookmarked ? "Remove bookmark" : "Add bookmark"}
-            >
-              <Bookmark className={`w-4 h-4 transition-colors ${actuallyBookmarked ? 'text-[#8162F4] fill-[#8162F4]' : 'text-gray-400'}`} />
-            </button>
+            {/* Bookmark button hidden */}
           </div>
         </div>
 

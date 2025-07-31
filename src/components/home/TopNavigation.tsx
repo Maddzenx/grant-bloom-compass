@@ -13,7 +13,8 @@ const TopNavigation = () => {
         </a>
         <a 
           href="/discover" 
-          className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg text-lg"
+          className="text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg text-lg"
+          style={{ backgroundColor: '#8B5CF6' }}
         >
           Upptäck bidrag här
         </a>

@@ -84,7 +84,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
               </div>}
             
             <div className="flex gap-2" onClick={e => e.stopPropagation()}>
-              <Button size="sm" onClick={() => handleAccept(suggestion)} className="px-4 py-1.5 h-8 text-sm rounded-md bg-[#d7cffc] text-black">
+              <Button size="sm" onClick={() => handleAccept(suggestion)} className="px-4 py-1.5 h-8 text-sm rounded-md text-black" style={{ backgroundColor: '#D7CFFC' }}>
                 Apply
               </Button>
               <button onClick={() => handleDismiss(suggestion.id)} className="text-sm font-medium px-2 py-1.5 text-black">

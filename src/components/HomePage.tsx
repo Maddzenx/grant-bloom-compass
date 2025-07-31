@@ -108,7 +108,7 @@ const HomePage = () => {
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
-        className="absolute left-1/2 top-20 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
+        className="absolute left-1/2 top-24 z-0 w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob"
         draggable={false}
       />
       {/* Main Content */}

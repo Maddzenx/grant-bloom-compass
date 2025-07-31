@@ -87,7 +87,8 @@ const GrantStickyHeader = ({
           <Button
             onClick={handleApplyClick}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-md"
+            className="text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-md"
+            style={{ backgroundColor: '#8B5CF6' }}
           >
             Ansök
           </Button>

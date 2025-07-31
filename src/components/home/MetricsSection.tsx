@@ -25,7 +25,7 @@ const MetricsSection = () => {
   ];
 
   return (
-    <div className="relative z-10 w-full bg-[#CEC5F9] py-16 px-6">
+            <div className="relative z-10 w-full py-16 px-6" style={{ backgroundColor: '#CEC5F9' }}>
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline with highlighted "baby" */}
         <div className="text-center mb-16">
@@ -39,7 +39,8 @@ const MetricsSection = () => {
           {metrics.map((metric, index) => (
             <div 
               key={index}
-              className="bg-[#D7CFFC] p-12 rounded-lg flex flex-col justify-between min-h-[200px] relative"
+              className="p-12 rounded-lg flex flex-col justify-between min-h-[200px] relative"
+            style={{ backgroundColor: '#D7CFFC' }}
             >
               {/* Caption - Top Left */}
               <p className="font-[Basic] text-[15px] leading-[1.3] text-gray-800 opacity-80 max-w-[70%]">

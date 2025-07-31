@@ -268,7 +268,7 @@ const ChatInput = ({
               <div className="w-full relative">
                 <Textarea
                   placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-5 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                   value={inputValue}
                   onChange={handleTextareaChange}
                   onFocus={() => setIsFocused(true)}
@@ -281,7 +281,7 @@ const ChatInput = ({
                 />
                 {/* Animated placeholder overlay */}
                 {(!inputValue && !isFocused && animatedPlaceholder) && (
-                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
+                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
                     {animatedPlaceholder}
                   </div>
                 )}
@@ -349,7 +349,8 @@ const ChatInput = ({
                   disabled={isProcessing || !inputValue.trim()}
                   size="sm"
                   title="Hitta bidrag"
-                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+style={{ backgroundColor: '#CEC5F9' }}
                 >
                   {isProcessing ? (
                     <Loader2 className="w-7 h-7 animate-spin" />

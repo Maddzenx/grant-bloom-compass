@@ -96,7 +96,7 @@ export const FilterGrid = ({
                 value=""
                 checked={!pendingFilters.statusFilter}
                 onChange={() => onPendingFilterChange({ statusFilter: '' })}
-                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+                className="w-4 h-4 border-gray-300"
               />
               Alla
             </label>
@@ -107,7 +107,7 @@ export const FilterGrid = ({
                 value="open"
                 checked={pendingFilters.statusFilter === 'open'}
                 onChange={() => onPendingFilterChange({ statusFilter: 'open' })}
-                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+                className="w-4 h-4 border-gray-300"
               />
               Öppen
             </label>
@@ -118,7 +118,7 @@ export const FilterGrid = ({
                 value="upcoming"
                 checked={pendingFilters.statusFilter === 'upcoming'}
                 onChange={() => onPendingFilterChange({ statusFilter: 'upcoming' })}
-                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+                className="w-4 h-4 border-gray-300"
               />
               Kommande
             </label>
@@ -269,7 +269,7 @@ export const FilterGrid = ({
         {/* Funding & Deadline Section */}
         <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
           <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#8B5CF6' }}></div>
             Finansiering & Deadline
           </h4>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -437,4 +437,99 @@
   animation: circularRotate 20s linear infinite;
 }
 
+/* Purple Checkbox Styling */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
 
+input[type="checkbox"]:checked {
+  background-color: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: #8B5CF6;
+}
+
+input[type="checkbox"]:hover {
+  border-color: #8B5CF6;
+}
+
+/* For larger checkboxes (h-5 w-5) */
+input[type="checkbox"].h-5.w-5 {
+  width: 20px;
+  height: 20px;
+}
+
+input[type="checkbox"].h-5.w-5:checked::after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+}
+
+/* Purple Radio Button Styling */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+input[type="radio"]:checked {
+  background-color: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: #8B5CF6;
+}
+
+input[type="radio"]:hover {
+  border-color: #8B5CF6;
+}

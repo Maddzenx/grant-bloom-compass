@@ -38,7 +38,7 @@ const SecurityTrustSection = () => {
         {/* Security Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-rows-auto">
           {securityCards.map((card, index) => (
-            <div key={index} className="border border-[#CEC5F9] rounded bg-white p-10 flex flex-col h-full" tabIndex={0} role="region" aria-label={`Security feature: ${card.title}`}>
+            <div key={index} className="border rounded bg-white p-10 flex flex-col h-full" style={{ borderColor: '#CEC5F9' }} tabIndex={0} role="region" aria-label={`Security feature: ${card.title}`}>
               {/* Card Title */}
               <h3 className="font-[Basic] font-normal text-2xl text-gray-900 mb-4 leading-[1.25] text-left md:text-left">
                 {card.title}

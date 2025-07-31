@@ -71,7 +71,7 @@ const CTASection = () => {
                             aria-label="Bidragssprånget logo"
           >
             <span className="text-black">gr</span>
-            <span style={{ color: '#8162F4' }}>ai</span>
+            <span style={{ color: '#8B5CF6' }}>ai</span>
             <span className="text-black">gent</span>
           </div>
         </div>

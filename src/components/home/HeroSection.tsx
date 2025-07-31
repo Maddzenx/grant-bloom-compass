@@ -10,7 +10,7 @@ const HeroSection = () => {
         <span className="whitespace-pre-line">{t('hero.title')}</span>
       </h1>
       <p className="text-lg md:text-xl text-black max-w-3xl mx-auto leading-relaxed">
-        En översikt över bidrag inom Sverige och EU samlat på ett ställe.
+        {t('hero.subtitle')}
       </p>
     </div>
   );
