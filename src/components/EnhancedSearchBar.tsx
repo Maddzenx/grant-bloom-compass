@@ -51,6 +51,7 @@ const EnhancedSearchBar = ({
     onSearchChange(value);
     setSelectedSuggestionIndex(-1);
     setShowSuggestions(value.length > 0);
+    // Remove any automatic search triggering - only search on button click or Enter
   };
   const handleInputFocus = () => {
     setShowSuggestions(searchTerm.length > 0 || recentSearches.length > 0);

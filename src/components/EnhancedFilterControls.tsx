@@ -128,10 +128,10 @@ export const EnhancedFilterControls = ({
       <FilterHeader isExpanded={isExpanded} onToggleExpanded={() => setIsExpanded(!isExpanded)} hasActiveFilters={hasActiveFilters} filteredCount={filteredGrants.length} totalCount={grants.length} activeFilterCount={activeFilterCount} className="mb-0" />
 
       {/* Filter controls - only show when expanded */}
-      {isExpanded && <div className="p-6 bg-gradient-to-br from-gray-50 to-white">
+      {isExpanded && <div className="p-4 bg-gradient-to-br from-gray-50 to-white">
           <FilterGrid pendingFilters={pendingFilters} onPendingFilterChange={handlePendingFilterChange} organizationOptions={organizationOptions} grants={grants} grantsInFundingRange={grantsInFundingRange} filteredGrants={filteredGrants} hasActiveFilters={hasActiveFilters} onClearAll={onClearAll} compact />
 
-          <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+          <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-200">
             <FilterActions hasPendingChanges={hasPendingChanges} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} compact />
           </div>
         </div>}

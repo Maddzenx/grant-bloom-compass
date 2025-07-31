@@ -109,9 +109,6 @@ const GrantList = ({
         />
         {isMobile && hasMore && (
           <div className="flex flex-col items-center justify-center py-8 px-4">
-            <div className="text-sm text-gray-600 mb-4 text-center">
-              Fler bidrag tillgängliga
-            </div>
             {/* Manual load more button */}
             <Button 
               onClick={() => {

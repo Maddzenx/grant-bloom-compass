@@ -340,9 +340,8 @@ const FilterContent = ({
     <div className="p-6 border-t border-gray-200 bg-white flex-shrink-0">
       <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-4">
         <Button 
-          variant="outline" 
           onClick={onResetFilters} 
-          className="w-full sm:w-auto font-medium text-sm text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 px-6 py-3 rounded-lg transition-all duration-200"
+          className="w-full sm:w-auto font-medium text-sm text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 px-6 py-3 rounded-lg transition-all duration-200"
         >
           Återställ alla filter
         </Button>

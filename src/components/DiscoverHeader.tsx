@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { X } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import { Button } from "./ui/button";
 import SortingControls, { SortOption } from "@/components/SortingControls";
 import { CustomDateRangePicker } from "./deadline-filter/CustomDateRangePicker";
@@ -74,10 +74,7 @@ const DiscoverHeader = ({
                 onClick={handleSearchClick}
                 aria-label="Search"
               >
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="M21 21l-4.35-4.35"/>
-                </svg>
+                <ArrowRight className="w-6 h-6" />
               </button>
             </div>
           </div>

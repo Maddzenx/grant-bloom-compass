@@ -23,7 +23,7 @@ export const FilterHeader = ({
   className = ""
 }: FilterHeaderProps) => {
   return <div className={`border-b border-gray-200 ${className}`} style={{ background: 'linear-gradient(to right, #FAF5FF, #EFF6FF)' }}>
-      <div className="px-6 py-4">
+      <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <Button 
             variant="ghost" 
@@ -49,7 +49,7 @@ export const FilterHeader = ({
         </div>
 
         {!isExpanded && hasActiveFilters && (
-          <div className="mt-3 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-600">
             {activeFilterCount} filter aktiva • {filteredCount} resultat visade
           </div>
         )}

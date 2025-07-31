@@ -128,7 +128,7 @@ export function TopNavigation() {
                           <div className="flex-1 flex justify-end items-center md:hidden">
                 {!user ? (
                   <Link to="/discover" className="p-2 rounded-full hover:bg-gray-100 focus:outline-none transition-all duration-200 hover:scale-105">
-                    <Home className="w-7 h-7 text-gray-600 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = '#8B5CF6'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B7280'} />
+                    <Home className="w-6 h-6 text-gray-600 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = '#6B7280'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B7280'} />
                   </Link>
                 ) : (
                   <button 

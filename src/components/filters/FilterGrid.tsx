@@ -62,7 +62,7 @@ export const FilterGrid = ({
 
   return (
     <TooltipProvider>
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* Sticky result count and clear all */}
         <div className="flex items-center justify-between sticky top-0 z-10 bg-white/80 backdrop-blur-sm py-3 border-b border-gray-200 rounded-lg">
           <div className="flex items-center gap-2">
@@ -83,12 +83,12 @@ export const FilterGrid = ({
         </div>
 
         {/* Status Section */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             Status
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700">
               <input
                 type="radio"
@@ -126,12 +126,12 @@ export const FilterGrid = ({
         </div>
 
         {/* Applicant Section */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
             Ansökande
           </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Organizations Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
@@ -161,12 +161,12 @@ export const FilterGrid = ({
           </div>
         </div>
         {/* Project Section */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             Projekt
           </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Industry Sectors Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">
@@ -206,14 +206,14 @@ export const FilterGrid = ({
           </div>
         </div>
         {/* Requirements Section */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
             Krav
           </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Consortium Requirement Filter */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
                   Konsortium krävs
@@ -239,7 +239,7 @@ export const FilterGrid = ({
               </div>
             </div>
             {/* Co-financing Requirement Filter */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
                   Medfinansiering krävs
@@ -267,12 +267,12 @@ export const FilterGrid = ({
           </div>
         </div>
         {/* Funding & Deadline Section */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#8B5CF6' }}></div>
             Finansiering & Deadline
           </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Funding Range Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900">Finansieringsbelopp</label>
