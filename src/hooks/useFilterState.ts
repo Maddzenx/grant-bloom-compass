@@ -118,9 +118,9 @@ const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptio
     tags: searchParams.get('tags')?.split(',').filter(Boolean) || [],
     industrySectors: searchParams.get('industrySectors')?.split(',').filter(Boolean) || [],
     eligibleApplicants: searchParams.get('eligibleApplicants')?.split(',').filter(Boolean) || [],
-    consortiumRequired: searchParams.get('consortiumRequired') === 'true',
+    consortiumRequired: searchParams.get('consortiumRequired') === 'true' ? true : null,
     geographicScope: searchParams.get('geographicScope')?.split(',').filter(Boolean) || [],
-    cofinancingRequired: searchParams.get('cofinancingRequired') === 'true',
+    cofinancingRequired: searchParams.get('cofinancingRequired') === 'true' ? true : null,
     statusFilter: searchParams.get('statusFilter') || '',
   };
 };

@@ -119,8 +119,8 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.eligibleApplicants = filters.eligibleApplicants;
   }
   
-  // Only include consortium required if it's explicitly set (not null/undefined)
-  if (filters.consortiumRequired !== null && filters.consortiumRequired !== undefined) {
+  // Only include consortium required if it's explicitly set by user (not default false)
+  if (filters.consortiumRequired === true) {
     backendFilters.consortiumRequired = filters.consortiumRequired;
   }
   
@@ -129,8 +129,8 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.geographicScope = filters.geographicScope;
   }
   
-  // Only include cofinancing required if it's explicitly set (not null/undefined)
-  if (filters.cofinancingRequired !== null && filters.cofinancingRequired !== undefined) {
+  // Only include cofinancing required if it's explicitly set by user (not default false)
+  if (filters.cofinancingRequired === true) {
     backendFilters.cofinancingRequired = filters.cofinancingRequired;
   }
   

@@ -44,15 +44,10 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
 
   const handleGrantSelect = useCallback((grant: GrantListItem) => {
     console.log('🔥 Grant selected:', grant);
-    if (selectedGrant && selectedGrant.id === grant.id) {
-      // If clicking the same grant, close/minimize details
-      setShowDetails(false);
-      setSelectedGrant(null);
-    } else {
-      setSelectedGrant(grant);
-      setShowDetails(true);
-    }
-  }, [selectedGrant]);
+    // Always set the selected grant and show details when a grant is clicked
+    setSelectedGrant(grant);
+    setShowDetails(true);
+  }, []);
 
   const toggleBookmark = useCallback((grantId: string) => {
     const grant = searchResults.find(g => g.id === grantId);

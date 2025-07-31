@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HeroSection from "@/components/home/HeroSection";
@@ -85,10 +85,10 @@ const HomePage = () => {
     // This will be handled by ChatInput component
   };
 
-  const handleOrganizationSelectionChange = (organizations: string[]) => {
+  const handleOrganizationSelectionChange = useCallback((organizations: string[]) => {
     console.log('🏢 Organization selection changed:', organizations);
     setSelectedOrganizations(organizations);
-  };
+  }, []);
 
   const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const extractedText = await handleFileSelect(event);

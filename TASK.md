@@ -469,18 +469,21 @@ Now when users select "Nyast publicerat" (newest published), the grants will be 
 - Frontend was sending filters with null/undefined values that backend interpreted as exclusion filters
 - Both semantic and backend pipelines were running simultaneously, causing interference
 - Filter state instability caused React Query to refetch with slightly different filter objects
+- **Root Cause**: URL parameter parsing was converting missing boolean filters to `false` instead of `null`
 
 **Changes Made**:
 - **Improved Filter Transformation**: Updated `transformFiltersForBackend()` to only send meaningful filters and avoid null/undefined values
 - **Backend Defensive Coding**: Added stricter filter validation in backend to only apply filters with meaningful values
 - **Enhanced Debugging**: Added detailed logging to track filter objects being sent/received
 - **Filter Stability**: Ensured consistent filter object structure to prevent React Query refetching
+- **URL Parameter Fix**: Fixed `parseFiltersFromURL()` to return `null` instead of `false` for missing boolean filters
 
 **Technical Details**:
 - Only include filters in backend request if they have actual values (not null/undefined/empty)
 - Backend now validates filter values before applying them
 - Added JSON.stringify logging to see exact filter objects
 - Fixed status filter type validation to prevent invalid filter application
+- Fixed URL parameter parsing: `searchParams.get('consortiumRequired') === 'true' ? true : null`
 
 **Performance Benefits**:
 - Consistent grant counts (should now always return 817 total grants when no filters applied)
@@ -490,6 +493,7 @@ Now when users select "Nyast publicerat" (newest published), the grants will be 
 
 **Files Modified**:
 - `src/hooks/useBackendFilteredGrants.ts` - Improved filter transformation and added debugging
+- `src/hooks/useFilterState.ts` - Fixed URL parameter parsing for boolean filters
 - `supabase/functions/filtered-grants-search/index.ts` - Added defensive filter validation and debugging
 
 **Status**: ✅ Completed 

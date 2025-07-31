@@ -75,6 +75,11 @@ export const DiscoverGrantsContent = ({
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [detailsOpen, setDetailsOpen] = React.useState(false);
 
+  // Sync mobile details open state with showDetails from hook
+  React.useEffect(() => {
+    setDetailsOpen(showDetails);
+  }, [showDetails]);
+
   // Extract unique organizations from grants
   const organizationOptions = useMemo(() =>
     grants.map(g => g.organization).filter(Boolean).filter((org, idx, arr) => arr.indexOf(org) === idx).sort(),
