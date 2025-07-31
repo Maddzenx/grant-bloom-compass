@@ -74,9 +74,9 @@ const DiscoverGrants = () => {
     refresh: refreshBackend,
   } = useBackendFilteredGrants({
     filters,
-    sorting: { sortBy, searchTerm },
+    sorting: { sortBy, searchTerm: '' }, // Don't pass searchTerm to backend pipeline
     pagination: { page: 1, limit: 15 },
-    searchTerm: useBackendPipeline ? searchTerm : '', // Only pass searchTerm for backend pipeline
+    searchTerm: '', // Always empty for backend pipeline - search is handled by semantic search
     enabled: useBackendPipeline, // Only enabled for manual browse pipeline
   });
 
@@ -384,10 +384,12 @@ const DiscoverGrants = () => {
   // Clear search results when search term is cleared
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
+    // Only clear search results if the search term is completely empty
     if (!value.trim()) {
       setSemanticMatches(undefined);
       setHasSearched(false);
     }
+    // Don't trigger any automatic search - only search on button click or Enter key
   }, []);
 
   // Handle sort change - for backend pipeline, this will trigger a new query

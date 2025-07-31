@@ -124,7 +124,7 @@ const ConsolidatedGrantList = ({
 
   // Create a map for quick lookup of match scores
   const matchScoreMap = React.useMemo(() => new Map(aiMatches?.map(match => [match.grantId, match.relevanceScore]) || []), [aiMatches]);
-  return <div className="bg-white">
+  return <div className="bg-white relative z-10">
       {grants.length === 0 ? <div className="text-center text-ink-secondary py-12 px-6">
           <div className="text-base">
             {searchTerm ? "Inga bidrag hittades för din sökning." : "Inga bidrag tillgängliga."}
@@ -149,7 +149,7 @@ const ConsolidatedGrantList = ({
           console.log('Status:', status, grant.title, grant.opens_at, grant.deadline);
           const daysLeft = Math.max(0, Math.ceil((new Date(grant.application_closing_date || grant.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
           const actualDeadline = formatDate(grant.deadline);
-          return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${isSelected ? 'bg-[#F6F6F6]' : ''}`} onClick={() => onGrantSelect(grant)}>
+          return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 relative z-10 pointer-events-auto ${isSelected ? 'bg-gray-100' : ''}`} onClick={() => onGrantSelect(grant)}>
                   <div className="space-y-2">
                     {/* Header with organization logo and match score */}
                     <div className="flex items-start justify-between">
@@ -163,12 +163,7 @@ const ConsolidatedGrantList = ({
                         {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Öppen</Badge>}
                         {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>}
                         {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Stängt</Badge>}
-                        <Button variant="ghost" size="sm" onClick={e => {
-                    e.stopPropagation();
-                    handleBookmarkToggle(e, grant);
-                  }} className="h-7 px-1">
-                          <Bookmark className={`h-4 w-4 transition-colors ${isGrantSaved(grant.id) ? 'text-[#8162F4] fill-[#8162F4]' : 'text-gray-400'}`} />
-                        </Button>
+                        {/* Bookmark button hidden */}
                       </div>
                     </div>
 
@@ -228,15 +223,8 @@ const ConsolidatedGrantList = ({
               
               {/* Pagination Controls */}
               <div className="flex items-center justify-center gap-2 py-4 px-6">
-                {/* First Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(1)} disabled={currentPage === 1} className="h-8 px-2 text-xs hover:bg-gray-100" aria-label="Första sidan" title="Första sidan (Alt + Home)">
-                  <ChevronLeft className="h-3 w-3 mr-1" />
-                  <ChevronLeft className="h-3 w-3 -ml-2" />
-                  Första
-                </Button>
-                
                 {/* Previous Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="h-8 px-3 text-xs hover:bg-gray-100" aria-label="Föregående sida" title="Föregående sida (Alt + ←)">
+                <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="h-8 px-3 text-xs transition-all duration-200 hover:bg-gray-100" aria-label="Föregående sida" title="Föregående sida (Alt + ←)">
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Föregående
                 </Button>
@@ -244,23 +232,16 @@ const ConsolidatedGrantList = ({
                 {/* Page Numbers */}
                 <div className="flex items-center gap-1 mx-4">
                   {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => <React.Fragment key={index}>
-                      {pageNum === '...' ? <span className="px-2 py-1 text-gray-400">...</span> : <Button variant={pageNum === currentPage ? "default" : "ghost"} size="sm" onClick={() => onPageChange(pageNum as number)} className={`h-8 w-8 p-0 text-xs font-medium ${pageNum === currentPage ? 'bg-purple-600 text-white hover:bg-purple-700' : 'hover:bg-gray-100'}`} aria-label={`Sida ${pageNum}`} aria-current={pageNum === currentPage ? "page" : undefined}>
+                      {pageNum === '...' ? <span className="px-2 py-1 text-gray-400">...</span> : <Button variant={pageNum === currentPage ? "default" : "ghost"} size="sm" onClick={() => onPageChange(pageNum as number)} className={`h-8 w-8 p-0 text-xs font-medium transition-all duration-200 ${pageNum === currentPage ? 'text-white' : 'hover:bg-gray-100'}`} style={pageNum === currentPage ? { backgroundColor: '#8B5CF6' } : {}} aria-label={`Sida ${pageNum}`} aria-current={pageNum === currentPage ? "page" : undefined}>
                           {pageNum}
                         </Button>}
                     </React.Fragment>)}
                 </div>
                 
                 {/* Next Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="h-8 px-3 text-xs hover:bg-gray-100" aria-label="Nästa sida" title="Nästa sida (Alt + →)">
+                <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="h-8 px-3 text-xs transition-all duration-200 hover:bg-gray-100" aria-label="Nästa sida" title="Nästa sida (Alt + →)">
                   Nästa
                   <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-                
-                {/* Last Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages} className="h-8 px-2 text-xs hover:bg-gray-100" aria-label="Sista sidan" title="Sista sidan (Alt + End)">
-                  Sista
-                  <ChevronRight className="h-3 w-3 ml-1" />
-                  <ChevronRight className="h-3 w-3 -mr-2" />
                 </Button>
               </div>
               

@@ -22,8 +22,8 @@ export const FilterHeader = ({
   activeFilterCount,
   className = ""
 }: FilterHeaderProps) => {
-  return <div className={`bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 ${className}`}>
-      <div className="px-6 py-4">
+  return <div className={`border-b border-gray-200 ${className}`} style={{ background: 'linear-gradient(to right, #FAF5FF, #EFF6FF)' }}>
+      <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <Button 
             variant="ghost" 
@@ -31,7 +31,7 @@ export const FilterHeader = ({
             onClick={onToggleExpanded} 
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-white/50 p-3 h-auto font-medium text-sm rounded-lg transition-all duration-200"
           >
-            <Filter className="w-5 h-5 text-purple-600" />
+            <Filter className="w-5 h-5" style={{ color: '#8B5CF6' }} />
             <span className="font-medium">Avancerat filter</span>
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
@@ -41,7 +41,7 @@ export const FilterHeader = ({
               {filteredCount} av {totalCount} bidrag
             </span>
             {hasActiveFilters && (
-              <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
+              <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#F3E8FF', color: '#8B5CF6' }}>
                 {activeFilterCount} aktiva filter
               </span>
             )}
@@ -49,7 +49,7 @@ export const FilterHeader = ({
         </div>
 
         {!isExpanded && hasActiveFilters && (
-          <div className="mt-3 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-600">
             {activeFilterCount} filter aktiva • {filteredCount} resultat visade
           </div>
         )}

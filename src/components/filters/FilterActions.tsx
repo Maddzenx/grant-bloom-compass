@@ -31,7 +31,11 @@ export const FilterActions = ({
         size="default"
         onClick={onApplyFilters}
         disabled={!hasPendingChanges}
-        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 text-white px-6 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ 
+          background: 'linear-gradient(to right, #8B5CF6, #3B82F6)',
+          backgroundImage: 'linear-gradient(to right, #8B5CF6, #3B82F6)'
+        }}
       >
         Tillämpa filter
         {hasPendingChanges && (

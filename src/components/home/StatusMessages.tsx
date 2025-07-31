@@ -22,32 +22,32 @@ const StatusMessages = ({
     t
   } = useLanguage();
   if (matchingError) {
-    return <div className="text-center text-red-600 mt-4">
+    return <div className="text-center text-red-600 mt-2">
         <p>{t('status.error')}: {matchingError}</p>
       </div>;
   }
   if (isSearching) {
-    return <div className="text-center text-blue-600 mt-4">
+    return <div className="text-center text-blue-600 mt-2">
         <p>Söker bidrag...</p>
       </div>;
   }
   if (isRecording) {
-    return <div className="text-center text-blue-600 mt-4">
+    return <div className="text-center text-blue-600 mt-2">
         
       </div>;
   }
   if (isUploading) {
-    return <div className="text-center text-blue-600 mt-4">
+    return <div className="text-center text-blue-600 mt-2">
         <p>{t('status.uploading')}</p>
       </div>;
   }
   if (isMatching) {
-    return <div className="text-center text-blue-600 mt-4">
+    return <div className="text-center text-blue-600 mt-2">
         <p>{t('status.matching')}</p>
       </div>;
   }
   if (grantsLoading) {
-    return <div className="text-center text-blue-600 mt-4">
+    return <div className="text-center text-blue-600 mt-2">
         <p>{t('status.loading')}</p>
       </div>;
   }

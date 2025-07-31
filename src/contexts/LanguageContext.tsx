@@ -84,7 +84,7 @@ const translations = {
     'faq.howWorksAnswer': 'Our platform uses advanced AI technology to match you with relevant grants based on your organization\'s profile and needs. Simply describe your project or upload your documents, and we\'ll find the best funding opportunities for you.',
     'faq.different': 'How is this different from other LLMs?',
     'faq.differentAnswer': 'Unlike general-purpose AI models, our system is specifically trained on grant databases and funding criteria. We understand the nuances of grant applications and can provide targeted matches with higher success rates.',
-    'faq.whoCan': 'Who can benefit from using Graigent?',
+    'faq.whoCan': 'Who can benefit from using Bidragssprånget?',
     'faq.whoCanAnswer': 'Anyone can use it. Independent or academic researchers pushing the boundaries of knowledge. Early-stage and growth-stage startups turning bold ideas into scalable products or services.',
     'faq.accurate': 'How do I know it is accurate?',
     'faq.accurateAnswer': 'Our matching algorithm is continuously validated against successful grant applications. We provide confidence scores for each match and allow you to verify the criteria directly with the funding sources.',
@@ -153,11 +153,12 @@ const translations = {
   sv: {
     // Navigation
     'nav.home': 'Hem',
-    'nav.discover': 'Upptäck bidrag',
+    'nav.discover': 'Upptäck bidrag här',
     'nav.saved': 'Sparade bidrag',
     
           // Hero Section
       'hero.title': 'Beskriv ditt projekt och matcha det med rätt bidrag',
+      'hero.subtitle': 'En översikt över bidrag inom Sverige och EU samlat på ett ställe.',
     'hero.findGrants': 'Hitta bidrag',
     
     // Chat Input
@@ -208,7 +209,7 @@ const translations = {
     'faq.howWorksAnswer': 'Vår plattform använder avancerad AI-teknik för att matcha dig med relevanta bidrag baserat på din organisations profil och behov. Beskriv helt enkelt ditt projekt eller ladda upp dina dokument, så hittar vi de bästa finansieringsmöjligheterna för dig.',
     'faq.different': 'Hur skiljer sig detta från andra LLM:er?',
     'faq.differentAnswer': 'Till skillnad från allmänna AI-modeller är vårt system specifikt tränat på bidragsdatabaser och finansieringskriterier. Vi förstår nyanserna i bidragsansökningar och kan ge riktade matchningar med högre framgångsfrekvens.',
-    'faq.whoCan': 'Vem kan dra nytta av att använda Graigent?',
+    'faq.whoCan': 'Vem kan dra nytta av att använda Bidragssprånget?',
     'faq.whoCanAnswer': 'Vem som helst kan använda det. Oberoende eller akademiska forskare som driver kunskapsgränserna framåt. Tidiga och tillväxtfas-startups som förvandlar djärva idéer till skalbara produkter eller tjänster.',
     'faq.accurate': 'Hur vet jag att det är korrekt?',
     'faq.accurateAnswer': 'Vår matchningsalgoritm valideras kontinuerligt mot framgångsrika bidragsansökningar. Vi tillhandahåller konfidenspoäng för varje matchning och låter dig verifiera kriterierna direkt med finansieringskällorna.',

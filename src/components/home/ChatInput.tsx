@@ -146,6 +146,13 @@ const ChatInput = ({
     };
   }, [isRecording]);
 
+
+
+  // Enhanced voice input handler - ChatGPT style
+  const handleEnhancedVoiceInput = () => {
+    handleVoiceInput(); // Use the existing voice input handler
+  };
+
   // Auto-resize textarea function
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -238,7 +245,8 @@ const ChatInput = ({
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-  return <div className="mb-8">
+  return (
+    <div className="mb-3">
       <div className="relative max-w-3xl mx-auto">
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* File Attachments Section */}
@@ -260,7 +268,7 @@ const ChatInput = ({
               <div className="w-full relative">
                 <Textarea
                   placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-5 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                   value={inputValue}
                   onChange={handleTextareaChange}
                   onFocus={() => setIsFocused(true)}
@@ -273,8 +281,29 @@ const ChatInput = ({
                 />
                 {/* Animated placeholder overlay */}
                 {(!inputValue && !isFocused && animatedPlaceholder) && (
-                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
+                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
                     {animatedPlaceholder}
+                  </div>
+                )}
+                
+                {/* ChatGPT-style inline waveform during recording */}
+                {isRecording && (
+                  <div className="absolute bottom-1 left-0 right-0 flex items-center justify-center">
+                    <div className="flex items-center gap-[1px] h-5 px-2 py-1 bg-gray-100 rounded-full">
+                      {Array.from({ length: 15 }).map((_, i) => {
+                        const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.05 + i * 0.6) * 3);
+                        return (
+                          <div
+                            key={i}
+                            className="w-[1.5px] bg-gray-600 rounded-full transition-all duration-75"
+                            style={{
+                              height: `${height}px`,
+                              opacity: 0.7
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -294,42 +323,24 @@ const ChatInput = ({
                     <Paperclip className="w-4 h-4" />
                   </Button>
 
-                  {/* Voice Recording Button + Waveform */}
+                  {/* Voice Recording Button - ChatGPT Style */}
                   <div className="relative flex items-center">
                     <Button
                       variant="ghost"
                       size="sm"
                       className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${
-                        isRecording ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 animate-pulse' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
+                        isRecording ? 'bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
                       }`}
-                      onClick={handleVoiceInput}
+                      onClick={handleEnhancedVoiceInput}
                       disabled={isProcessing}
-                      title={isRecording ? 'Spelar in...' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
+                      title={isRecording ? 'Stoppa inspelning' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
                     >
-                      <Mic className="w-4 h-4" />
-                      {isRecording && (
-                        <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
+                      {isRecording ? (
+                        <Square className="w-3 h-3 fill-current" />
+                      ) : (
+                        <Mic className="w-4 h-4" />
                       )}
                     </Button>
-                    {/* Waveform animation when recording */}
-                    {isRecording && (
-                      <div className="flex items-end gap-[1px] ml-2 h-4">
-                        {Array.from({ length: 12 }).map((_, i) => {
-                          const delay = i * 0.08;
-                          const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.04 + i) * 4);
-                          return (
-                            <div
-                              key={i}
-                              className="w-[1px] rounded bg-gradient-to-t from-purple-400 to-purple-600 transition-all duration-100"
-                              style={{
-                                height: `${height}px`,
-                                animationDelay: `${delay}s`
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
                 </div>
                 {/* Submit Button */}
@@ -338,7 +349,8 @@ const ChatInput = ({
                   disabled={isProcessing || !inputValue.trim()}
                   size="sm"
                   title="Hitta bidrag"
-                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+style={{ backgroundColor: '#CEC5F9' }}
                 >
                   {isProcessing ? (
                     <Loader2 className="w-7 h-7 animate-spin" />
@@ -350,10 +362,13 @@ const ChatInput = ({
             </div>
           </div>
 
+
+
           {/* Hidden File Input */}
           <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" onChange={handleFileSelect} className="hidden" />
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default ChatInput;

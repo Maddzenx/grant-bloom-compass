@@ -45,20 +45,21 @@ const OrganizationTabs = ({
       }
     });
   };
-  return <div className="mb-16">
-      <h3 className="text-base font-[Basic] font-normal mb-4 text-center text-black">
-        Sökande organisation:
+  return <div className="mb-3">
+      <h3 className="text-lg font-[Basic] font-normal mb-2 text-center text-black">
+        Vilka passar detta för?
       </h3>
       <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
         {organizationTypes.map(org => (
           <button
             key={org.key}
             onClick={() => toggleOrganization(org.key)}
-            className={`px-3 py-1.5 rounded-full font-[Basic] font-normal text-sm transition-all duration-200 hover:shadow-sm ${
+            className={`px-3 py-1.5 rounded-full font-[Basic] font-normal text-base transition-all duration-200 hover:shadow-sm ${
               selectedOrganizations.includes(org.key)
-                ? 'bg-white text-black'
+                ? 'text-black'
                 : 'bg-white/50 hover:bg-white/100 text-gray-700'
             }`}
+            style={selectedOrganizations.includes(org.key) ? { backgroundColor: '#D7CFFC' } : {}}
           >
             {org.label}
           </button>

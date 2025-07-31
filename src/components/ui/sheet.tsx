@@ -64,7 +64,7 @@ const SheetContent = React.forwardRef<
     >
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full opacity-70 bg-transparent border-0 shadow-none transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:border-0 active:border-0 active:ring-0">
-        <X className="h-4 w-4" />
+        <X className="h-6 w-6" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>

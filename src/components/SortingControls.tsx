@@ -18,7 +18,7 @@ const SortingControls = ({
   return <div className="flex items-center justify-end gap-2">
       <span className="text-gray-600 font-medium text-xs">Sortera:</span>
       <Select value={sortBy} onValueChange={onSortChange}>
-        <SelectTrigger className="w-44 bg-white border-gray-200 text-xs h-8 min-h-0 focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none rounded-lg transition-all duration-200 hover:border-gray-300" style={{ outline: 'none', borderColor: '#e5e7eb' }}>
+        <SelectTrigger className="w-44 bg-white border-gray-200 text-xs h-8 min-h-0 focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none rounded-lg transition-all duration-200 hover:border-gray-300" style={{ outline: 'none', borderColor: '#fefefe' }}>
           <SelectValue placeholder="Välj sortering" className="text-xs text-gray-700" />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">

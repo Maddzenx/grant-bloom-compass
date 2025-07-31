@@ -79,7 +79,7 @@ const GrantApplicationCard = ({
     switch (type) {
       case 'active':
         return <div className="flex gap-2">
-            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian bg-[#cec5f9] py-0 px-[10px] text-sm h-10">
+            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="text-ink-obsidian py-0 px-[10px] text-sm h-10" style={{ backgroundColor: '#CEC5F9' }}>
               Redigera
             </Button>
             
@@ -117,11 +117,11 @@ const GrantApplicationCard = ({
             <Button variant="outline" size="icon" onClick={handleInfoClick} className="border-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
-            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\\n               text-sm leading-none h-10">
+            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\\n               text-ink-obsidian\\n               text-sm leading-none h-10">
               Börja ansökan
             </Button>
             <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white bg-white">
-              <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? 'text-[#CEC5F9] fill-[#CEC5F9]' : 'text-gray-400'}`} />
+              <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? 'fill-current' : 'text-gray-400'}`} style={actuallyBookmarked ? { color: '#CEC5F9' } : {}} />
             </Button>
           </div>;
       default:

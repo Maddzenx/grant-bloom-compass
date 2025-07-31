@@ -15,7 +15,7 @@ const FAQSection = () => {
       answer: "Unlike general-purpose AI models, our system is specifically trained on grant databases and funding criteria. We understand the nuances of grant applications and can provide targeted matches with higher success rates."
     },
     {
-      question: "Who can benefit from using Graigent?",
+              question: "Who can benefit from using Bidragssprånget?",
       answer: "Anyone can use it. Independent or academic researchers pushing the boundaries of knowledge. Early-stage and growth-stage startups turning bold ideas into scalable products or services."
     },
     {
