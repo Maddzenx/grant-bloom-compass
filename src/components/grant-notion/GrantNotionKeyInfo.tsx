@@ -57,25 +57,25 @@ const GrantNotionKeyInfo = ({
 
   // Allmän information fields
   const infoFields = [
-    grant.fundingAmount ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Bidragsbelopp:</span> {grant.fundingAmount}</li>) : null,
-    grant.deadline ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Ansökningsdeadline:</span> {grant.deadline}</li>) : null,
+    grant.fundingAmount ? (<li key="fundingAmount" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Bidragsbelopp:</span> {grant.fundingAmount}</li>) : null,
+    grant.deadline ? (<li key="deadline" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Ansökningsdeadline:</span> {grant.deadline}</li>) : null,
     formatProjectDuration(grant.project_duration_months_min, grant.project_duration_months_max) ? (
-      <li className="text-sm text-gray-700 leading-relaxed">
+      <li key="projectDuration" className="text-sm text-gray-700 leading-relaxed">
         <span className="font-bold">Projekttid:</span> {formatProjectDuration(grant.project_duration_months_min, grant.project_duration_months_max)}
       </li>
     ) : null,
     grant.cofinancing_required !== undefined || grant.cofinancing_level_min !== undefined || grant.cofinancing_level_max !== undefined ? (
-      <li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level_min, grant.cofinancing_level_max)}</li>
+      <li key="cofinancing" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Medfinansiering:</span> {formatCofinancingText(grant.cofinancing_required, grant.cofinancing_level_min, grant.cofinancing_level_max)}</li>
     ) : null,
-    // formatArray(grant.geographic_scope) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
-    grant.region ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Region:</span> {grant.region}</li>) : null,
+    // formatArray(grant.geographic_scope) ? (<li key="geographicScope" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Typ av bidrag:</span> {formatArray(grant.geographic_scope)}</li>) : null,
+    grant.region ? (<li key="region" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Region:</span> {grant.region}</li>) : null,
   ].filter(Boolean);
 
   // Krav fields
   const kravFields = [
-    formatArray(grant.eligible_organisations) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Mottagare:</span> {formatArray(grant.eligible_organisations)}</li>) : null,
-    formatConsortium(grant.consortium_requirement) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Konsortiekrav:</span> {formatConsortium(grant.consortium_requirement)}</li>) : null,
-    formatFundingRules(grant.fundingRules) ? (<li className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Finansiering:</span> {formatFundingRules(grant.fundingRules)}</li>) : null,
+    formatArray(grant.eligible_organisations) ? (<li key="eligibleOrganisations" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Mottagare:</span> {formatArray(grant.eligible_organisations)}</li>) : null,
+    formatConsortium(grant.consortium_requirement) ? (<li key="consortiumRequirement" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Konsortiekrav:</span> {formatConsortium(grant.consortium_requirement)}</li>) : null,
+    formatFundingRules(grant.fundingRules) ? (<li key="fundingRules" className="text-sm text-gray-700 leading-relaxed"><span className="font-bold">Finansiering:</span> {formatFundingRules(grant.fundingRules)}</li>) : null,
   ].filter(Boolean);
 
   return (
