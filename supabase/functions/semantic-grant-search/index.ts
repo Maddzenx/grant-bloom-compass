@@ -540,8 +540,7 @@ serve(async (req) => {
       // Apply 25% boost for non-EU grants (Swedish grants)
       let finalScore = clampedScore;
       if (grant.organisation && !grant.organisation.toLowerCase().includes('europeiska kommissionen')) {
-        finalScore = Math.min(1.0, clampedScore * 1.25); // Boost by 25%, cap at 100%
-        console.log(`🇸🇪 Applied 25% boost to non-EU grant ${grant.id}: ${(clampedScore * 100).toFixed(1)}% → ${(finalScore * 100).toFixed(1)}%`);
+        finalScore = Math.min(1.0, clampedScore + 0.2); // Boost by 20%, cap at 100%
       }
 
       return { grant, similarity: finalScore };
@@ -549,7 +548,7 @@ serve(async (req) => {
 
     // Sort by similarity score (highest first), filter out 0% matches, and take top 25.
     const topMatches = scaledGrants
-      .filter(({ similarity }) => similarity > 0) // Cut off all results at 0 matching percentage.
+      .filter(({ similarity }) => similarity > 0.2) // Cut off all results at 0 matching percentage.
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 25);
 

@@ -161,8 +161,7 @@ const ConsolidatedGrantList = ({
              const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
              return `om ${days} dagar`;
            };
-          // Filter out any non-standard properties that might cause React warnings
-          const { 'data-lov-id': dataLovId, ...cleanGrant } = grant as any;
+          // No need to filter properties - using the grant object directly
           return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${isSelected ? 'bg-[#F6F6F6]' : ''}`} onClick={() => onGrantSelect(grant)}>
                   <div className="space-y-2">
                     {/* Header with organization logo and match score */}
@@ -267,11 +266,21 @@ const ConsolidatedGrantList = ({
                 
                 {/* Page Numbers */}
                 <div className="flex items-center gap-1 mx-4">
-                  {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => <React.Fragment key={index}>
-                      {pageNum === '...' ? <span className="px-2 py-1 text-gray-400">...</span> : <Button variant={pageNum === currentPage ? "default" : "ghost"} size="sm" onClick={() => onPageChange(pageNum as number)} className={`h-8 w-8 p-0 text-xs font-medium ${pageNum === currentPage ? 'bg-purple-600 text-white hover:bg-purple-700' : 'hover:bg-gray-100'}`} aria-label={`Sida ${pageNum}`} aria-current={pageNum === currentPage ? "page" : undefined}>
-                          {pageNum}
-                        </Button>}
-                    </React.Fragment>)}
+                  {generatePageNumbers(currentPage, totalPages).map((pageNum, index) => 
+                    pageNum === '...' ? 
+                      <span key={index} className="px-2 py-1 text-gray-400">...</span> : 
+                      <Button 
+                        key={index}
+                        variant={pageNum === currentPage ? "default" : "ghost"} 
+                        size="sm" 
+                        onClick={() => onPageChange(pageNum as number)} 
+                        className={`h-8 w-8 p-0 text-xs font-medium ${pageNum === currentPage ? 'bg-purple-600 text-white hover:bg-purple-700' : 'hover:bg-gray-100'}`} 
+                        aria-label={`Sida ${pageNum}`} 
+                        aria-current={pageNum === currentPage ? "page" : undefined}
+                      >
+                        {pageNum}
+                      </Button>
+                  )}
                 </div>
                 
                 {/* Next Page Button */}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useGrantListItems } from "@/hooks/useGrantListItems";
 import { GrantListItem } from "@/types/grant";
@@ -18,7 +18,7 @@ const DiscoverGrants = () => {
   const isMobile = useIsMobile();
   
   // State for search and pipeline management
-  const [sortBy, setSortBy] = useState<SortOption>("matching"); // Default to matching for semantic search
+  const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Default to deadline-asc for filtered search
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
   // Transform initial search results if they exist
@@ -110,9 +110,45 @@ const DiscoverGrants = () => {
   // Mobile-specific grant accumulation for infinite scroll
   const [accumulatedGrants, setAccumulatedGrants] = useState<GrantListItem[]>([]);
   
+  // Track if we've already made initial sorting decisions
+  const hasSetInitialSorting = useRef(false);
+  const previousSemanticMatches = useRef<any[] | undefined>(undefined);
+  
   // Determine which pipeline to use
   const useSemanticPipeline = Boolean(hasSearched && searchTerm.trim());
   const useBackendPipeline = !useSemanticPipeline;
+
+  // Handle initial sorting setup - only run once
+  useEffect(() => {
+    if (hasSetInitialSorting.current) return;
+    
+    // If we have initial search results, switch to matching sort
+    if (initialSearchResults?.rankedGrants && initialSearchResults.rankedGrants.length > 0) {
+      console.log('🔄 Auto-switching to matching sort for initial search results from navigation');
+      setSortBy("matching");
+      hasSetInitialSorting.current = true;
+    }
+    // If we have no initial search state, ensure deadline-asc sorting
+    else if (!initialSearchTerm && !initialSearchResults) {
+      console.log('🔄 Ensuring deadline-asc sorting for filtered search pipeline on initial load');
+      setSortBy("deadline-asc");
+      hasSetInitialSorting.current = true;
+    }
+  }, [initialSearchTerm, initialSearchResults]);
+
+  // Handle semantic search pipeline sorting
+  useEffect(() => {
+    // Only switch to matching if we have new semantic matches and we're not already on matching
+    if (useSemanticPipeline && 
+        semanticMatches && 
+        semanticMatches.length > 0 && 
+        semanticMatches !== previousSemanticMatches.current &&
+        sortBy !== "matching") {
+      console.log('🔄 Auto-switching to matching sort for semantic search results');
+      setSortBy("matching");
+      previousSemanticMatches.current = semanticMatches;
+    }
+  }, [useSemanticPipeline, semanticMatches, sortBy]);
 
   console.log('🔥 DiscoverGrants render:', { 
     useSemanticPipeline,
@@ -552,8 +588,15 @@ const DiscoverGrants = () => {
     if (!value.trim()) {
       setSemanticMatches(undefined);
       setHasSearched(false);
+      // Reset to deadline-asc sorting when clearing search to switch to filtered search pipeline
+      if (sortBy !== "deadline-asc") {
+        console.log('🔄 Resetting to deadline-asc sorting when clearing search');
+        setSortBy("deadline-asc");
+      }
+      // Reset the initial sorting flag so we can set it again if needed
+      hasSetInitialSorting.current = false;
     }
-  }, []);
+  }, [sortBy]);
 
   // Handle sort change - for backend pipeline, this will trigger a new query
   const handleSortChange = useCallback((newSortBy: SortOption) => {
