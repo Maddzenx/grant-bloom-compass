@@ -1,5 +1,13 @@
 
-export const getOrganizationLogo = (organization: string) => {
+export const getOrganizationLogo = (organization: string | null | undefined) => {
+  if (!organization) {
+    return {
+      src: "/lovable-uploads/dd840f7c-7034-4bfe-b763-b84461166cb6.png",
+      alt: "Unknown Organization",
+      className: "w-20 h-6 object-contain"
+    };
+  }
+  
   const orgLower = organization.toLowerCase();
   if (orgLower.includes('vinnova')) {
     return {

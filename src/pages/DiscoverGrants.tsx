@@ -109,20 +109,47 @@ const DiscoverGrants = () => {
           result.rankedGrants.map(g => ({ id: g.grantId, score: g.relevanceScore }))
         );
         
+        console.log('🔍 Debug: First semantic match structure:', result.rankedGrants[0]);
+        
         // Transform semantic matches to include language selection
         const transformedMatches = result.rankedGrants.map(match => {
           const isEU = match.organization === 'Europeiska Kommissionen';
           const language = isEU ? 'en' : 'sv';
           
-          return {
-            grantId: match.grantId,
-            relevanceScore: match.relevanceScore,
-            matchingReasons: match.matchingReasons,
-            // Add the selected language fields
+          console.log('🔍 Debug: Processing match:', {
             id: match.id,
-            title: language === 'en' ? match.title_en : match.title_sv,
+            grantId: match.grantId,
             organization: match.organization,
-            aboutGrant: language === 'en' ? match.subtitle_en : match.subtitle_sv,
+            isEU,
+            language,
+            title_sv: match.title_sv,
+            title_en: match.title_en,
+            subtitle_sv: match.subtitle_sv,
+            subtitle_en: match.subtitle_en
+          });
+          
+          const selectedTitle = language === 'en' ? match.title_en : match.title_sv;
+          const selectedAboutGrant = language === 'en' ? match.subtitle_en : match.subtitle_sv;
+          
+          console.log('🔍 Debug: Language selection for match:', {
+            id: match.id,
+            organization: match.organization,
+            isEU,
+            language,
+            title_sv: match.title_sv,
+            title_en: match.title_en,
+            selectedTitle,
+            subtitle_sv: match.subtitle_sv,
+            subtitle_en: match.subtitle_en,
+            selectedAboutGrant
+          });
+          
+          return {
+            // Standard grant structure with language selection
+            id: match.id,
+            title: selectedTitle,
+            organization: match.organization,
+            aboutGrant: selectedAboutGrant,
             fundingAmount: match.fundingAmount,
             funding_amount_eur: match.funding_amount_eur,
             opens_at: match.opens_at,
@@ -152,8 +179,20 @@ const DiscoverGrants = () => {
             other_sources_links: match.other_sources_links,
             other_sources_names: match.other_sources_names,
             created_at: match.created_at,
-            updated_at: match.updated_at
+            updated_at: match.updated_at,
+            // Semantic search specific fields
+            grantId: match.grantId,
+            relevanceScore: match.relevanceScore
           };
+        });
+        
+        console.log('🔍 Debug: Transformed matches count:', transformedMatches.length);
+        console.log('🔍 Debug: First transformed match:', {
+          id: transformedMatches[0]?.id,
+          title: transformedMatches[0]?.title,
+          aboutGrant: transformedMatches[0]?.aboutGrant,
+          organization: transformedMatches[0]?.organization,
+          fundingAmount: transformedMatches[0]?.fundingAmount
         });
         
         setSemanticMatches(transformedMatches);
@@ -261,7 +300,12 @@ const DiscoverGrants = () => {
 
         // Semantic matches now contain the full grant data with language selection
         console.log('✅ Using semantic matches as grants:', {
-          semanticMatchesCount: semanticMatches.length
+          semanticMatchesCount: semanticMatches.length,
+          firstMatch: semanticMatches[0] ? {
+            id: semanticMatches[0].id,
+            title: semanticMatches[0].title,
+            organization: semanticMatches[0].organization
+          } : null
         });
 
         return semanticMatches;
@@ -369,7 +413,7 @@ const DiscoverGrants = () => {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
-          title: g.title.substring(0, 30) + '...',
+          title: g.title ? g.title.substring(0, 30) + '...' : 'No title',
           actualScore: g.relevanceScore,
           percentage: Math.round((g.relevanceScore || 0) * 100) + '%'
         }))
@@ -464,7 +508,7 @@ const DiscoverGrants = () => {
     isFetching: useBackendPipeline && backendFetching,
     isError,
     error,
-    grants: useSemanticPipeline ? grantsForFiltering : backendGrants,
+    grants: useSemanticPipeline ? sortedSearchResults : backendGrants,
     onRefresh: handleRefresh,
   });
 

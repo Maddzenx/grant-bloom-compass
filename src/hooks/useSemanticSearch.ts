@@ -6,7 +6,6 @@ export interface SemanticSearchResponse {
   rankedGrants: Array<{
     grantId: string;
     relevanceScore: number;
-    matchingReasons: string[];
     // Grant data with both language versions
     id: string;
     title_sv: string;
