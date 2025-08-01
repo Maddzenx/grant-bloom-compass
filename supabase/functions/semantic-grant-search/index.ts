@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+import { analyzeTokenUsage, logTokenDebugInfo } from './token-debug.ts';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
@@ -30,7 +31,7 @@ interface GrantForLLMFiltering {
 
 // Free models to try for LLM filtering, in order of preference (smartest/largest first)
 const llmFilterModels = [
-  'google/gemini-2.5-flash-lite-preview-06-17',
+  'google/gemini-2.0-flash-001',
   'google/gemini-2.0-flash-exp:free',
   'meta-llama/llama-3.1-405b-instruct:free',
   'google/gemma-3-27b-it:free',
@@ -55,22 +56,38 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
   
   // Prepare grants data for LLM - only include description
   console.log('📋 Preparing grant data for LLM (description only)...');
-  const grantsForLLM = grants.map(grant => {
+  
+  // Create a mapping from simple numbers to grant IDs
+  const grantIdMapping: { [key: number]: string } = {};
+  const grantsForLLM = grants.map((grant, index) => {
+    const simpleId = index + 1; // 1, 2, 3, etc.
+    grantIdMapping[simpleId] = grant.id;
+    
+    // Truncate description to reduce token usage - aim for ~500-800 chars per grant
+    const maxDescriptionLength = 600;
+    let description = grant.search_description || 'No description available';
+    if (description.length > maxDescriptionLength) {
+      description = description.substring(0, maxDescriptionLength) + '...';
+    }
+    
     return {
-      id: grant.id,
-      description: grant.search_description || 'No description available',
+      id: simpleId, // Use simple number instead of UUID
+      description: description,
+      organisation: grant.organisation || 'Unknown organization',
       currentRelevanceScore: Math.round(grant.relevanceScore * 100)
     };
   });
-  console.log(`✅ Prepared ${grantsForLLM.length} grants for LLM prompt`);
+  console.log(`✅ Prepared ${grantsForLLM.length} grants for LLM prompt (truncated to ~600 chars each)`);
+  console.log('🔗 Grant ID mapping:', grantIdMapping);
 
-  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query based on their descriptions. Disregard which language is used, it's the content that matters.
+  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query based on their descriptions.
 
 USER SEARCH QUERY: "${query}"
 
 EVALUATION CRITERIA:
-1. RELEVANCE MATCH: Does the grant's description align with the search query? Consider the purpose, industry, and scope mentioned in the description.
+1. RELEVANCE MATCH: Does the grant's description align with the search query? Consider the purpose, industry, and scope mentioned in the description. Be quite generous with the relevance score.
 2. CONTENT RELEVANCE: Does the description contain information that would be useful for someone searching for this query?
+3. ORGANIZATION BIAS: If the grant organization is not the European Commission, the grant should score about twice as high as if it were the EU.
 
 SCORING GUIDELINES:
 - 100%: Perfect match - description directly addresses the search query
@@ -83,12 +100,13 @@ SCORING GUIDELINES:
 GRANTS TO EVALUATE:
 ${JSON.stringify(grantsForLLM, null, 2)}
 
-Evaluate each grant and respond with a JSON array of objects with this structure:
-{
-  "grantId": "grant_id_here",
-  "shouldInclude": true/false,
-  "refinedScore": 0-100
-}
+
+  Score grants 0-100. Return only included grants in compact array:
+  [grantId,refinedScore,grantId,refinedScore,...]
+  
+  Only include grants that should appear in search results. Include all matches with 30% and above, and down to 5% if the search query yields very few results.
+  refinedScore: 0-100
+  grantId: 1,2,3,etc.
 
 Do NOT include any other text in your response.
 `;
@@ -111,11 +129,11 @@ Do NOT include any other text in your response.
         body: JSON.stringify({
           model: model,
           messages: [
-            { role: 'system', content: 'You are a precise grant matching expert. Always respond with valid JSON only.' },
+            { role: 'system', content: 'Return only included grants: [1,85,3,92,4,78,...]. No explanations.' },
             { role: 'user', content: prompt }
           ],
           temperature: 0.2,
-          max_tokens: 4096,
+          max_tokens: 2048, // Increased further to ensure complete JSON response for all grants
           response_format: { "type": "json_object" }
         }),
       });
@@ -130,6 +148,12 @@ Do NOT include any other text in your response.
       console.log('✅ OpenRouter response received successfully');
       const aiResponse = await response.json();
       let content = aiResponse.choices[0].message.content;
+      
+      // Debug: Log the actual response content and length
+      console.log('🔍 DEBUG: Response content length:', content.length, 'characters');
+      console.log('🔍 DEBUG: Estimated response tokens:', Math.ceil(content.length / 4));
+      console.log('🔍 DEBUG: Response content preview:', content.substring(0, 500) + (content.length > 500 ? '...' : ''));
+      console.log('🔍 DEBUG: Full response content:', content);
 
              let filterResults: LLMFilterResult[];
        try {
@@ -137,11 +161,33 @@ Do NOT include any other text in your response.
          // It might be a string inside the content field, or the content itself is the object.
          let parsedContent;
          if (typeof content === 'string') {
+           // Check if response is truncated (ends with incomplete JSON)
+           const trimmedContent = content.trim();
+           if (trimmedContent.endsWith(',') || 
+               trimmedContent.endsWith('"') || 
+               trimmedContent.endsWith(':') ||
+               trimmedContent.endsWith('"grantId":') ||
+               trimmedContent.endsWith('"shouldInclude":') ||
+               trimmedContent.endsWith('"refinedScore":') ||
+               !trimmedContent.endsWith(']')) {
+             console.log('⚠️ WARNING: Response appears to be truncated, trying next model...');
+             console.log('🔍 DEBUG: Response ends with:', trimmedContent.substring(trimmedContent.length - 20));
+             lastError = `Response truncated from ${model}`;
+             continue;
+           }
+           
            if (content.includes('```json')) {
              console.log('🧹 Cleaning markdown wrapper from LLM response...');
              content = content.replace(/```json\s*/g, '').replace(/\s*```/g, '').trim();
            }
-           parsedContent = JSON.parse(content);
+           
+           try {
+             parsedContent = JSON.parse(content);
+           } catch (parseError) {
+             console.log('⚠️ WARNING: Invalid JSON from model, trying next model...');
+             lastError = `Invalid JSON from ${model}: ${parseError.message}`;
+             continue;
+           }
          } else if (typeof content === 'object' && content !== null) {
            parsedContent = content;
          } else {
@@ -149,23 +195,65 @@ Do NOT include any other text in your response.
          }
 
          // Handle different response formats - some models return direct array, others wrap in object
+         let rawResults;
          if (Array.isArray(parsedContent)) {
-           filterResults = parsedContent;
+           rawResults = parsedContent;
          } else if (parsedContent.evaluations && Array.isArray(parsedContent.evaluations)) {
-           filterResults = parsedContent.evaluations;
+           rawResults = parsedContent.evaluations;
          } else if (parsedContent.results && Array.isArray(parsedContent.results)) {
-           filterResults = parsedContent.results;
+           rawResults = parsedContent.results;
          } else if (parsedContent.grants && Array.isArray(parsedContent.grants)) {
-           filterResults = parsedContent.grants;
+           rawResults = parsedContent.grants;
          } else {
            // Try to find any array property in the object
            const keys = Object.keys(parsedContent);
            const arrayKey = keys.find(key => Array.isArray(parsedContent[key]));
            if (arrayKey) {
-             filterResults = parsedContent[arrayKey];
+             rawResults = parsedContent[arrayKey];
            } else {
              throw new Error(`Expected array or object with array property, got: ${JSON.stringify(parsedContent).substring(0, 200)}`);
            }
+         }
+
+         // Parse the results - handle the new compact format: [1,refinedScore,3,refinedScore,...]
+         if (Array.isArray(rawResults)) {
+           // Handle the new compact format where results are in a flat array
+           const compactArray = rawResults;
+           filterResults = [];
+           
+           // Process the flat array in groups of 2: [id, refinedScore, id, refinedScore, ...]
+           for (let i = 0; i < compactArray.length; i += 2) {
+             if (i + 1 < compactArray.length) {
+               const simpleId = compactArray[i];
+               const refinedScore = compactArray[i + 1];
+               
+               // Transform simple ID back to original grant ID
+               const originalGrantId = grantIdMapping[simpleId];
+               if (originalGrantId) {
+                 filterResults.push({
+                   grantId: originalGrantId,
+                   shouldInclude: true, // All returned grants should be included
+                   refinedScore: refinedScore
+                 });
+               } else {
+                 console.log(`⚠️ WARNING: Unknown simple ID ${simpleId} in response`);
+               }
+             }
+           }
+         } else {
+           // Fallback: handle old formats if needed
+           filterResults = rawResults.map((item: any) => {
+             // Check if it's a compact tuple format: [grantId, shouldInclude, refinedScore]
+             if (Array.isArray(item) && item.length === 3) {
+               return {
+                 grantId: item[0],
+                 shouldInclude: item[1],
+                 refinedScore: item[2]
+               };
+             }
+             // Otherwise assume it's the full object format
+             return item;
+           });
          }
 
          console.log(`✅ Successfully parsed LLM response from ${model} with ${filterResults.length} results`);
@@ -447,7 +535,14 @@ serve(async (req) => {
       // Clamp to ensure values stay within 0-ceiling range
       const clampedScore = Math.max(0, Math.min(dynamicCeiling, transposedScore));
 
-      return { grant, similarity: clampedScore };
+      // Apply 25% boost for non-EU grants (Swedish grants)
+      let finalScore = clampedScore;
+      if (grant.organisation && !grant.organisation.toLowerCase().includes('europeiska kommissionen')) {
+        finalScore = Math.min(1.0, clampedScore * 1.25); // Boost by 25%, cap at 100%
+        console.log(`🇸🇪 Applied 25% boost to non-EU grant ${grant.id}: ${(clampedScore * 100).toFixed(1)}% → ${(finalScore * 100).toFixed(1)}%`);
+      }
+
+      return { grant, similarity: finalScore };
     });
 
     // Sort by similarity score (highest first), filter out 0% matches, and take top 25.
