@@ -26,8 +26,8 @@ const parseFundingAmount = (fundingAmount: string | number): number => {
 };
 
 // Parse deadline string to Date for comparison
-const parseDeadline = (deadline: string): Date => {
-  if (deadline === 'Ej specificerat') return new Date(2099, 11, 31); // Far future date
+const parseDeadline = (deadline: string | null | undefined): Date => {
+  if (!deadline || deadline === 'Ej specificerat') return new Date(2099, 11, 31); // Far future date
   
   // Handle Swedish date format like "15 mars 2025"
   const months: { [key: string]: number } = {

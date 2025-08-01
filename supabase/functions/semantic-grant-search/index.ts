@@ -713,10 +713,8 @@ serve(async (req) => {
       return {
         grantId: grant.id,
         relevanceScore: Number(relevanceScore) / 100,
-        matchingReasons: [
-          `LLM refined score: ${relevanceScore}%`,
-          `Semantic search match`
-        ]
+        // Include all the grant data
+        ...grant
       };
     });
 
