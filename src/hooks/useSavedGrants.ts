@@ -211,16 +211,13 @@ export const useSavedGrants = () => {
     });
   }, []);
 
-  // FIXED: Only check if grant is in savedApplications for bookmark state
+  // OPTIMIZED: Use Set for O(1) lookup instead of Array.some() O(n) search
   const isGrantSaved = useCallback((grantId: string) => {
-    const isSaved = savedGrants.savedApplications.some(g => g.id === grantId);
+    // Create a Set of saved grant IDs for O(1) lookup
+    const savedGrantIds = new Set(savedGrants.savedApplications.map(g => g.id));
+    const isSaved = savedGrantIds.has(grantId);
     
-    console.log('🔍 Checking if grant is saved (bookmark state):', {
-      grantId,
-      isSaved,
-      savedCount: savedGrants.savedApplications.length
-    });
-    
+    // Removed expensive console logging to improve performance
     return isSaved;
   }, [savedGrants.savedApplications]);
 

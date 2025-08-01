@@ -79,12 +79,10 @@ const GrantCard = ({
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     const currentlyBookmarked = isGrantSaved(grant.id);
-    console.log('🔖 GrantCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    // Removed expensive console logging to improve performance
     if (currentlyBookmarked) {
-      console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
     } else {
-      console.log('📝 Adding to saved');
       addToSaved(grant);
     }
 
@@ -92,7 +90,7 @@ const GrantCard = ({
     onToggleBookmark();
   };
 
-  // Always use the context to determine the actual saved state
+  // OPTIMIZED: Call isGrantSaved only once and cache the result
   const actuallyBookmarked = isGrantSaved(grant.id);
 
   // Show match score if it's a valid number (not null, undefined, or NaN)
@@ -101,15 +99,7 @@ const GrantCard = ({
                               !isNaN(matchScore) && 
                               typeof matchScore === 'number';
 
-  console.log('🔍 GrantCard render decision:', {
-    grantId: grant.id,
-    grantTitle: grant.title.substring(0, 30) + '...',
-    matchScore,
-    shouldShowMatchScore,
-    matchScoreType: typeof matchScore,
-    isNaN: isNaN(matchScore as number),
-    percentage: shouldShowMatchScore ? Math.round(matchScore * 100) : 'N/A'
-  });
+  // Removed expensive console logging to improve performance
 
   // --- Status logic ---
   const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);

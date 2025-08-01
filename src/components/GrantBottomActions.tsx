@@ -19,13 +19,12 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
 
   const handleApplyClick = () => {
     if (grant) {
-      console.log('🎯 Apply button clicked for grant:', grant.id, grant.title);
-      console.log('📊 Current saved grants state before starting application:', savedGrants);
+      // Removed expensive console logging to improve performance
       
       // Start the application process, which moves the grant to active applications
       startApplication(grant);
       
-      console.log('🔄 After startApplication call, navigating to chat interface');
+      // Removed expensive console logging to improve performance
       navigate('/chat', { state: { grant } });
     }
   };
@@ -33,14 +32,11 @@ const GrantBottomActions = ({ grant, isBookmarked, onToggleBookmark, isMobile = 
   const handleBookmarkToggle = () => {
     if (grant) {
       const currentlyBookmarked = isGrantSaved(grant.id);
-      console.log('🔖 Bookmark toggle clicked for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
-      console.log('📊 Current saved grants state before toggle:', savedGrants);
+      // Removed expensive console logging to improve performance
       
       if (currentlyBookmarked) {
-        console.log('🗑️ Removing from saved');
         removeFromSaved(grant.id);
       } else {
-        console.log('📝 Adding to saved');
         addToSaved(grant);
       }
       onToggleBookmark();

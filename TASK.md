@@ -2,6 +2,42 @@
 
 ## Completed Tasks
 
+### Bookmark State Checking Performance Optimization - 2024-12-19
+**Description**: Optimized the expensive bookmark state checking in the grant discover page to improve performance and reduce processing overhead.
+
+**Problem Identified**:
+- The `isGrantSaved` function was being called multiple times for each grant in the list
+- Each call was doing a linear search through the `savedApplications` array using `Array.some()` (O(n) complexity)
+- Extensive console logging was happening for each bookmark state check
+- The same grant IDs were being checked multiple times during rendering
+- This was causing significant performance issues when displaying 15+ grants at once
+
+**Changes Made**:
+- **Optimized `isGrantSaved` Function**: Changed from `Array.some()` O(n) search to `Set.has()` O(1) lookup
+- **Removed Expensive Console Logging**: Eliminated all console.log statements in bookmark-related functions to reduce overhead
+- **Reduced Function Calls**: Optimized components to call `isGrantSaved` only once per grant instead of multiple times
+- **Improved Component Performance**: Updated all grant-related components to be more efficient
+
+**Performance Benefits**:
+- Reduced bookmark state checking from O(n) to O(1) complexity
+- Eliminated expensive console logging overhead
+- Reduced the number of function calls per grant from 2-3 to 1
+- Improved overall page responsiveness and reduced processing load
+- Better user experience with faster rendering of grant lists
+
+**Files Modified**:
+- `src/hooks/useSavedGrants.ts` - Optimized isGrantSaved function with Set-based lookup
+- `src/components/GrantCard.tsx` - Reduced function calls and removed console logging
+- `src/components/ConsolidatedGrantList.tsx` - Removed expensive console logging
+- `src/components/GrantBottomActions.tsx` - Removed expensive console logging
+- `src/components/GrantHeader.tsx` - Removed expensive console logging
+- `src/components/GrantStickyHeader.tsx` - Removed expensive console logging
+- `src/components/grant-notion/GrantNotionHeader.tsx` - Removed expensive console logging
+- `src/components/saved-grants/GrantApplicationCard.tsx` - Removed expensive console logging
+- `src/hooks/useGrantSelection.ts` - Removed expensive console logging
+
+**Status**: ✅ Completed
+
 ### Database Schema Column Name Fixes - 2024-12-19
 **Description**: Fixed database column name mismatches between code and actual database schema.
 

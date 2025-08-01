@@ -146,7 +146,6 @@ const ConsolidatedGrantList = ({
           // --- Status logic ---
           const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
           // ---
-          console.log('Status:', status, grant.title, grant.opens_at, grant.deadline);
                      const daysLeft = Math.max(0, Math.ceil((new Date(grant.application_closing_date || grant.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
            const actualDeadline = formatDate(grant.deadline);
            
@@ -162,6 +161,8 @@ const ConsolidatedGrantList = ({
              const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
              return `om ${days} dagar`;
            };
+          // Filter out any non-standard properties that might cause React warnings
+          const { 'data-lov-id': dataLovId, ...cleanGrant } = grant as any;
           return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${isSelected ? 'bg-[#F6F6F6]' : ''}`} onClick={() => onGrantSelect(grant)}>
                   <div className="space-y-2">
                     {/* Header with organization logo and match score */}
