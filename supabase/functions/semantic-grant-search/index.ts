@@ -15,6 +15,8 @@ const corsHeaders = {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+
+
 // Interface for LLM filtering
 interface GrantForLLMFiltering {
   id: string;
@@ -606,19 +608,119 @@ serve(async (req) => {
     console.log(`🤖 LLM filtering complete. ${llmFilteredResults.length} grants passed filtering`);
     console.log('Final LLM filtered scores:', llmFilteredResults.map(r => `${r.grantId}: ${r.refinedScore}%`));
 
-    // Convert to final response format - return only IDs and scores (like the frontend expects)
-    const rankedGrants = llmFilteredResults.map(result => {
+    // Get minimal grant data for card display
+    console.log('🔍 Fetching minimal grant data for card display...');
+    const grantIds = llmFilteredResults.map(result => result.grantId);
+    
+    const { data: grantData, error: grantError } = await supabase
+      .from('grant_call_details')
+      .select(`
+        id, organisation, title_sv, title_en, subtitle_sv, subtitle_en, 
+        max_funding_per_project, min_funding_per_project, total_funding_per_call, currency,
+        application_opening_date, application_closing_date, keywords, industry_sectors,
+        geographic_scope, region_sv, region_en, cofinancing_required, cofinancing_level_min,
+        eligible_organisations_standardized, eligible_cost_categories_standardized
+      `)
+      .in('id', grantIds);
+
+    if (grantError) {
+      console.error('❌ Error fetching grant data:', grantError);
+      throw new Error(`Failed to fetch grant data: ${grantError.message}`);
+    }
+
+    // Helper function to format funding amount
+    const formatFundingAmount = (grant: any): string => {
+      const maxFunding = grant.max_funding_per_project;
+      const minFunding = grant.min_funding_per_project;
+      const totalFunding = grant.total_funding_per_call;
+      const currency = grant.currency || 'SEK';
+      
+      const formatAmount = (amount: number): string => {
+        if (amount >= 1000000) {
+          const millions = amount / 1000000;
+          return `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} M${currency}`;
+        }
+        return `${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ${currency}`;
+      };
+      
+      if (maxFunding && maxFunding > 0) {
+        if (minFunding && minFunding > 0 && minFunding !== maxFunding) {
+          return `${formatAmount(minFunding)} - ${formatAmount(maxFunding)}`;
+        }
+        return formatAmount(maxFunding);
+      }
+      
+      if (totalFunding && totalFunding > 0) {
+        return formatAmount(totalFunding);
+      }
+      
+      if (minFunding && minFunding > 0) {
+        return formatAmount(minFunding);
+      }
+      
+      return 'Not specified';
+    };
+
+    // Transform the grants data - return both language versions for frontend to decide
+    const transformedGrants = grantData?.map((grant: any) => {
       return {
-        grantId: result.grantId,
-        relevanceScore: Math.round(result.refinedScore) / 100,
+        id: grant.id,
+        title_sv: grant.title_sv || 'No title available',
+        title_en: grant.title_en || 'No title available',
+        organization: grant.organisation || 'Unknown organization',
+        subtitle_sv: grant.subtitle_sv || 'No description available',
+        subtitle_en: grant.subtitle_en || 'No description available',
+        fundingAmount: formatFundingAmount(grant),
+        funding_amount_eur: null, // Not needed for card display
+        opens_at: grant.application_opening_date || '',
+        deadline: grant.application_closing_date || '',
+        tags: Array.isArray(grant.keywords) ? grant.keywords : [],
+        industry_sectors: Array.isArray(grant.industry_sectors) ? grant.industry_sectors : [],
+        eligible_organisations: Array.isArray(grant.eligible_organisations_standardized) ? grant.eligible_organisations_standardized : [],
+        geographic_scope: grant.geographic_scope ? [grant.geographic_scope] : [],
+        region_sv: grant.region_sv || undefined,
+        region_en: grant.region_en || undefined,
+        cofinancing_required: grant.cofinancing_required || false,
+        cofinancing_level_min: grant.cofinancing_level_min || undefined,
+        consortium_requirement: undefined, // Not available in card view
+        fundingRules: Array.isArray(grant.eligible_cost_categories_standardized) ? grant.eligible_cost_categories_standardized : [],
+        application_opening_date: grant.application_opening_date,
+        application_closing_date: grant.application_closing_date,
+        project_start_date_min: undefined, // Not needed for card view
+        project_start_date_max: undefined, // Not needed for card view
+        project_end_date_min: undefined, // Not needed for card view
+        project_end_date_max: undefined, // Not needed for card view
+        information_webinar_dates: [], // Not needed for card view
+        information_webinar_links: [], // Not needed for card view
+        information_webinar_names: [], // Not needed for card view
+        templates: [], // Not needed for card view
+        generalInfo: [], // Not needed for card view
+        application_templates_links: [], // Not needed for card view
+        other_templates_links: [], // Not needed for card view
+        other_sources_links: [], // Not needed for card view
+        other_sources_names: [], // Not needed for card view
+        created_at: undefined, // Not needed for card view
+        updated_at: undefined // Not needed for card view
+      };
+    }) || [];
+
+    // Create a map of grant ID to relevance score
+    const relevanceScoreMap = new Map(llmFilteredResults.map(result => [result.grantId, result.refinedScore]));
+
+    // Combine the transformed grants with their relevance scores
+    const rankedGrants = transformedGrants.map(grant => {
+      const relevanceScore = relevanceScoreMap.get(grant.id) || 0;
+      return {
+        grantId: grant.id,
+        relevanceScore: Number(relevanceScore) / 100,
         matchingReasons: [
-          `LLM refined score: ${result.refinedScore}%`,
+          `LLM refined score: ${relevanceScore}%`,
           `Semantic search match`
         ]
       };
     });
 
-    // Sort by refined score
+    // Sort by relevance score
     rankedGrants.sort((a, b) => b.relevanceScore - a.relevanceScore);
 
     const response = {

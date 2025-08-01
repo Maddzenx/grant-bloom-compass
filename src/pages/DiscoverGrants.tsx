@@ -50,7 +50,7 @@ const DiscoverGrants = () => {
   // Semantic search hook (for semantic pipeline)
   const { searchGrants, isSearching } = useSemanticSearch();
 
-  // All grants query (for semantic pipeline fallback and filter options)
+  // All grants query (for filter options only - semantic search now returns full data)
   const {
     data: allGrants = [],
     isLoading: allGrantsLoading,
@@ -58,7 +58,7 @@ const DiscoverGrants = () => {
     isError: allGrantsIsError,
     refetch: refetchAllGrants,
   } = useGrantListItems({
-    enabled: useSemanticPipeline, // Only load all grants when using semantic pipeline
+    enabled: false, // No longer needed since semantic search returns full data
   });
 
   // Backend filtered grants hook (for manual browse pipeline)
@@ -108,7 +108,55 @@ const DiscoverGrants = () => {
         console.log('✅ Setting semantic matches with actual scores:', 
           result.rankedGrants.map(g => ({ id: g.grantId, score: g.relevanceScore }))
         );
-        setSemanticMatches(result.rankedGrants);
+        
+        // Transform semantic matches to include language selection
+        const transformedMatches = result.rankedGrants.map(match => {
+          const isEU = match.organization === 'Europeiska Kommissionen';
+          const language = isEU ? 'en' : 'sv';
+          
+          return {
+            grantId: match.grantId,
+            relevanceScore: match.relevanceScore,
+            matchingReasons: match.matchingReasons,
+            // Add the selected language fields
+            id: match.id,
+            title: language === 'en' ? match.title_en : match.title_sv,
+            organization: match.organization,
+            aboutGrant: language === 'en' ? match.subtitle_en : match.subtitle_sv,
+            fundingAmount: match.fundingAmount,
+            funding_amount_eur: match.funding_amount_eur,
+            opens_at: match.opens_at,
+            deadline: match.deadline,
+            tags: match.tags,
+            industry_sectors: match.industry_sectors,
+            eligible_organisations: match.eligible_organisations,
+            geographic_scope: match.geographic_scope,
+            region: language === 'en' ? match.region_en : match.region_sv,
+            cofinancing_required: match.cofinancing_required,
+            cofinancing_level_min: match.cofinancing_level_min,
+            consortium_requirement: match.consortium_requirement,
+            fundingRules: match.fundingRules,
+            application_opening_date: match.application_opening_date,
+            application_closing_date: match.application_closing_date,
+            project_start_date_min: match.project_start_date_min,
+            project_start_date_max: match.project_start_date_max,
+            project_end_date_min: match.project_end_date_min,
+            project_end_date_max: match.project_end_date_max,
+            information_webinar_dates: match.information_webinar_dates,
+            information_webinar_links: match.information_webinar_links,
+            information_webinar_names: match.information_webinar_names,
+            templates: match.templates,
+            generalInfo: match.generalInfo,
+            application_templates_links: match.application_templates_links,
+            other_templates_links: match.other_templates_links,
+            other_sources_links: match.other_sources_links,
+            other_sources_names: match.other_sources_names,
+            created_at: match.created_at,
+            updated_at: match.updated_at
+          };
+        });
+        
+        setSemanticMatches(transformedMatches);
       } else {
         console.log('⚠️ No semantic matches found');
         setSemanticMatches([]);
@@ -211,16 +259,12 @@ const DiscoverGrants = () => {
           return [];
         }
 
-        // Filter grants to only include those that were semantically matched
-        const matchedGrantIds = semanticMatches.map(match => match.grantId);
-        const filteredGrants = grantsForFiltering.filter(grant => matchedGrantIds.includes(grant.id));
-        
-        console.log('✅ Filtered to semantic matches:', {
-          matchedIds: matchedGrantIds.length,
-          filteredGrants: filteredGrants.length
+        // Semantic matches now contain the full grant data with language selection
+        console.log('✅ Using semantic matches as grants:', {
+          semanticMatchesCount: semanticMatches.length
         });
 
-        return filteredGrants;
+        return semanticMatches;
       }
 
       // If semantic search failed but we searched, return all grants as fallback
@@ -316,18 +360,9 @@ const DiscoverGrants = () => {
 
     // For semantic pipeline, apply frontend sorting
     if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0) {
-      // Create a map of grant IDs to their actual semantic scores
-      const scoreMap = new Map<string, number>();
-      semanticMatches.forEach((match) => {
-        // Use the actual relevance score from the semantic search
-        scoreMap.set(match.grantId, match.relevanceScore || 0);
-      });
-      
-      // Sort grants by actual semantic relevance score (highest first) by default for semantic search
-      const sorted = [...filteredGrants].sort((a, b) => {
-        const scoreA = scoreMap.get(a.id) ?? 0;
-        const scoreB = scoreMap.get(b.id) ?? 0;
-        return scoreB - scoreA;
+      // Semantic matches already contain relevance scores, sort by them
+      const sorted = [...semanticMatches].sort((a, b) => {
+        return (b.relevanceScore || 0) - (a.relevanceScore || 0);
       });
       
       console.log('🎯 Semantic search results sorted by matching percentage:', {
@@ -335,8 +370,8 @@ const DiscoverGrants = () => {
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
           title: g.title.substring(0, 30) + '...',
-          actualScore: scoreMap.get(g.id),
-          percentage: Math.round((scoreMap.get(g.id) || 0) * 100) + '%'
+          actualScore: g.relevanceScore,
+          percentage: Math.round((g.relevanceScore || 0) * 100) + '%'
         }))
       });
       
@@ -377,9 +412,12 @@ const DiscoverGrants = () => {
     if (useBackendPipeline) {
       refreshBackend();
     } else {
-      refetchAllGrants();
+      // For semantic pipeline, re-run the search if there's a search term
+      if (searchTerm.trim()) {
+        handleSearch();
+      }
     }
-  }, [useBackendPipeline, refreshBackend, refetchAllGrants]);
+  }, [useBackendPipeline, refreshBackend, searchTerm, handleSearch]);
 
   // Clear search results when search term is cleared
   const handleSearchChange = useCallback((value: string) => {
@@ -400,9 +438,9 @@ const DiscoverGrants = () => {
   const { isLoading, isError, error } = useMemo(() => {
     if (useSemanticPipeline) {
       return {
-        isLoading: allGrantsLoading || isSearching,
-        isError: allGrantsIsError,
-        error: allGrantsError
+        isLoading: isSearching,
+        isError: false,
+        error: null
       };
     } else {
       return {
@@ -411,7 +449,7 @@ const DiscoverGrants = () => {
         error: backendError
       };
     }
-  }, [useSemanticPipeline, allGrantsLoading, isSearching, allGrantsIsError, allGrantsError, backendLoading, backendIsError, backendError]);
+  }, [useSemanticPipeline, isSearching, backendLoading, backendIsError, backendError]);
 
   // Show loading/error/empty states - but NEVER for backend filtering/sorting operations
   const showFullPageLoading = useSemanticPipeline 
