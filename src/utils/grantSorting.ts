@@ -29,6 +29,12 @@ const parseFundingAmount = (fundingAmount: string | number): number => {
 const parseDeadline = (deadline: string | null | undefined): Date => {
   if (!deadline || deadline === 'Ej specificerat') return new Date(2099, 11, 31); // Far future date
   
+  // First try to parse as ISO date (e.g., "2025-03-15")
+  const isoDate = new Date(deadline);
+  if (!isNaN(isoDate.getTime())) {
+    return isoDate;
+  }
+  
   // Handle Swedish date format like "15 mars 2025"
   const months: { [key: string]: number } = {
     'januari': 0, 'februari': 1, 'mars': 2, 'april': 3, 'maj': 4, 'juni': 5,
@@ -132,8 +138,9 @@ export const sortGrants = (grants: GrantListItem[], sortBy: SortOption, searchTe
       
       case "relevance":
       case "matching":
-        const scoreA = calculateRelevanceScore(a, searchTerm);
-        const scoreB = calculateRelevanceScore(b, searchTerm);
+        // For semantic search results, use the actual relevanceScore if available
+        const scoreA = (a as any).relevanceScore !== undefined ? (a as any).relevanceScore : calculateRelevanceScore(a, searchTerm);
+        const scoreB = (b as any).relevanceScore !== undefined ? (b as any).relevanceScore : calculateRelevanceScore(b, searchTerm);
         return scoreB - scoreA; // Highest relevance score first
       
       default:

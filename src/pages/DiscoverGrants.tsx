@@ -9,6 +9,7 @@ import { SortOption } from "@/components/SortingControls";
 import { DiscoverGrantsStates } from "@/components/DiscoverGrantsStates";
 import { DiscoverGrantsContent } from "@/components/DiscoverGrantsContent";
 import { parseFundingAmount, isGrantWithinDeadline, isGrantActive } from "@/utils/grantHelpers";
+import { sortGrants } from "@/utils/grantSorting";
 import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -17,10 +18,92 @@ const DiscoverGrants = () => {
   const isMobile = useIsMobile();
   
   // State for search and pipeline management
-  const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Changed default to deadline-asc
+  const [sortBy, setSortBy] = useState<SortOption>("matching"); // Default to matching for semantic search
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
-  const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(initialSearchResults?.rankedGrants || undefined);
+  // Transform initial search results if they exist
+  const transformSemanticMatches = (rawMatches: any[]) => {
+    if (!rawMatches || rawMatches.length === 0) return undefined;
+    
+    console.log('🔍 Debug: Transforming initial search results:', rawMatches.length, 'matches');
+    
+    return rawMatches.map((match, index) => {
+      console.log(`🔍 Debug: Transforming initial match ${index + 1}/${rawMatches.length}:`, match.id);
+      const isEU = match.organization === 'Europeiska Kommissionen';
+      const language = isEU ? 'en' : 'sv';
+      
+      console.log('🔍 Debug: Processing initial match:', {
+        id: match.id,
+        grantId: match.grantId,
+        organization: match.organization,
+        isEU,
+        language,
+        title_sv: match.title_sv,
+        title_en: match.title_en,
+        subtitle_sv: match.subtitle_sv,
+        subtitle_en: match.subtitle_en
+      });
+      
+      const selectedTitle = language === 'en' ? match.title_en : match.title_sv;
+      const selectedAboutGrant = language === 'en' ? match.subtitle_en : match.subtitle_sv;
+      
+      console.log('🔍 Debug: Language selection for initial match:', {
+        id: match.id,
+        organization: match.organization,
+        isEU,
+        language,
+        title_sv: match.title_sv,
+        title_en: match.title_en,
+        selectedTitle,
+        subtitle_sv: match.subtitle_sv,
+        subtitle_en: match.subtitle_en,
+        selectedAboutGrant
+      });
+      
+      return {
+        // Standard grant structure with language selection
+        id: match.id,
+        title: selectedTitle,
+        organization: match.organization,
+        aboutGrant: selectedAboutGrant,
+        fundingAmount: match.fundingAmount,
+        funding_amount_eur: match.funding_amount_eur,
+        opens_at: match.opens_at,
+        deadline: match.deadline,
+        tags: match.tags,
+        industry_sectors: match.industry_sectors,
+        eligible_organisations: match.eligible_organisations,
+        geographic_scope: match.geographic_scope,
+        region: language === 'en' ? match.region_en : match.region_sv,
+        cofinancing_required: match.cofinancing_required,
+        cofinancing_level_min: match.cofinancing_level_min,
+        consortium_requirement: match.consortium_requirement,
+        fundingRules: match.fundingRules,
+        application_opening_date: match.application_opening_date,
+        application_closing_date: match.application_closing_date,
+        project_start_date_min: match.project_start_date_min,
+        project_start_date_max: match.project_start_date_max,
+        project_end_date_min: match.project_end_date_min,
+        project_end_date_max: match.project_end_date_max,
+        information_webinar_dates: match.information_webinar_dates,
+        information_webinar_links: match.information_webinar_links,
+        information_webinar_names: match.information_webinar_names,
+        templates: match.templates,
+        generalInfo: match.generalInfo,
+        application_templates_links: match.application_templates_links,
+        other_templates_links: match.other_templates_links,
+        other_sources_links: match.other_sources_links,
+        other_sources_names: match.other_sources_names,
+        created_at: match.created_at,
+        updated_at: match.updated_at,
+        // Semantic search specific fields
+        grantId: match.grantId,
+        relevanceScore: match.relevanceScore
+      };
+    });
+  };
+
+  const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(transformSemanticMatches(initialSearchResults?.rankedGrants));
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [hasSearched, setHasSearched] = useState(!!initialSearchTerm);
   
@@ -110,9 +193,11 @@ const DiscoverGrants = () => {
         );
         
         console.log('🔍 Debug: First semantic match structure:', result.rankedGrants[0]);
+        console.log('🔍 Debug: Starting transformation of', result.rankedGrants.length, 'matches');
         
         // Transform semantic matches to include language selection
-        const transformedMatches = result.rankedGrants.map(match => {
+        const transformedMatches = result.rankedGrants.map((match, index) => {
+          console.log(`🔍 Debug: Transforming match ${index + 1}/${result.rankedGrants.length}:`, match.id);
           const isEU = match.organization === 'Europeiska Kommissionen';
           const language = isEU ? 'en' : 'sv';
           
@@ -404,18 +489,16 @@ const DiscoverGrants = () => {
 
     // For semantic pipeline, apply frontend sorting
     if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0) {
-      // Semantic matches already contain relevance scores, sort by them
-      const sorted = [...semanticMatches].sort((a, b) => {
-        return (b.relevanceScore || 0) - (a.relevanceScore || 0);
-      });
+      // Use the sortGrants function to respect user's sort choice
+      const sorted = sortGrants(semanticMatches, sortBy, searchTerm);
       
-      console.log('🎯 Semantic search results sorted by matching percentage:', {
+      console.log('🎯 Semantic search results sorted by:', sortBy, {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
           title: g.title ? g.title.substring(0, 30) + '...' : 'No title',
-          actualScore: g.relevanceScore,
-          percentage: Math.round((g.relevanceScore || 0) * 100) + '%'
+          actualScore: (g as any).relevanceScore,
+          percentage: Math.round(((g as any).relevanceScore || 0) * 100) + '%'
         }))
       });
       

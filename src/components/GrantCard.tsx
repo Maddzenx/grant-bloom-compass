@@ -128,6 +128,19 @@ const GrantCard = ({
     return `${days} dagar kvar`;
   };
 
+  const getDaysUntilOpening = (openingDate: string) => {
+    const now = new Date();
+    const openingDateObj = new Date(openingDate);
+    const timeDiff = openingDateObj.getTime() - now.getTime();
+
+    if (timeDiff < 0) {
+      return 'Öppet';
+    }
+
+    const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return `om ${days} dagar`;
+  };
+
   return (
     <Card className={`p-6 min-h-[120px] rounded-lg shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
@@ -174,6 +187,12 @@ const GrantCard = ({
               <span className="flex items-center gap-1 text-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 Öppen: {getDaysLeftText(grant.deadline)}
+              </span>
+            )}
+            {status === 'upcoming' && grant.application_opening_date && (
+              <span className="flex items-center gap-1 text-orange-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Öppnar {getDaysUntilOpening(grant.application_opening_date)}
               </span>
             )}
             {grant.deadline && (
