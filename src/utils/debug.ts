@@ -47,5 +47,6 @@ export const debugGrant = (operation: string, data: any) => {
  * @param result - The formatted result
  */
 export const debugFundingAmount = (type: string, result: string) => {
-  debugLog(`formatFundingAmount: ${type} -> ${result}`);
+  // Disabled debug logging for funding amount formatting to reduce console noise
+  // debugLog(`formatFundingAmount: ${type} -> ${result}`);
 }; 

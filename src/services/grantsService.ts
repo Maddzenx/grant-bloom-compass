@@ -333,7 +333,7 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
         title: title || 'Untitled Grant',
         organization: grant.organisation || 'Unknown Organization',
         aboutGrant: subtitle || 'No information available',
-        fundingAmount: formatFundingAmount(grant),
+        fundingAmount: grant.funding_amount_eur ? `${grant.funding_amount_eur.toLocaleString()} EUR` : 'Not specified',
         funding_amount_eur: grant.funding_amount_eur || null,
         opens_at: grant.application_opening_date || '2024-01-01',
         deadline: grant.application_closing_date || 'Not specified',
