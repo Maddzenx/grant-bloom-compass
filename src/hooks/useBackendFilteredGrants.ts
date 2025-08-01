@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { GrantListItem } from '@/types/grant';
 import { EnhancedFilterOptions } from '@/hooks/useFilterState';
 import { SortOption } from '@/components/SortingControls';
-import { formatFundingAmount } from '@/utils/grantHelpers';
+
 
 interface BackendFilterOptions {
   organizations?: string[];
