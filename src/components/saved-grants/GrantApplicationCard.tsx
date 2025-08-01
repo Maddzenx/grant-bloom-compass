@@ -44,12 +44,10 @@ const GrantApplicationCard = ({
 
   const handleToggleSave = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
-    console.log('🔖 GrantApplicationCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    // Removed expensive console logging to improve performance
     if (currentlyBookmarked) {
-      console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
     } else {
-      console.log('📝 Adding to saved');
       addToSaved(grant);
     }
 

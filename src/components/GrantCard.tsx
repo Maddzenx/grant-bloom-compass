@@ -79,12 +79,10 @@ const GrantCard = ({
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     const currentlyBookmarked = isGrantSaved(grant.id);
-    console.log('🔖 GrantCard bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
+    // Removed expensive console logging to improve performance
     if (currentlyBookmarked) {
-      console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
     } else {
-      console.log('📝 Adding to saved');
       addToSaved(grant);
     }
 
@@ -92,7 +90,7 @@ const GrantCard = ({
     onToggleBookmark();
   };
 
-  // Always use the context to determine the actual saved state
+  // OPTIMIZED: Call isGrantSaved only once and cache the result
   const actuallyBookmarked = isGrantSaved(grant.id);
 
   // Show match score if it's a valid number (not null, undefined, or NaN)
@@ -101,15 +99,7 @@ const GrantCard = ({
                               !isNaN(matchScore) && 
                               typeof matchScore === 'number';
 
-  console.log('🔍 GrantCard render decision:', {
-    grantId: grant.id,
-    grantTitle: grant.title.substring(0, 30) + '...',
-    matchScore,
-    shouldShowMatchScore,
-    matchScoreType: typeof matchScore,
-    isNaN: isNaN(matchScore as number),
-    percentage: shouldShowMatchScore ? Math.round(matchScore * 100) : 'N/A'
-  });
+  // Removed expensive console logging to improve performance
 
   // --- Status logic ---
   const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
@@ -126,6 +116,19 @@ const GrantCard = ({
 
     const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
     return `${days} dagar kvar`;
+  };
+
+  const getDaysUntilOpening = (openingDate: string) => {
+    const now = new Date();
+    const openingDateObj = new Date(openingDate);
+    const timeDiff = openingDateObj.getTime() - now.getTime();
+
+    if (timeDiff < 0) {
+      return 'Öppet';
+    }
+
+    const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return `om ${days} dagar`;
   };
 
   return (
@@ -174,6 +177,12 @@ const GrantCard = ({
               <span className="flex items-center gap-1 text-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 Öppen: {getDaysLeftText(grant.deadline)}
+              </span>
+            )}
+            {status === 'upcoming' && grant.application_opening_date && (
+              <span className="flex items-center gap-1 text-orange-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Öppnar {getDaysUntilOpening(grant.application_opening_date)}
               </span>
             )}
             {grant.deadline && (

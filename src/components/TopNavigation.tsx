@@ -78,8 +78,8 @@ export function TopNavigation() {
                         <defs>
                           <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                         </defs>
-                        <text fill="#8B5CF6" font-family="Arial, sans-serif" font-size="15" font-weight="bold">
-                          <textPath href="#circlePath" startOffset="50%" text-anchor="middle">
+                        <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                          <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
                             BIDRAGSSPRÅNGET
                           </textPath>
                         </text>

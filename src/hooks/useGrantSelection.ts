@@ -24,26 +24,20 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
 
   // Auto-select first grant when results change, but only if we don't have a valid selection
   useEffect(() => {
-    console.log('🔥 useGrantSelection effect:', { 
-      searchResultsLength: searchResults.length, 
-      selectedGrantId: selectedGrant?.id,
-      selectedGrantStillValid: selectedGrant && searchResults.find(g => g.id === selectedGrant.id)
-    });
+    // Removed expensive console logging to improve performance
 
     if (searchResults.length > 0) {
       // If no selection or current selection is not in results, select first
       if (!selectedGrant || !searchResults.find(g => g.id === selectedGrant.id)) {
-        console.log('🔥 Selecting first grant from results:', searchResults[0]);
         setSelectedGrant(searchResults[0]);
       }
     } else if (searchResults.length === 0) {
-      console.log('🔥 No results, clearing selection');
       setSelectedGrant(null);
     }
   }, [searchResults, selectedGrant]);
 
   const handleGrantSelect = useCallback((grant: GrantListItem) => {
-    console.log('🔥 Grant selected:', grant);
+    // Removed expensive console logging to improve performance
     // Always set the selected grant and show details when a grant is clicked
     setSelectedGrant(grant);
     setShowDetails(true);
@@ -53,15 +47,13 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
     const grant = searchResults.find(g => g.id === grantId);
     if (!grant) return;
 
-    console.log('🔖 Toggle bookmark for grant:', grantId);
+    // Removed expensive console logging to improve performance
     const currentlyBookmarked = isGrantSaved(grantId);
     
     if (currentlyBookmarked) {
       removeFromSaved(grantId);
-      console.log('🗑️ Removed from bookmarks:', grantId);
     } else {
       addToSaved(grant);
-      console.log('📝 Added to bookmarks:', grantId);
     }
   }, [searchResults, addToSaved, removeFromSaved, isGrantSaved]);
 

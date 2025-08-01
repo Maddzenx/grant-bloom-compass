@@ -36,18 +36,12 @@ const GrantHeader = ({
 
   const handleBookmarkToggle = () => {
     const currentlyBookmarked = isGrantSaved(grant.id);
-    console.log('🔖 GrantHeader bookmark toggle for grant:', grant.id, 'Currently saved:', currentlyBookmarked);
-    
+    // Removed expensive console logging to improve performance
     if (currentlyBookmarked) {
-      console.log('🗑️ Removing from saved');
       removeFromSaved(grant.id);
     } else {
-      console.log('📝 Adding to saved');
       addToSaved(grant);
     }
-    
-    // Call the parent's toggle function for UI updates
-    onToggleBookmark();
   };
 
   // Always use the context to determine the actual saved state

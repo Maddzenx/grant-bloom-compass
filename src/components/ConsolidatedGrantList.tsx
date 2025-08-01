@@ -146,9 +146,23 @@ const ConsolidatedGrantList = ({
           // --- Status logic ---
           const status = calculateGrantStatus(grant.application_opening_date, grant.application_closing_date);
           // ---
-          console.log('Status:', status, grant.title, grant.opens_at, grant.deadline);
-          const daysLeft = Math.max(0, Math.ceil((new Date(grant.application_closing_date || grant.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
-          const actualDeadline = formatDate(grant.deadline);
+                     const daysLeft = Math.max(0, Math.ceil((new Date(grant.application_closing_date || grant.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+           const actualDeadline = formatDate(grant.deadline);
+           
+           const getDaysUntilOpening = (openingDate: string) => {
+             const now = new Date();
+             const openingDateObj = new Date(openingDate);
+             const timeDiff = openingDateObj.getTime() - now.getTime();
+
+             if (timeDiff < 0) {
+               return 'Öppet';
+             }
+
+             const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+             return `om ${days} dagar`;
+           };
+          // Filter out any non-standard properties that might cause React warnings
+          const { 'data-lov-id': dataLovId, ...cleanGrant } = grant as any;
           return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${isSelected ? 'bg-[#F6F6F6]' : ''}`} onClick={() => onGrantSelect(grant)}>
                   <div className="space-y-2">
                     {/* Header with organization logo and match score */}
@@ -191,16 +205,26 @@ const ConsolidatedGrantList = ({
                     </div>
 
                     {/* Status component at bottom with smaller font and subtle separation */}
-                    {status === 'open' && <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
-                        <div className="flex items-center gap-2 text-green-600">
-                          <Clock className="h-3 w-3" />
-                          <span>Öppen: {daysLeft} dagar kvar.</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-green-600 mt-1">
-                          <Calendar className="h-3 w-3" />
-                          <span>Sök senast: {new Date(grant.application_closing_date || grant.deadline).toISOString().split('T')[0]}</span>
-                        </div>
-                      </div>}
+                                         {status === 'open' && <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                         <div className="flex items-center gap-2 text-green-600">
+                           <Clock className="h-3 w-3" />
+                           <span>Öppen: {daysLeft} dagar kvar.</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-green-600 mt-1">
+                           <Calendar className="h-3 w-3" />
+                           <span>Sök senast: {formatDate(grant.deadline)}</span>
+                         </div>
+                       </div>}
+                                         {status === 'upcoming' && <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
+                         <div className="flex items-center gap-2 text-orange-600">
+                           <Clock className="h-3 w-3" />
+                           <span>Öppnar {getDaysUntilOpening(grant.application_opening_date || '')}</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-orange-600 mt-1">
+                           <Calendar className="h-3 w-3" />
+                           <span>Sök senast: {formatDate(grant.deadline)}</span>
+                         </div>
+                       </div>}
                     {status === 'closed' && <div className="mt-2 pt-2 border-t border-gray-100 text-xs">
                         <div className="flex items-center gap-2 text-red-600">
                           <Calendar className="h-3 w-3" />

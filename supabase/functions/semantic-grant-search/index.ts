@@ -87,15 +87,15 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
 USER SEARCH QUERY: "${query}"
 
 EVALUATION CRITERIA:
-1. RELEVANCE MATCH: Does the grant's description align with the search query? Consider the purpose, industry, and scope mentioned in the description. Be quite generous with the relevance score.
+1. RELEVANCE MATCH: Does the grant's description align with the search query? Consider the purpose, industry, and scope mentioned in the description. Be generous with the relevance score.
 2. CONTENT RELEVANCE: Does the description contain information that would be useful for someone searching for this query?
 3. ORGANIZATION BIAS: If the grant organization is not the European Commission, the grant should score about twice as high as if it were the EU.
 
 SCORING GUIDELINES:
 - 100%: Perfect match - description directly addresses the search query
 - 75-99%: Excellent match - strong alignment with the search intent
-- 50-74%: Good match - relevant content but may not be the exact focus
-- 25-49%: Partial match - tangentially related content
+- 50-74%: Good match - maybe only part of the query is mentioned, or the query is only a part of the description
+- 25-49%: Partial match - could be relevant, if you use your imagination a bit
 - 1-24%: Weak match - minimal connection to the search query
 - 0%: No match - completely irrelevant to the search query
 
@@ -106,7 +106,7 @@ ${JSON.stringify(grantsForLLM, null, 2)}
   Score grants 0-100. Return only included grants in compact array:
   [grantId,refinedScore,grantId,refinedScore,...]
   
-  Only include grants that should appear in search results. Include all matches with 30% and above, and down to 5% if the search query yields very few results.
+  Only include grants that should appear in search results. Include all matches with 30% and above, and down to 1% if the search query yields very few results. Try to include at least 10-15 grants, unless the match is very poor. But if more than 15 grants seem relevant, include all of them.
   refinedScore: 0-100
   grantId: 1,2,3,etc.
 
@@ -617,9 +617,11 @@ serve(async (req) => {
       .select(`
         id, organisation, title_sv, title_en, subtitle_sv, subtitle_en, 
         max_funding_per_project, min_funding_per_project, total_funding_per_call, currency,
+        funding_amount_eur,
         application_opening_date, application_closing_date, keywords, industry_sectors,
         geographic_scope, region_sv, region_en, cofinancing_required, cofinancing_level_min,
-        eligible_organisations_standardized, eligible_cost_categories_standardized
+        eligible_organisations_standardized, eligible_cost_categories_standardized,
+        created_at, updated_at
       `)
       .in('id', grantIds);
 
@@ -671,7 +673,7 @@ serve(async (req) => {
         subtitle_sv: grant.subtitle_sv || 'No description available',
         subtitle_en: grant.subtitle_en || 'No description available',
         fundingAmount: formatFundingAmount(grant),
-        funding_amount_eur: null, // Not needed for card display
+        funding_amount_eur: grant.funding_amount_eur, // Needed for sorting by funding amount
         opens_at: grant.application_opening_date || '',
         deadline: grant.application_closing_date || '',
         tags: Array.isArray(grant.keywords) ? grant.keywords : [],
@@ -699,8 +701,8 @@ serve(async (req) => {
         other_templates_links: [], // Not needed for card view
         other_sources_links: [], // Not needed for card view
         other_sources_names: [], // Not needed for card view
-        created_at: undefined, // Not needed for card view
-        updated_at: undefined // Not needed for card view
+        created_at: grant.created_at, // Needed for sorting by publication date
+        updated_at: grant.updated_at // Needed for sorting by publication date
       };
     }) || [];
 
