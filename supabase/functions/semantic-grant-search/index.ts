@@ -64,7 +64,7 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
   });
   console.log(`✅ Prepared ${grantsForLLM.length} grants for LLM prompt`);
 
-  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query based on their descriptions.
+  const prompt = `You are an expert grant matching system. Your task is to evaluate grants for relevance to a user's search query based on their descriptions. Disregard which language is used, it's the content that matters.
 
 USER SEARCH QUERY: "${query}"
 
@@ -83,14 +83,15 @@ SCORING GUIDELINES:
 GRANTS TO EVALUATE:
 ${JSON.stringify(grantsForLLM, null, 2)}
 
-Please evaluate each grant based on its description and respond with a JSON array of objects with this structure:
+Evaluate each grant and respond with a JSON array of objects with this structure:
 {
   "grantId": "grant_id_here",
   "shouldInclude": true/false,
   "refinedScore": 0-100
 }
 
-Focus on the content relevance between the search query and the grant description.`;
+Do NOT include any other text in your response.
+`;
 
   let lastError: string | undefined;
 

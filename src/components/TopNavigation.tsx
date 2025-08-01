@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -69,11 +69,30 @@ export function TopNavigation() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
-                <span className="text-3xl font-newsreader font-normal">
-                  <span style={{ color: '#000000' }}>gr</span>
-                  <span style={{ color: '#8162F4' }}>ai</span>
-                  <span style={{ color: '#000000' }}>gent</span>
-                </span>
+                <div className="flex items-center">
+                  {/* Circular Logo Icon */}
+                  <div className="mr-3">
+                    <div className="circular-logo-icon w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
+                      <svg className="w-10 h-10" viewBox="0 0 100 100" fill="none">
+                        {/* Circular text path for "BIDRAGSSPRÅNGET" */}
+                        <defs>
+                          <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
+                        </defs>
+                        <text fill="#8B5CF6" font-family="Arial, sans-serif" font-size="15" font-weight="bold">
+                          <textPath href="#circlePath" startOffset="50%" text-anchor="middle">
+                            BIDRAGSSPRÅNGET
+                          </textPath>
+                        </text>
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Clean Typography */}
+                  <div className="flex flex-col">
+                    <span className="text-xl font-inter font-semibold leading-tight text-gray-900">
+                      Bidragssprånget
+                    </span>
+                  </div>
+                </div>
               </Link>
             </div>
             {/* Desktop Navigation */}
@@ -99,20 +118,7 @@ export function TopNavigation() {
               {/* Auth Buttons */}
               <div className="flex items-center space-x-3 ml-4">
                 {!user ? (
-                  <>
-                    <Link
-                      to="/login"
-                      className="text-sm font-newsreader text-ink-secondary font-medium hover:text-ink-obsidian transition-colors"
-                    >
-                      Logga in
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-sm font-newsreader font-medium px-4 py-2 rounded-full transition-colors"
-                    >
-                      Registrera dig
-                    </Link>
-                  </>
+                  <>{/* Sign in/register buttons temporarily hidden */}</>
                 ) : (
                   <UserMenu />
                 )}
@@ -121,34 +127,9 @@ export function TopNavigation() {
             {/* Mobile Auth Buttons */}
                           <div className="flex-1 flex justify-end items-center md:hidden">
                 {!user ? (
-                  <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-                    <DrawerTrigger asChild>
-                      <button className="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
-                        <Menu className="w-7 h-7" />
-                      </button>
-                    </DrawerTrigger>
-                    <DrawerContent className="max-h-[80vh] bg-white rounded-t-lg">
-                      <div className="flex flex-col">
-                        <div className="flex justify-end p-4">
-                          <DrawerClose asChild>
-                            <button className="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
-                              <X className="w-6 h-6" />
-                            </button>
-                          </DrawerClose>
-                        </div>
-                        <nav className="flex flex-col gap-4 px-6 pb-4">
-                          <Link to="/" className="text-lg font-medium text-ink-obsidian py-2" onClick={handleNavigationClick}>Hem</Link>
-                          <Link to="/discover" className="text-lg font-medium text-ink-obsidian py-2" onClick={handleNavigationClick}>Upptäck</Link>
-                        </nav>
-                        <div className="p-6 border-t border-gray-200">
-                          <div className="flex flex-col gap-3">
-                            <Link to="/login" className="text-base font-medium text-ink-obsidian py-2 text-center" onClick={handleNavigationClick}>Logga in</Link>
-                            <Link to="/signup" className="bg-accent-lavender hover:bg-accent-lavender/90 text-ink-obsidian text-base font-medium py-2 px-4 rounded-full text-center transition-colors" onClick={handleNavigationClick}>Registrera dig</Link>
-                          </div>
-                        </div>
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
+                  <Link to="/discover" className="p-2 rounded-full hover:bg-gray-100 focus:outline-none transition-all duration-200 hover:scale-105">
+                    <Home className="w-6 h-6 text-gray-600 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = '#6B7280'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B7280'} />
+                  </Link>
                 ) : (
                   <button 
                     onClick={() => signOut()} 
@@ -165,15 +146,15 @@ export function TopNavigation() {
       {/* Bottom Navigation for Mobile */}
       {user ? (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe]/80 border-t-0 md:hidden flex justify-around items-center h-16">
-          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
+          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/' ? { color: '#8B5CF6' } : {}}>
             <Icon icon="mdi:home" className="text-2xl" />
             <span className="text-xs mt-1">Hem</span>
           </Link>
-          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
+          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/discover' ? { color: '#8B5CF6' } : {}}>
             <Icon icon="mdi:magnify" className="text-2xl" />
             <span className="text-xs mt-1">Upptäck</span>
           </Link>
-          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'text-purple-600 font-bold' : 'text-gray-500')}>
+          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/saved' ? { color: '#8B5CF6' } : {}}>
             <Icon icon="mdi:bookmark-outline" className="text-2xl" />
             <span className="text-xs mt-1">Sparade</span>
           </Link>

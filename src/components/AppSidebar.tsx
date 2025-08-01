@@ -7,7 +7,7 @@ const menuItems = [{
   url: "/",
   icon: Home
 }, {
-  title: "Upptäck bidrag",
+  title: "Upptäck bidrag här",
   url: "/discover",
   icon: Search
 }];

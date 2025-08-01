@@ -70,10 +70,10 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
   if (!hasTemplates && !hasGeneralInfo && !hasOtherSources) return null;
 
   return (
-    <section className="bg-purple-50 p-4 md:p-6 rounded-lg border-2 border-purple-200">
+            <section className="p-4 md:p-6 rounded-lg border-2" style={{ backgroundColor: '#FAF5FF', borderColor: '#D7CFFC' }}>
       <div className="flex items-center gap-2 mb-3 md:mb-4">
-        <FileText className="w-5 h-5 text-purple-600" />
-        <h2 className={`font-bold text-purple-900 ${titleClass}`}>
+                  <FileText className="w-5 h-5" style={{ color: '#8B5CF6' }} />
+                  <h2 className={`font-bold ${titleClass}`} style={{ color: '#8B5CF6' }}>
           Mallar och dokument
         </h2>
       </div>
@@ -81,7 +81,7 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
         {/* Allmän information och dokument - now first, combining both generalInfo and other_sources_names */}
         {(hasGeneralInfo || hasOtherSources) && (
           <div>
-            <h3 className={`font-semibold text-purple-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#8B5CF6' }}>
               Allmän information och dokument
             </h3>
             <div className="grid gap-2">
@@ -89,15 +89,16 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
               {grant.generalInfo.map((file, index) => (
                 <div 
                   key={`general-${index}`}
-                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
+                  className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
+                  style={{ borderColor: '#D7CFFC' }}
                   onClick={() => handleFileClick(file)}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
-                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
+                    <FileText className="w-4 h-4" style={{ color: '#8B5CF6' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
                       {file}
                     </span>
-                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
                       Klicka för mer info
                     </span>
                   </div>
@@ -108,15 +109,16 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
               {grant.other_sources_names && grant.other_sources_names.map((source, index) => (
                 <div 
                   key={`source-${index}`}
-                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
+                  className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
+                  style={{ borderColor: '#D7CFFC' }}
                   onClick={() => handleFileClick(source)}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
-                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
+                    <FileText className="w-4 h-4" style={{ color: '#8B5CF6' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
                       {source}
                     </span>
-                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
                       Klicka för mer info
                     </span>
                   </div>
@@ -129,22 +131,23 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
         {/* Ansökningsmallar - now second */}
         {hasTemplates && (
           <div>
-            <h3 className={`font-semibold text-purple-800 mb-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#8B5CF6' }}>
               Ansökningsmallar
             </h3>
             <div className="grid gap-2">
               {grant.templates.map((template, index) => (
                 <div 
                   key={index}
-                  className="bg-white p-3 rounded-lg border border-purple-200 hover:border-purple-400 cursor-pointer transition-all hover:shadow-md group"
+                  className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
+                  style={{ borderColor: '#D7CFFC' }}
                   onClick={() => handleFileClick(template)}
                 >
                   <div className="flex items-center gap-3">
-                    <Download className="w-4 h-4 text-purple-600 group-hover:text-purple-800" />
-                    <span className={`text-purple-700 group-hover:text-purple-900 ${textClass} flex-1`}>
+                    <Download className="w-4 h-4" style={{ color: '#8B5CF6' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
                       {template}
                     </span>
-                    <span className="text-xs text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
                       Klicka för att ladda ner
                     </span>
                   </div>

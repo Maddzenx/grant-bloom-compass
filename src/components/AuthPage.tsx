@@ -171,7 +171,8 @@ const AuthPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-black hover:bg-gray-900 text-white text-base font-semibold rounded-lg py-2 mt-1 transition font-sans"
+                    className="w-full text-white text-base font-semibold rounded-lg py-2 mt-1 transition-all duration-200 font-sans"
+                    style={{ backgroundColor: '#8B5CF6' }}
                     disabled={loading}
                   >
                     {loading ? 'Laddar...' : 'Skapa konto'}
@@ -230,7 +231,8 @@ const AuthPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-black hover:bg-gray-900 text-white text-base font-semibold rounded-lg py-2 mt-1 transition font-sans"
+                    className="w-full text-white text-base font-semibold rounded-lg py-2 mt-1 transition-all duration-200 font-sans"
+                    style={{ backgroundColor: '#8B5CF6' }}
                     disabled={loading}
                   >
                     {loading ? 'Laddar...' : 'Logga in'}

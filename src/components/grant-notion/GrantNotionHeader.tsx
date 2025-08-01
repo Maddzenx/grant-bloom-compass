@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import SortingControls, { SortOption } from "@/components/SortingControls";
 import { toast } from "sonner";
 import { calculateGrantStatus } from "@/utils/grantHelpers";
 import { getOrganizationLogo } from '@/utils/organizationLogos';
+import InterestPage from "@/components/InterestPage";
 interface GrantNotionHeaderProps {
   grant: GrantDetailsType;
   isBookmarked: boolean;
@@ -28,6 +29,7 @@ const GrantNotionHeader = ({
   onSortChange = () => {}
 }: GrantNotionHeaderProps) => {
   const navigate = useNavigate();
+  const [showInterestPage, setShowInterestPage] = useState(false);
   const {
     startApplication,
     addToSaved,
@@ -41,13 +43,7 @@ const GrantNotionHeader = ({
 
   const handleApplyClick = () => {
     console.log('🎯 Apply button clicked in header for grant:', grant.id, grant.title);
-    startApplication(grant);
-    console.log('🔄 After startApplication call, navigating to chat interface');
-    navigate('/chat', {
-      state: {
-        grant
-      }
-    });
+    setShowInterestPage(true);
   };
   const handleReadMoreClick = () => {
     if (grant.originalUrl) {
@@ -79,6 +75,8 @@ const GrantNotionHeader = ({
   // Always use subtitle (aboutGrant) for the header description
   const displayDescription = grant.aboutGrant;
   return <>
+      {/* Mobile menu moved to SheetContent level */}
+
       {/* Status label and organization icon inline */}
       <div className="flex items-center gap-2 mb-2 pt-4">
         {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
@@ -97,10 +95,7 @@ const GrantNotionHeader = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white">
-              <DropdownMenuItem onClick={handleBookmarkToggle}>
-                <Bookmark className={`mr-2 h-4 w-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : ""}`} />
-                <span>{actuallyBookmarked ? "Sparat" : "Spara"}</span>
-              </DropdownMenuItem>
+              {/* Bookmark menu item hidden */}
               <DropdownMenuItem>
                 <Send className="mr-2 h-4 w-4" />
                 <span>Dela</span>
@@ -132,16 +127,30 @@ const GrantNotionHeader = ({
       {/* About Grant section (if different from description) */}
       {grant.aboutGrant && grant.aboutGrant !== grant.description}
       {/* Action buttons */}
-      <div className="flex items-center gap-2 mb-2 w-full my-0 py-[10px]">
-        <Button onClick={handleReadMoreClick} disabled={!grant.originalUrl} className="flex-1 w-full text-black text-xs font-normal rounded bg-[#d7cffc] hover:bg-[#CEC5F9] h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed">
-          Läs mer
-          <ExternalLink className="w-4 h-4 text-black" />
+      <div className="flex flex-col gap-3 mb-4 w-full my-0 py-[10px]">
+        {/* Primary CTA Button */}
+        <Button 
+          onClick={handleApplyClick} 
+          className="w-full text-black font-normal text-sm py-3 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-[#d7cffc]"
+          style={{ backgroundColor: '#d7cffc' }}
+        >
+          Skapa din ansökan direkt
         </Button>
-        <Button variant="outline" onClick={handleBookmarkToggle} className="flex-1 w-full text-xs font-normal rounded border-[#d7cffc] flex items-center gap-2 bg-white hover:bg-gray-50 h-8 shadow-none px-[2px] py-0">
-          <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? "fill-current text-[#8162F4]" : "text-gray-500"}`} />
-          {actuallyBookmarked ? "Sparat" : "Spara bidrag"}
-        </Button>
+        
+        {/* Secondary buttons */}
+        <div className="flex items-center gap-2 w-full">
+          <Button onClick={handleReadMoreClick} disabled={!grant.originalUrl} className="flex-1 w-full text-black text-xs font-normal rounded-lg bg-white hover:bg-gray-50 h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200">
+            Läs mer
+            <ExternalLink className="w-4 h-4 text-black" />
+          </Button>
+          {/* Bookmark button hidden */}
+        </div>
       </div>
+      
+      {/* Interest Page Modal */}
+      {showInterestPage && (
+        <InterestPage onClose={() => setShowInterestPage(false)} />
+      )}
     </>;
 };
 export default GrantNotionHeader;

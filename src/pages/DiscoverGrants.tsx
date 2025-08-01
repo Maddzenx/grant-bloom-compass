@@ -28,7 +28,7 @@ const DiscoverGrants = () => {
   const [accumulatedGrants, setAccumulatedGrants] = useState<GrantListItem[]>([]);
   
   // Determine which pipeline to use
-  const useSemanticPipeline = hasSearched && searchTerm.trim();
+  const useSemanticPipeline = Boolean(hasSearched && searchTerm.trim());
   const useBackendPipeline = !useSemanticPipeline;
 
   console.log('🔥 DiscoverGrants render:', { 
@@ -315,7 +315,7 @@ const DiscoverGrants = () => {
     }
 
     // For semantic pipeline, apply frontend sorting
-    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0 && sortBy === "matching") {
+    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0) {
       // Create a map of grant IDs to their actual semantic scores
       const scoreMap = new Map<string, number>();
       semanticMatches.forEach((match) => {
@@ -323,14 +323,14 @@ const DiscoverGrants = () => {
         scoreMap.set(match.grantId, match.relevanceScore || 0);
       });
       
-      // Sort grants by actual semantic relevance score (highest first)
+      // Sort grants by actual semantic relevance score (highest first) by default for semantic search
       const sorted = [...filteredGrants].sort((a, b) => {
         const scoreA = scoreMap.get(a.id) ?? 0;
         const scoreB = scoreMap.get(b.id) ?? 0;
         return scoreB - scoreA;
       });
       
-      console.log('🎯 Matching-sorted results with actual scores:', {
+      console.log('🎯 Semantic search results sorted by matching percentage:', {
         totalResults: sorted.length,
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
@@ -343,7 +343,7 @@ const DiscoverGrants = () => {
       return sorted;
     }
     
-    // Default sorting for semantic pipeline (no semantic matches or different sort option)
+    // Default sorting for semantic pipeline (no semantic matches)
     return filteredGrants;
   }, [filteredGrants, semanticMatches, sortBy, useSemanticPipeline, useBackendPipeline]);
 

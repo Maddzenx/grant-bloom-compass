@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 interface OrganizationTabsProps {
   onSelectionChange?: (selectedOrganizations: string[]) => void;
@@ -34,7 +34,7 @@ const OrganizationTabs = ({
     const filterTypes = selectedOrganizations.length === 0 ? [] : mappedOrganizationTypes;
     onSelectionChange?.(filterTypes);
   }, [selectedOrganizations, onSelectionChange]);
-  const toggleOrganization = (orgKey: string) => {
+  const toggleOrganization = useCallback((orgKey: string) => {
     setSelectedOrganizations(prev => {
       if (prev.includes(orgKey)) {
         // Remove orgKey
@@ -44,7 +44,7 @@ const OrganizationTabs = ({
         return [...prev, orgKey];
       }
     });
-  };
+  }, []);
   return <div className="mb-16">
       <h3 className="text-base font-[Basic] font-normal mb-4 text-center text-black">
         Sökande organisation:
@@ -56,7 +56,7 @@ const OrganizationTabs = ({
             onClick={() => toggleOrganization(org.key)}
             className={`px-3 py-1.5 rounded-full font-[Basic] font-normal text-sm transition-all duration-200 hover:shadow-sm ${
               selectedOrganizations.includes(org.key)
-                ? 'bg-white text-black'
+                ? 'bg-accent-lavender text-ink-obsidian shadow-sm'
                 : 'bg-white/50 hover:bg-white/100 text-gray-700'
             }`}
           >
