@@ -151,25 +151,25 @@ const HomePage = () => {
       </div>
 
       {/* Video Demo Section */}
-      <VideoDemo />
+      {/* <VideoDemo /> */}
 
       {/* Metrics Section */}
       <MetricsSection />
 
       {/* Security & Trust Section */}
-      <SecurityTrustSection />
+      {/* <SecurityTrustSection /> */}
 
       {/* Testimonials Section */}
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
 
       {/* Pricing Section */}
-      <PricingSection />
+      {/* <PricingSection /> */}
 
       {/* FAQ Section */}
       <FAQSection />
 
       {/* CTA Section */}
-      <CTASection />
+      {/* <CTASection /> */}
     </div>
   );
 };

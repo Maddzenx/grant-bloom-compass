@@ -260,7 +260,7 @@ const ChatInput = ({
               <div className="w-full relative">
                 <Textarea
                   placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent text-sm focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                   value={inputValue}
                   onChange={handleTextareaChange}
                   onFocus={() => setIsFocused(true)}
@@ -273,7 +273,7 @@ const ChatInput = ({
                 />
                 {/* Animated placeholder overlay */}
                 {(!inputValue && !isFocused && animatedPlaceholder) && (
-                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-sm px-0 py-0">
+                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
                     {animatedPlaceholder}
                   </div>
                 )}

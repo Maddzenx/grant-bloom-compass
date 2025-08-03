@@ -1,22 +1,27 @@
 
 import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useGrantListItems } from "@/hooks/useGrantListItems";
 
 const MetricsSection = () => {
   const { t } = useLanguage();
+  const { data: grants = [] } = useGrantListItems();
+  
+  // Calculate unique organizations
+  const uniqueOrganizations = new Set(grants.map(grant => grant.organization).filter(Boolean)).size;
   
   const metrics = [
     {
-      caption: t('metrics.dataPrivacy'),
-      stat: "40%"
+      caption: "Antal bidrag tillgängliga",
+      stat: grants.length.toString()
     },
     {
-      caption: t('metrics.timeSave'),
-      stat: "8h"
+      caption: "Antal organisationer från Sverige och EU",
+      stat: uniqueOrganizations.toString()
     },
     {
-      caption: t('metrics.dataPrivacy'), 
-      stat: "50%"
+      caption: "Hitta rätt bidrag med en sökning på", 
+      stat: "10 min"
     },
     {
       caption: t('metrics.timeSave'),
@@ -28,11 +33,11 @@ const MetricsSection = () => {
     <div className="relative z-10 w-full bg-[#CEC5F9] py-16 px-6">
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline with highlighted "baby" */}
-        <div className="text-center mb-16">
+        {/* <div className="text-center mb-16">
           <h2 className="font-[Basic] font-normal text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-[1.15]">
             {t('metrics.title')}
           </h2>
-        </div>
+        </div> */}
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
