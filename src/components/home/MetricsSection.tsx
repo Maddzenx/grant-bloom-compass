@@ -12,53 +12,66 @@ const MetricsSection = () => {
   
   const metrics = [
     {
-      caption: "Antal bidrag tillgängliga",
+      caption: "Bidrag tillgängliga just nu",
       stat: grants.length.toString()
     },
     {
-      caption: "Antal organisationer från Sverige och EU",
+      caption: "Aktiva bidragsorgan",
       stat: uniqueOrganizations.toString()
     },
     {
-      caption: "Hitta rätt bidrag med en sökning på", 
-      stat: "10 min"
+      caption: "Sökningstid i snitt", 
+      stat: "30 sek"
     },
     {
-      caption: t('metrics.timeSave'),
-      stat: "2x"
+      caption: "Tidssparande jämfört med traditionell sökning",
+      stat: "95%"
     }
   ];
 
   return (
-    <div className="relative z-10 w-full bg-[#CEC5F9] py-16 px-6">
-      <div className="w-full max-w-6xl mx-auto">
-        {/* Headline with highlighted "baby" */}
-        {/* <div className="text-center mb-16">
-          <h2 className="font-[Basic] font-normal text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-[1.15]">
-            {t('metrics.title')}
+    <div className="relative z-10 w-full bg-[#CEC5F9] py-32 px-8">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Section Title */}
+        <div className="text-center mb-16">
+          <h2 className="font-newsreader font-bold text-gray-900 leading-[1.2]" 
+              style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
+            Bidragssprångets prestanda
           </h2>
-        </div> */}
+        </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {metrics.map((metric, index) => (
             <div 
               key={index}
-              className="bg-[#D7CFFC] p-12 rounded-lg flex flex-col justify-between min-h-[200px] relative"
+              className="bg-white/90 backdrop-blur-sm p-10 rounded-2xl transition-all duration-300 border border-white/20 relative overflow-hidden"
             >
-              {/* Caption - Top Left */}
-              <p className="font-[Basic] text-[15px] leading-[1.3] text-gray-800 opacity-80 max-w-[70%]">
-                {metric.caption}
-              </p>
-              
-              {/* Stat - Bottom Right */}
-              <div className="flex justify-end items-end flex-1">
-                <span className="font-[Basic] font-normal text-5xl md:text-6xl text-gray-900">
+              {/* Stat - Top Left */}
+              <div className="flex justify-start items-start mb-6">
+                <span className="font-[Basic] font-bold text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-none">
                   {metric.stat}
                 </span>
               </div>
+              
+              {/* Caption - Bottom Right */}
+              <div className="flex justify-end items-end">
+                <p className="font-[Basic] text-sm leading-tight text-gray-700 max-w-[85%] text-right font-medium">
+                  {metric.caption}
+                </p>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Live Data Button */}
+        <div className="text-center mt-16">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="font-[Basic] text-sm text-gray-700 font-medium">
+              Live data uppdateras kontinuerligt
+            </span>
+          </div>
         </div>
       </div>
     </div>

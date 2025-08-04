@@ -294,41 +294,30 @@ const ChatInput = ({
                     <Paperclip className="w-4 h-4" />
                   </Button>
 
-                  {/* Voice Recording Button + Waveform */}
-                  <div className="relative flex items-center">
+                  {/* Voice Recording Button */}
+                  <div className="relative">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-200 shadow-sm ${
-                        isRecording ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 animate-pulse' : 'hover:bg-canvas-bg text-gray-600 border-gray-200 hover:border-gray-300'
+                      className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-300 ${
+                        isRecording 
+                          ? 'bg-red-500 text-white border-red-500 shadow-lg scale-110' 
+                          : 'hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={handleVoiceInput}
                       disabled={isProcessing}
-                      title={isRecording ? 'Spelar in...' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
+                      title={isRecording ? 'Stoppa inspelning' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
                     >
-                      <Mic className="w-4 h-4" />
-                      {isRecording && (
-                        <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
+                      {isRecording ? (
+                        <div className="w-3 h-3 bg-white rounded-full" />
+                      ) : (
+                        <Mic className="w-4 h-4" />
                       )}
                     </Button>
-                    {/* Waveform animation when recording */}
+                    
+                    {/* Recording indicator */}
                     {isRecording && (
-                      <div className="flex items-end gap-[1px] ml-2 h-4">
-                        {Array.from({ length: 12 }).map((_, i) => {
-                          const delay = i * 0.08;
-                          const height = Math.max(2, audioLevel * 12 + Math.sin(Date.now() * 0.04 + i) * 4);
-                          return (
-                            <div
-                              key={i}
-                              className="w-[1px] rounded bg-gradient-to-t from-purple-400 to-purple-600 transition-all duration-100"
-                              style={{
-                                height: `${height}px`,
-                                animationDelay: `${delay}s`
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                     )}
                   </div>
                 </div>
