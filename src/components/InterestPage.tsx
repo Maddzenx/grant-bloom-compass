@@ -1,48 +1,184 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Mail, Heart, Users } from 'lucide-react';
+import { X, Mail, CheckCircle, Star, ArrowRight, Sparkles, Users, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Card } from '@/components/ui/card';
-// import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import EmailSignupInput from '@/components/ui/EmailSignupInput';
+import { supabase } from '@/lib/supabase';
 
 interface InterestPageProps {
   onClose: () => void;
 }
 
 const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
-  const [email, setEmail] = useState('');
   const [paymentInterest, setPaymentInterest] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [comment, setComment] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [interestCount] = useState(47);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userCount, setUserCount] = useState(0);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    fetchUserCount();
     return () => setMounted(false);
   }, []);
 
-  if (!mounted) return null;
+  const fetchUserCount = async () => {
+    try {
+      // Get count of waitlist subscribers
+      const { count, error } = await supabase
+        .from('waitlist_subscribers')
+        .select('*', { count: 'exact', head: true });
 
-  const handleSubmit = async () => {
-    if (!email.trim()) {
-      toast.error('Vänligen ange din e-postadress');
+      if (error) {
+        console.error('Failed to fetch user count:', error);
+        setUserCount(1247); // Fallback
+      } else {
+        setUserCount(count || 0);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user count:', error);
+      setUserCount(1247); // Fallback
+    }
+  };
+
+
+
+  const handleEmailSubmit = async (email: string) => {
+    setIsLoading(true);
+    
+    try {
+      // Validate email before making database calls
+      if (!email || !email.trim()) {
+        toast.error('Vänligen ange en e-postadress');
+        setIsLoading(false);
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error('Vänligen ange en giltig e-postadress');
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from('waitlist_subscribers')
+        .select('email')
+        .eq('email', email.trim())
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing user:', checkError);
+        throw new Error('Database error');
+      }
+
+      if (existingUser) {
+        toast.error('Denna e-postadress är redan registrerad');
+        setIsLoading(false);
+        return;
+      }
+
+      // Insert new subscriber
+      const { data, error } = await supabase
+        .from('waitlist_subscribers')
+        .insert([
+          {
+            email: email.trim(),
+            payment_interest: paymentInterest || 0,
+            payment_amount: paymentAmount || '',
+            comment: comment || '',
+            subscribed_at: new Date().toISOString()
+          }
+        ])
+        .select();
+
+      if (error) {
+        console.error('Error inserting subscriber:', error);
+        throw new Error('Failed to save subscriber');
+      }
+
+      console.log('Email submission saved to database:', {
+        email,
+        paymentInterest,
+        paymentAmount,
+        comment
+      });
+
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      toast.error('Kunde inte spara till databasen. Försök igen senare.');
+      setIsLoading(false);
       return;
     }
 
-    console.log('Interest submission:', {
-      email,
-      paymentInterest: paymentInterest,
-      paymentAmount,
-      comment
-    });
-
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsLoading(false);
     setIsSubmitted(true);
-    toast.success('Tack för ditt intresse!');
+  };
+
+  const handleFeedbackSubmit = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Check if there's any feedback to submit
+      if (!paymentAmount.trim() && !comment.trim()) {
+        toast.error('Vänligen fyll i åtminstone ett fält för feedback');
+        setIsLoading(false);
+        return;
+      }
+
+      // Insert feedback with a unique email placeholder
+      const timestamp = new Date().getTime();
+      const uniqueEmail = `feedback-${timestamp}@placeholder.com`;
+      
+      const { data, error } = await supabase
+        .from('waitlist_subscribers')
+        .insert([
+          {
+            email: uniqueEmail, // Use unique placeholder email
+            payment_interest: paymentInterest || 0,
+            payment_amount: paymentAmount || '',
+            comment: comment || '',
+            subscribed_at: new Date().toISOString()
+          }
+        ])
+        .select();
+
+      if (error) {
+        console.error('Error inserting feedback:', error);
+        throw new Error('Failed to save feedback');
+      }
+
+      console.log('Feedback saved to database:', {
+        paymentInterest,
+        paymentAmount,
+        comment
+      });
+
+      // Clear the form
+      setPaymentAmount('');
+      setComment('');
+      setPaymentInterest(0);
+
+      toast.success('Tack för din feedback!');
+
+    } catch (error) {
+      console.error('Error saving feedback:', error);
+      toast.error('Kunde inte spara feedback. Försök igen senare.');
+      setIsLoading(false);
+      return;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsLoading(false);
   };
 
   const getInterestLabel = (value: number) => {
@@ -54,43 +190,34 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
     return 'Jag skulle absolut betala';
   };
 
+  const getInterestColor = (value: number) => {
+    if (value <= -3) return 'text-red-600 bg-red-50';
+    if (value <= -1) return 'text-orange-600 bg-orange-50';
+    if (value === 0) return 'text-gray-600 bg-gray-50';
+    if (value <= 2) return 'text-blue-600 bg-blue-50';
+    if (value <= 4) return 'text-purple-600 bg-purple-50';
+    return 'text-green-600 bg-green-50';
+  };
+
   if (isSubmitted) {
     return createPortal(
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" 
-        style={{ 
-          position: 'fixed', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          zIndex: 999999,
-          isolation: 'isolate'
-        }}
-      >
-        <Card 
-          className="w-full max-w-md lg:max-w-lg p-8 lg:p-12 text-center bg-white rounded-2xl shadow-2xl border-0" 
-          style={{ 
-            position: 'relative', 
-            zIndex: 1000000,
-            isolation: 'isolate'
-          }}
-        >
-          <div className="mb-8">
-            <div className="w-20 h-20 lg:w-24 lg:h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Heart className="w-10 h-10 lg:w-12 lg:h-12 text-green-600" />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300 z-50">
+        <Card className="w-full max-w-md p-8 text-center bg-white rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-ink-obsidian mb-4">
-              Tack!
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Tack för ditt intresse!
             </h2>
-            <p className="text-ink-secondary text-lg lg:text-xl leading-relaxed">
-              Ditt intresse hjälper oss prioritera rätt funktioner.
+            <p className="text-gray-600 mb-4">
+              Vi hör av oss när ansökningsfunktionen är redo.
             </p>
+            
           </div>
           <Button 
             onClick={onClose}
-            className="w-full text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-            style={{ backgroundColor: '#8B5CF6' }}
+            className="w-full text-white py-3 font-semibold rounded-xl bg-gray-600 hover:bg-gray-700"
           >
             Stäng
           </Button>
@@ -102,185 +229,134 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
 
   return createPortal(
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" 
-      style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        bottom: 0, 
-        zIndex: 999999,
-        isolation: 'isolate'
-      }}
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300 z-50"
+      onClick={onClose}
     >
       <Card 
-        className="w-full max-w-4xl lg:max-w-5xl p-6 lg:p-12 bg-white rounded-2xl shadow-2xl border-0 max-h-[90vh] overflow-y-auto" 
-        style={{ 
-          position: 'relative', 
-          zIndex: 1000000,
-          isolation: 'isolate'
-        }}
+        className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex justify-between items-start mb-8 lg:mb-12">
-          <div className="flex-1 pr-4">
-            <h1 className="text-3xl lg:text-4xl font-bold text-ink-obsidian mb-3 lg:mb-4 leading-tight">
-              Funktionen är snart redo
-            </h1>
-            <p className="text-ink-secondary text-lg lg:text-xl leading-relaxed">
-              Vi arbetar hårt för att få ansökningsfunktionen klar. Håll dig uppdaterad!
-            </p>
-          </div>
+        
+                {/* Header */}
+        <div className="p-6 text-center">
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="text-ink-secondary hover:text-ink-obsidian hover:bg-gray-100 rounded-full p-2 transition-all duration-200"
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-full p-2 border border-gray-200 bg-white shadow-sm"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </Button>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+            Ansökningsfunktionen kommer snart!
+          </h1>
+          <p className="text-gray-500 text-base">
+            Var en av de första att testa den nya funktionen
+          </p>
         </div>
 
-        {/* Social Proof */}
-        <div className="flex items-center justify-center gap-3 mb-8 lg:mb-12 p-4 lg:p-6 bg-gray-50 rounded-2xl border border-gray-200">
-          <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 rounded-full flex items-center justify-center">
-            <Users className="w-5 h-5 lg:w-6 lg:h-6 text-ink-obsidian" />
-          </div>
-          <span className="text-ink-obsidian font-semibold text-lg lg:text-xl">
-            {interestCount} personer har redan visat intresse
-          </span>
-        </div>
 
-        {/* Main Content - Responsive Layout */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left Column - Email Section */}
-          <div className="space-y-6">
-            {/* Email Notification Section */}
-            <div className="bg-gray-50 p-6 lg:p-8 rounded-2xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 lg:w-14 lg:h-14 bg-gray-100 rounded-full flex items-center justify-center">
-                  <Mail className="w-6 h-6 lg:w-7 lg:h-7 text-ink-obsidian" />
-                </div>
-                <h2 className="text-xl lg:text-2xl font-bold text-ink-obsidian">
-                  Få meddelande när det är klart
-                </h2>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Input
-                    type="email"
-                    placeholder="Din e-postadress"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 h-14 text-lg px-4 rounded-xl border-2 border-gray-200 focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200"
-                  />
-                  <Button 
-                    onClick={handleSubmit}
-                    className="text-white whitespace-nowrap h-14 px-8 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200"
-                    style={{ backgroundColor: '#8B5CF6' }}
-                  >
-                    Meddela mig
-                  </Button>
-                </div>
-                                  <p className="text-sm text-ink-secondary text-center">
-                    Din e-post används endast för denna notifiering — inget spam.
-                  </p>
-              </div>
-            </div>
+
+        {/* Main Content */}
+        <div className="px-6 space-y-6">
+          
+          {/* Email Section */}
+          <div className="space-y-4">
+            <EmailSignupInput
+              onSubmit={handleEmailSubmit}
+              isLoading={isLoading}
+              placeholder="Din e-postadress"
+              buttonText="Bli informerad"
+              privacyText="Din e-post används endast för denna notifiering"
+            />
           </div>
 
-          {/* Right Column - Payment Interest Section */}
-          <div className="space-y-6">
-            {/* Divider */}
-            <div className="relative lg:hidden">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-                               <div className="relative flex justify-center text-sm">
-                   <span className="px-4 bg-white text-ink-secondary font-medium">eller ännu bättre...</span>
-                 </div>
-            </div>
-
-            {/* Payment Interest Section */}
-            <div className="bg-gray-50 p-6 lg:p-8 rounded-2xl">
-              <h2 className="text-xl lg:text-2xl font-bold text-ink-obsidian mb-6">
-                Hur intresserad är du av att betala för denna tjänst?
-              </h2>
-              
-              <div className="space-y-6">
-                <div>
-                  <div className="px-2 mb-6">
-                    <Slider
-                      value={[paymentInterest]}
-                      onValueChange={(value) => setPaymentInterest(value[0])}
-                      max={5}
-                      min={-5}
-                      step={1}
-                      className="w-full"
-                    />
-                                         <div className="flex justify-between text-sm text-ink-secondary mt-3">
-                       <span className="font-medium">-5</span>
-                       <span className="font-medium">0</span>
-                       <span className="font-medium">+5</span>
-                     </div>
-                     <div className="flex justify-between text-xs text-ink-secondary mt-1">
-                       <span>Inte alls</span>
-                       <span>Neutral</span>
-                       <span>Absolut</span>
-                     </div>
-                  </div>
-                                     <div className="text-center">
-                     <p className="text-lg lg:text-xl font-semibold text-ink-obsidian bg-gray-100 px-4 py-2 rounded-lg inline-block">
-                       {getInterestLabel(paymentInterest)}
-                     </p>
-                   </div>
-                </div>
-
-                <div>
-                                     <label className="block text-lg lg:text-xl font-semibold text-ink-obsidian mb-3">
-                     Vad skulle du kunna tänka dig att betala? (kr)
-                   </label>
-                                       <Input
-                       type="number"
-                       placeholder="T.ex. 299"
-                       value={paymentAmount}
-                       onChange={(e) => setPaymentAmount(e.target.value)}
-                       className="w-full h-14 text-lg px-4 rounded-xl border-2 border-gray-200 focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200"
-                     />
-                                          <p className="text-sm text-ink-secondary mt-2">
-                       Valfritt — hjälper oss förstå vad funktionen är värd
-                     </p>
-                   </div>
-
-                   <div>
-                     <label className="block text-lg lg:text-xl font-semibold text-ink-obsidian mb-3">
-                       Har du några kommentarer eller förslag?
-                     </label>
-                     <textarea
-                       placeholder="Dela dina tankar om funktionen, vad du skulle vilja se, eller andra förslag..."
-                       value={comment}
-                       onChange={(e) => setComment(e.target.value)}
-                       className="w-full h-32 text-lg px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 resize-none"
-                       rows={4}
-                     />
-                     <p className="text-sm text-ink-secondary mt-2">
-                       Valfritt — hjälper oss förbättra funktionen
-                     </p>
-                   </div>
-                 </div>
+          {/* Features Preview */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 text-center">
+              Vad kommer du att kunna göra?
+            </h3>
+            <div className="space-y-3">
+               <div className="flex items-center gap-3">
+                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                 <span className="text-gray-700 text-sm">Tolka kriterier och mallar tydligt</span>
+               </div>
+               <div className="flex items-center gap-3">
+                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                 <span className="text-gray-700 text-sm">Få konkret feedback på språk och innehåll</span>
+               </div>
+               <div className="flex items-center gap-3">
+                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                 <span className="text-gray-700 text-sm">Se vad som kan förbättras i dina ansökningar</span>
+               </div>
+               <div className="flex items-center gap-3">
+                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                 <span className="text-gray-700 text-sm">Generera en ansökan baserat på dina dokument</span>
                </div>
              </div>
+          </div>
+
+          {/* Feedback Section */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                Hjälp oss hjälpa dig!
+              </h2>
+              <p className="text-gray-500 text-sm">Din feedback hjälper oss att skapa bästa möjliga upplevelse</p>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Payment Amount */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Vad skulle du betala för denna funktion? (kr/mån)
+                </label>
+                                                    <Input
+                    type="text"
+                    placeholder="T.ex. 299 kr/mån"
+                    value={paymentAmount}
+                    onChange={(e) => setPaymentAmount(e.target.value)}
+                    className="h-11 text-sm px-3 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 placeholder:text-gray-400 bg-white"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                  </p>
+              </div>
+
+              {/* Comments */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Har du några tankar eller förslag?
+                </label>
+                <textarea
+                  placeholder="Dela dina tankar om funktionen..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full h-20 text-sm px-3 py-2 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 resize-none placeholder:text-gray-400 bg-white"
+                  rows={3}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Submit Button - Full Width */}
-        <div className="mt-8 lg:mt-12">
-          <Button 
-            onClick={handleSubmit}
-            className="w-full text-white py-4 text-lg lg:text-xl font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
-            style={{ backgroundColor: '#8B5CF6' }}
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-100">
+          <Button
+            onClick={handleFeedbackSubmit}
+            disabled={isLoading}
+            className="w-full h-8 text-black text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#c5b8f8]"
+            style={{ backgroundColor: '#d7cffc' }}
           >
-            Skicka in mina svar
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Skickar in svar...</span>
+              </div>
+            ) : (
+              <span>Skicka in svar</span>
+            )}
           </Button>
         </div>
       </Card>

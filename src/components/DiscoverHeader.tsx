@@ -61,18 +61,17 @@ const DiscoverHeader = ({
           {/* Search Mode Toggle - Above the search bar */}
           <div className="flex justify-center">
             <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1 shadow-sm">
-              <button
-                onClick={handleToggleSearchMode}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
-                  !isAISearch 
-                    ? 'bg-purple-600 text-white shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                }`}
-                title={isAISearch ? 'AI sökning' : 'Vanlig sökning'}
-              >
-                <Search className="w-4 h-4" />
-                <span>Vanlig sökning</span>
-              </button>
+                              <button
+                  onClick={handleToggleSearchMode}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
+                    !isAISearch 
+                      ? 'bg-[#7D54F4] text-white shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                  }`}
+                  title={isAISearch ? 'AI sökning' : 'Vanlig sökning'}
+                >
+                  <span>Vanlig sökning</span>
+                </button>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -80,12 +79,11 @@ const DiscoverHeader = ({
                       onClick={handleToggleSearchMode}
                       className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
                         isAISearch 
-                          ? 'bg-purple-600 text-white shadow-sm' 
+                          ? 'bg-[#7D54F4] text-white shadow-sm' 
                           : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                       }`}
                       title={isAISearch ? 'AI sökning' : 'Vanlig sökning'}
                     >
-                      <Sparkles className="w-4 h-4" />
                       <span>AI sökning</span>
                       <HelpCircle className="w-3 h-3 opacity-70" />
                     </button>
