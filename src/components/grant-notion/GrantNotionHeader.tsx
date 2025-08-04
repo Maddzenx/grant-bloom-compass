@@ -74,31 +74,34 @@ const GrantNotionHeader = ({
 
       {/* Status label and organization icon inline */}
       <div className="flex items-center gap-2 mb-2 pt-4">
-        {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit">Öppen</Badge>}
-        {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit">Kommande</Badge>}
-        {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200 w-fit">Stängd</Badge>}
+        {status === 'open' && <Badge className="bg-green-100 text-green-800 hover:bg-green-200 w-fit text-sm px-3 py-1.5">Öppen</Badge>}
+        {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit text-sm px-3 py-1.5">Kommande</Badge>}
+        {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200 w-fit text-sm px-3 py-1.5">Stängd</Badge>}
         
-        <span className="font-semibold text-gray-900 text-base">{grant.organization}</span>
+        <span className="font-semibold text-gray-900 text-lg">{grant.organization}</span>
       </div>
 
       {/* Desktop action buttons in top right corner */}
       {!isMobile && <div className="absolute top-4 right-4 flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full">
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="h-10 w-10 p-0 rounded-full">
+                <MoreHorizontal className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white">
-              {/* Bookmark menu item hidden */}
-              <DropdownMenuItem>
-                <Send className="mr-2 h-4 w-4" />
-                <span>Dela</span>
+            <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg rounded-lg p-1 min-w-[180px]">
+              <DropdownMenuItem onClick={handleBookmarkToggle} className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
+                <Bookmark className={`h-4 w-4 mr-2 ${actuallyBookmarked ? 'fill-current text-purple-600' : 'text-gray-600'}`} />
+                <span className="text-sm font-medium">{actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a href={grant.originalUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  <span>Läs mer</span>
+              <DropdownMenuItem className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
+                <Send className="h-4 w-4 mr-2 text-gray-600" />
+                <span className="text-sm font-medium">Dela</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
+                <a href={grant.originalUrl} target="_blank" rel="noopener noreferrer" className="flex items-center w-full">
+                  <ExternalLink className="h-4 w-4 mr-2 text-gray-600" />
+                  <span className="text-sm font-medium">Läs mer</span>
                 </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -107,13 +110,13 @@ const GrantNotionHeader = ({
 
       {/* Title with wrapping allowed */}
       <div className="flex flex-row items-start justify-between gap-4 mt-2 mb-2 w-full">
-        <h1 className="text-xl font-bold text-gray-900 leading-tight pr-4 flex-1 break-words">
+        <h1 className="text-2xl font-bold text-gray-900 leading-tight pr-4 flex-1 break-words">
           {grant.title}
         </h1>
       </div>
       
       {/* Description with full width - use subtitle when long_description is available */}
-      {displayDescription && <p className="text-gray-700 mb-4 leading-snug text-sm w-full">
+      {displayDescription && <p className="text-gray-700 mb-4 leading-snug text-base w-full">
           {displayDescription}
         </p>}
       <div className="mb-4">
@@ -126,7 +129,7 @@ const GrantNotionHeader = ({
         {/* Primary CTA Button */}
         <Button 
           onClick={handleApplyClick} 
-          className="w-full text-black font-normal text-sm py-3 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-[#d7cffc]"
+          className="w-full text-black font-normal text-base py-3 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-[#d7cffc]"
           style={{ backgroundColor: '#d7cffc' }}
         >
           Skapa din ansökan direkt
@@ -134,9 +137,9 @@ const GrantNotionHeader = ({
         
         {/* Secondary buttons */}
         <div className="flex items-center gap-2 w-full">
-          <Button onClick={handleReadMoreClick} disabled={!grant.originalUrl} className="flex-1 w-full text-black text-xs font-normal rounded-lg bg-white hover:bg-gray-50 h-8 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200">
+          <Button onClick={handleReadMoreClick} disabled={!grant.originalUrl} className="flex-1 w-full text-black text-sm font-normal rounded-lg bg-white hover:bg-gray-50 h-10 shadow-none flex items-center justify-center gap-2 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 py-0 px-[2px] disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200">
             Läs mer
-            <ExternalLink className="w-4 h-4 text-black" />
+            <ExternalLink className="w-5 h-5 text-black" />
           </Button>
           {/* Bookmark button hidden */}
         </div>

@@ -240,9 +240,7 @@ const ConsolidatedGrantList = ({
               {/* Pagination Info Bar */}
               <div className="flex items-center justify-between px-6 py-3 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <span>Visar {(currentPage - 1) * 15 + 1}-{Math.min(currentPage * 15, totalCount)} av {totalCount} bidrag</span>
-                  <span className="text-gray-400">•</span>
-                  <span>Sida {currentPage} av {totalPages}</span>
+                  
                 </div>
                 <div className="flex items-center gap-2">
                   

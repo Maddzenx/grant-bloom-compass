@@ -89,10 +89,10 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
               <label className="text-xs font-medium text-gray-600">Organisation</label>
               <Select value={filters.organization || "all"} onValueChange={(value) => updateFilter("organization", value)}>
                 <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Alla organisationer" />
+                  <SelectValue placeholder="Visa alla organisationer" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alla organisationer</SelectItem>
+                                      <SelectItem value="all">Visa alla organisationer</SelectItem>
                   {organizations.map(org => (
                     <SelectItem key={org} value={org}>{org}</SelectItem>
                   ))}
@@ -129,10 +129,10 @@ const FilterControls = ({ filters, onFiltersChange, organizations }: FilterContr
               <label className="text-xs font-medium text-gray-600">Deadline inom</label>
               <Select value={filters.deadline || "all"} onValueChange={(value) => updateFilter("deadline", value)}>
                 <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Alla deadlines" />
+                  <SelectValue placeholder="Visa alla deadlines" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alla deadlines</SelectItem>
+                                      <SelectItem value="all">Visa alla deadlines</SelectItem>
                   <SelectItem value="7">7 dagar</SelectItem>
                   <SelectItem value="30">30 dagar</SelectItem>
                   <SelectItem value="90">90 dagar</SelectItem>
