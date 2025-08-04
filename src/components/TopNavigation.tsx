@@ -61,9 +61,9 @@ export function TopNavigation() {
       <nav className={cn(
         "backdrop-blur sticky top-0 z-40 transition-all duration-300",
         isScrolled 
-          ? "bg-[#fefefe]/80 border-b shadow-sm" 
-          : "bg-[#fafafa]/80 border-b border-transparent"
-      )} style={{ borderColor: isScrolled ? '#F0F1F3' : 'transparent' }}>
+          ? "bg-[#F9F9F9]/80 shadow-sm" 
+          : "bg-[#F9F9F9]"
+      )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}

@@ -369,3 +369,108 @@
 .w-12.h-1\.5.rounded-full {
   background: #e5e7eb !important;
 }
+
+/* Override shadcn SelectItem purple styling - More specific selectors */
+[data-radix-select-item],
+[data-radix-select-item] *,
+.SelectItem,
+.SelectItem *,
+[role="option"],
+[role="option"] * {
+  background-color: white !important;
+  color: #111827 !important;
+  border-color: transparent !important;
+  outline-color: transparent !important;
+}
+
+[data-radix-select-item]:hover,
+[data-radix-select-item]:hover *,
+.SelectItem:hover,
+.SelectItem:hover *,
+[role="option"]:hover,
+[role="option"]:hover * {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+[data-radix-select-item][data-state="checked"],
+[data-radix-select-item][data-state="checked"] *,
+.SelectItem[data-state="checked"],
+.SelectItem[data-state="checked"] *,
+[role="option"][data-state="checked"],
+[role="option"][data-state="checked"] * {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+[data-radix-select-item][data-highlighted],
+[data-radix-select-item][data-highlighted] *,
+.SelectItem[data-highlighted],
+.SelectItem[data-highlighted] *,
+[role="option"][data-highlighted],
+[role="option"][data-highlighted] * {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+[data-radix-select-item]:focus,
+[data-radix-select-item]:focus *,
+.SelectItem:focus,
+.SelectItem:focus *,
+[role="option"]:focus,
+[role="option"]:focus * {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+/* Override any purple colors specifically */
+[data-radix-select-item] *,
+.SelectItem *,
+[role="option"] * {
+  --accent: 243 244 246 !important;
+  --accent-foreground: 17 24 39 !important;
+  --primary: 243 244 246 !important;
+  --primary-foreground: 17 24 39 !important;
+}
+
+/* Target specific shadcn classes */
+.bg-accent,
+.bg-primary,
+.bg-secondary {
+  background-color: #f3f4f6 !important;
+}
+
+.text-accent-foreground,
+.text-primary-foreground,
+.text-secondary-foreground {
+  color: #111827 !important;
+}
+
+/* Override any purple borders or outlines */
+[data-radix-select-item],
+.SelectItem,
+[role="option"] {
+  border-color: transparent !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove border from SelectTrigger when focused */
+[data-radix-select-trigger]:focus,
+[data-radix-select-trigger]:focus-visible,
+[data-radix-select-trigger][data-state="open"] {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+
+/* Remove border from SelectTrigger in general */
+[data-radix-select-trigger] {
+  border-color: #d1d5db !important;
+}
+
+[data-radix-select-trigger]:focus,
+[data-radix-select-trigger]:focus-visible {
+  border-color: transparent !important;
+}

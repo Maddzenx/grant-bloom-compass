@@ -448,10 +448,21 @@ export const DiscoverGrantsContent = ({
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-      {/* Search bar and filter/sort row grouped, left-aligned with main content */}
-      <div className="w-full bg-canvas-cloud pt-6 pb-2">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="w-full">
+         {/* Purple background section for search component */}
+         <div className="w-full" style={{ backgroundColor: '#D1C9FB' }}>
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-24">
+          {/* Title section with better spacing */}
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-2">
+              Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
+            </h1>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Hitta bidrag som passar ditt projekt och din organisation
+            </p>
+          </div>
+          
+          {/* Search bar section with improved spacing */}
+          <div className="w-full mb-4 max-w-4xl mx-auto">
             <DiscoverHeader 
               searchTerm={searchTerm} 
               onSearchChange={onSearchChange} 
@@ -464,11 +475,12 @@ export const DiscoverGrantsContent = ({
               searchMetrics={searchMetrics} 
             />
           </div>
-          {/* Filter and sorting row - hide FilterBar on mobile, show only on desktop */}
-          <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-between md:gap-x-8 w-full mt-0">
+          
+          {/* Filter and sorting row with better organization */}
+          <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">
             {/* Only show FilterBar on desktop */}
             {!isMobile && (
-              <div className="flex-1 min-w-0 overflow-x-auto">
+              <div className="flex-1 max-w-4xl">
                 <FilterBar
                   filters={filters}
                   onFiltersChange={onFiltersChange}
@@ -485,16 +497,18 @@ export const DiscoverGrantsContent = ({
                 />
               </div>
             )}
-            {/* Sorting controls: below filter bar on mobile, right on desktop */}
-            <div className="w-full md:w-auto md:ml-auto flex-shrink-0">
-              <SortingControls 
-                sortBy={sortBy} 
-                onSortChange={onSortChange} 
-                hasSearchTerm={!!searchTerm.trim()}
-                hasSemanticMatches={!!aiMatches && aiMatches.length > 0}
-              />
-            </div>
           </div>
+        </div>
+      </div>
+      {/* Sorting controls in the white space between search and results */}
+      <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 py-4">
+        <div className="flex justify-end">
+          <SortingControls 
+            sortBy={sortBy} 
+            onSortChange={onSortChange} 
+            hasSearchTerm={!!searchTerm.trim()}
+            hasSemanticMatches={!!aiMatches && aiMatches.length > 0}
+          />
         </div>
       </div>
       {/* Floating filter button for mobile */}
@@ -566,7 +580,16 @@ export const DiscoverGrantsContent = ({
             <GrantList 
               grants={sortedGrants} 
               selectedGrant={selectedGrant} 
-              onGrantSelect={grant => { onGrantSelect(grant); setDetailsOpen(true); }} 
+              onGrantSelect={grant => { 
+                // If clicking on already selected grant, minimize details
+                if (selectedGrant && selectedGrant.id === grant.id) {
+                  setDetailsOpen(false);
+                  onBackToList();
+                } else {
+                  onGrantSelect(grant); 
+                  setDetailsOpen(true); 
+                }
+              }} 
               onToggleBookmark={onToggleBookmark} 
               searchTerm={searchTerm} 
               isMobile={true} 
@@ -649,7 +672,14 @@ export const DiscoverGrantsContent = ({
               <GrantList 
                 grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
-                onGrantSelect={onGrantSelect} 
+                onGrantSelect={grant => { 
+                  // If clicking on already selected grant, minimize details
+                  if (selectedGrant && selectedGrant.id === grant.id) {
+                    onBackToList();
+                  } else {
+                    onGrantSelect(grant); 
+                  }
+                }} 
                 onToggleBookmark={onToggleBookmark} 
                 searchTerm={searchTerm} 
                 isMobile={false} 

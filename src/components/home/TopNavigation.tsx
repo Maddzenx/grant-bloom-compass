@@ -3,7 +3,7 @@ import React from "react";
 
 const TopNavigation = () => {
   return (
-    <nav className="absolute top-0 right-0 p-6 z-10">
+    <nav className="absolute top-0 right-0 p-6 z-10 bg-[#D1C9FB] rounded-bl-lg">
       <div className="flex items-center space-x-8">
         <a 
           href="/discover" 

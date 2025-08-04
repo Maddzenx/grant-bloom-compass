@@ -35,6 +35,7 @@ const GrantList = ({
 }: GrantListProps) => {
   const [numVisibleGrants, setNumVisibleGrants] = React.useState(15);
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
   const grantsPerPage = 15;
   const observerRef = React.useRef<HTMLDivElement>(null);
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
@@ -75,7 +76,7 @@ const GrantList = ({
           }, 500);
         }
       },
-      { root, threshold: 0.8 }
+      { root, threshold: 0.1 }
     );
 
     observer.observe(observerElement);
@@ -83,7 +84,7 @@ const GrantList = ({
     return () => {
       observer.unobserve(observerElement);
     };
-  }, [isMobile, hasMore, grants, grantsToShow]);
+  }, [isMobile, hasMore, hasMoreBackend, onPageChange, pagination, grants.length, numVisibleGrants]);
 
   React.useEffect(() => {
     if (isMobile) {
@@ -151,11 +152,15 @@ const GrantList = ({
           <div ref={observerRef} className="flex flex-col items-center justify-center py-6">
             <div className="flex items-center gap-2 text-gray-500 mb-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-              <span className="text-sm">Laddar fler bidrag...</span>
+              <span className="text-sm">
+                {isLoadingMore ? 'Laddar fler bidrag...' : 'Scrolla för att ladda fler automatiskt'}
+              </span>
             </div>
-            <div className="text-xs text-gray-400">
-              Scrolla för att ladda fler automatiskt
-            </div>
+            {!isLoadingMore && (
+              <div className="text-xs text-gray-400">
+                Scrolla för att ladda fler automatiskt
+              </div>
+            )}
           </div>
         )}
       </ScrollArea>

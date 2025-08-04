@@ -46,18 +46,15 @@ const OrganizationTabs = ({
     });
   }, []);
   return <div className="mb-16">
-      <h3 className="text-base font-[Basic] font-normal mb-4 text-center text-black">
-        Sökande organisation:
-      </h3>
-      <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+      <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
         {organizationTypes.map(org => (
           <button
             key={org.key}
             onClick={() => toggleOrganization(org.key)}
-            className={`px-3 py-1.5 rounded-full font-[Basic] font-normal text-sm transition-all duration-200 hover:shadow-sm ${
+            className={`px-6 py-3 rounded-xl font-[Basic] font-medium text-sm transition-all duration-200 ${
               selectedOrganizations.includes(org.key)
-                ? 'bg-accent-lavender text-ink-obsidian shadow-sm'
-                : 'bg-white/50 hover:bg-white/100 text-gray-700'
+                ? 'bg-white text-gray-900 border-2 border-gray-200'
+                : 'bg-gray-100 text-gray-800 border border-gray-300 hover:border-gray-400'
             }`}
           >
             {org.label}

@@ -206,13 +206,13 @@ const translations = {
     // FAQ
     'faq.title': 'Frågor & Svar',
     'faq.howWorks': 'Hur fungerar detta?',
-    'faq.howWorksAnswer': 'Vår plattform använder avancerad AI-teknik för att matcha dig med relevanta bidrag baserat på din organisations profil och behov. Beskriv helt enkelt ditt projekt eller ladda upp dina dokument, så hittar vi de bästa finansieringsmöjligheterna för dig.',
+    'faq.howWorksAnswer': 'Vår plattform använder avancerad AI-teknik för att matcha dig med relevanta bidrag baserat på din organisations profil och behov. Beskriv bara ditt projekt eller ladda upp dina dokument, så hittar vi de bästa finansieringsmöjligheterna för dig.',
     'faq.different': 'Hur skiljer sig detta från andra LLM:er?',
-    'faq.differentAnswer': 'Till skillnad från allmänna AI-modeller är vårt system specifikt tränat på bidragsdatabaser och finansieringskriterier. Vi förstår nyanserna i bidragsansökningar och kan ge riktade matchningar med högre framgångsfrekvens.',
-    'faq.whoCan': 'Vem kan dra nytta av att använda Bidragssprånget?',
-    'faq.whoCanAnswer': 'Vem som helst kan använda det. Oberoende eller akademiska forskare som driver kunskapsgränserna framåt. Tidiga och tillväxtfas-startups som förvandlar djärva idéer till skalbara produkter eller tjänster.',
+    'faq.differentAnswer': 'Till skillnad från allmänna AI-modeller är vårt system specifikt tränat på bidragsdatabaser och finansieringskriterier. Vi förstår nyanserna i bidragsansökningar och kan ge riktade matchningar med högre framgångsgrad.',
+    'faq.whoCan': 'Vem kan dra nytta av att använda Bidragsprånget?',
+    'faq.whoCanAnswer': 'Alla kan använda det. Oberoende eller akademiska forskare som driver kunskapens gränser. Tidiga och växande startups som förvandlar djärva idéer till skalbar produkter eller tjänster.',
     'faq.accurate': 'Hur vet jag att det är korrekt?',
-    'faq.accurateAnswer': 'Vår matchningsalgoritm valideras kontinuerligt mot framgångsrika bidragsansökningar. Vi tillhandahåller konfidenspoäng för varje matchning och låter dig verifiera kriterierna direkt med finansieringskällorna.',
+    'faq.accurateAnswer': 'Vår matchningsalgoritm valideras kontinuerligt mot framgångsrika bidragsansökningar. Vi ger förtroendepoäng för varje matchning och låter dig verifiera kriterierna direkt med finansieringskällorna.',
     
     // CTA Section
     'cta.title': 'Prova själv!',

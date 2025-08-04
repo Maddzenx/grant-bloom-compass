@@ -7,20 +7,24 @@ const FAQSection = () => {
 
   const faqs = [
     {
-      question: "How does this work?",
-      answer: "Our platform uses advanced AI technology to match you with relevant grants based on your organization's profile and needs. Simply describe your project or upload your documents, and we'll find the best funding opportunities for you."
+      question: "Hur hittar jag rätt bidrag för mitt projekt?",
+      answer: "Verktyget analyserar ditt projekt och matchar det mot hundratals bidrag i realtid. Du behöver bara beskriva ditt projekt eller ladda upp relevanta dokument för att få personliga rekommendationer baserade på din organisations profil och specifika behov."
     },
     {
-      question: "How is this different from other LLMs?",
-      answer: "Unlike general-purpose AI models, our system is specifically trained on grant databases and funding criteria. We understand the nuances of grant applications and can provide targeted matches with higher success rates."
+      question: "Vilka typer av organisationer kan använda plattformen?",
+      answer: "Bidragsprånget är designat för alla som söker finansiering, från startups och småföretag till forskningsinstitut, universitet, ideella organisationer och offentliga myndigheter. Vår plattform täcker både svenska och EU-bidrag för olika branscher och projekttyper."
     },
     {
-      question: "Who can benefit from using Graigent?",
-      answer: "Anyone can use it. Independent or academic researchers pushing the boundaries of knowledge. Early-stage and growth-stage startups turning bold ideas into scalable products or services."
+      question: "Hur mycket tid sparar jag jämfört med traditionell sökning?",
+      answer: "Istället för att söka genom hundratals sidor och databaser manuellt kan du få relevanta matchningar på sekunder. Vår AI filtrerar bort irrelevanta bidrag och fokuserar på de som verkligen passar ditt projekt, vilket kan spara flera timmar per sökning."
     },
     {
-      question: "How do I know it is accurate?",
-      answer: "Our matching algorithm is continuously validated against successful grant applications. We provide confidence scores for each match and allow you to verify the criteria directly with the funding sources."
+      question: "Är informationen uppdaterad och tillförlitlig?",
+      answer: "Vi uppdaterar vår databas kontinuerligt med de senaste bidragen från officiella källor. Varje matchning inkluderar förtroendepoäng och direktlänkar till källorna så du alltid kan verifiera informationen."
+    },
+    {
+      question: "Är Bidragsprånget gratis att använda?",
+      answer: "Ja, Bidragsprånget är helt gratis att använda. Du kan söka efter bidrag, få AI-matchningar och använda alla funktioner utan kostnad."
     }
   ];
 
@@ -44,7 +48,7 @@ const FAQSection = () => {
             className="font-newsreader font-normal text-gray-900 leading-[1.2]" 
             style={{ fontSize: 'clamp(34px, 5vw, 54px)' }}
           >
-            Questions & Answers
+            Frågor & Svar
           </h2>
         </div>
 
@@ -58,7 +62,7 @@ const FAQSection = () => {
                 onKeyDown={(e) => handleKeyPress(e, index)}
                 aria-expanded={openItem === index}
                 aria-controls={`faq-answer-${index}`}
-                className="w-full text-left py-6 flex items-center justify-between hover:bg-black hover:bg-opacity-5 transition-colors duration-200 focus:outline-none focus:bg-black focus:bg-opacity-5"
+                className="w-full text-left py-6 flex items-center justify-between focus:outline-none"
                 style={{ minHeight: '32px' }}
               >
                 <h3 

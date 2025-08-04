@@ -162,7 +162,7 @@ const ConsolidatedGrantList = ({
              return `om ${days} dagar`;
            };
           // No need to filter properties - using the grant object directly
-          return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-gray-50 ${isSelected ? 'bg-[#F6F6F6]' : ''}`} onClick={() => onGrantSelect(grant)}>
+          return <div key={grant.id} className={`p-4 cursor-pointer transition-all duration-200 hover:bg-[#F2F2F2] ${isSelected ? 'bg-[#F2F2F2]' : ''}`} onClick={() => onGrantSelect(grant)}>
                   <div className="space-y-2">
                     {/* Header with organization logo and match score */}
                     <div className="flex items-start justify-between">
@@ -251,13 +251,6 @@ const ConsolidatedGrantList = ({
               
               {/* Pagination Controls */}
               <div className="flex items-center justify-center gap-2 py-4 px-6">
-                {/* First Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(1)} disabled={currentPage === 1} className="h-8 px-2 text-xs hover:bg-gray-100" aria-label="Första sidan" title="Första sidan (Alt + Home)">
-                  <ChevronLeft className="h-3 w-3 mr-1" />
-                  <ChevronLeft className="h-3 w-3 -ml-2" />
-                  Första
-                </Button>
-                
                 {/* Previous Page Button */}
                 <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="h-8 px-3 text-xs hover:bg-gray-100" aria-label="Föregående sida" title="Föregående sida (Alt + ←)">
                   <ChevronLeft className="h-4 w-4 mr-1" />
@@ -271,10 +264,10 @@ const ConsolidatedGrantList = ({
                       <span key={index} className="px-2 py-1 text-gray-400">...</span> : 
                       <Button 
                         key={index}
-                        variant={pageNum === currentPage ? "default" : "ghost"} 
+                        variant={pageNum === currentPage ? "ghost" : "ghost"} 
                         size="sm" 
                         onClick={() => onPageChange(pageNum as number)} 
-                        className={`h-8 w-8 p-0 text-xs font-medium ${pageNum === currentPage ? 'bg-purple-600 text-white hover:bg-purple-700' : 'hover:bg-gray-100'}`} 
+                        className={`h-8 w-8 p-0 text-xs font-medium ${pageNum === currentPage ? 'font-bold text-gray-900' : 'hover:bg-gray-100'}`} 
                         aria-label={`Sida ${pageNum}`} 
                         aria-current={pageNum === currentPage ? "page" : undefined}
                       >
@@ -287,13 +280,6 @@ const ConsolidatedGrantList = ({
                 <Button variant="ghost" size="sm" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="h-8 px-3 text-xs hover:bg-gray-100" aria-label="Nästa sida" title="Nästa sida (Alt + →)">
                   Nästa
                   <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-                
-                {/* Last Page Button */}
-                <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages} className="h-8 px-2 text-xs hover:bg-gray-100" aria-label="Sista sidan" title="Sista sidan (Alt + End)">
-                  Sista
-                  <ChevronRight className="h-3 w-3 ml-1" />
-                  <ChevronRight className="h-3 w-3 -mr-2" />
                 </Button>
               </div>
               
