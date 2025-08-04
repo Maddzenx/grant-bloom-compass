@@ -387,6 +387,8 @@ interface DiscoverGrantsContentProps {
   onToggleBookmark: (grantId: string) => void;
   onBackToList: () => void;
   onPageChange?: (page: number) => void;
+  isAISearch?: boolean;
+  onToggleSearchMode?: (isAI: boolean) => void;
 }
 
 export const DiscoverGrantsContent = ({
@@ -412,7 +414,9 @@ export const DiscoverGrantsContent = ({
   onGrantSelect,
   onToggleBookmark,
   onBackToList,
-  onPageChange
+  onPageChange,
+  isAISearch = false,
+  onToggleSearchMode
 }: DiscoverGrantsContentProps) => {
   const [showInterestPage, setShowInterestPage] = useState(false);
   const isMobile = useIsMobile();
@@ -472,7 +476,9 @@ export const DiscoverGrantsContent = ({
               totalGrants={searchResults.length} 
               suggestions={suggestions} 
               isSearching={isSearching} 
-              searchMetrics={searchMetrics} 
+              searchMetrics={searchMetrics}
+              isAISearch={isAISearch}
+              onToggleSearchMode={onToggleSearchMode}
             />
           </div>
           
@@ -500,9 +506,19 @@ export const DiscoverGrantsContent = ({
           </div>
         </div>
       </div>
-      {/* Sorting controls in the white space between search and results */}
+      {/* Sorting controls and pagination info */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 py-4">
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          {/* Pagination Info */}
+          {pagination && (
+            <div className="flex items-center gap-2 text-base text-gray-600">
+              <span>
+                Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
+              </span>
+            </div>
+          )}
+
+          {/* Sorting Controls */}
           <SortingControls 
             sortBy={sortBy} 
             onSortChange={onSortChange} 

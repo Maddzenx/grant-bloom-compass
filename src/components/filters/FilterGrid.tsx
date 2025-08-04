@@ -98,7 +98,7 @@ export const FilterGrid = ({
                 onChange={() => onPendingFilterChange({ statusFilter: '' })}
                 className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
               />
-              Alla
+              Visa alla
             </label>
             <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700">
               <input

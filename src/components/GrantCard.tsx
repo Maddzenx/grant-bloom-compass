@@ -55,19 +55,19 @@ const GrantCard = ({
     
     if (percentage >= 75) {
       return (
-        <Badge className="bg-[#d7f5d7] text-[#4a7c4a] border-[#c5e9c5] hover:bg-[#d7f5d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#d7f5d7] text-[#4a7c4a] border-[#c5e9c5] hover:bg-[#d7f5d7] font-semibold text-sm px-3 py-1.5 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );
     } else if (percentage >= 40) {
       return (
-        <Badge className="bg-[#f5e6d7] text-[#7c6a4a] border-[#e9dbc5] hover:bg-[#f5e6d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#f5e6d7] text-[#7c6a4a] border-[#e9dbc5] hover:bg-[#f5e6d7] font-semibold text-sm px-3 py-1.5 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-[#f5d7d7] text-[#7c4a4a] border-[#e9c5c5] hover:bg-[#f5d7d7] font-semibold text-xs px-2 py-1 whitespace-nowrap">
+        <Badge className="bg-[#f5d7d7] text-[#7c4a4a] border-[#e9c5c5] hover:bg-[#f5d7d7] font-semibold text-sm px-3 py-1.5 whitespace-nowrap">
           {percentage}% match
         </Badge>
       );
@@ -135,8 +135,8 @@ const GrantCard = ({
     <Card className={`p-6 min-h-[120px] rounded-lg shadow-md cursor-pointer transition-all duration-200 border-l-4 ${isSelected ? 'bg-accent-2/10 border-l-accent-2' : 'bg-white border-l-transparent hover:bg-accent-2/5'} ${isMobile ? 'mx-2' : 'mx-1'}`} onClick={onSelect}>
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 text-xs text-ink-obsidian/70 flex-shrink-0">
-            <img src={orgLogo.src} alt={orgLogo.alt} className="w-8 h-8 object-contain" />
+          <div className="flex items-center gap-2 text-sm text-ink-obsidian/70 flex-shrink-0">
+            <img src={orgLogo.src} alt={orgLogo.alt} className="w-10 h-10 object-contain" />
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {shouldShowMatchScore && (
@@ -145,49 +145,57 @@ const GrantCard = ({
               </div>
             )}
             {status === 'open' && (
-              <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Öppet</Badge>
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-200 text-sm px-3 py-1.5">Öppet</Badge>
             )}
             {status === 'upcoming' && (
-              <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">Kommande</Badge>
+              <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 text-sm px-3 py-1.5">Kommande</Badge>
             )}
             {status === 'closed' && (
-              <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Stängd</Badge>
+              <Badge className="bg-red-100 text-red-800 hover:bg-red-200 text-sm px-3 py-1.5">Stängd</Badge>
             )}
-            {/* Bookmark button hidden */}
+            <button
+              onClick={handleBookmarkToggle}
+              className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors duration-200"
+              title={actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}
+            >
+              <Bookmark 
+                className={`w-5 h-5 ${actuallyBookmarked ? 'fill-current text-purple-600' : 'text-gray-400 hover:text-gray-600'}`} 
+              />
+            </button>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="font-bold text-ink-obsidian text-base leading-tight break-words">
+        <h3 className="font-bold text-ink-obsidian text-lg leading-tight break-words">
           {grant.title}
         </h3>
 
         {/* Description - now showing aboutGrant which contains subtitle from database */}
-        <p className="text-sm text-ink-obsidian/70 leading-relaxed break-words">
+        <p className="text-lg text-ink-obsidian/70 leading-relaxed break-words">
           {grant.aboutGrant}
         </p>
 
         {/* Footer with funding and deadline */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs mt-2">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-base mt-2">
           <span className="font-semibold text-accent-1">
             {grant.fundingAmount}
           </span>
           <div className="flex flex-col md:flex-row md:items-center gap-2 text-ink-obsidian/60">
             {status === 'open' && grant.deadline && (
               <span className="flex items-center gap-1 text-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 Öppen: {getDaysLeftText(grant.deadline)}
               </span>
             )}
             {status === 'upcoming' && grant.application_opening_date && (
               <span className="flex items-center gap-1 text-orange-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 Öppnar {getDaysUntilOpening(grant.application_opening_date)}
               </span>
             )}
             {grant.deadline && (
               <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
+                <Calendar className="w-4 h-4" />
                 Sök senast: <span className="font-semibold">{formatDate(grant.deadline)}</span>
               </span>
             )}

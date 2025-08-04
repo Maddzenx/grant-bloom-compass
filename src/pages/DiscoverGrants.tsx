@@ -21,6 +21,7 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Default to deadline-asc for filtered search
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
+  const [isAISearch, setIsAISearch] = useState(false); // Default to regular search mode
   // Transform initial search results if they exist
   const transformSemanticMatches = (rawMatches: any[]) => {
     if (!rawMatches || rawMatches.length === 0) return undefined;
@@ -604,6 +605,12 @@ const DiscoverGrants = () => {
     // Backend pipeline will automatically refetch with new sorting
   }, []);
 
+  // Handle search mode toggle
+  const handleToggleSearchMode = useCallback((isAI: boolean) => {
+    setIsAISearch(isAI);
+    console.log('🔀 Search mode changed to:', isAI ? 'AI' : 'Regular');
+  }, []);
+
   // Get the appropriate loading and error states based on pipeline
   const { isLoading, isError, error } = useMemo(() => {
     if (useSemanticPipeline) {
@@ -676,6 +683,8 @@ const DiscoverGrants = () => {
       onGrantSelect={handleGrantSelect}
       onToggleBookmark={handleToggleBookmark}
       onBackToList={handleBackToList}
+      isAISearch={isAISearch}
+      onToggleSearchMode={handleToggleSearchMode}
       // Backend pagination props (only for backend pipeline)
       {...(useBackendPipeline && {
         pagination: backendPagination,

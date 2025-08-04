@@ -52,7 +52,7 @@ const FilterContent = ({
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="radio" name="statusFilter" value="" checked={!filters.statusFilter} onChange={() => onFiltersChange({ statusFilter: '' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
-            <span>Alla</span>
+            <span>Visa alla</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="radio" name="statusFilter" value="open" checked={filters.statusFilter === 'open'} onChange={() => onFiltersChange({ statusFilter: 'open' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
@@ -97,7 +97,7 @@ const FilterContent = ({
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="radio" name="deadline" value="" checked={!deadlineValue?.preset} onChange={() => onDeadlineChange({ type: 'preset', preset: '' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
-            <span>Alla</span>
+            <span>Visa alla</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="radio" name="deadline" value="urgent" checked={deadlineValue?.preset === 'urgent'} onChange={() => onDeadlineChange({ type: 'preset', preset: 'urgent' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
@@ -245,14 +245,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             <PopoverTrigger asChild>
             <Button
   variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
+  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
-  {filters.statusFilter === 'open' ? 'Öppen' : filters.statusFilter === 'upcoming' ? 'Kommande' : 'Alla'} <ChevronDown className="w-4 h-4" />
+  {filters.statusFilter === 'open' ? 'Öppen' : filters.statusFilter === 'upcoming' ? 'Kommande' : 'Visa alla'} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-40 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input
                       type="radio"
                       name="statusFilter"
@@ -261,9 +261,9 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                       onChange={() => onFiltersChange({ statusFilter: '' })}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                     />
-                    <span>Alla</span>
+                    <span>Visa alla</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input
                       type="radio"
                       name="statusFilter"
@@ -274,7 +274,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                     />
                     <span>Öppen</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input
                       type="radio"
                       name="statusFilter"
@@ -292,14 +292,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             <PopoverTrigger asChild>
             <Button
   variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
+  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
   Organisation {filters.organizations?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.organizations.length}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.organizations?.includes(org)} onChange={e => {
               const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter((o: string) => o !== org);
               onFiltersChange({ organizations: newOrgs });
@@ -315,14 +315,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             <PopoverTrigger asChild>
             <Button
   variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
+  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
   Stödberättigad sökande {filters.eligibleApplicants?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.eligibleApplicants.length}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
                 const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter((a: string) => a !== app);
                 onFiltersChange({ eligibleApplicants: newApps });
@@ -338,14 +338,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             <PopoverTrigger asChild>
             <Button
   variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
+  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
   Region {filters.regions?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.regions.length}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
@@ -359,7 +359,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                     />
                     <span>Sverige</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
@@ -382,14 +382,14 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
             <PopoverTrigger asChild>
             <Button
   variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-sm shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
+  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
   Övriga filter {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{(filters.noCofinancingRequired ? 1 : 0) + (filters.noConsortiumRequired ? 1 : 0)}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
@@ -400,7 +400,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                     />
                     <span>Ej krav på medfinansering</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
