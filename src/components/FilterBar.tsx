@@ -45,21 +45,29 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Status</h3>
-          {filters.statusFilter && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ statusFilter: '' })}>
+          {filters.statusFilter && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          statusFilter: ''
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="statusFilter" value="" checked={!filters.statusFilter} onChange={() => onFiltersChange({ statusFilter: '' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="statusFilter" value="" checked={!filters.statusFilter} onChange={() => onFiltersChange({
+            statusFilter: ''
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Visa alla</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="statusFilter" value="open" checked={filters.statusFilter === 'open'} onChange={() => onFiltersChange({ statusFilter: 'open' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="statusFilter" value="open" checked={filters.statusFilter === 'open'} onChange={() => onFiltersChange({
+            statusFilter: 'open'
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Öppen</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="statusFilter" value="upcoming" checked={filters.statusFilter === 'upcoming'} onChange={() => onFiltersChange({ statusFilter: 'upcoming' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="statusFilter" value="upcoming" checked={filters.statusFilter === 'upcoming'} onChange={() => onFiltersChange({
+            statusFilter: 'upcoming'
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Kommande</span>
           </label>
         </div>
@@ -70,16 +78,20 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Organisation</h3>
-          {filters.organizations?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ organizations: [] })}>
+          {filters.organizations?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          organizations: []
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.organizations?.includes(org)} onChange={e => {
-              const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter(o => o !== org);
-              onFiltersChange({ organizations: newOrgs });
-            }} />
+            const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter(o => o !== org);
+            onFiltersChange({
+              organizations: newOrgs
+            });
+          }} />
             <span>{org}</span>
           </label>)}
         </div>
@@ -90,25 +102,40 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Deadline</h3>
-          {deadlineValue?.preset && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onDeadlineChange({ type: 'preset', preset: '' })}>
+          {deadlineValue?.preset && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onDeadlineChange({
+          type: 'preset',
+          preset: ''
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="deadline" value="" checked={!deadlineValue?.preset} onChange={() => onDeadlineChange({ type: 'preset', preset: '' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="deadline" value="" checked={!deadlineValue?.preset} onChange={() => onDeadlineChange({
+            type: 'preset',
+            preset: ''
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Visa alla</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="deadline" value="urgent" checked={deadlineValue?.preset === 'urgent'} onChange={() => onDeadlineChange({ type: 'preset', preset: 'urgent' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="deadline" value="urgent" checked={deadlineValue?.preset === 'urgent'} onChange={() => onDeadlineChange({
+            type: 'preset',
+            preset: 'urgent'
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Brådskande (7 dagar)</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="deadline" value="2weeks" checked={deadlineValue?.preset === '2weeks'} onChange={() => onDeadlineChange({ type: 'preset', preset: '2weeks' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="deadline" value="2weeks" checked={deadlineValue?.preset === '2weeks'} onChange={() => onDeadlineChange({
+            type: 'preset',
+            preset: '2weeks'
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Nästa 2 veckor</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="radio" name="deadline" value="1month" checked={deadlineValue?.preset === '1month'} onChange={() => onDeadlineChange({ type: 'preset', preset: '1month' })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
+            <input type="radio" name="deadline" value="1month" checked={deadlineValue?.preset === '1month'} onChange={() => onDeadlineChange({
+            type: 'preset',
+            preset: '1month'
+          })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
             <span>Nästa månad</span>
           </label>
         </div>
@@ -119,16 +146,20 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Stödberättigad sökande</h3>
-          {filters.eligibleApplicants?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ eligibleApplicants: [] })}>
+          {filters.eligibleApplicants?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          eligibleApplicants: []
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
-              const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter(a => a !== app);
-              onFiltersChange({ eligibleApplicants: newApps });
-            }} />
+            const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter(a => a !== app);
+            onFiltersChange({
+              eligibleApplicants: newApps
+            });
+          }} />
             <span>{app}</span>
           </label>)}
         </div>
@@ -139,27 +170,31 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Region</h3>
-          {filters.region?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ region: [] })}>
+          {filters.regions?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          regions: []
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
-          {geographicScopeOptions.map(region => (
-            <label key={region} className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-              <input 
-                type="checkbox" 
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                checked={filters.region?.includes(region) || false} 
-                onChange={e => {
-                  const newRegions = e.target.checked 
-                    ? [...(filters.region || []), region] 
-                    : (filters.region || []).filter(r => r !== region);
-                  onFiltersChange({ region: newRegions });
-                }} 
-              />
-              <span>{region}</span>
-            </label>
-          ))}
+          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('Sverige') || false} onChange={e => {
+            const newRegions = e.target.checked ? [...(filters.regions || []), 'Sverige'] : (filters.regions || []).filter(r => r !== 'Sverige');
+            onFiltersChange({
+              regions: newRegions
+            });
+          }} />
+            <span>Sverige</span>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('EU') || false} onChange={e => {
+            const newRegions = e.target.checked ? [...(filters.regions || []), 'EU'] : (filters.regions || []).filter(r => r !== 'EU');
+            onFiltersChange({
+              regions: newRegions
+            });
+          }} />
+            <span>EU</span>
+          </label>
         </div>
       </div>
       <Separator className="bg-gray-200" />
@@ -168,31 +203,28 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Övriga filter</h3>
-          {(filters.cofinancingRequired === false || filters.consortiumRequired === false) && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ cofinancingRequired: null, consortiumRequired: null })}>
+          {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          noCofinancingRequired: false,
+          noConsortiumRequired: false
+        })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input 
-              type="checkbox" 
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.cofinancingRequired === false} 
-              onChange={e => {
-                onFiltersChange({ cofinancingRequired: e.target.checked ? false : null });
-              }} 
-            />
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.noCofinancingRequired || false} onChange={e => {
+            onFiltersChange({
+              noCofinancingRequired: e.target.checked
+            });
+          }} />
             <span>Ej krav på medfinansering</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input 
-              type="checkbox" 
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.consortiumRequired === false} 
-              onChange={e => {
-                onFiltersChange({ consortiumRequired: e.target.checked ? false : null });
-              }} 
-            />
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.noConsortiumRequired || false} onChange={e => {
+            onFiltersChange({
+              noConsortiumRequired: e.target.checked
+            });
+          }} />
             <span>Ej krav på konsortium</span>
           </label>
         </div>
@@ -209,18 +241,7 @@ const FilterContent = ({
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const activeFilterCount = [
-    props.filters.organizations?.length, 
-    props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, 
-    props.deadlineValue?.preset ? 1 : 0, 
-    props.filters.industrySectors?.length, 
-    props.filters.eligibleApplicants?.length, 
-    props.filters.consortiumRequired === false ? 1 : 0, 
-    props.filters.cofinancingRequired === false ? 1 : 0, 
-    props.filters.region?.length, 
-    props.filters.statusFilter ? 1 : 0
-  ].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
-
+  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length, props.filters.statusFilter ? 1 : 0].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
   const {
     filters,
     onFiltersChange,
@@ -241,46 +262,28 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Organisation Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button
-  variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
->
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white font-medium text-sm">
   {filters.statusFilter === 'open' ? 'Öppen' : filters.statusFilter === 'upcoming' ? 'Kommande' : 'Visa alla'} <ChevronDown className="w-4 h-4" />
-</Button>
+          </Button>
             </PopoverTrigger>
             <PopoverContent className="w-40 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input
-                      type="radio"
-                      name="statusFilter"
-                      value=""
-                      checked={!filters.statusFilter}
-                      onChange={() => onFiltersChange({ statusFilter: '' })}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                    />
+                    <input type="radio" name="statusFilter" value="" checked={!filters.statusFilter} onChange={() => onFiltersChange({
+                statusFilter: ''
+              })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
                     <span>Visa alla</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input
-                      type="radio"
-                      name="statusFilter"
-                      value="open"
-                      checked={filters.statusFilter === 'open'}
-                      onChange={() => onFiltersChange({ statusFilter: 'open' })}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                    />
+                    <input type="radio" name="statusFilter" value="open" checked={filters.statusFilter === 'open'} onChange={() => onFiltersChange({
+                statusFilter: 'open'
+              })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
                     <span>Öppen</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input
-                      type="radio"
-                      name="statusFilter"
-                      value="upcoming"
-                      checked={filters.statusFilter === 'upcoming'}
-                      onChange={() => onFiltersChange({ statusFilter: 'upcoming' })}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                    />
+                    <input type="radio" name="statusFilter" value="upcoming" checked={filters.statusFilter === 'upcoming'} onChange={() => onFiltersChange({
+                statusFilter: 'upcoming'
+              })} className="h-4 w-4 text-blue-600 focus:ring-blue-500" />
                     <span>Kommande</span>
                   </label>
                 </div>
@@ -288,20 +291,19 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         </Popover>
         <Popover>
             <PopoverTrigger asChild>
-            <Button
-  variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
->
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm">
   Organisation {filters.organizations?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.organizations.length}</span>} <ChevronDown className="w-4 h-4" />
-</Button>
+          </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
                   {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                     <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.organizations?.includes(org)} onChange={e => {
-              const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter((o: string) => o !== org);
-              onFiltersChange({ organizations: newOrgs });
-            }} />
+                const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter((o: string) => o !== org);
+                onFiltersChange({
+                  organizations: newOrgs
+                });
+              }} />
                     <span>{org}</span>
                     </label>)}
                 </div>
@@ -311,19 +313,18 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Stödberättigad sökande Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button
-  variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
->
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm">
   Stödberättigad sökande {filters.eligibleApplicants?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.eligibleApplicants.length}</span>} <ChevronDown className="w-4 h-4" />
-</Button>
+          </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
                   {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
                       <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
                 const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter((a: string) => a !== app);
-                onFiltersChange({ eligibleApplicants: newApps });
+                onFiltersChange({
+                  eligibleApplicants: newApps
+                });
               }} />
                       <span>{app}</span>
                     </label>)}
@@ -334,31 +335,30 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Region Filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button
-  variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
->
-  Region {filters.region?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.region.length}</span>} <ChevronDown className="w-4 h-4" />
-</Button>
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm">
+  Region {filters.regions?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.regions.length}</span>} <ChevronDown className="w-4 h-4" />
+          </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  {geographicScopeOptions.map(region => (
-                    <label key={region} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                      <input 
-                        type="checkbox" 
-                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                        checked={filters.region?.includes(region) || false} 
-                        onChange={e => {
-                          const newRegions = e.target.checked 
-                            ? [...(filters.region || []), region] 
-                            : (filters.region || []).filter(r => r !== region);
-                          onFiltersChange({ region: newRegions });
-                        }} 
-                      />
-                      <span>{region}</span>
-                    </label>
-                  ))}
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('Sverige') || false} onChange={e => {
+                const newRegions = e.target.checked ? [...(filters.regions || []), 'Sverige'] : (filters.regions || []).filter(r => r !== 'Sverige');
+                onFiltersChange({
+                  regions: newRegions
+                });
+              }} />
+                    <span>Sverige</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('EU') || false} onChange={e => {
+                const newRegions = e.target.checked ? [...(filters.regions || []), 'EU'] : (filters.regions || []).filter(r => r !== 'EU');
+                onFiltersChange({
+                  regions: newRegions
+                });
+              }} />
+                    <span>EU</span>
+                  </label>
                 </div>
             </PopoverContent>
         </Popover>
@@ -366,35 +366,26 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Övriga filter */}
         <Popover>
             <PopoverTrigger asChild>
-            <Button
-  variant="outline"
-  className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
->
-  Övriga filter {(filters.cofinancingRequired === false || filters.consortiumRequired === false) && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{(filters.cofinancingRequired === false ? 1 : 0) + (filters.consortiumRequired === false ? 1 : 0)}</span>} <ChevronDown className="w-4 h-4" />
-</Button>
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm">
+  Övriga filter {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{(filters.noCofinancingRequired ? 1 : 0) + (filters.noConsortiumRequired ? 1 : 0)}</span>} <ChevronDown className="w-4 h-4" />
+          </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input 
-                      type="checkbox" 
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.cofinancingRequired === false} 
-                      onChange={e => {
-                        onFiltersChange({ cofinancingRequired: e.target.checked ? false : null });
-                      }} 
-                    />
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.noCofinancingRequired || false} onChange={e => {
+                onFiltersChange({
+                  noCofinancingRequired: e.target.checked
+                });
+              }} />
                     <span>Ej krav på medfinansering</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input 
-                      type="checkbox" 
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.consortiumRequired === false} 
-                      onChange={e => {
-                        onFiltersChange({ consortiumRequired: e.target.checked ? false : null });
-                      }} 
-                    />
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.noConsortiumRequired || false} onChange={e => {
+                onFiltersChange({
+                  noConsortiumRequired: e.target.checked
+                });
+              }} />
                     <span>Ej krav på konsortium</span>
                   </label>
                 </div>
