@@ -383,6 +383,7 @@ interface DiscoverGrantsContentProps {
   };
   onSearchChange: (value: string) => void;
   onSearch: () => void;
+  onClearSearch?: () => void;
   onSortChange: (sortBy: SortOption) => void;
   onFiltersChange: (filters: Partial<EnhancedFilterOptions>) => void;
   onClearFilters: () => void;
@@ -414,6 +415,7 @@ export const DiscoverGrantsContent = ({
   pagination,
   onSearchChange,
   onSearch,
+  onClearSearch,
   onSortChange,
   onFiltersChange,
   onClearFilters,
@@ -494,6 +496,7 @@ export const DiscoverGrantsContent = ({
               searchMetrics={searchMetrics}
               isAISearch={isAISearch}
               onToggleSearchMode={onToggleSearchMode}
+              onClearSearch={onClearSearch}
             />
           </div>
           

@@ -11,6 +11,7 @@ interface DiscoverHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onSearch: () => void;
+  onClearSearch?: () => void;
   sortBy: SortOption;
   onSortChange: (sortBy: SortOption) => void;
   totalGrants: number;
@@ -29,6 +30,7 @@ const DiscoverHeader = ({
   searchTerm,
   onSearchChange,
   onSearch,
+  onClearSearch,
   sortBy,
   onSortChange,
   totalGrants,
@@ -146,7 +148,7 @@ const DiscoverHeader = ({
               {searchTerm && (
                 <button
                   className="text-gray-400 hover:text-gray-600 transition-colors"
-                  onClick={() => onSearchChange("")}
+                  onClick={onClearSearch}
                   aria-label="Clear search"
                 >
                   <X className="w-6 h-6" />

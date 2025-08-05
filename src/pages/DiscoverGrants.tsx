@@ -154,6 +154,14 @@ const DiscoverGrants = () => {
   }, []);
 
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(transformSemanticMatches(initialSearchResults?.rankedGrants));
+  
+  // Separate input value from search term to prevent searches on every character
+  const [inputValue, setInputValue] = useState(() => {
+    const baseSearchTerm = initialSearchTerm;
+    const hashtags = generateHashtags(initialFilterInfo);
+    return baseSearchTerm + hashtags;
+  });
+  
   const [searchTerm, setSearchTerm] = useState(() => {
     const baseSearchTerm = initialSearchTerm;
     const hashtags = generateHashtags(initialFilterInfo);
@@ -181,7 +189,7 @@ const DiscoverGrants = () => {
   const previousSemanticMatches = useRef<any[] | undefined>(undefined);
   
   // Determine which pipeline to use
-  const useSemanticPipeline = Boolean(hasSearched && searchTerm.trim());
+  const useSemanticPipeline = Boolean(isAISearch && hasSearched && searchTerm.trim() && semanticMatches && semanticMatches.length > 0);
   const useBackendPipeline = !useSemanticPipeline;
 
   // Handle initial sorting setup - only run once
@@ -286,7 +294,7 @@ const DiscoverGrants = () => {
     sorting: { sortBy, searchTerm },
     pagination: { page: 1, limit: 15 },
     searchTerm: useBackendPipeline ? getBaseSearchTerm(searchTerm) : '', // Only pass base search term (without hashtags) for backend pipeline
-    enabled: useBackendPipeline, // Only enabled for manual browse pipeline
+    enabled: useBackendPipeline || (!isAISearch && hasSearched && !!searchTerm.trim()), // Enable for backend pipeline OR regular search mode
   });
 
   // Track if this is the very first load (no filters, no sorting, no search)
@@ -297,132 +305,148 @@ const DiscoverGrants = () => {
   // 2. User has applied filters/sorting (even if no data yet)
   const showBackendFetchingOverlay = useBackendPipeline && backendFetching && (backendGrants.length > 0 || !isInitialLoad);
 
-  // Handle semantic search - only when explicitly called
+  // Handle search - use appropriate method based on search mode
   const handleSearch = async () => {
-    const baseSearchTerm = getBaseSearchTerm(searchTerm);
+    const baseSearchTerm = getBaseSearchTerm(inputValue);
     
     if (!baseSearchTerm.trim()) {
-      console.log('⚠️ Empty search term, clearing semantic matches');
+      console.log('⚠️ Empty search term, clearing search results');
       setSemanticMatches(undefined);
       setHasSearched(false);
+      setSearchTerm('');
       return;
     }
 
-    console.log('🔍 Starting semantic search for:', baseSearchTerm);
+    console.log('🔍 Starting search for:', baseSearchTerm, 'Mode:', isAISearch ? 'AI' : 'Regular');
     setHasSearched(true);
+    // Update the actual search term when performing search
+    setSearchTerm(inputValue);
     
-    try {
-      const result = await searchGrants(baseSearchTerm, [], initialGrantType);
-      console.log('🎯 Semantic search result:', result);
-      
-      if (result?.rankedGrants && result.rankedGrants.length > 0) {
-        console.log('✅ Setting semantic matches with actual scores:', 
-          result.rankedGrants.map(g => ({ id: g.grantId, score: g.relevanceScore }))
-        );
+    if (isAISearch) {
+      // Use semantic search for AI mode
+      try {
+        const result = await searchGrants(baseSearchTerm, [], initialGrantType);
+        console.log('🎯 Semantic search result:', result);
         
-        console.log('🔍 Debug: First semantic match structure:', result.rankedGrants[0]);
-        console.log('🔍 Debug: Starting transformation of', result.rankedGrants.length, 'matches');
-        
-        // Transform semantic matches to include language selection
-        const transformedMatches = result.rankedGrants.map((match, index) => {
-          console.log(`🔍 Debug: Transforming match ${index + 1}/${result.rankedGrants.length}:`, match.id);
-          const isEU = match.organization === 'Europeiska Kommissionen';
-          const language = isEU ? 'en' : 'sv';
+        if (result?.rankedGrants && result.rankedGrants.length > 0) {
+          console.log('✅ Setting semantic matches with actual scores:', 
+            result.rankedGrants.map(g => ({ id: g.grantId, score: g.relevanceScore }))
+          );
           
-          console.log('🔍 Debug: Processing match:', {
-            id: match.id,
-            grantId: match.grantId,
-            organization: match.organization,
-            isEU,
-            language,
-            title_sv: match.title_sv,
-            title_en: match.title_en,
-            subtitle_sv: match.subtitle_sv,
-            subtitle_en: match.subtitle_en
+          console.log('🔍 Debug: First semantic match structure:', result.rankedGrants[0]);
+          console.log('🔍 Debug: Starting transformation of', result.rankedGrants.length, 'matches');
+          
+          // Transform semantic matches to include language selection
+          const transformedMatches = result.rankedGrants.map((match, index) => {
+            console.log(`🔍 Debug: Transforming match ${index + 1}/${result.rankedGrants.length}:`, match.id);
+            const isEU = match.organization === 'Europeiska Kommissionen';
+            const language = isEU ? 'en' : 'sv';
+            
+            console.log('🔍 Debug: Processing match:', {
+              id: match.id,
+              grantId: match.grantId,
+              organization: match.organization,
+              isEU,
+              language,
+              title_sv: match.title_sv,
+              title_en: match.title_en,
+              subtitle_sv: match.subtitle_sv,
+              subtitle_en: match.subtitle_en
+            });
+            
+            const selectedTitle = language === 'en' ? match.title_en : match.title_sv;
+            const selectedAboutGrant = language === 'en' ? match.subtitle_en : match.subtitle_sv;
+            
+            console.log('🔍 Debug: Language selection for match:', {
+              id: match.id,
+              organization: match.organization,
+              isEU,
+              language,
+              title_sv: match.title_sv,
+              title_en: match.title_en,
+              selectedTitle,
+              subtitle_sv: match.subtitle_sv,
+              subtitle_en: match.subtitle_en,
+              selectedAboutGrant
+            });
+            
+            return {
+              // Standard grant structure with language selection
+              id: match.id,
+              title: selectedTitle,
+              organization: match.organization,
+              aboutGrant: selectedAboutGrant,
+              fundingAmount: match.fundingAmount,
+              funding_amount_eur: match.funding_amount_eur,
+              opens_at: match.opens_at,
+              deadline: match.deadline,
+              tags: match.tags,
+              industry_sectors: match.industry_sectors,
+              eligible_organisations: match.eligible_organisations,
+              geographic_scope: match.geographic_scope,
+              region: language === 'en' ? match.region_en : match.region_sv,
+              cofinancing_required: match.cofinancing_required,
+              cofinancing_level_min: match.cofinancing_level_min,
+              consortium_requirement: match.consortium_requirement,
+              fundingRules: match.fundingRules,
+              application_opening_date: match.application_opening_date,
+              application_closing_date: match.application_closing_date,
+              project_start_date_min: match.project_start_date_min,
+              project_start_date_max: match.project_start_date_max,
+              project_end_date_min: match.project_end_date_min,
+              project_end_date_max: match.project_end_date_max,
+              information_webinar_dates: match.information_webinar_dates,
+              information_webinar_links: match.information_webinar_links,
+              information_webinar_names: match.information_webinar_names,
+              templates: match.templates,
+              generalInfo: match.generalInfo,
+              application_templates_links: match.application_templates_links,
+              other_templates_links: match.other_templates_links,
+              other_sources_links: match.other_sources_links,
+              other_sources_names: match.other_sources_names,
+              created_at: match.created_at,
+              updated_at: match.updated_at,
+              // Semantic search specific fields
+              grantId: match.grantId,
+              relevanceScore: match.relevanceScore
+            };
           });
           
-          const selectedTitle = language === 'en' ? match.title_en : match.title_sv;
-          const selectedAboutGrant = language === 'en' ? match.subtitle_en : match.subtitle_sv;
-          
-          console.log('🔍 Debug: Language selection for match:', {
-            id: match.id,
-            organization: match.organization,
-            isEU,
-            language,
-            title_sv: match.title_sv,
-            title_en: match.title_en,
-            selectedTitle,
-            subtitle_sv: match.subtitle_sv,
-            subtitle_en: match.subtitle_en,
-            selectedAboutGrant
-          });
-          
-          return {
-            // Standard grant structure with language selection
-            id: match.id,
-            title: selectedTitle,
-            organization: match.organization,
-            aboutGrant: selectedAboutGrant,
-            fundingAmount: match.fundingAmount,
-            funding_amount_eur: match.funding_amount_eur,
-            opens_at: match.opens_at,
-            deadline: match.deadline,
-            tags: match.tags,
-            industry_sectors: match.industry_sectors,
-            eligible_organisations: match.eligible_organisations,
-            geographic_scope: match.geographic_scope,
-            region: language === 'en' ? match.region_en : match.region_sv,
-            cofinancing_required: match.cofinancing_required,
-            cofinancing_level_min: match.cofinancing_level_min,
-            consortium_requirement: match.consortium_requirement,
-            fundingRules: match.fundingRules,
-            application_opening_date: match.application_opening_date,
-            application_closing_date: match.application_closing_date,
-            project_start_date_min: match.project_start_date_min,
-            project_start_date_max: match.project_start_date_max,
-            project_end_date_min: match.project_end_date_min,
-            project_end_date_max: match.project_end_date_max,
-            information_webinar_dates: match.information_webinar_dates,
-            information_webinar_links: match.information_webinar_links,
-            information_webinar_names: match.information_webinar_names,
-            templates: match.templates,
-            generalInfo: match.generalInfo,
-            application_templates_links: match.application_templates_links,
-            other_templates_links: match.other_templates_links,
-            other_sources_links: match.other_sources_links,
-            other_sources_names: match.other_sources_names,
-            created_at: match.created_at,
-            updated_at: match.updated_at,
-            // Semantic search specific fields
-            grantId: match.grantId,
-            relevanceScore: match.relevanceScore
-          };
-        });
-        
-        console.log('🔍 Debug: Transformed matches count:', transformedMatches.length);
-        console.log('🔍 Debug: First transformed match:', {
-          id: transformedMatches[0]?.id,
-          title: transformedMatches[0]?.title,
-          aboutGrant: transformedMatches[0]?.aboutGrant,
-          organization: transformedMatches[0]?.organization,
-          fundingAmount: transformedMatches[0]?.fundingAmount
-        });
-        
-        setSemanticMatches(transformedMatches);
-      } else {
-        console.log('⚠️ No semantic matches found');
-        setSemanticMatches([]);
+          setSemanticMatches(transformedMatches);
+        } else {
+          console.log('❌ No semantic matches found');
+          setSemanticMatches(undefined);
+        }
+      } catch (error) {
+        console.error('❌ Semantic search failed:', error);
+        setSemanticMatches(undefined);
       }
-      
-      // Close details panel after successful search completion
-      handleBackToList();
-    } catch (error) {
-      console.error('❌ Semantic search failed:', error);
-      setSemanticMatches([]);
-      
-      // Close details panel even on error to show the (empty) results
-      handleBackToList();
+    } else {
+      // For regular search mode, clear semantic matches and let backend pipeline handle the search
+      console.log('🔍 Regular search mode - clearing semantic matches and using backend pipeline');
+      setSemanticMatches(undefined);
+      // The backend pipeline will automatically handle the search with the updated searchTerm
     }
+  };
+
+  // Handle input changes without triggering search
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+  };
+
+  // Handle clearing search
+  const handleClearSearch = () => {
+    setInputValue('');
+    setSearchTerm('');
+    setSemanticMatches(undefined);
+    setHasSearched(false);
+    // Reset to deadline-asc sorting when clearing search to switch to filtered search pipeline
+    if (sortBy !== "deadline-asc") {
+      console.log('🔄 Resetting to deadline-asc sorting when clearing search');
+      setSortBy("deadline-asc");
+    }
+    // Reset the initial sorting flag so we can set it again if needed
+    hasSetInitialSorting.current = false;
   };
 
   // Auto-trigger search only if coming from home page with search term but no pre-fetched results
@@ -652,31 +676,9 @@ const DiscoverGrants = () => {
 
   // Clear search results when search term is cleared
   const handleSearchChange = useCallback((value: string) => {
-    const currentHashtags = getHashtagsFromSearchTerm(searchTerm);
-    const newBaseTerm = getBaseSearchTerm(value);
-    
-    // Check if the base search term (without hashtags) is empty
-    if (!newBaseTerm.trim()) {
-      // Clear everything including hashtags when search is completely cleared
-      setSearchTerm('');
-      setSemanticMatches(undefined);
-      setHasSearched(false);
-      // Reset to deadline-asc sorting when clearing search to switch to filtered search pipeline
-      if (sortBy !== "deadline-asc") {
-        console.log('🔄 Resetting to deadline-asc sorting when clearing search');
-        setSortBy("deadline-asc");
-      }
-      // Reset the initial sorting flag so we can set it again if needed
-      hasSetInitialSorting.current = false;
-    } else {
-      // If the user is editing and removes parentheses, preserve them
-      if (!value.includes('(') && currentHashtags) {
-        setSearchTerm(newBaseTerm + ' (' + currentHashtags + ')');
-      } else {
-        setSearchTerm(value);
-      }
-    }
-  }, [sortBy, searchTerm, getBaseSearchTerm, getHashtagsFromSearchTerm]);
+    // Only update the input value, don't trigger search
+    setInputValue(value);
+  }, []);
 
   // Handle sort change - for backend pipeline, this will trigger a new query
   const handleSortChange = useCallback((newSortBy: SortOption) => {
@@ -754,7 +756,7 @@ const DiscoverGrants = () => {
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}
-      searchTerm={searchTerm}
+      searchTerm={inputValue}
       sortBy={sortBy}
       filters={filters}
       hasActiveFilters={hasActiveFilters}
@@ -768,6 +770,7 @@ const DiscoverGrants = () => {
       allRegions={allRegions}
       onSearchChange={handleSearchChange}
       onSearch={handleSearch}
+      onClearSearch={handleClearSearch}
       onSortChange={handleSortChange}
       onFiltersChange={updateFilters}
       onClearFilters={clearFilters}
