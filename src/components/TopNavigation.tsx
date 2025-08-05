@@ -37,11 +37,17 @@ export function TopNavigation() {
       title: t('nav.discover'),
       url: "/discover"
     },
-    // Only show 'Sparade' if user is signed in
-    ...(user ? [{
-      title: t('nav.saved'),
-      url: "/saved"
-    }] : [])
+    // Only show 'Sparade' and 'Business Plan Editor' if user is signed in
+    ...(user ? [
+      {
+        title: t('nav.saved'),
+        url: "/saved"
+      },
+      {
+        title: "Business Plan Editor",
+        url: "/business-plan-editor"
+      }
+    ] : [])
   ];
 
   const toggleMobileMenu = () => {
@@ -97,24 +103,48 @@ export function TopNavigation() {
             </div>
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4 text-sm">
-              {menuItems.filter(item => item.title !== 'Hem').map(item => {
-                const isActive = location.pathname === item.url;
-                return (
-                  <Link
-                    key={item.title}
-                    to={item.url}
-                    className={cn(
-                      "px-3 py-2 text-sm font-newsreader transition-colors rounded-md",
-                      isActive
-                        ? 'text-ink-obsidian font-bold' 
-                        : 'text-ink-secondary font-medium hover:text-ink-secondary/70'
-                    )}
-                    style={isActive ? { borderColor: '#F0F1F3' } : { borderColor: '#F0F1F3' }}
-                  >
-                    {item.title}
-                  </Link>
-                );
-              })}
+              {/* Discover Link */}
+              <Link
+                to="/discover"
+                className={cn(
+                  "px-3 py-2 text-sm font-newsreader transition-colors rounded-md",
+                  location.pathname === '/discover'
+                    ? 'text-ink-obsidian font-bold' 
+                    : 'text-ink-secondary font-medium hover:text-ink-secondary/70'
+                )}
+              >
+                {t('nav.discover')}
+              </Link>
+              
+              {/* Saved Grants Link - Only show if user is signed in */}
+              {user && (
+                <Link
+                  to="/saved"
+                  className={cn(
+                    "px-3 py-2 text-sm font-newsreader transition-colors rounded-md",
+                    location.pathname === '/saved'
+                      ? 'text-ink-obsidian font-bold' 
+                      : 'text-ink-secondary font-medium hover:text-ink-secondary/70'
+                  )}
+                >
+                  {t('nav.saved')}
+                </Link>
+              )}
+              
+              {/* Business Plan Editor Link - Only show if user is signed in */}
+              {user && (
+                <Link
+                  to="/business-plan-editor"
+                  className={cn(
+                    "px-3 py-2 text-sm font-newsreader transition-colors rounded-md",
+                    location.pathname === '/business-plan-editor'
+                      ? 'text-ink-obsidian font-bold' 
+                      : 'text-ink-secondary font-medium hover:text-ink-secondary/70'
+                  )}
+                >
+                  Business Plan Editor
+                </Link>
+              )}
               {/* Auth Buttons */}
               <div className="flex items-center space-x-3 ml-4">
                 {!user ? (
