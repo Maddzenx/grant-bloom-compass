@@ -22,32 +22,33 @@ export const useGrantSelection = ({ searchResults }: UseGrantSelectionProps): Us
   const isMobile = useIsMobile();
   const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
 
-  // Auto-select first grant when results change, but only if we don't have a valid selection
+  // Clear selection when search results change and current selection is not in results
   useEffect(() => {
-    // Removed expensive console logging to improve performance
-
-    if (searchResults.length > 0) {
-      // If no selection or current selection is not in results, select first
-      if (!selectedGrant || !searchResults.find(g => g.id === selectedGrant.id)) {
-        setSelectedGrant(searchResults[0]);
-      }
-    } else if (searchResults.length === 0) {
+    if (searchResults.length === 0) {
       setSelectedGrant(null);
+      setShowDetails(false);
+    } else if (selectedGrant && !searchResults.find(g => g.id === selectedGrant.id)) {
+      // If current selection is not in new results, clear it
+      setSelectedGrant(null);
+      setShowDetails(false);
     }
   }, [searchResults, selectedGrant]);
 
   const handleGrantSelect = useCallback((grant: GrantListItem) => {
-    // Removed expensive console logging to improve performance
-    // Always set the selected grant and show details when a grant is clicked
-    setSelectedGrant(grant);
-    setShowDetails(true);
-  }, []);
+    // If clicking on already selected grant, toggle details panel
+    if (selectedGrant && selectedGrant.id === grant.id) {
+      setShowDetails(!showDetails);
+    } else {
+      // Select new grant and show details
+      setSelectedGrant(grant);
+      setShowDetails(true);
+    }
+  }, [selectedGrant, showDetails]);
 
   const toggleBookmark = useCallback((grantId: string) => {
     const grant = searchResults.find(g => g.id === grantId);
     if (!grant) return;
 
-    // Removed expensive console logging to improve performance
     const currentlyBookmarked = isGrantSaved(grantId);
     
     if (currentlyBookmarked) {

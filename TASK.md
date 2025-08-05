@@ -532,4 +532,36 @@ Now when users select "Nyast publicerat" (newest published), the grants will be 
 - `src/hooks/useFilterState.ts` - Fixed URL parameter parsing for boolean filters
 - `supabase/functions/filtered-grants-search/index.ts` - Added defensive filter validation and debugging
 
-**Status**: ✅ Completed 
+**Status**: ✅ Completed
+
+### Grant Selection and Details Panel UX Fix - 2024-12-19
+**Description**: Fixed grant card selection issues and improved details panel user experience.
+
+**Problems Identified**:
+- Users couldn't enter details panel view of the topmost grant when entering the page because it was auto-selected by default
+- No way to collapse the details panel by clicking on an already selected grant
+- Auto-selection logic was preventing users from selecting the first grant until another grant was selected first
+
+**Changes Made**:
+- **Removed Auto-Selection**: Modified `useGrantSelection` hook to not automatically select the first grant when search results load
+- **Added Toggle Functionality**: Updated `handleGrantSelect` function to toggle the details panel when clicking on an already selected grant
+- **Simplified Logic**: Removed duplicate toggle logic from `DiscoverGrantsContent.tsx` since it's now handled in the hook
+- **Improved UX**: Users can now click on any grant (including the first one) to view details, and click again to collapse the panel
+
+**Technical Details**:
+- Updated `src/hooks/useGrantSelection.ts` - Removed auto-selection logic and added toggle functionality
+- Updated `src/components/DiscoverGrantsContent.tsx` - Simplified grant selection logic by removing duplicate toggle code
+- The details panel now properly toggles when clicking on the same grant multiple times
+- First grant is no longer pre-selected, allowing users to click on it to view details
+
+**User Experience Improvements**:
+- Users can now click on the first grant to view its details immediately
+- Clicking on an already selected grant collapses the details panel
+- More intuitive interaction pattern for grant selection and details viewing
+- Consistent behavior across desktop and mobile layouts
+
+**Files Modified**:
+- `src/hooks/useGrantSelection.ts` - Removed auto-selection and added toggle functionality
+- `src/components/DiscoverGrantsContent.tsx` - Simplified grant selection logic
+
+**Status**: ✅ Completed
