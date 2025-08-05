@@ -148,15 +148,19 @@ const ChatInput = ({
 
   // Auto-resize textarea function
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
+    // Limit character count to 300 characters
+    const maxChars = 300;
+    if (e.target.value.length <= maxChars) {
+      setInputValue(e.target.value);
 
-    // Auto-resize the textarea with better dynamic sizing
-    const textarea = e.target;
-    textarea.style.height = 'auto';
+      // Auto-resize the textarea with better dynamic sizing
+      const textarea = e.target;
+      textarea.style.height = 'auto';
 
-    // Calculate the new height based on content
-    const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400)); // Min 48px, Max 400px
-    textarea.style.height = newHeight + 'px';
+      // Calculate the new height based on content
+      const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400)); // Min 48px, Max 400px
+      textarea.style.height = newHeight + 'px';
+    }
   };
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey && inputValue.trim()) {
@@ -268,6 +272,7 @@ const ChatInput = ({
                   onKeyDown={handleKeyPress}
                   ref={textareaRef}
                   rows={1}
+                  maxLength={300}
                   disabled={isProcessing}
                   style={{ textAlign: 'left', verticalAlign: 'top' }}
                 />

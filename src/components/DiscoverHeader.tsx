@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { X, ArrowRight, Sparkles, Search, HelpCircle } from 'lucide-react';
 import { Button } from "./ui/button";
@@ -39,9 +39,11 @@ const DiscoverHeader = ({
   onToggleSearchMode
 }: DiscoverHeaderProps) => {
   const isMobile = useIsMobile();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       onSearch();
     }
   };
@@ -53,6 +55,16 @@ const DiscoverHeader = ({
   const handleToggleSearchMode = () => {
     onToggleSearchMode?.(!isAISearch);
   };
+
+  // Auto-resize textarea on mount and when searchTerm changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      textarea.style.height = 'auto';
+      const newHeight = Math.min(textarea.scrollHeight, 180); // Max 4 rows (40px per row)
+      textarea.style.height = newHeight + 'px';
+    }
+  }, [searchTerm]);
 
   return (
     <div className="w-full flex-shrink-0 flex items-center px-0">
@@ -103,13 +115,30 @@ const DiscoverHeader = ({
 
           {/* Search Bar */}
           <div className={`relative w-full ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
-            <input
-              className="w-full pl-6 pr-16 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500"
+            <textarea
+              ref={textareaRef}
+              className="w-full pl-6 pr-20 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500 resize-none overflow-hidden"
               placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."}
               value={searchTerm}
-              onChange={e => onSearchChange(e.target.value)}
+              onChange={e => {
+                // Limit character count to prevent overflow (roughly 3 rows worth)
+                const maxChars = 300;
+                if (e.target.value.length <= maxChars) {
+                  onSearchChange(e.target.value);
+                }
+              }}
               onKeyPress={handleKeyPress}
+              onInput={(e) => {
+                // Auto-resize the textarea
+                const textarea = e.target as HTMLTextAreaElement;
+                textarea.style.height = 'auto';
+                const newHeight = Math.min(textarea.scrollHeight, 180); // Max 4 rows (45px per row)
+                textarea.style.height = newHeight + 'px';
+              }}
+              rows={1}
+              maxLength={300}
               aria-label="Search grants"
+              style={{ minHeight: '56px', maxHeight: '180px' }}
             />
             
             {/* Right side icons container */}

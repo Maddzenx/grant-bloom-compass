@@ -22,7 +22,11 @@ const DiscoverGrants = () => {
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
   const [initialGrantType] = useState(() => location.state?.grantType || 'both');
-  const [isAISearch, setIsAISearch] = useState(false); // Default to regular search mode
+  const [initialFilterInfo] = useState(() => location.state?.filterInfo || null);
+  const [isAISearch, setIsAISearch] = useState(() => {
+    // If user comes from semantic search pipeline (has search results or search term), default to AI search
+    return !!(initialSearchResults || initialSearchTerm);
+  });
   // Transform initial search results if they exist
   const transformSemanticMatches = (rawMatches: any[]) => {
     if (!rawMatches || rawMatches.length === 0) return undefined;
@@ -105,8 +109,67 @@ const DiscoverGrants = () => {
     });
   };
 
+  // Function to generate hashtags from filter information
+  const generateHashtags = useCallback((filterInfo: any) => {
+    if (!filterInfo) return '';
+    
+    const hashtags = [];
+    
+    // Add grant type hashtags (using UI labels)
+    if (filterInfo.grantTypes && filterInfo.grantTypes.length > 0) {
+      if (filterInfo.grantTypes.includes('swedish')) {
+        hashtags.push('#Svenska bidrag');
+      }
+      if (filterInfo.grantTypes.includes('eu')) {
+        hashtags.push('#EU-bidrag');
+      }
+    }
+    
+    // Add organization hashtags (using UI labels)
+    if (filterInfo.organizations && filterInfo.organizations.length > 0) {
+      // Map backend organization types to UI display labels
+      const orgDisplayNames: { [key: string]: string } = {
+        'Företag': '#Företag',
+        'Ekonomiska föreningar': '#Företag', // Maps to Företag button
+        'Enskilda näringsidkare': '#Företag', // Maps to Företag button
+        'Universitet och högskolor': '#Forskning', // Maps to Forskning button
+        'Offentlig sektor': '#Offentlig Sektor', // Maps to Offentlig Sektor button
+        'Ideella föreningar': '#Offentlig Sektor' // Maps to Offentlig Sektor button
+      };
+      
+      // Use a Set to avoid duplicate hashtags
+      const uniqueHashtags = new Set<string>();
+      
+      filterInfo.organizations.forEach((org: string) => {
+        if (orgDisplayNames[org]) {
+          uniqueHashtags.add(orgDisplayNames[org]);
+        }
+      });
+      
+      hashtags.push(...Array.from(uniqueHashtags));
+    }
+    
+    return hashtags.length > 0 ? ` (${hashtags.join(' ')})` : '';
+  }, []);
+
   const [semanticMatches, setSemanticMatches] = useState<any[] | undefined>(transformSemanticMatches(initialSearchResults?.rankedGrants));
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [searchTerm, setSearchTerm] = useState(() => {
+    const baseSearchTerm = initialSearchTerm;
+    const hashtags = generateHashtags(initialFilterInfo);
+    return baseSearchTerm + hashtags;
+  });
+
+  // Function to extract base search term (without hashtags and parentheses)
+  const getBaseSearchTerm = useCallback((fullSearchTerm: string) => {
+    // Remove everything in parentheses and trim
+    return fullSearchTerm.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  }, []);
+
+  // Function to get hashtags from search term (extract from parentheses)
+  const getHashtagsFromSearchTerm = useCallback((fullSearchTerm: string) => {
+    const match = fullSearchTerm.match(/\(([^)]+)\)$/);
+    return match ? match[1] : '';
+  }, []);
   const [hasSearched, setHasSearched] = useState(!!initialSearchTerm);
   
   // Mobile-specific grant accumulation for infinite scroll
@@ -197,7 +260,7 @@ const DiscoverGrants = () => {
     filters,
     sorting: { sortBy, searchTerm },
     pagination: { page: 1, limit: 15 },
-    searchTerm: useBackendPipeline ? searchTerm : '', // Only pass searchTerm for backend pipeline
+    searchTerm: useBackendPipeline ? getBaseSearchTerm(searchTerm) : '', // Only pass base search term (without hashtags) for backend pipeline
     enabled: useBackendPipeline, // Only enabled for manual browse pipeline
   });
 
@@ -211,18 +274,20 @@ const DiscoverGrants = () => {
 
   // Handle semantic search - only when explicitly called
   const handleSearch = async () => {
-    if (!searchTerm.trim()) {
+    const baseSearchTerm = getBaseSearchTerm(searchTerm);
+    
+    if (!baseSearchTerm.trim()) {
       console.log('⚠️ Empty search term, clearing semantic matches');
       setSemanticMatches(undefined);
       setHasSearched(false);
       return;
     }
 
-    console.log('🔍 Starting semantic search for:', searchTerm);
+    console.log('🔍 Starting semantic search for:', baseSearchTerm);
     setHasSearched(true);
     
     try {
-      const result = await searchGrants(searchTerm, [], initialGrantType);
+      const result = await searchGrants(baseSearchTerm, [], initialGrantType);
       console.log('🎯 Semantic search result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
@@ -586,8 +651,13 @@ const DiscoverGrants = () => {
 
   // Clear search results when search term is cleared
   const handleSearchChange = useCallback((value: string) => {
-    setSearchTerm(value);
-    if (!value.trim()) {
+    const currentHashtags = getHashtagsFromSearchTerm(searchTerm);
+    const newBaseTerm = getBaseSearchTerm(value);
+    
+    // Check if the base search term (without hashtags) is empty
+    if (!newBaseTerm.trim()) {
+      // Clear everything including hashtags when search is completely cleared
+      setSearchTerm('');
       setSemanticMatches(undefined);
       setHasSearched(false);
       // Reset to deadline-asc sorting when clearing search to switch to filtered search pipeline
@@ -597,8 +667,15 @@ const DiscoverGrants = () => {
       }
       // Reset the initial sorting flag so we can set it again if needed
       hasSetInitialSorting.current = false;
+    } else {
+      // If the user is editing and removes parentheses, preserve them
+      if (!value.includes('(') && currentHashtags) {
+        setSearchTerm(newBaseTerm + ' (' + currentHashtags + ')');
+      } else {
+        setSearchTerm(value);
+      }
     }
-  }, [sortBy]);
+  }, [sortBy, searchTerm, getBaseSearchTerm, getHashtagsFromSearchTerm]);
 
   // Handle sort change - for backend pipeline, this will trigger a new query
   const handleSortChange = useCallback((newSortBy: SortOption) => {
