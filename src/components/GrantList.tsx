@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ConsolidatedGrantList from "@/components/ConsolidatedGrantList";
 import { GrantListItem } from "@/types/grant";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
+import { Button } from "@/components/ui/button";
 
 interface GrantListProps {
   grants: GrantListItem[];
@@ -37,7 +38,6 @@ const GrantList = ({
   const [currentPage, setCurrentPage] = React.useState(1);
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
   const grantsPerPage = 15;
-  const observerRef = React.useRef<HTMLDivElement>(null);
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
 
   // For mobile: use backend pagination to determine if there are more grants
@@ -48,43 +48,24 @@ const GrantList = ({
   
   const grantsToShow = isMobile ? grants.slice(0, numVisibleGrants) : grants.slice((currentPage - 1) * grantsPerPage, currentPage * grantsPerPage);
 
-  React.useEffect(() => {
-    if (!isMobile) return;
-
-    const observerElement = observerRef.current;
-    const scrollAreaElement = scrollAreaRef.current;
-    if (!observerElement || !scrollAreaElement) return;
-
-    const root = scrollAreaElement.querySelector('[data-radix-scroll-area-viewport]');
-    if (!root) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setTimeout(() => {
-            // For mobile: load next page from backend when we've shown all current grants
-            if (hasMoreBackend && onPageChange && pagination) {
-              console.log('📱 Mobile: Loading next page from backend...', {
-                currentPage: pagination.page,
-                totalPages: pagination.totalPages,
-                hasMore: hasMoreBackend,
-                grantsLength: grants.length,
-                numVisibleGrants
-              });
-              onPageChange(pagination.page + 1);
-            }
-          }, 500);
-        }
-      },
-      { root, threshold: 0.1 }
-    );
-
-    observer.observe(observerElement);
-
-    return () => {
-      observer.unobserve(observerElement);
-    };
-  }, [isMobile, hasMore, hasMoreBackend, onPageChange, pagination, grants.length, numVisibleGrants]);
+  // Handle manual load more for mobile
+  const handleLoadMore = React.useCallback(() => {
+    if (isMobile && hasMoreBackend && onPageChange && pagination && !isLoadingMore) {
+      console.log('📱 Mobile: Loading next page manually...', {
+        currentPage: pagination.page,
+        totalPages: pagination.totalPages,
+        hasMore: hasMoreBackend
+      });
+      
+      setIsLoadingMore(true);
+      onPageChange(pagination.page + 1);
+      
+      // Reset loading state after a delay
+      setTimeout(() => {
+        setIsLoadingMore(false);
+      }, 1000);
+    }
+  }, [isMobile, hasMoreBackend, onPageChange, pagination, isLoadingMore]);
 
   React.useEffect(() => {
     if (isMobile) {
@@ -110,6 +91,7 @@ const GrantList = ({
     hasMoreBackend,
     hasMoreLocal,
     grantsPerPage,
+    isLoadingMore,
     showPagination: !isMobile && (pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)) > 1
   });
 
@@ -148,17 +130,26 @@ const GrantList = ({
           totalCount={pagination?.total || grants.length}
           onPageChange={onPageChange || setCurrentPage}
         />
+        {/* Manual Load More Button for Mobile */}
         {isMobile && hasMore && (
-          <div ref={observerRef} className="flex flex-col items-center justify-center py-6">
-            <div className="flex items-center gap-2 text-gray-500 mb-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
-              <span className="text-sm">
-                {isLoadingMore ? 'Laddar fler bidrag...' : 'Scrolla för att ladda fler automatiskt'}
-              </span>
-            </div>
+          <div className="flex flex-col items-center justify-center py-6 px-4">
+            <Button
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              className="w-48 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoadingMore ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                  <span>Laddar fler bidrag...</span>
+                </div>
+              ) : (
+                <span>Visa fler</span>
+              )}
+            </Button>
             {!isLoadingMore && (
-              <div className="text-xs text-gray-400">
-                Scrolla för att ladda fler automatiskt
+              <div className="text-xs text-gray-400 mt-2 text-center">
+                Klicka för att ladda fler bidrag
               </div>
             )}
           </div>

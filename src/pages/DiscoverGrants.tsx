@@ -278,6 +278,9 @@ const DiscoverGrants = () => {
     isError: allRegionsIsError,
   } = useAllRegions();
 
+  // Memoize sorting object to prevent unnecessary React Query refetches
+  const sortingObject = useMemo(() => ({ sortBy, searchTerm }), [sortBy, searchTerm]);
+
   // Backend filtered grants hook (for manual browse pipeline)
   const {
     grants: backendGrants,
@@ -291,10 +294,10 @@ const DiscoverGrants = () => {
     refresh: refreshBackend,
   } = useBackendFilteredGrants({
     filters,
-    sorting: { sortBy, searchTerm },
+    sorting: sortingObject,
     pagination: { page: 1, limit: 15 },
     searchTerm: useBackendPipeline ? getBaseSearchTerm(searchTerm) : '', // Only pass base search term (without hashtags) for backend pipeline
-    enabled: useBackendPipeline || (!isAISearch && hasSearched && !!searchTerm.trim()), // Enable for backend pipeline OR regular search mode
+    enabled: useBackendPipeline, // Only enable when using backend pipeline
   });
 
   // Track if this is the very first load (no filters, no sorting, no search)
