@@ -291,10 +291,11 @@ serve(async (req) => {
   }
 
   try {
-    const { query, organizationFilter = [] } = await req.json();
+    const { query, organizationFilter = [], grantType = 'both' } = await req.json();
 
     console.log('🔍 Semantic Grant Search - Received query:', query);
     console.log('🏢 Organization filter:', organizationFilter);
+    console.log('🌍 Grant type filter:', grantType);
 
     if (!query || typeof query !== 'string') {
       return new Response(JSON.stringify({ error: 'Query is required' }), {
@@ -391,6 +392,23 @@ serve(async (req) => {
         console.log('📋 Organization filter applied with conditions:', orConditions);
       } else {
         console.log('📋 No organization filter applied - searching all grants');
+      }
+
+      // Apply grant type filtering if specified
+      if (grantType && grantType !== 'both') {
+        console.log('🌍 Applying grant type filter:', grantType);
+        
+        if (grantType === 'eu') {
+          // Only include grants where organisation = 'Europeiska Kommissionen'
+          grantsQuery = grantsQuery.eq('organisation', 'Europeiska Kommissionen');
+          console.log('📋 EU grants filter applied - only Europeiska Kommissionen');
+        } else if (grantType === 'swedish') {
+          // Only include grants where organisation is NOT 'Europeiska Kommissionen'
+          grantsQuery = grantsQuery.neq('organisation', 'Europeiska Kommissionen');
+          console.log('📋 Swedish grants filter applied - excluding Europeiska Kommissionen');
+        }
+      } else {
+        console.log('📋 No grant type filter applied - searching all grants');
       }
 
       const { data, error: grantsError } = await grantsQuery;

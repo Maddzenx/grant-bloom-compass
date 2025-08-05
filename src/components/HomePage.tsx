@@ -48,8 +48,8 @@ const HomePage = () => {
     console.log('🌍 Grant type:', grantType);
     
     try {
-      // Perform the search first with organization filtering
-      const searchResult = await searchGrants(inputValue, selectedOrganizations);
+      // Perform the search first with organization filtering and grant type filtering
+      const searchResult = await searchGrants(inputValue, selectedOrganizations, grantType);
       
       console.log('🔍 Search completed, navigating to discover page with results:', searchResult);
       

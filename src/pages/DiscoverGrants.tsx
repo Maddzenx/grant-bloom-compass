@@ -21,6 +21,7 @@ const DiscoverGrants = () => {
   const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Default to deadline-asc for filtered search
   const [initialSearchTerm] = useState(() => location.state?.searchTerm || '');
   const [initialSearchResults] = useState(() => location.state?.searchResults || undefined);
+  const [initialGrantType] = useState(() => location.state?.grantType || 'both');
   const [isAISearch, setIsAISearch] = useState(false); // Default to regular search mode
   // Transform initial search results if they exist
   const transformSemanticMatches = (rawMatches: any[]) => {
@@ -221,7 +222,7 @@ const DiscoverGrants = () => {
     setHasSearched(true);
     
     try {
-      const result = await searchGrants(searchTerm);
+      const result = await searchGrants(searchTerm, [], initialGrantType);
       console.log('🎯 Semantic search result:', result);
       
       if (result?.rankedGrants && result.rankedGrants.length > 0) {
