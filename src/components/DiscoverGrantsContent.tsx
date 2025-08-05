@@ -688,14 +688,7 @@ export const DiscoverGrantsContent = ({
               <GrantList 
                 grants={sortedGrants} 
                 selectedGrant={selectedGrant} 
-                onGrantSelect={grant => { 
-                  // If clicking on already selected grant, minimize details
-                  if (selectedGrant && selectedGrant.id === grant.id) {
-                    onBackToList();
-                  } else {
-                    onGrantSelect(grant); 
-                  }
-                }} 
+                onGrantSelect={onGrantSelect} 
                 onToggleBookmark={onToggleBookmark} 
                 searchTerm={searchTerm} 
                 isMobile={false} 
