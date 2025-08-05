@@ -339,25 +339,6 @@ const transformGrantListItems = (grantData: any[]): GrantListItem[] => {
       const subtitle = language === 'en' ? grant.subtitle_en : grant.subtitle_sv;
       const region = language === 'en' ? grant.region_en : grant.region_sv;
       
-      // Debug logging for EU grants or grants with missing titles
-      const isEUGrant = grant.organisation && (grant.organisation.toLowerCase().includes('eu') || grant.organisation.toLowerCase().includes('european'));
-      if (isEUGrant || !title || title === 'Untitled Grant') {
-        debugGrant('language selection', {
-          id: grant.id,
-          organisation: grant.organisation,
-          isEUGrant,
-          detectedLanguage: language,
-          title_sv: grant.title_sv,
-          title_en: grant.title_en,
-          subtitle_sv: grant.subtitle_sv,
-          subtitle_en: grant.subtitle_en,
-          selectedTitle: title,
-          selectedSubtitle: subtitle,
-          titleSource: language === 'en' ? 'title_en' : 'title_sv',
-          subtitleSource: language === 'en' ? 'subtitle_en' : 'subtitle_sv'
-        });
-      }
-      
       const transformed: GrantListItem = {
         id: grant.id,
         title: title || 'Untitled Grant',

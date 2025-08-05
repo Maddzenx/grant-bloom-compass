@@ -12,10 +12,8 @@ export type GrantLanguage = 'sv' | 'en';
 export const getGrantLanguage = (organisation: string | null): GrantLanguage => {
   if (!organisation) return 'sv'; // Default to Swedish
   
-  const orgLower = organisation.toLowerCase();
-  
-  // EU grants use English
-  if (orgLower.includes('eu') || orgLower.includes('european')) {
+  // EU grants (Europeiska Kommissionen) use English
+  if (organisation === 'Europeiska Kommissionen') {
     return 'en';
   }
   

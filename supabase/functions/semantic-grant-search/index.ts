@@ -53,8 +53,11 @@ const performLLMFiltering = async (query: string, grants: GrantForLLMFiltering[]
   console.log(`🤖 Starting LLM filtering for ${grants.length} grants with query: "${query}"`);
 
   if (!openRouterApiKey) {
+    console.error('❌ OpenRouter API key not configured');
     throw new Error('OpenRouter API key not configured');
   }
+  
+  console.log('✅ OpenRouter API key is configured, proceeding with LLM filtering...');
   
   // Prepare grants data for LLM - only include description
   console.log('📋 Preparing grant data for LLM (description only)...');
@@ -367,7 +370,8 @@ serve(async (req) => {
           id, title_sv, title_en, organisation, subtitle_sv, subtitle_en, 
           description_sv, description_en, geographic_scope, region_sv, region_en, 
           eligible_organisations_sv, eligible_organisations_en, 
-          industry_sectors, embedding
+          industry_sectors, eligible_organisations_standardized, eligible_cost_categories_standardized,
+          embedding, consortium_requirement_en
         `)
         .not('embedding', 'is', null);
 
@@ -377,15 +381,20 @@ serve(async (req) => {
         .not('application_closing_date', 'is', null)
         .gte('application_closing_date', today);
 
-      // Apply organization filtering if specified
+      // Apply organization filtering if specified - handle both data formats robustly
       if (organizationFilter && organizationFilter.length > 0) {
         console.log('🏢 Applying organization filter:', organizationFilter);
         
         // Create OR conditions for each organization type in the filter
-        // Use both Swedish and English fields for organization filtering
+        // Use standardized field first, then fall back to language-specific fields
+        // Handle both formats: ["Item"] and ["[Item]"]
         const orConditions = organizationFilter.flatMap((orgType: string) => [
+          `eligible_organisations_standardized.cs.["${orgType}"]`,
+          `eligible_organisations_standardized.cs.["[${orgType}]"]`,
           `eligible_organisations_sv.cs.["${orgType}"]`,
-          `eligible_organisations_en.cs.["${orgType}"]`
+          `eligible_organisations_sv.cs.["[${orgType}]"]`,
+          `eligible_organisations_en.cs.["${orgType}"]`,
+          `eligible_organisations_en.cs.["[${orgType}]"]`
         ]);
         
         grantsQuery = grantsQuery.or(orConditions.join(','));
@@ -451,7 +460,8 @@ serve(async (req) => {
       const subtitle = grant.subtitle_en || grant.subtitle_sv || '';
       const description = grant.description_en || grant.description_sv || '';
       const region = grant.region_en || grant.region_sv || '';
-      const eligible_organisations = grant.eligible_organisations_en || grant.eligible_organisations_sv || [];
+      // Use standardized fields for better consistency
+      const eligible_organisations = grant.eligible_organisations_standardized || grant.eligible_organisations_en || grant.eligible_organisations_sv || [];
       
       // Create a search description combining title, subtitle, and description
       const search_description = [title, subtitle, description].filter(Boolean).join(' ');
@@ -464,7 +474,8 @@ serve(async (req) => {
         description: description || '',
         search_description: search_description || 'No description available',
         region: region || '',
-        eligible_organisations: eligible_organisations || []
+        eligible_organisations: eligible_organisations || [],
+        consortium_requirement: grant.consortium_requirement_en || undefined // Include for frontend filtering
       };
 
       // Parse the embedding vector string to array
@@ -602,24 +613,29 @@ serve(async (req) => {
       organisation: grant.organisation,
       relevanceScore: similarity
     }));
-    console.log(`✅ Prepared ${grantsForLLMFiltering.length} grants for LLM filtering`);
+
+    console.log(`🔍 Prepared ${grantsForLLMFiltering.length} grants for LLM filtering`);
+    console.log('🔍 First grant for LLM:', {
+      id: grantsForLLMFiltering[0]?.id,
+      title: grantsForLLMFiltering[0]?.title?.substring(0, 50),
+      relevanceScore: grantsForLLMFiltering[0]?.relevanceScore
+    });
 
     // Perform LLM filtering
-    console.log('🤖 Starting LLM filtering process...');
+    console.log('🤖 Starting LLM filtering...');
     let llmFilteredResults;
     try {
       llmFilteredResults = await performLLMFiltering(query, grantsForLLMFiltering);
-      console.log('✅ LLM filtering completed successfully');
+      console.log(`✅ LLM filtering completed with ${llmFilteredResults.length} results`);
     } catch (llmError) {
-      console.error('❌ LLM filtering failed:', JSON.stringify(llmError, null, 2));
-      return new Response(JSON.stringify({
-        error: 'LLM filtering failed - please try again',
-        rankedGrants: [],
-        explanation: 'The AI-powered grant relevance filtering is temporarily unavailable. Please try your search again.'
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      console.error('❌ LLM filtering failed:', llmError);
+      // Fallback: return all semantic matches without LLM filtering
+      console.log('🔄 Falling back to semantic matches without LLM filtering');
+      llmFilteredResults = grantsForLLMFiltering.map(grant => ({
+        grantId: grant.id,
+        shouldInclude: true,
+        refinedScore: Math.round(grant.relevanceScore * 100)
+      }));
     }
 
     console.log(`🤖 LLM filtering complete. ${llmFilteredResults.length} grants passed filtering`);
@@ -701,7 +717,7 @@ serve(async (req) => {
         region_en: grant.region_en || undefined,
         cofinancing_required: grant.cofinancing_required || false,
         cofinancing_level_min: grant.cofinancing_level_min || undefined,
-        consortium_requirement: undefined, // Not available in card view
+        consortium_requirement: grant.consortium_requirement_en || undefined, // Include for frontend filtering
         fundingRules: Array.isArray(grant.eligible_cost_categories_standardized) ? grant.eligible_cost_categories_standardized : [],
         application_opening_date: grant.application_opening_date,
         application_closing_date: grant.application_closing_date,

@@ -12,6 +12,7 @@ import { parseFundingAmount, isGrantWithinDeadline, isGrantActive } from "@/util
 import { sortGrants } from "@/utils/grantSorting";
 import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSemanticFiltering } from '@/hooks/useSemanticFiltering';
 
 const DiscoverGrants = () => {
   const location = useLocation();
@@ -534,6 +535,12 @@ const DiscoverGrants = () => {
   }, [useSemanticPipeline, useBackendPipeline, grantsForFiltering, semanticMatches, searchTerm, hasSearched]);
 
   // Apply additional frontend filters only for semantic pipeline
+  const { filteredSemanticMatches, isLoading: semanticFilteringLoading } = useSemanticFiltering({
+    semanticMatches: baseFilteredGrants,
+    filters,
+    hasActiveFilters
+  });
+
   const filteredGrants = useMemo(() => {
     console.log('🔍 Applying additional filters:', { 
       baseCount: baseFilteredGrants?.length || 0,
@@ -552,46 +559,14 @@ const DiscoverGrants = () => {
       return baseFilteredGrants;
     }
 
-    // For semantic pipeline, apply frontend filters if active
-    if (!hasActiveFilters) {
-      return baseFilteredGrants;
+    // For semantic pipeline, use the new semantic filtering hook
+    if (useSemanticPipeline) {
+      console.log('✅ Semantic pipeline - using semantic filtering hook');
+      return filteredSemanticMatches;
     }
 
-    console.log('🔍 Applying frontend filters for semantic pipeline');
-
-    // Apply additional filtering for semantic pipeline
-    const filtered = baseFilteredGrants.filter(grant => {
-      // Organization filter
-      if (filters.organizations.length > 0 && !filters.organizations.includes(grant.organization)) {
-        return false;
-      }
-
-      // Funding range filter
-      if (filters.fundingRange.min !== null || filters.fundingRange.max !== null) {
-        const amount = grant.funding_amount_eur ?? parseFundingAmount(grant.fundingAmount);
-        if (filters.fundingRange.min && amount < filters.fundingRange.min) return false;
-        if (filters.fundingRange.max && amount > filters.fundingRange.max) return false;
-      }
-
-      // Deadline filter
-      if (filters.deadline.preset && !isGrantWithinDeadline(grant, filters.deadline)) {
-        return false;
-      }
-
-      // Tags filter
-      if (filters.tags.length > 0) {
-        const hasMatchingTag = filters.tags.some(tag =>
-          grant.tags.some(grantTag => grantTag.toLowerCase().includes(tag.toLowerCase()))
-        );
-        if (!hasMatchingTag) return false;
-      }
-
-      return true;
-    });
-
-    console.log('✅ Final filtered count:', filtered.length);
-    return filtered;
-  }, [baseFilteredGrants, filters, hasActiveFilters, useSemanticPipeline, useBackendPipeline]);
+    return baseFilteredGrants;
+  }, [baseFilteredGrants, useSemanticPipeline, useBackendPipeline, filteredSemanticMatches]);
 
   // Apply sorting based on pipeline and semantic scores
   const sortedSearchResults = useMemo(() => {
@@ -605,7 +580,8 @@ const DiscoverGrants = () => {
       hasSemanticMatches: !!semanticMatches,
       semanticMatchesCount: semanticMatches?.length || 0,
       sortBy,
-      filteredCount: filteredGrants.length
+      filteredCount: filteredGrants.length,
+      filteredGrantIds: filteredGrants.map(g => g.id)
     });
 
     // For backend pipeline, sorting is already done on backend
@@ -615,12 +591,13 @@ const DiscoverGrants = () => {
     }
 
     // For semantic pipeline, apply frontend sorting
-    if (useSemanticPipeline && semanticMatches && semanticMatches.length > 0) {
+    if (useSemanticPipeline && filteredGrants && filteredGrants.length > 0) {
       // Use the sortGrants function to respect user's sort choice
-      const sorted = sortGrants(semanticMatches, sortBy, searchTerm);
+      const sorted = sortGrants(filteredGrants, sortBy, searchTerm);
       
       console.log('🎯 Semantic search results sorted by:', sortBy, {
         totalResults: sorted.length,
+        sortedGrantIds: sorted.map(g => g.id),
         topScores: sorted.slice(0, 3).map(g => ({
           id: g.id,
           title: g.title ? g.title.substring(0, 30) + '...' : 'No title',
@@ -717,7 +694,7 @@ const DiscoverGrants = () => {
   const { isLoading, isError, error } = useMemo(() => {
     if (useSemanticPipeline) {
       return {
-        isLoading: isSearching,
+        isLoading: isSearching || semanticFilteringLoading,
         isError: false,
         error: null
       };
@@ -728,7 +705,7 @@ const DiscoverGrants = () => {
         error: backendError
       };
     }
-  }, [useSemanticPipeline, isSearching, backendLoading, backendIsError, backendError]);
+  }, [useSemanticPipeline, isSearching, semanticFilteringLoading, backendLoading, backendIsError, backendError]);
 
   // Show loading/error/empty states - but NEVER for backend filtering/sorting operations
   const showFullPageLoading = useSemanticPipeline 
@@ -762,9 +739,18 @@ const DiscoverGrants = () => {
     })
   };
 
+  console.log('🎯 Final grants being passed to component:', {
+    useSemanticPipeline,
+    useBackendPipeline,
+    grantsLength: useSemanticPipeline ? sortedSearchResults.length : backendGrants.length,
+    grantIds: useSemanticPipeline ? sortedSearchResults.map(g => g.id) : backendGrants.map(g => g.id),
+    searchResultsLength: sortedSearchResults.length,
+    searchResultsIds: sortedSearchResults.map(g => g.id)
+  });
+
   return (
     <DiscoverGrantsContent
-      grants={useSemanticPipeline ? grantsForFiltering : backendGrants}
+      grants={useSemanticPipeline ? sortedSearchResults : backendGrants}
       searchResults={sortedSearchResults}
       selectedGrant={selectedGrant}
       showDetails={showDetails}

@@ -125,21 +125,31 @@ serve(async (req) => {
       }
     }
 
-    // Apply industry sectors filter - use the original field
+    // Apply industry sectors filter - handle both data formats robustly
     if (filters.industrySectors && filters.industrySectors.length > 0) {
       console.log('🏭 Applying industry sectors filter:', filters.industrySectors);
-      const sectorConditions = filters.industrySectors.map((sector: string) => 
-        `industry_sectors.cs.["${sector}"]`
-      );
+      const sectorConditions: string[] = [];
+      
+      filters.industrySectors.forEach((sector: string) => {
+        // Check for both formats: ["Item"] and ["[Item]"]
+        sectorConditions.push(`industry_sectors.cs.["${sector}"]`);
+        sectorConditions.push(`industry_sectors.cs.["[${sector}]"]`);
+      });
+      
       query = query.or(sectorConditions.join(','));
     }
 
-    // Apply eligible applicants filter - use the original field for filtering
+    // Apply eligible applicants filter - handle both data formats robustly
     if (filters.eligibleApplicants && filters.eligibleApplicants.length > 0) {
       console.log('👥 Applying eligible applicants filter:', filters.eligibleApplicants);
-      const applicantConditions = filters.eligibleApplicants.map((applicant: string) => 
-        `eligible_organisations_standardized.cs.["${applicant}"]`
-      );
+      const applicantConditions: string[] = [];
+      
+      filters.eligibleApplicants.forEach((applicant: string) => {
+        // Check for both formats: ["Item"] and ["[Item]"]
+        applicantConditions.push(`eligible_organisations_standardized.cs.["${applicant}"]`);
+        applicantConditions.push(`eligible_organisations_standardized.cs.["[${applicant}]"]`);
+      });
+      
       query = query.or(applicantConditions.join(','));
     }
 

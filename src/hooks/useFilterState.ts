@@ -73,6 +73,8 @@ export const useFilterState = () => {
   const hasActiveFilters = useMemo(() => {
     const isActive = (
       filters.organizations.length > 0 ||
+      filters.statusFilter !== '' ||
+      filters.eligibleApplicants.length > 0 ||
       filters.fundingRange.min !== null ||
       filters.fundingRange.max !== null ||
       (filters.deadline.preset && filters.deadline.preset !== '') ||
@@ -86,6 +88,8 @@ export const useFilterState = () => {
     
     console.log('hasActiveFilters check:', {
       organizations: filters.organizations.length,
+      statusFilter: filters.statusFilter,
+      eligibleApplicants: filters.eligibleApplicants.length,
       fundingMin: filters.fundingRange.min,
       fundingMax: filters.fundingRange.max,
       deadlinePreset: filters.deadline.preset,

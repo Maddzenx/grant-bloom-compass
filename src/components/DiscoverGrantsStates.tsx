@@ -1,9 +1,9 @@
 import React from 'react';
 interface DiscoverGrantsStatesProps {
   isLoading: boolean;
-  isFetching?: boolean;
+  isFetching: boolean;
   isError: boolean;
-  error: Error | null;
+  error: any;
   grants: any[];
   onRefresh: () => void;
 }
@@ -15,8 +15,19 @@ export const DiscoverGrantsStates = ({
   grants,
   onRefresh
 }: DiscoverGrantsStatesProps) => {
+  // Debug log to see what's being passed
+  console.log('🔍 DiscoverGrantsStates called with:', {
+    isLoading,
+    isFetching,
+    isError,
+    error: !!error,
+    grantsLength: grants?.length,
+    grants
+  });
+
   // Show loading state
   if (isLoading) {
+    console.log('🔍 DiscoverGrantsStates: Returning loading state');
     return (
       <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
@@ -30,6 +41,7 @@ export const DiscoverGrantsStates = ({
 
   // Show error state
   if (isError || error) {
+    console.log('🔍 DiscoverGrantsStates: Returning error state');
     console.error('Error state:', {
       isError,
       error
@@ -52,20 +64,9 @@ export const DiscoverGrantsStates = ({
       </div>;
   }
 
-  // Show no data state - but not if we are in the middle of fetching new data
-  if (!isLoading && !isFetching && (!grants || grants.length === 0)) {
-    console.log('No data state - grants:', grants);
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-normal text-gray-700 mb-4">Inga bidrag hittades</h1>
-          <p className="text-base text-gray-600 mb-8 max-w-md">
-            Det finns för närvarande inga bidrag tillgängliga i databasen
-          </p>
-          <button onClick={onRefresh} className="px-8 py-3 text-white rounded-lg font-medium transition-all duration-200" style={{ backgroundColor: '#8B5CF6' }}>
-            Uppdatera data
-          </button>
-        </div>
-      </div>;
-  }
+  // Don't show full-page empty state - let the normal page layout handle it
+  // The ConsolidatedGrantList component will show the appropriate empty state
+  // when grants.length === 0, allowing users to modify their filters
+  console.log('🔍 DiscoverGrantsStates: Returning null (no full-page state needed)');
   return null;
 };
