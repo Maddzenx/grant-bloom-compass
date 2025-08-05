@@ -52,7 +52,7 @@ export const useSemanticSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  const searchGrants = async (query: string, organizationFilter: string[] = []): Promise<SemanticSearchResponse | null> => {
+  const searchGrants = async (query: string, organizationFilter: string[] = [], grantType: 'swedish' | 'eu' | 'both' = 'both'): Promise<SemanticSearchResponse | null> => {
     if (!query.trim()) {
       return null;
     }
@@ -67,7 +67,8 @@ export const useSemanticSearch = () => {
       const { data, error } = await supabase.functions.invoke('semantic-grant-search', {
         body: { 
           query: query.trim(),
-          organizationFilter: organizationFilter
+          organizationFilter: organizationFilter,
+          grantType: grantType
         }
       });
 
