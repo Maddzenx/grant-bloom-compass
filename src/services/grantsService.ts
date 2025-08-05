@@ -216,6 +216,36 @@ export const fetchGrantDetails = async (grantId: string): Promise<GrantDetails> 
   return transformSupabaseGrantToDetails(grantData);
 };
 
+// Hardcoded list of all organizations in the database
+export const ALL_ORGANIZATIONS = [
+  'Energimyndigheten',
+  'Vetenskapsrådet', 
+  'Formas',
+  'Europeiska Kommissionen',
+  'Vinnova',
+  'Tillväxtverket'
+];
+
+// Hardcoded list of all eligible applicant types in the database
+export const ALL_ELIGIBLE_APPLICANTS = [
+  'Offentlig sektor',
+  'Universitet och högskolor',
+  'Företag',
+  'Ekonomiska föreningar',
+  'Ideella föreningar',
+  'Stiftelser',
+  'Enskilda näringsidkare',
+  'Enskilda forskare',
+  'Övrigt'
+];
+
+// Hardcoded list of region options for the region filter
+export const ALL_REGIONS = [
+  'EU',
+  'Sverige',
+  'Regionalt'
+];
+
 // Helper function to normalize field names from language-specific to base names
 const normalizeGrantData = (grant: any): any => {
   const normalized = { ...grant };

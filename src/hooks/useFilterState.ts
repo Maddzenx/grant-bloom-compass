@@ -20,6 +20,7 @@ export interface EnhancedFilterOptions {
   eligibleApplicants: string[];
   consortiumRequired: boolean | null;
   geographicScope: string[];
+  region: string[]; // New region filter for EU, Sverige, Regionalt
   cofinancingRequired: boolean | null;
   statusFilter: string;
 }
@@ -33,6 +34,7 @@ const defaultFilters: EnhancedFilterOptions = {
   eligibleApplicants: [],
   consortiumRequired: null,
   geographicScope: [],
+  region: [], // Initialize empty region filter
   cofinancingRequired: null,
   statusFilter: '',
 };
@@ -76,7 +78,10 @@ export const useFilterState = () => {
       (filters.deadline.preset && filters.deadline.preset !== '') ||
       (filters.deadline.customRange?.start !== null) ||
       (filters.deadline.customRange?.end !== null) ||
-      filters.tags.length > 0
+      filters.tags.length > 0 ||
+      filters.region.length > 0 ||
+      filters.consortiumRequired !== null ||
+      filters.cofinancingRequired !== null
     );
     
     console.log('hasActiveFilters check:', {
@@ -87,6 +92,9 @@ export const useFilterState = () => {
       customStart: filters.deadline.customRange?.start,
       customEnd: filters.deadline.customRange?.end,
       tags: filters.tags.length,
+      region: filters.region.length,
+      consortiumRequired: filters.consortiumRequired,
+      cofinancingRequired: filters.cofinancingRequired,
       result: isActive
     });
     
@@ -118,16 +126,17 @@ const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptio
     tags: searchParams.get('tags')?.split(',').filter(Boolean) || [],
     industrySectors: searchParams.get('industrySectors')?.split(',').filter(Boolean) || [],
     eligibleApplicants: searchParams.get('eligibleApplicants')?.split(',').filter(Boolean) || [],
-    consortiumRequired: searchParams.get('consortiumRequired') === 'true' ? true : null,
+    consortiumRequired: searchParams.get('consortiumRequired') === 'true' ? true : searchParams.get('consortiumRequired') === 'false' ? false : null,
     geographicScope: searchParams.get('geographicScope')?.split(',').filter(Boolean) || [],
-    cofinancingRequired: searchParams.get('cofinancingRequired') === 'true' ? true : null,
+    region: searchParams.get('region')?.split(',').filter(Boolean) || [],
+    cofinancingRequired: searchParams.get('cofinancingRequired') === 'true' ? true : searchParams.get('cofinancingRequired') === 'false' ? false : null,
     statusFilter: searchParams.get('statusFilter') || '',
   };
 };
 
 const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions) => {
   // Clear existing filter params
-  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags', 'industrySectors', 'eligibleApplicants', 'consortiumRequired', 'geographicScope', 'cofinancingRequired'].forEach(key => {
+  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags', 'industrySectors', 'eligibleApplicants', 'consortiumRequired', 'geographicScope', 'region', 'cofinancingRequired'].forEach(key => {
     params.delete(key);
   });
 
@@ -159,6 +168,9 @@ const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions
   }
   if (filters.geographicScope.length > 0) {
     params.set('geographicScope', filters.geographicScope.join(','));
+  }
+  if (filters.region.length > 0) {
+    params.set('region', filters.region.join(','));
   }
   if (filters.cofinancingRequired !== null) {
     params.set('cofinancingRequired', filters.cofinancingRequired.toString());

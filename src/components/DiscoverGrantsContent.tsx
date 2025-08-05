@@ -371,6 +371,9 @@ interface DiscoverGrantsContentProps {
   isBackendFetching?: boolean;
   searchMetrics: any;
   aiMatches?: AIGrantMatch[];
+  allOrganizations?: string[]; // New prop for all organizations from database
+  allEligibleApplicants?: string[]; // New prop for all eligible applicant types from database
+  allRegions?: string[]; // New prop for all region options from database
   pagination?: {
     page: number;
     limit: number;
@@ -405,6 +408,9 @@ export const DiscoverGrantsContent = ({
   isBackendFetching = false,
   searchMetrics,
   aiMatches,
+  allOrganizations = [], // New prop with default empty array
+  allEligibleApplicants = [], // New prop with default empty array
+  allRegions = [], // New prop with default empty array
   pagination,
   onSearchChange,
   onSearch,
@@ -423,11 +429,14 @@ export const DiscoverGrantsContent = ({
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [detailsOpen, setDetailsOpen] = React.useState(false);
 
-  // Extract unique organizations from grants
-  const organizationOptions = useMemo(() =>
-    grants.map(g => g.organization).filter(Boolean).filter((org, idx, arr) => arr.indexOf(org) === idx).sort(),
-    [grants]
-  );
+  // Use allOrganizations from database if available, otherwise fall back to extracting from grants
+  const organizationOptions = useMemo(() => {
+    if (allOrganizations && allOrganizations.length > 0) {
+      return allOrganizations;
+    }
+    // Fallback to extracting from current grants if allOrganizations is not available
+    return grants.map(g => g.organization).filter(Boolean).filter((org, idx, arr) => arr.indexOf(org) === idx).sort();
+  }, [allOrganizations, grants]);
 
   // Extract unique industry sectors from grants
   const industryOptions = useMemo(() =>
@@ -435,17 +444,23 @@ export const DiscoverGrantsContent = ({
     [grants]
   );
 
-  // Extract unique eligible applicant types from grants
-  const eligibleApplicantOptions = useMemo(() =>
-    Array.from(new Set(grants.flatMap(g => g.eligible_organisations || []))).sort(),
-    [grants]
-  );
+  // Use allEligibleApplicants from database if available, otherwise fall back to extracting from grants
+  const eligibleApplicantOptions = useMemo(() => {
+    if (allEligibleApplicants && allEligibleApplicants.length > 0) {
+      return allEligibleApplicants;
+    }
+    // Fallback to extracting from current grants if allEligibleApplicants is not available
+    return Array.from(new Set(grants.flatMap(g => g.eligible_organisations || []))).sort();
+  }, [allEligibleApplicants, grants]);
 
-  // Extract unique geographic scopes from grants
-  const geographicScopeOptions = useMemo(() =>
-    Array.from(new Set(grants.flatMap(g => g.geographic_scope || []))).sort(),
-    [grants]
-  );
+  // Use allRegions from database if available, otherwise fall back to extracting from grants
+  const geographicScopeOptions = useMemo(() => {
+    if (allRegions && allRegions.length > 0) {
+      return allRegions;
+    }
+    // Fallback to extracting from current grants if allRegions is not available
+    return Array.from(new Set(grants.flatMap(g => g.geographic_scope || []))).sort();
+  }, [allRegions, grants]);
 
   // Sort grants based on selected sort option
   const sortedGrants = useMemo(() => sortGrants(searchResults, sortBy, searchTerm), [searchResults, sortBy, searchTerm]);

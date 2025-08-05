@@ -25,6 +25,7 @@ interface BackendFilterOptions {
   eligibleApplicants?: string[];
   consortiumRequired?: boolean;
   geographicScope?: string[];
+  region?: string[]; // New region filter for EU, Sverige, Regionalt
   cofinancingRequired?: boolean;
   statusFilter?: 'open' | 'upcoming' | '';
 }
@@ -62,23 +63,18 @@ export interface UseBackendFilteredGrantsOptions {
 
 const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilterOptions => {
   const backendFilters: BackendFilterOptions = {};
-  
+
   // Only include organizations if there are actually selected
   if (filters.organizations && filters.organizations.length > 0) {
     backendFilters.organizations = filters.organizations;
   }
-  
-  // Only include funding range if both min and max are meaningful values
-  if (filters.fundingRange && 
-      (filters.fundingRange.min !== null && filters.fundingRange.min !== undefined && filters.fundingRange.min > 0) ||
-      (filters.fundingRange.max !== null && filters.fundingRange.max !== undefined && filters.fundingRange.max > 0)) {
-    backendFilters.fundingRange = {};
-    if (filters.fundingRange.min !== null && filters.fundingRange.min !== undefined && filters.fundingRange.min > 0) {
-      backendFilters.fundingRange.min = filters.fundingRange.min;
-    }
-    if (filters.fundingRange.max !== null && filters.fundingRange.max !== undefined && filters.fundingRange.max > 0) {
-      backendFilters.fundingRange.max = filters.fundingRange.max;
-    }
+
+  // Only include funding range if there are actually min/max values
+  if (filters.fundingRange && (filters.fundingRange.min !== null || filters.fundingRange.max !== null)) {
+    backendFilters.fundingRange = {
+      min: filters.fundingRange.min || undefined,
+      max: filters.fundingRange.max || undefined
+    };
   }
   
   // Only include deadline if there's actually a preset or custom range
@@ -119,19 +115,26 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.eligibleApplicants = filters.eligibleApplicants;
   }
   
-  // Only include consortium required if it's explicitly set by user (not default false)
-  if (filters.consortiumRequired === true) {
+  // Only include consortium required if it's explicitly set by user (not default null)
+  if (filters.consortiumRequired !== null) {
     backendFilters.consortiumRequired = filters.consortiumRequired;
+    console.log('🔧 Transform: Including consortiumRequired filter:', filters.consortiumRequired);
   }
   
   // Only include geographic scope if there are actually selected
   if (filters.geographicScope && filters.geographicScope.length > 0) {
     backendFilters.geographicScope = filters.geographicScope;
   }
+
+  // Only include region if there are actually selected
+  if (filters.region && filters.region.length > 0) {
+    backendFilters.region = filters.region;
+  }
   
-  // Only include cofinancing required if it's explicitly set by user (not default false)
-  if (filters.cofinancingRequired === true) {
+  // Only include cofinancing required if it's explicitly set by user (not default null)
+  if (filters.cofinancingRequired !== null) {
     backendFilters.cofinancingRequired = filters.cofinancingRequired;
+    console.log('🔧 Transform: Including cofinancingRequired filter:', filters.cofinancingRequired);
   }
   
   // Only include status filter if it's a meaningful value
@@ -139,6 +142,7 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.statusFilter = filters.statusFilter;
   }
   
+  console.log('🔧 Transform: Final backend filters:', backendFilters);
   return backendFilters;
 };
 

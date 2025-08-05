@@ -139,39 +139,27 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Region</h3>
-          {filters.regions?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ regions: [] })}>
+          {filters.region?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ region: [] })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input 
-              type="checkbox" 
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.regions?.includes('Sverige') || false} 
-              onChange={e => {
-                const newRegions = e.target.checked 
-                  ? [...(filters.regions || []), 'Sverige'] 
-                  : (filters.regions || []).filter(r => r !== 'Sverige');
-                onFiltersChange({ regions: newRegions });
-              }} 
-            />
-            <span>Sverige</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input 
-              type="checkbox" 
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.regions?.includes('EU') || false} 
-              onChange={e => {
-                const newRegions = e.target.checked 
-                  ? [...(filters.regions || []), 'EU'] 
-                  : (filters.regions || []).filter(r => r !== 'EU');
-                onFiltersChange({ regions: newRegions });
-              }} 
-            />
-            <span>EU</span>
-          </label>
+          {geographicScopeOptions.map(region => (
+            <label key={region} className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+              <input 
+                type="checkbox" 
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                checked={filters.region?.includes(region) || false} 
+                onChange={e => {
+                  const newRegions = e.target.checked 
+                    ? [...(filters.region || []), region] 
+                    : (filters.region || []).filter(r => r !== region);
+                  onFiltersChange({ region: newRegions });
+                }} 
+              />
+              <span>{region}</span>
+            </label>
+          ))}
         </div>
       </div>
       <Separator className="bg-gray-200" />
@@ -180,7 +168,7 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Övriga filter</h3>
-          {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ noCofinancingRequired: false, noConsortiumRequired: false })}>
+          {(filters.cofinancingRequired === false || filters.consortiumRequired === false) && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({ cofinancingRequired: null, consortiumRequired: null })}>
             Rensa
           </Button>}
         </div>
@@ -189,9 +177,9 @@ const FilterContent = ({
             <input 
               type="checkbox" 
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.noCofinancingRequired || false} 
+              checked={filters.cofinancingRequired === false} 
               onChange={e => {
-                onFiltersChange({ noCofinancingRequired: e.target.checked });
+                onFiltersChange({ cofinancingRequired: e.target.checked ? false : null });
               }} 
             />
             <span>Ej krav på medfinansering</span>
@@ -200,9 +188,9 @@ const FilterContent = ({
             <input 
               type="checkbox" 
               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-              checked={filters.noConsortiumRequired || false} 
+              checked={filters.consortiumRequired === false} 
               onChange={e => {
-                onFiltersChange({ noConsortiumRequired: e.target.checked });
+                onFiltersChange({ consortiumRequired: e.target.checked ? false : null });
               }} 
             />
             <span>Ej krav på konsortium</span>
@@ -221,7 +209,17 @@ const FilterContent = ({
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length, props.filters.statusFilter ? 1 : 0].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
+  const activeFilterCount = [
+    props.filters.organizations?.length, 
+    props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, 
+    props.deadlineValue?.preset ? 1 : 0, 
+    props.filters.industrySectors?.length, 
+    props.filters.eligibleApplicants?.length, 
+    props.filters.consortiumRequired === false ? 1 : 0, 
+    props.filters.cofinancingRequired === false ? 1 : 0, 
+    props.filters.region?.length, 
+    props.filters.statusFilter ? 1 : 0
+  ].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
 
   const {
     filters,
@@ -340,39 +338,27 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   variant="outline"
   className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
-  Region {filters.regions?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.regions.length}</span>} <ChevronDown className="w-4 h-4" />
+  Region {filters.region?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.region.length}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input 
-                      type="checkbox" 
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.regions?.includes('Sverige') || false} 
-                      onChange={e => {
-                        const newRegions = e.target.checked 
-                          ? [...(filters.regions || []), 'Sverige'] 
-                          : (filters.regions || []).filter(r => r !== 'Sverige');
-                        onFiltersChange({ regions: newRegions });
-                      }} 
-                    />
-                    <span>Sverige</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input 
-                      type="checkbox" 
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.regions?.includes('EU') || false} 
-                      onChange={e => {
-                        const newRegions = e.target.checked 
-                          ? [...(filters.regions || []), 'EU'] 
-                          : (filters.regions || []).filter(r => r !== 'EU');
-                        onFiltersChange({ regions: newRegions });
-                      }} 
-                    />
-                    <span>EU</span>
-                  </label>
+                  {geographicScopeOptions.map(region => (
+                    <label key={region} className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                      <input 
+                        type="checkbox" 
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                        checked={filters.region?.includes(region) || false} 
+                        onChange={e => {
+                          const newRegions = e.target.checked 
+                            ? [...(filters.region || []), region] 
+                            : (filters.region || []).filter(r => r !== region);
+                          onFiltersChange({ region: newRegions });
+                        }} 
+                      />
+                      <span>{region}</span>
+                    </label>
+                  ))}
                 </div>
             </PopoverContent>
         </Popover>
@@ -384,7 +370,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
   variant="outline"
   className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium text-base shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white"
 >
-  Övriga filter {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{(filters.noCofinancingRequired ? 1 : 0) + (filters.noConsortiumRequired ? 1 : 0)}</span>} <ChevronDown className="w-4 h-4" />
+  Övriga filter {(filters.cofinancingRequired === false || filters.consortiumRequired === false) && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{(filters.cofinancingRequired === false ? 1 : 0) + (filters.consortiumRequired === false ? 1 : 0)}</span>} <ChevronDown className="w-4 h-4" />
 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
@@ -393,9 +379,9 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.noCofinancingRequired || false} 
+                      checked={filters.cofinancingRequired === false} 
                       onChange={e => {
-                        onFiltersChange({ noCofinancingRequired: e.target.checked });
+                        onFiltersChange({ cofinancingRequired: e.target.checked ? false : null });
                       }} 
                     />
                     <span>Ej krav på medfinansering</span>
@@ -404,9 +390,9 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                     <input 
                       type="checkbox" 
                       className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                      checked={filters.noConsortiumRequired || false} 
+                      checked={filters.consortiumRequired === false} 
                       onChange={e => {
-                        onFiltersChange({ noConsortiumRequired: e.target.checked });
+                        onFiltersChange({ consortiumRequired: e.target.checked ? false : null });
                       }} 
                     />
                     <span>Ej krav på konsortium</span>

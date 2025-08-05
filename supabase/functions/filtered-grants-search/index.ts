@@ -144,11 +144,17 @@ serve(async (req) => {
     }
 
     // Apply consortium requirement filter - use the original field for filtering
-    // Temporarily disabled due to boolean parsing issues
     if (filters.consortiumRequired !== undefined && filters.consortiumRequired !== null) {
       console.log('🤝 Consortium requirement filter received:', filters.consortiumRequired, 'Type:', typeof filters.consortiumRequired);
-      // TODO: Re-enable this filter once the boolean parsing issue is resolved
-      // For now, we'll skip this filter to avoid the "invalid input syntax for type boolean" error
+      if (filters.consortiumRequired === false) {
+        // When consortiumRequired is false, show only grants with no consortium requirement
+        query = query.or(
+          'consortium_requirement_en.ilike.%No requirements%,' +
+          'consortium_requirement_en.ilike.%No requirement%,' +
+          'consortium_requirement_en.ilike.%No consortium required%,' +
+          'consortium_requirement_en.ilike.%No consortium requirement%'
+        );
+      }
     }
 
     // Apply geographic scope filter
@@ -160,10 +166,36 @@ serve(async (req) => {
       query = query.or(scopeConditions.join(','));
     }
 
+    // Apply region filter (EU, Sverige, Regionalt)
+    if (filters.region && filters.region.length > 0) {
+      console.log('🗺️ Applying region filter:', filters.region);
+      const regionMapping: { [key: string]: string[] } = {
+        'EU': ['EU'],
+        'Sverige': ['Nationellt'],
+        'Regionalt': ['Regionalt']
+      };
+      
+      const scopeConditions: string[] = [];
+      filters.region.forEach(region => {
+        if (regionMapping[region]) {
+          regionMapping[region].forEach(scope => {
+            scopeConditions.push(`geographic_scope.ilike.%${scope}%`);
+          });
+        }
+      });
+      
+      if (scopeConditions.length > 0) {
+        query = query.or(scopeConditions.join(','));
+      }
+    }
+
     // Apply cofinancing requirement filter
     if (filters.cofinancingRequired !== undefined && filters.cofinancingRequired !== null) {
       console.log('💰 Applying cofinancing requirement filter:', filters.cofinancingRequired, 'Type:', typeof filters.cofinancingRequired);
-      query = query.eq('cofinancing_required', filters.cofinancingRequired);
+      if (filters.cofinancingRequired === false) {
+        // When cofinancingRequired is false, show only grants with no cofinancing requirement
+        query = query.eq('cofinancing_required', false);
+      }
     }
 
     // Apply status filter (open/upcoming)

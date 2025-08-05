@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { useGrantListItems } from "@/hooks/useGrantListItems";
+import { useGrantListItems, useAllOrganizations, useAllEligibleApplicants, useAllRegions } from "@/hooks/useGrantListItems";
 import { GrantListItem } from "@/types/grant";
 import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -244,6 +244,30 @@ const DiscoverGrants = () => {
   } = useGrantListItems({
     enabled: false, // No longer needed since semantic search returns full data
   });
+
+  // All organizations query (for organization filter dropdown)
+  const {
+    data: allOrganizations = [],
+    isLoading: allOrganizationsLoading,
+    error: allOrganizationsError,
+    isError: allOrganizationsIsError,
+  } = useAllOrganizations();
+
+  // All eligible applicant types query (for eligible applicants filter dropdown)
+  const {
+    data: allEligibleApplicants = [],
+    isLoading: allEligibleApplicantsLoading,
+    error: allEligibleApplicantsError,
+    isError: allEligibleApplicantsIsError,
+  } = useAllEligibleApplicants();
+
+  // All region options query (for region filter dropdown)
+  const {
+    data: allRegions = [],
+    isLoading: allRegionsLoading,
+    error: allRegionsError,
+    isError: allRegionsIsError,
+  } = useAllRegions();
 
   // Backend filtered grants hook (for manual browse pipeline)
   const {
@@ -753,6 +777,9 @@ const DiscoverGrants = () => {
       isBackendFetching={showBackendFetchingOverlay}
       searchMetrics={searchMetrics}
       aiMatches={semanticMatches}
+      allOrganizations={allOrganizations}
+      allEligibleApplicants={allEligibleApplicants}
+      allRegions={allRegions}
       onSearchChange={handleSearchChange}
       onSearch={handleSearch}
       onSortChange={handleSortChange}
