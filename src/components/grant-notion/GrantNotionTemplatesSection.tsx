@@ -64,12 +64,12 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Mallar och dokument</h3>
+      <h3 className="type-title text-zinc-900 mb-4">Mallar och dokument</h3>
       <div className="space-y-4">
         {/* Allmän information och dokument - now first, combining both generalInfo and other_sources_names */}
         {(hasGeneralInfo || hasOtherSources) && (
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Allmän information och dokument</h4>
+            <h4 className="type-secondary font-medium text-zinc-900 mb-2">Allmän information och dokument</h4>
             <div className="space-y-1">
               {/* General info files */}
               {grant.generalInfo.map((file, index) => (
@@ -79,7 +79,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
                   onClick={() => handleGeneralInfoClick(file, index, grant.other_templates_links || [])}
                 >
                   <FileText className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-700 flex-1">{file}</span>
+                  <span className="type-caption text-zinc-700 flex-1">{file}</span>
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
               ))}
@@ -92,7 +92,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
                   onClick={() => handleOtherSourcesClick(source, index, grant.other_sources_links || [])}
                 >
                   <FileText className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-700 flex-1">{source}</span>
+                  <span className="type-caption text-zinc-700 flex-1">{source}</span>
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
               ))}
@@ -103,7 +103,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
         {/* Ansökningsmallar - now second */}
         {hasTemplates && (
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Ansökningsmallar</h4>
+            <h4 className="type-secondary font-medium text-zinc-900 mb-2">Ansökningsmallar</h4>
             <div className="space-y-1">
               {grant.templates.map((template, index) => (
                 <div
@@ -112,7 +112,7 @@ const GrantNotionTemplatesSection = ({ grant }: GrantNotionTemplatesSectionProps
                   onClick={() => handleTemplateClick(template, index, grant.application_templates_links || [])}
                 >
                   <FileText className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-700 flex-1">{template}</span>
+                  <span className="type-caption text-zinc-700 flex-1">{template}</span>
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
               ))}

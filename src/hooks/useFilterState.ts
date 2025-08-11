@@ -43,9 +43,29 @@ export const useFilterState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<EnhancedFilterOptions>(defaultFilters);
 
-  // Load filters from URL on mount
+  // Load filters from URL or localStorage on mount
   useEffect(() => {
     const urlFilters = parseFiltersFromURL(searchParams);
+    const hasURLFilters = urlHasAnyFilter(searchParams);
+
+    if (hasURLFilters) {
+      setFilters(urlFilters);
+      return;
+    }
+
+    try {
+      const persisted = localStorage.getItem('grantFilters');
+      if (persisted) {
+        const parsed = JSON.parse(persisted) as EnhancedFilterOptions;
+        setFilters({ ...defaultFilters, ...parsed });
+        // Sync URL too for shareability
+        const newParams = new URLSearchParams(searchParams);
+        updateURLParams(newParams, { ...defaultFilters, ...parsed });
+        setSearchParams(newParams);
+        return;
+      }
+    } catch {}
+
     setFilters(urlFilters);
   }, []);
 
@@ -85,23 +105,6 @@ export const useFilterState = () => {
       filters.consortiumRequired !== null ||
       filters.cofinancingRequired !== null
     );
-    
-    console.log('hasActiveFilters check:', {
-      organizations: filters.organizations.length,
-      statusFilter: filters.statusFilter,
-      eligibleApplicants: filters.eligibleApplicants.length,
-      fundingMin: filters.fundingRange.min,
-      fundingMax: filters.fundingRange.max,
-      deadlinePreset: filters.deadline.preset,
-      customStart: filters.deadline.customRange?.start,
-      customEnd: filters.deadline.customRange?.end,
-      tags: filters.tags.length,
-      region: filters.region.length,
-      consortiumRequired: filters.consortiumRequired,
-      cofinancingRequired: filters.cofinancingRequired,
-      result: isActive
-    });
-    
     return isActive;
   }, [filters]);
 
@@ -115,7 +118,7 @@ export const useFilterState = () => {
 
 // Helper functions
 const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptions => {
-  // Always start with default clean state - don't load from localStorage initially
+  // Always start with default clean state
   return {
     organizations: searchParams.get('orgs')?.split(',').filter(Boolean) || [],
     fundingRange: {
@@ -138,9 +141,14 @@ const parseFiltersFromURL = (searchParams: URLSearchParams): EnhancedFilterOptio
   };
 };
 
+const urlHasAnyFilter = (params: URLSearchParams): boolean => {
+  const keys = ['orgs','minFunding','maxFunding','deadlineType','deadlinePreset','tags','industrySectors','eligibleApplicants','consortiumRequired','geographicScope','region','cofinancingRequired','statusFilter'];
+  return keys.some(k => params.get(k));
+};
+
 const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions) => {
   // Clear existing filter params
-  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags', 'industrySectors', 'eligibleApplicants', 'consortiumRequired', 'geographicScope', 'region', 'cofinancingRequired'].forEach(key => {
+  ['orgs', 'minFunding', 'maxFunding', 'deadlineType', 'deadlinePreset', 'tags', 'industrySectors', 'eligibleApplicants', 'consortiumRequired', 'geographicScope', 'region', 'cofinancingRequired','statusFilter'].forEach(key => {
     params.delete(key);
   });
 
@@ -178,6 +186,9 @@ const updateURLParams = (params: URLSearchParams, filters: EnhancedFilterOptions
   }
   if (filters.cofinancingRequired !== null) {
     params.set('cofinancingRequired', filters.cofinancingRequired.toString());
+  }
+  if (filters.statusFilter) {
+    params.set('statusFilter', filters.statusFilter);
   }
 };
 

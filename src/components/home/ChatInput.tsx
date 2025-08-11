@@ -113,9 +113,7 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
 
   // File upload state
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -247,7 +245,7 @@ const ChatInput = ({
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
           {/* File Attachments Section */}
           {uploadedFiles.length > 0 && <div className="px-4 pt-4 pb-2 flex flex-wrap gap-2">
-              {uploadedFiles.map(file => <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-xs">
+              {uploadedFiles.map(file => <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 type-caption">
                   <span>{getFileIcon(file.type)}</span>
                   <span>{file.name}</span>
                   <span className="text-gray-400">({formatFileSize(file.size)})</span>
@@ -264,7 +262,7 @@ const ChatInput = ({
               <div className="w-full relative">
                 <Textarea
                   placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  className="w-full min-h-[48px] border-0 bg-transparent type-body focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                   value={inputValue}
                   onChange={handleTextareaChange}
                   onFocus={() => setIsFocused(true)}
@@ -278,7 +276,7 @@ const ChatInput = ({
                 />
                 {/* Animated placeholder overlay */}
                 {(!inputValue && !isFocused && animatedPlaceholder) && (
-                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
+                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none type-body px-0 py-0">
                     {animatedPlaceholder}
                   </div>
                 )}
@@ -332,7 +330,7 @@ const ChatInput = ({
                   disabled={isProcessing || !inputValue.trim()}
                   size="sm"
                   title="Hitta bidrag"
-                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#6A40F2]"
                 >
                   {isProcessing ? (
                     <Loader2 className="w-7 h-7 animate-spin" />

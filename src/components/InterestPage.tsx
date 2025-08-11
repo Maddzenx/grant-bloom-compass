@@ -192,10 +192,10 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
 
   const getInterestColor = (value: number) => {
     if (value <= -3) return 'text-red-600 bg-red-50';
-    if (value <= -1) return 'text-orange-600 bg-orange-50';
+    if (value <= -1) return 'text-amber-600 bg-amber-50';
     if (value === 0) return 'text-gray-600 bg-gray-50';
-    if (value <= 2) return 'text-blue-600 bg-blue-50';
-    if (value <= 4) return 'text-purple-600 bg-purple-50';
+    if (value <= 2) return 'text-zinc-700 bg-zinc-100';
+    if (value <= 4) return 'text-[#7D54F4] bg-[#f3efff]';
     return 'text-green-600 bg-green-50';
   };
 
@@ -346,8 +346,8 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
           <Button
             onClick={handleFeedbackSubmit}
             disabled={isLoading}
-            className="w-full h-8 text-black text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#c5b8f8]"
-            style={{ backgroundColor: '#d7cffc' }}
+            className="w-full h-8 text-black text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E5DEFD]"
+            style={{ backgroundColor: '#CEC5F9' }}
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">

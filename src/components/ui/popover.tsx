@@ -4,7 +4,14 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "@/lib/utils"
 
-const Popover = PopoverPrimitive.Root
+// Wrap Root to default to modal behavior (focus trap + ESC to close)
+const Popover = ({ children, ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) => {
+  return (
+    <PopoverPrimitive.Root modal {...props}>
+      {children}
+    </PopoverPrimitive.Root>
+  )
+}
 
 const PopoverTrigger = PopoverPrimitive.Trigger
 

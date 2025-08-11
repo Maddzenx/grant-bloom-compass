@@ -267,14 +267,14 @@ const ProgressChecklist = () => {
                 onDrop={handleDrop}
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                   isDragOver
-                    ? "border-blue-400 bg-blue-50"
+                    ? "border-[#7D54F4] bg-[#f3efff]"
                     : "border-gray-300 hover:border-gray-400"
                 }`}
               >
                 <Upload className="w-8 h-8 text-gray-400 mx-auto mb-4" />
                 <p className="text-sm text-gray-600 mb-2">
                   Drag and drop to upload or{" "}
-                  <button className="text-blue-600 hover:underline font-medium">browse</button>
+                  <button className="text-[#7D54F4] hover:opacity-90 font-medium">browse</button>
                 </p>
                 <p className="text-xs text-gray-500">
                   PDF, JPG, PNG, and BMP file formats only

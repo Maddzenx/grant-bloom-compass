@@ -41,7 +41,7 @@ const PricingSection = () => {
               style={{ fontSize: 'clamp(38px, 6vw, 60px)' }}>
             <span className="relative inline-block">
               <span 
-                className="absolute bg-[#D1F364] -z-10"
+                className="absolute bg-[#f3efff] -z-10"
                 style={{
                   width: '120%',
                   height: '70%',
@@ -86,7 +86,7 @@ const PricingSection = () => {
                   <li key={featureIndex} className="flex items-start gap-3">
                     <span 
                       className="w-2 h-2 rounded-full flex-shrink-0 mt-2"
-                      style={{ backgroundColor: '#B3E93B' }}
+                      style={{ backgroundColor: '#7D54F4' }}
                       aria-hidden="true"
                     />
                     <span className="font-poppins text-[18px] text-gray-800 opacity-80">
@@ -98,7 +98,7 @@ const PricingSection = () => {
 
               {/* Subscribe Button */}
               <button 
-                className="bg-[#D1F364] hover:bg-[#C5E858] text-gray-900 font-poppins font-medium text-[20px] px-10 py-4 rounded-full transition-colors duration-200 w-full"
+                className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white font-poppins font-medium text-[20px] px-10 py-4 rounded-full transition-colors duration-200 w-full"
                 style={{ borderRadius: '999px' }}
               >
                 Subscribe

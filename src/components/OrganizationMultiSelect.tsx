@@ -139,7 +139,7 @@ export const OrganizationMultiSelect = ({
                 >
                   <div className="flex items-center justify-center w-4 h-4">
                     {selectedOrganizations.includes(org.value) && (
-                      <Check className="w-4 h-4 text-blue-600" />
+                      <Check className="w-4 h-4 text-[#7D54F4]" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

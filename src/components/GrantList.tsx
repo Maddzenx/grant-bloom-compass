@@ -4,6 +4,7 @@ import ConsolidatedGrantList from "@/components/ConsolidatedGrantList";
 import { GrantListItem } from "@/types/grant";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GrantListProps {
   grants: GrantListItem[];
@@ -21,6 +22,11 @@ interface GrantListProps {
     hasMore: boolean;
   };
   onPageChange?: (page: number) => void;
+  // New: show skeleton placeholders while fetching
+  isLoadingList?: boolean;
+  // New: scroll retention
+  onScrollPositionChange?: (scrollTop: number) => void;
+  restoreScrollTop?: number | null;
 }
 
 const GrantList = ({
@@ -32,13 +38,41 @@ const GrantList = ({
   isMobile,
   aiMatches,
   pagination,
-  onPageChange
+  onPageChange,
+  isLoadingList = false,
+  onScrollPositionChange,
+  restoreScrollTop = null
 }: GrantListProps) => {
   const [numVisibleGrants, setNumVisibleGrants] = React.useState(15);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
   const grantsPerPage = 15;
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+  const [scrollTick, setScrollTick] = React.useState(0);
+
+  // Observe list scroll and report
+  React.useEffect(() => {
+    const root = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null;
+    if (!root) return;
+
+    const handle = () => {
+      if (onScrollPositionChange) onScrollPositionChange(root.scrollTop);
+      setScrollTick((t) => t + 1);
+    };
+    root.addEventListener('scroll', handle, { passive: true });
+    // Fire once to initialize
+    handle();
+    return () => root.removeEventListener('scroll', handle);
+  }, [onScrollPositionChange]);
+
+  // Restore scrollTop when requested
+  React.useEffect(() => {
+    if (restoreScrollTop == null) return;
+    const root = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null;
+    if (root) {
+      root.scrollTo({ top: restoreScrollTop, behavior: 'auto' });
+    }
+  }, [restoreScrollTop]);
 
   // For mobile: use backend pagination to determine if there are more grants
   const hasMoreBackend = pagination?.hasMore || false;
@@ -95,6 +129,29 @@ const GrantList = ({
     showPagination: !isMobile && (pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)) > 1
   });
 
+  const SkeletonRows = () => (
+    <div className="divide-y divide-zinc-100">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="p-4">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-6 w-6 rounded-full" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <Skeleton className="h-5 w-14 rounded-full" />
+          </div>
+          <Skeleton className="h-4 w-3/5 mb-2" />
+          <Skeleton className="h-3 w-full mb-1" />
+          <Skeleton className="h-3 w-5/6" />
+          <div className="mt-4 flex items-center justify-between">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
       {/* Mobile Progress Indicator */}
@@ -110,26 +167,32 @@ const GrantList = ({
           </div>
           <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
             <div 
-              className="bg-purple-600 h-1 rounded-full transition-all duration-300"
+              className="bg-[#7D54F4] h-1 rounded-full transition-all duration-300"
               style={{ width: `${(grants.length / pagination.total) * 100}%` }}
             />
           </div>
         </div>
       )}
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
-        <ConsolidatedGrantList
-          grants={grantsToShow}
-          selectedGrant={selectedGrant}
-          onGrantSelect={onGrantSelect}
-          onToggleBookmark={onToggleBookmark}
-          searchTerm={searchTerm}
-          isMobile={isMobile}
-          aiMatches={aiMatches}
-          currentPage={pagination?.page || currentPage}
-          totalPages={pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)}
-          totalCount={pagination?.total || grants.length}
-          onPageChange={onPageChange || setCurrentPage}
-        />
+        {/* Skeletons when loading and no grants yet */}
+        {isLoadingList && grantsToShow.length === 0 ? (
+          <SkeletonRows />
+        ) : (
+          <ConsolidatedGrantList
+            grants={grantsToShow}
+            selectedGrant={selectedGrant}
+            onGrantSelect={onGrantSelect}
+            onToggleBookmark={onToggleBookmark}
+            searchTerm={searchTerm}
+            isMobile={isMobile}
+            aiMatches={aiMatches}
+            currentPage={pagination?.page || currentPage}
+            totalPages={pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)}
+            totalCount={pagination?.total || grants.length}
+            onPageChange={onPageChange || setCurrentPage}
+            scrollTick={scrollTick}
+          />
+        )}
         {/* Manual Load More Button for Mobile */}
         {isMobile && hasMore && (
           <div className="flex flex-col items-center justify-center py-6 px-4">

@@ -79,7 +79,7 @@ const GrantHeader = ({
           className={`text-white rounded-lg font-semibold text-sm transition-all duration-200 ${
             isMobile ? 'flex-1 px-4 py-2' : 'px-6 py-2'
           }`}
-          style={{ backgroundColor: '#8B5CF6' }}
+          style={{ backgroundColor: '#7D54F4' }}
         >
           Ansök
         </Button>

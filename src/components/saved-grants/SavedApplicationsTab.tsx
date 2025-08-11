@@ -15,8 +15,8 @@ const SavedApplicationsTab = ({ grants, onReadMore, onStartApplication, onDelete
   if (grants.length === 0) {
     return (
       <Card className="p-8 bg-white border border-accent-lavender shadow-sm text-center">
-        <p className="text-ink-secondary">Inga sparade ansökningar.</p>
-        <p className="text-sm text-ink-secondary mt-2">Spara bidrag från upptäckssidan för att se dem här.</p>
+        <p className="type-body text-ink-secondary">Inga sparade ansökningar.</p>
+        <p className="type-secondary text-ink-secondary mt-2">Spara bidrag från upptäckssidan för att se dem här.</p>
       </Card>
     );
   }

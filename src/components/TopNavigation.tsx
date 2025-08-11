@@ -84,7 +84,7 @@ export function TopNavigation() {
                         <defs>
                           <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                         </defs>
-                        <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                        <text fill="#7D54F4" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                           <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
                             UTLYSNINGAR
                           </textPath>
@@ -176,15 +176,15 @@ export function TopNavigation() {
       {/* Bottom Navigation for Mobile */}
       {user ? (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe]/80 border-t-0 md:hidden flex justify-around items-center h-16">
-          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:home" className="text-2xl" />
             <span className="text-xs mt-1">Hem</span>
           </Link>
-          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/discover' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/discover' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:magnify" className="text-2xl" />
             <span className="text-xs mt-1">Upptäck</span>
           </Link>
-          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/saved' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/saved' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:bookmark-outline" className="text-2xl" />
             <span className="text-xs mt-1">Sparade</span>
           </Link>

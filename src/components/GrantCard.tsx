@@ -159,7 +159,7 @@ const GrantCard = ({
               title={actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}
             >
               <Bookmark 
-                className={`w-5 h-5 ${actuallyBookmarked ? 'fill-current text-purple-600' : 'text-gray-400 hover:text-gray-600'}`} 
+                className={`w-5 h-5 ${actuallyBookmarked ? 'fill-current text-[#7D54F4]' : 'text-gray-400 hover:text-gray-600'}`} 
               />
             </button>
           </div>

@@ -66,8 +66,8 @@ const EmailSignupInput: React.FC<EmailSignupInputProps> = ({
         <Button
           onClick={handleSubmit}
           disabled={isLoading || !email.trim() || !!emailError}
-          className="h-12 px-6 text-black text-sm font-medium rounded-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#c5b8f8] whitespace-nowrap border-0"
-          style={{ backgroundColor: '#d7cffc' }}
+          className="h-12 px-6 text-black text-sm font-medium rounded-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E5DEFD] whitespace-nowrap border-0"
+          style={{ backgroundColor: '#CEC5F9' }}
         >
           {isLoading ? (
             <div className="flex items-center justify-center gap-2">

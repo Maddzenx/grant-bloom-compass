@@ -25,6 +25,10 @@ const DiscoverGrants = () => {
   const [initialGrantType] = useState(() => location.state?.grantType || 'both');
   const [initialFilterInfo] = useState(() => location.state?.filterInfo || null);
   const [isAISearch, setIsAISearch] = useState(() => {
+    // Load persisted choice if available
+    const persisted = localStorage.getItem('searchMode');
+    if (persisted === 'ai') return true;
+    if (persisted === 'regular') return false;
     // If user comes from semantic search pipeline (has search results or search term), default to AI search
     return !!(initialSearchResults || initialSearchTerm);
   });
@@ -692,6 +696,9 @@ const DiscoverGrants = () => {
   // Handle search mode toggle
   const handleToggleSearchMode = useCallback((isAI: boolean) => {
     setIsAISearch(isAI);
+    try {
+      localStorage.setItem('searchMode', isAI ? 'ai' : 'regular');
+    } catch {}
     console.log('🔀 Search mode changed to:', isAI ? 'AI' : 'Regular');
   }, []);
 

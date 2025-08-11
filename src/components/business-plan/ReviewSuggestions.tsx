@@ -48,9 +48,9 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       case 'high':
         return 'border-red-200 bg-red-50';
       case 'medium':
-        return 'border-yellow-200 bg-yellow-50';
+        return 'border-amber-200 bg-amber-50';
       case 'low':
-        return 'border-blue-200 bg-blue-50';
+        return 'border-zinc-200 bg-zinc-50';
       default:
         return 'border-gray-200 bg-gray-50';
     }
@@ -84,7 +84,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
               </div>}
             
             <div className="flex gap-2" onClick={e => e.stopPropagation()}>
-              <Button size="sm" onClick={() => handleAccept(suggestion)} className="px-4 py-1.5 h-8 text-sm rounded-md bg-[#d7cffc] text-black">
+              <Button size="sm" onClick={() => handleAccept(suggestion)} className="px-4 py-1.5 h-8 text-sm rounded-md text-black hover:bg-[#E5DEFD]" style={{ backgroundColor: '#CEC5F9' }}>
                 Apply
               </Button>
               <button onClick={() => handleDismiss(suggestion.id)} className="text-sm font-medium px-2 py-1.5 text-black">
@@ -98,7 +98,7 @@ export const ReviewSuggestions: React.FC<ReviewSuggestionsProps> = ({
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <h3 className="font-semibold text-gray-900 text-base">Review suggestions</h3>
-        <div className="text-black text-xs font-medium px-2 py-0.5 rounded-full min-w-[24px] h-5 flex items-center justify-center bg-[#d1f364]">
+        <div className="text-black text-xs font-medium px-2 py-0.5 rounded-full min-w-[24px] h-5 flex items-center justify-center bg-[#f3efff]">
           {totalSuggestions}
         </div>
       </div>
