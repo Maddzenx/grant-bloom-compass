@@ -44,7 +44,7 @@ const FilterContent = ({
       {/* Status Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="type-title text-zinc-900 font-['Source_Sans_3']">Status</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Status</h3>
           {filters.statusFilter && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           statusFilter: ''
         })}>
@@ -77,7 +77,7 @@ const FilterContent = ({
       {/* Organization Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="type-title text-zinc-900 font-['Source_Sans_3']">Organisation</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Organisation</h3>
           {filters.organizations?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           organizations: []
         })}>
@@ -101,7 +101,7 @@ const FilterContent = ({
       {/* Deadline Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Deadline</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Deadline</h3>
           {deadlineValue?.preset && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onDeadlineChange({
           type: 'preset',
           preset: ''
@@ -145,7 +145,7 @@ const FilterContent = ({
       {/* Eligible Applicant Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Stödberättigad sökande</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Stödberättigad sökande</h3>
           {filters.eligibleApplicants?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           eligibleApplicants: []
         })}>
@@ -169,7 +169,7 @@ const FilterContent = ({
       {/* Region Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Region</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Region</h3>
           {filters.regions?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           regions: []
         })}>
@@ -202,7 +202,7 @@ const FilterContent = ({
       {/* Övriga filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Övriga filter</h3>
+          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Övriga filter</h3>
           {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           noCofinancingRequired: false,
           noConsortiumRequired: false
@@ -262,7 +262,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Status Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" aria-haspopup="dialog" aria-label="Statusfilter" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white font-medium text-sm">
+            <Button variant="outline" aria-haspopup="dialog" aria-label="Statusfilter" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white font-medium type-body font-['Source_Sans_3']">
               {filters.statusFilter === 'open' ? 'Öppen' : filters.statusFilter === 'upcoming' ? 'Kommande' : 'Visa alla'} <ChevronDown className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
@@ -293,7 +293,7 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Organisation Filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm font-['Source_Sans_3']" aria-haspopup="dialog" aria-label="Organisation">
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white type-body font-['Source_Sans_3']" aria-haspopup="dialog" aria-label="Organisation">
               Organisation {filters.organizations?.length > 0 && <span className="bg-[#7D54F4] text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.organizations.length}</span>} <ChevronDown className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
@@ -315,13 +315,13 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         {/* Fler filter (combined) */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-zinc-300 text-zinc-700 font-medium shadow-none hover:bg-zinc-50 hover:shadow-md min-h-0 h-10 bg-white text-sm font-['Source_Sans_3']" aria-haspopup="dialog" aria-label="Fler filter">
+            <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-zinc-300 text-zinc-700 font-medium shadow-none hover:bg-zinc-50 hover:shadow-md min-h-0 h-10 bg-white type-body font-['Source_Sans_3']" aria-haspopup="dialog" aria-label="Fler filter">
               Fler filter {extraFiltersCount > 0 && <span className="bg-[#7D54F4] text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{extraFiltersCount}</span>} <ChevronDown className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[360px] p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start" aria-label="Fler filter innehåll">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="type-title text-zinc-900">Filtrera</h4>
+              <h4 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Filtrera</h4>
               <Button variant="ghost" size="sm" className="type-secondary text-[#7D54F4] hover:opacity-90" onClick={onResetFilters} aria-label="Rensa alla filter">Rensa alla</Button>
             </div>
             <Separator className="bg-gray-200 mb-3" />

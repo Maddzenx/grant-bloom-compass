@@ -49,7 +49,7 @@ const OrganizationTabs = ({
           <button
             key={org.key}
             onClick={() => toggleOrganization(org.key)}
-            className={`px-6 py-3 rounded-xl font-[Basic] font-medium type-secondary transition-all duration-200 ${
+            className={`px-6 py-3 rounded-xl font-['Source_Sans_3'] font-medium type-secondary transition-all duration-200 ${
               selectedOrganizations.includes(org.key)
                 ? 'bg-white text-gray-900 border-2 border-gray-200'
                 : 'bg-gray-100 text-gray-800 border border-gray-300 hover:border-gray-400'

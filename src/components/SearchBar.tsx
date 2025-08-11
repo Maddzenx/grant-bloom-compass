@@ -7,19 +7,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface SearchBarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  placeholder?: string;
+  inputClassName?: string;
 }
 
-const SearchBar = ({ searchTerm, onSearchChange }: SearchBarProps) => {
+const SearchBar = ({ searchTerm, onSearchChange, placeholder, inputClassName }: SearchBarProps) => {
   const { t } = useLanguage();
 
   return (
     <div className="relative w-full">
-      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
       <Input
-        placeholder={t('search.placeholder')}
+        placeholder={placeholder || t('search.placeholder')}
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="pl-12 pr-4 py-3 border-gray-300 bg-white rounded-xl text-base font-medium shadow-sm focus:ring-2 focus:ring-zinc-300 focus:border-zinc-300 w-full"
+        className={`pl-12 pr-4 py-4 md:py-5 border border-zinc-200 bg-white rounded-full text-base font-medium shadow-sm hover:shadow-md transition-shadow duration-200 focus:ring-2 focus:ring-[#7D54F4] focus:border-[#7D54F4] focus:outline-none w-full placeholder:text-zinc-500 text-zinc-900 ${inputClassName || ''}`}
       />
     </div>
   );

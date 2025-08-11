@@ -241,108 +241,105 @@ const BusinessPlanEditor = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                           {/* Header Section */}
-                 <div className="mb-8">
-                   <div className="flex items-center justify-between mb-4">
-                     <div>
-                       <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Skriv din ansökan här
-                       </h1>
-                       <p className="text-lg text-gray-600 mb-1">
-                       Ansökan till utlysningen Innovativa Startups 2025
-                       </p>
-                      
-                     </div>
-                   </div>
-                   
+          {/* Header Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Skriv din ansökan här
+                </h1>
+                <p className="text-lg text-gray-600 mb-1">
+                  Ansökan till utlysningen Innovativa Startups 2025
+                </p>
+              </div>
+            </div>
+          </div>
 
-                                   </div>
-
-                                   {/* Main Content Grid */}
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                   {/* Left Column - Main Content */}
-                   <div className="lg:col-span-2">
-                     {/* Section Jump Menu */}
-                     <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-                       <div className="flex items-center justify-between mb-3">
-                         <h3 className="text-sm font-medium text-gray-700">Snabbnavigation</h3>
-                       </div>
-                                               <div className="grid grid-cols-3 gap-2">
-                          {[
-                            { key: 'dokument', title: 'Dokument', completed: completedSections['dokument'] || false },
-                            { key: 'projektinformation', title: 'Projektinfo', completed: completedSections['projektinformation'] || false },
-                            { key: 'koordinator', title: 'Koordinator', completed: completedSections['koordinator'] || false },
-                            { key: 'budget', title: 'Budget', completed: completedSections['budget'] || false },
-                            { key: 'kontaktuppgifter', title: 'Kontakt', completed: completedSections['kontaktuppgifter'] || false },
-                            { key: 'om_foretaget', title: 'Företag', completed: completedSections['om_foretaget'] || false },
-                            { key: 'potential', title: 'Potential', completed: completedSections['potential'] || false },
-                            { key: 'genomforande', title: 'Genomförande', completed: completedSections['genomforande'] || false },
-                            { key: 'team', title: 'Team', completed: completedSections['team'] || false },
-                            { key: 'bilagor', title: 'Bilagor', completed: completedSections['bilagor'] || false }
-                          ].map((section) => (
-                           <button
-                             key={section.key}
-                             onClick={() => {
-                               // Expand the target section
-                               setStandaloneExpandedSections(prev => ({
-                                 ...prev,
-                                 [section.key]: true
-                               }));
-                               
-                                                               // Scroll to the section with better positioning
-                                setTimeout(() => {
-                                  const sectionElement = document.querySelector(`[data-section-key="${section.key}"]`) as HTMLElement;
-                                  if (sectionElement) {
-                                    // Calculate the target scroll position with proper offset
-                                    const headerHeight = 80; // Approximate header height
-                                    const sectionOffset = 20; // Additional spacing
-                                    const totalOffset = headerHeight + sectionOffset;
-                                    
-                                    const elementTop = sectionElement.offsetTop;
-                                    const targetPosition = elementTop - totalOffset;
-                                    
-                                    window.scrollTo({
-                                      top: targetPosition,
-                                      behavior: 'smooth'
-                                    });
-                                    
-                                    // Add a subtle highlight effect to the section
-                                    sectionElement.style.transition = 'box-shadow 0.3s ease';
-                                    sectionElement.style.boxShadow = '0 0 0 2px rgba(125, 84, 244, 0.28)';
-                                    
-                                    setTimeout(() => {
-                                      sectionElement.style.boxShadow = '';
-                                    }, 2000);
-                                  }
-                                }, 100);
-                             }}
-                             className={`text-xs px-3 py-2 rounded-md transition-colors ${
-                               standaloneExpandedSections[section.key]
-                                 ? 'bg-[#f3efff] text-[#5332e0] border border-[#e5defd]'
-                                 : section.completed 
-                                   ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                             }`}
-                           >
-                             {section.title}
-                           </button>
-                         ))}
-                       </div>
-                     </div>
-                             <div className="space-y-4">
-                 {[
-                   {
-                     key: 'dokument',
-                     title: 'Dokument & Bilagor',
-                     description: 'Ladda upp dokument som stödjer din ansökan',
-                     completed: completedSections['dokument'] || false
-                   },
-                   {
-                     key: 'projektinformation',
-                     title: 'Projektinformation',
-                     description: 'Grundläggande information om projektet',
-                     completed: completedSections['projektinformation'] || false
-                   },
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Main Content */}
+            <div className="lg:col-span-2">
+              {/* Section Jump Menu */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-gray-700">Snabbnavigation</h3>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { key: 'dokument', title: 'Dokument', completed: completedSections['dokument'] || false },
+                    { key: 'projektinformation', title: 'Projektinfo', completed: completedSections['projektinformation'] || false },
+                    { key: 'koordinator', title: 'Koordinator', completed: completedSections['koordinator'] || false },
+                    { key: 'budget', title: 'Budget', completed: completedSections['budget'] || false },
+                    { key: 'kontaktuppgifter', title: 'Kontakt', completed: completedSections['kontaktuppgifter'] || false },
+                    { key: 'om_foretaget', title: 'Företag', completed: completedSections['om_foretaget'] || false },
+                    { key: 'potential', title: 'Potential', completed: completedSections['potential'] || false },
+                    { key: 'genomforande', title: 'Genomförande', completed: completedSections['genomforande'] || false },
+                    { key: 'team', title: 'Team', completed: completedSections['team'] || false },
+                    { key: 'bilagor', title: 'Bilagor', completed: completedSections['bilagor'] || false }
+                  ].map((section) => (
+                    <button
+                      key={section.key}
+                      onClick={() => {
+                        // Expand the target section
+                        setStandaloneExpandedSections(prev => ({
+                          ...prev,
+                          [section.key]: true
+                        }));
+                        
+                        // Scroll to the section with better positioning
+                        setTimeout(() => {
+                          const sectionElement = document.querySelector(`[data-section-key="${section.key}"]`) as HTMLElement;
+                          if (sectionElement) {
+                            // Calculate the target scroll position with proper offset
+                            const headerHeight = 80; // Approximate header height
+                            const sectionOffset = 20; // Additional spacing
+                            const totalOffset = headerHeight + sectionOffset;
+                            
+                            const elementTop = sectionElement.offsetTop;
+                            const targetPosition = elementTop - totalOffset;
+                            
+                            window.scrollTo({
+                              top: targetPosition,
+                              behavior: 'smooth'
+                            });
+                            
+                            // Add a subtle highlight effect to the section
+                            sectionElement.style.transition = 'box-shadow 0.3s ease';
+                            sectionElement.style.boxShadow = '0 0 0 2px rgba(125, 84, 244, 0.28)';
+                            
+                            setTimeout(() => {
+                              sectionElement.style.boxShadow = '';
+                            }, 2000);
+                          }
+                        }, 100);
+                      }}
+                      className={`text-xs px-3 py-2 rounded-md transition-colors ${
+                        standaloneExpandedSections[section.key]
+                          ? 'bg-[#f3efff] text-[#5332e0] border border-[#e5defd]'
+                          : section.completed 
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {section.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                {[
+                  {
+                    key: 'dokument',
+                    title: 'Dokument & Bilagor',
+                    description: 'Ladda upp dokument som stödjer din ansökan',
+                    completed: completedSections['dokument'] || false
+                  },
+                  {
+                    key: 'projektinformation',
+                    title: 'Projektinformation',
+                    description: 'Grundläggande information om projektet',
+                    completed: completedSections['projektinformation'] || false
+                  },
                   {
                     key: 'koordinator',
                     title: 'Koordinator, projektparter och finansiärer',
@@ -406,20 +403,20 @@ const BusinessPlanEditor = () => {
                           <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-semibold text-gray-600">
                             {index + 1}
                           </div>
-                                                           <div className="flex-1">
-                                   <h3 className="text-lg font-semibold text-gray-900 mb-1">{section.title}</h3>
-                                   <p className="text-gray-600 text-sm">{section.description}</p>
-                                   {section.completed && (
-                                     <div className="flex items-center gap-1 mt-2">
-                                       <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                         </svg>
-                                         Slutförd
-                                       </span>
-                                     </div>
-                                   )}
-                                 </div>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-1">{section.title}</h3>
+                            <p className="text-gray-600 text-sm">{section.description}</p>
+                            {section.completed && (
+                              <div className="flex items-center gap-1 mt-2">
+                                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                  Slutförd
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="ml-4 flex items-center gap-2">
                           <button
@@ -456,154 +453,154 @@ const BusinessPlanEditor = () => {
                       </div>
                     </div>
                     
-                                         {/* Expandable Content */}
-                     {standaloneExpandedSections[section.key] && (
-                       <div className="px-6 pb-6 border-t border-gray-100">
-                         <div className="pt-4">
-                                                       {section.key === 'dokument' ? (
-                              // Special content for Dokument section
-                              <div className="space-y-6">
-                                {/* Project Documents Section */}
-                                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Dokument om projektet</h3>
-                                  <p className="text-sm text-gray-600 mb-4">Ladda upp dokument som beskriver ditt projekt, företag och team</p>
-                                  
-                                  {/* File Upload Area */}
-                                  <div 
-                                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
-                                      dragStates.project 
-                                        ? 'border-[#7D54F4] bg-[#f3efff]' 
-                                        : 'border-gray-300 hover:border-gray-400'
-                                    }`}
-                                    onDragOver={(e) => handleDragOver(e, 'project')}
-                                    onDragLeave={(e) => handleDragLeave(e, 'project')}
-                                    onDrop={(e) => handleDrop(e, 'project')}
-                                  >
-                                    <svg className="w-8 h-8 text-gray-400 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                    <h4 className="text-base font-medium text-gray-900 mb-2">
-                                      {dragStates.project ? 'Släpp filer här' : 'Ladda upp projektdokument'}
-                                    </h4>
-                                    <p className="text-sm text-gray-600 mb-3">
-                                      {dragStates.project ? 'Släpp för att ladda upp' : 'Affärsplan, finansiella rapporter, CV, referenser'}
-                                    </p>
-                                    <label className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
-                                      Välj filer
-                                      <input
-                                        type="file"
-                                        multiple
-                                        accept=".pdf,.doc,.docx,.xls,.xlsx"
-                                        className="hidden"
-                                        onChange={(e) => handleFileUpload('project', e.target.files)}
-                                      />
-                                    </label>
-                                    <p className="text-xs text-gray-500 mt-2">PDF, DOC, DOCX, XLS, XLSX (max 25 MB)</p>
-                                  </div>
-                                  
-                                  {/* Uploaded Files List */}
-                                  {uploadedFiles.project.length > 0 && (
-                                    <div className="mt-4">
-                                      <h5 className="text-sm font-medium text-gray-700 mb-3">Uppladdade filer:</h5>
-                                      <div className="space-y-2">
-                                        {uploadedFiles.project.map((file, index) => (
-                                          <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                                            <div className="flex items-center gap-3">
-                                              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                                              </svg>
-                                              <div>
-                                                <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                                                <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
-                                              </div>
-                                            </div>
-                                            <button
-                                              onClick={() => removeFile('project', index)}
-                                              className="text-red-500 hover:text-red-700 transition-colors"
-                                            >
-                                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                              </svg>
-                                            </button>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
+                    {/* Expandable Content */}
+                    {standaloneExpandedSections[section.key] && (
+                      <div className="px-6 pb-6 border-t border-gray-100">
+                        <div className="pt-4">
+                          {section.key === 'dokument' ? (
+                            // Special content for Dokument section
+                            <div className="space-y-6">
+                              {/* Project Documents Section */}
+                              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Dokument om projektet</h3>
+                                <p className="text-sm text-gray-600 mb-4">Ladda upp dokument som beskriver ditt projekt, företag och team</p>
+                                
+                                {/* File Upload Area */}
+                                <div 
+                                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
+                                    dragStates.project 
+                                      ? 'border-[#7D54F4] bg-[#f3efff]' 
+                                      : 'border-gray-300 hover:border-gray-400'
+                                  }`}
+                                  onDragOver={(e) => handleDragOver(e, 'project')}
+                                  onDragLeave={(e) => handleDragLeave(e, 'project')}
+                                  onDrop={(e) => handleDrop(e, 'project')}
+                                >
+                                  <svg className="w-8 h-8 text-gray-400 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                  <h4 className="text-base font-medium text-gray-900 mb-2">
+                                    {dragStates.project ? 'Släpp filer här' : 'Ladda upp projektdokument'}
+                                  </h4>
+                                  <p className="text-sm text-gray-600 mb-3">
+                                    {dragStates.project ? 'Släpp för att ladda upp' : 'Affärsplan, finansiella rapporter, CV, referenser'}
+                                  </p>
+                                  <label className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
+                                    Välj filer
+                                    <input
+                                      type="file"
+                                      multiple
+                                      accept=".pdf,.doc,.docx,.xls,.xlsx"
+                                      className="hidden"
+                                      onChange={(e) => handleFileUpload('project', e.target.files)}
+                                    />
+                                  </label>
+                                  <p className="text-xs text-gray-500 mt-2">PDF, DOC, DOCX, XLS, XLSX (max 25 MB)</p>
                                 </div>
-
-                                {/* Grant Call Documents Section */}
-                                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Dokument om bidragsutlysningen</h3>
-                                  <p className="text-sm text-gray-600 mb-4">Ladda upp dokument relaterade till bidragsutlysningen och ansökningskrav</p>
-                                  
-                                  {/* File Upload Area */}
-                                  <div 
-                                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
-                                      dragStates.grant 
-                                        ? 'border-green-400 bg-green-50' 
-                                        : 'border-gray-300 hover:border-gray-400'
-                                    }`}
-                                    onDragOver={(e) => handleDragOver(e, 'grant')}
-                                    onDragLeave={(e) => handleDragLeave(e, 'grant')}
-                                    onDrop={(e) => handleDrop(e, 'grant')}
-                                  >
-                                    <svg className="w-8 h-8 text-gray-400 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                    <h4 className="text-base font-medium text-gray-900 mb-2">
-                                      {dragStates.grant ? 'Släpp filer här' : 'Ladda upp utlysningsdokument'}
-                                    </h4>
-                                    <p className="text-sm text-gray-600 mb-3">
-                                      {dragStates.grant ? 'Släpp för att ladda upp' : 'Utlysningstext, riktlinjer, formulär, certifikat'}
-                                    </p>
-                                    <label className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
-                                      Välj filer
-                                      <input
-                                        type="file"
-                                        multiple
-                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                        className="hidden"
-                                        onChange={(e) => handleFileUpload('grant', e.target.files)}
-                                      />
-                                    </label>
-                                    <p className="text-xs text-gray-500 mt-2">PDF, DOC, DOCX, JPG, PNG (max 25 MB)</p>
-                                  </div>
-                                  
-                                  {/* Uploaded Files List */}
-                                  {uploadedFiles.grant.length > 0 && (
-                                    <div className="mt-4">
-                                      <h5 className="text-sm font-medium text-gray-700 mb-3">Uppladdade filer:</h5>
-                                      <div className="space-y-2">
-                                        {uploadedFiles.grant.map((file, index) => (
-                                          <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                                            <div className="flex items-center gap-3">
-                                              <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                                              </svg>
-                                              <div>
-                                                <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                                                <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
-                                              </div>
+                                
+                                {/* Uploaded Files List */}
+                                {uploadedFiles.project.length > 0 && (
+                                  <div className="mt-4">
+                                    <h5 className="text-sm font-medium text-gray-700 mb-3">Uppladdade filer:</h5>
+                                    <div className="space-y-2">
+                                      {uploadedFiles.project.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                                          <div className="flex items-center gap-3">
+                                            <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                            </svg>
+                                            <div>
+                                              <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                                              <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
                                             </div>
-                                            <button
-                                              onClick={() => removeFile('grant', index)}
-                                              className="text-red-500 hover:text-red-700 transition-colors"
-                                            >
-                                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                              </svg>
-                                            </button>
                                           </div>
-                                        ))}
-                                      </div>
+                                          <button
+                                            onClick={() => removeFile('project', index)}
+                                            className="text-red-500 hover:text-red-700 transition-colors"
+                                          >
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                          </button>
+                                        </div>
+                                      ))}
                                     </div>
-                                  )}
-                                </div>
-
-
+                                  </div>
+                                )}
                               </div>
-                           ) : section.key === 'projektinformation' ? (
+
+                              {/* Grant Call Documents Section */}
+                              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Dokument om bidragsutlysningen</h3>
+                                <p className="text-sm text-gray-600 mb-4">Ladda upp dokument relaterade till bidragsutlysningen och ansökningskrav</p>
+                                
+                                {/* File Upload Area */}
+                                <div 
+                                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
+                                    dragStates.grant 
+                                      ? 'border-green-400 bg-green-50' 
+                                      : 'border-gray-300 hover:border-gray-400'
+                                  }`}
+                                  onDragOver={(e) => handleDragOver(e, 'grant')}
+                                  onDragLeave={(e) => handleDragLeave(e, 'grant')}
+                                  onDrop={(e) => handleDrop(e, 'grant')}
+                                >
+                                  <svg className="w-8 h-8 text-gray-400 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                  <h4 className="text-base font-medium text-gray-900 mb-2">
+                                    {dragStates.grant ? 'Släpp filer här' : 'Ladda upp utlysningsdokument'}
+                                  </h4>
+                                  <p className="text-sm text-gray-600 mb-3">
+                                    {dragStates.grant ? 'Släpp för att ladda upp' : 'Utlysningstext, riktlinjer, formulär, certifikat'}
+                                  </p>
+                                  <label className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
+                                    Välj filer
+                                    <input
+                                      type="file"
+                                      multiple
+                                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                      className="hidden"
+                                      onChange={(e) => handleFileUpload('grant', e.target.files)}
+                                    />
+                                  </label>
+                                  <p className="text-xs text-gray-500 mt-2">PDF, DOC, DOCX, JPG, PNG (max 25 MB)</p>
+                                </div>
+                                
+                                {/* Uploaded Files List */}
+                                {uploadedFiles.grant.length > 0 && (
+                                  <div className="mt-4">
+                                    <h5 className="text-sm font-medium text-gray-700 mb-3">Uppladdade filer:</h5>
+                                    <div className="space-y-2">
+                                      {uploadedFiles.grant.map((file, index) => (
+                                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                                          <div className="flex items-center gap-3">
+                                            <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                            </svg>
+                                            <div>
+                                              <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                                              <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                                            </div>
+                                          </div>
+                                          <button
+                                            onClick={() => removeFile('grant', index)}
+                                            className="text-red-500 hover:text-red-700 transition-colors"
+                                          >
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                          </button>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+
+                            </div>
+                          ) : section.key === 'projektinformation' ? (
                             // Special content for Projektinformation section
                             <div className="space-y-6">
                               {/* Continuation of Previous Project */}
@@ -1642,8 +1639,8 @@ const BusinessPlanEditor = () => {
 
         {/* Right Sidebar - Review suggestions (sticky) */}
         <div className="w-full md:basis-[35%] max-w-100 sm:px-4 sm:py-4 md:px-6 md:py-6 px-[5px] bg-[#f0f1f3] py-[20px]">
-          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden bg-white">
-            <div className="bg-[000000]hover:bg-[#C5E858]text-gray-900font-newsreaderfont-semiboldtext-lgpx-8py-4rounded-fulltransition-allduration-200hover:scale-105hover:drop-shadow-lg bg-white">
+          <div className="sticky top-20 h-[calc(100vh-5rem)] overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 h-full">
               <ReviewSuggestions draft={draft} grant={grant} onApplySuggestion={handleApplySuggestion} onHighlightSection={handleHighlightSection} />
             </div>
           </div>

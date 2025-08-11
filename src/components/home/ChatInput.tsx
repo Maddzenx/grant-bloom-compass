@@ -262,7 +262,7 @@ const ChatInput = ({
               <div className="w-full relative">
                 <Textarea
                   placeholder=""
-                  className="w-full min-h-[48px] border-0 bg-transparent type-body focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  className="w-full min-h-[48px] border-0 bg-transparent type-body focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-['Source_Sans_3'] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                   value={inputValue}
                   onChange={handleTextareaChange}
                   onFocus={() => setIsFocused(true)}

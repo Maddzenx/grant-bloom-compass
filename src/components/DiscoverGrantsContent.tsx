@@ -396,30 +396,26 @@ export const DiscoverGrantsContent = ({
   return <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
          {/* Background section for search component */}
          <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
-             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-12 md:py-20">
+             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
           {/* Title section with better spacing */}
-          <div className="mb-8 text-center">
-            <h1 className="type-display text-zinc-900 leading-tight tracking-tight mb-3 font-['Source_Sans_3']">
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl text-zinc-900 leading-tight tracking-tight mb-4 font-['Source_Sans_3'] font-bold">
               Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
             </h1>
             {/* Subtitle */}
-            <p className="type-body md:type-title text-zinc-800 max-w-2xl mx-auto font-['Source_Sans_3'] mb-3">
+            <p className="text-lg md:text-xl text-zinc-600 max-w-3xl mx-auto font-['Source_Sans_3'] font-normal">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
-            {lastUpdated && (
-              <p className="type-caption text-zinc-600">
-                Senast uppdaterad: {lastUpdated.toLocaleDateString('sv-SE')} {lastUpdated.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
-              </p>
-            )}
+            {lastUpdated && <></>}
           </div>
           
           {/* Search bar section with improved spacing */}
-          <div className="w-full mb-4 max-w-4xl mx-auto" role="search" aria-label="Sök bidrag">
+          <div className="w-full mb-8 max-w-4xl mx-auto" role="search" aria-label="Sök bidrag">
             <DiscoverHeader searchTerm={searchTerm} onSearchChange={onSearchChange} onSearch={onSearch} sortBy={sortBy} onSortChange={onSortChange} totalGrants={searchResults.length} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} isAISearch={isAISearch} onToggleSearchMode={onToggleSearchMode} onClearSearch={onClearSearch} />
           </div>
 
           {/* Compact active filter summary under sticky search (mobile) */}
-          {isMobile && activeFilterCount > 0 && <div className="w-full mb-3 max-w-4xl mx-auto px-1">
+          {isMobile && activeFilterCount > 0 && <div className="w-full mb-4 max-w-4xl mx-auto px-1">
               <button onClick={() => setFilterOpen(true)} className="w-full flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 py-2 px-3" aria-label={`Aktiva filter: ${activeFilterCount}`}>
                 <span className="type-secondary text-zinc-700">Aktiva filter:</span>
                 <span className="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-2 rounded-full bg-zinc-100 text-zinc-800 type-body">
@@ -429,7 +425,7 @@ export const DiscoverGrantsContent = ({
             </div>}
             
           {/* Filter and sorting row with better organization */}
-          <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">
+          <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">
             {/* Only show FilterBar on desktop */}
             {!isMobile && <div className="flex-1 max-w-4xl">
                 <FilterBar filters={filters} onFiltersChange={onFiltersChange} onResetFilters={onClearFilters} organizationOptions={organizationOptions} fundingRange={filters.fundingRange} onFundingRangeChange={range => onFiltersChange({
@@ -441,12 +437,14 @@ export const DiscoverGrantsContent = ({
           </div>
         </div>
       </div>
+      {/* Visual separator */}
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
       {/* Sorting controls and pagination info */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 py-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center text-zinc-600">
           {/* Pagination Info */}
           {pagination && <div className="flex items-center gap-3">
-              <span className="type-body text-gray-600">
+              <span className="text-sm font-medium">
                 Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
               </span>
               {hasActiveFilters && <button className="type-secondary text-[#7D54F4] hover:opacity-90 underline" onClick={onClearFilters} aria-label="Rensa alla filter">

@@ -207,10 +207,10 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            <h2 className="font-['Source_Sans_3'] type-title text-gray-900 mb-3">
               Tack för ditt intresse!
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="font-['Source_Sans_3'] type-body text-gray-600 mb-4">
               Vi hör av oss när ansökningsfunktionen är redo.
             </p>
             
@@ -247,10 +247,10 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
           >
             <X className="w-5 h-5" />
           </Button>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+          <h1 className="font-['Source_Sans_3'] type-title text-gray-900 mb-2">
             Ansökningsfunktionen kommer snart!
           </h1>
-          <p className="text-gray-500 text-base">
+          <p className="font-['Source_Sans_3'] type-body text-gray-500">
             Var en av de första att testa den nya funktionen
           </p>
         </div>
@@ -258,87 +258,83 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
 
 
         {/* Main Content */}
-        <div className="px-6 space-y-6">
-          
-          {/* Email Section */}
-          <div className="space-y-4">
-            <EmailSignupInput
-              onSubmit={handleEmailSubmit}
-              isLoading={isLoading}
-              placeholder="Din e-postadress"
-              buttonText="Bli informerad"
-              privacyText="Din e-post används endast för denna notifiering"
-            />
-          </div>
+        <div className="text-center mb-12">
+          <h2 className="font-['Source_Sans_3'] type-title text-gray-900 mb-3">
+            Vad kommer du att kunna göra?
+          </h2>
+          <p className="font-['Source_Sans_3'] type-body text-gray-600 max-w-2xl mx-auto">
+            Med Bidragsprånget får du tillgång till kraftfulla verktyg för att hitta och ansöka om bidrag
+          </p>
+        </div>
 
-          {/* Features Preview */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 text-center">
-              Vad kommer du att kunna göra?
-            </h3>
-            <div className="space-y-3">
-               <div className="flex items-center gap-3">
-                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                 <span className="text-gray-700 text-sm">Tolka kriterier och mallar tydligt</span>
-               </div>
-               <div className="flex items-center gap-3">
-                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                 <span className="text-gray-700 text-sm">Få konkret feedback på språk och innehåll</span>
-               </div>
-               <div className="flex items-center gap-3">
-                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                 <span className="text-gray-700 text-sm">Se vad som kan förbättras i dina ansökningar</span>
-               </div>
-               <div className="flex items-center gap-3">
-                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                 <span className="text-gray-700 text-sm">Generera en ansökan baserat på dina dokument</span>
-               </div>
-             </div>
-          </div>
-
-          {/* Feedback Section */}
-          <div className="space-y-4">
-            <div className="text-center">
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">
-                Hjälp oss hjälpa dig!
-              </h2>
-              <p className="text-gray-500 text-sm">Din feedback hjälper oss att skapa bästa möjliga upplevelse</p>
-            </div>
-            
-            <div className="space-y-4">
-              {/* Payment Amount */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Vad skulle du betala för denna funktion? (kr/mån)
-                </label>
-                                                    <Input
-                    type="text"
-                    placeholder="T.ex. 299 kr/mån"
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
-                    className="h-11 text-sm px-3 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 placeholder:text-gray-400 bg-white"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                  </p>
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {features.map((feature, index) => (
+            <div key={index} className="text-center">
+              <div className="w-16 h-16 bg-[#7D54F4] rounded-full flex items-center justify-center mx-auto mb-4">
+                {feature.icon}
               </div>
-
-              {/* Comments */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Har du några tankar eller förslag?
-                </label>
-                <textarea
-                  placeholder="Dela dina tankar om funktionen..."
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="w-full h-20 text-sm px-3 py-2 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 resize-none placeholder:text-gray-400 bg-white"
-                  rows={3}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                </p>
-              </div>
+              <h3 className="font-['Source_Sans_3'] type-body font-semibold text-gray-900 text-center">
+                {feature.title}
+              </h3>
+              <span className="font-['Source_Sans_3'] type-secondary text-gray-700 text-sm">{feature.description}</span>
             </div>
+          ))}
+        </div>
+
+        {/* Email Signup Section */}
+        <div className="bg-white rounded-2xl p-8 border border-gray-200">
+          <div className="text-center mb-8">
+            <h1 className="font-['Source_Sans_3'] type-title text-gray-900 mb-2">
+              Gå med i väntelistan
+            </h1>
+            <p className="font-['Source_Sans_3'] type-secondary text-gray-500 text-sm">
+              Din feedback hjälper oss att skapa bästa möjliga upplevelse
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block font-['Source_Sans_3'] type-secondary font-medium text-gray-700 mb-2">
+                Din e-post
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="h-11 text-sm px-3 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 placeholder:text-gray-400 bg-white"
+                placeholder="din@email.se"
+              />
+              <p className="font-['Source_Sans_3'] type-caption text-gray-500 mt-1">
+                Din e-post används endast för denna notifiering
+              </p>
+            </div>
+
+            <div>
+              <label className="block font-['Source_Sans_3'] type-secondary font-medium text-gray-700 mb-2">
+                Dela dina tankar om funktionen
+              </label>
+              <textarea
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="w-full h-20 text-sm px-3 py-2 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 resize-none placeholder:text-gray-400 bg-white"
+                placeholder="Vad hoppas du att Bidragsprånget ska kunna hjälpa dig med?"
+              />
+              <p className="font-['Source_Sans_3'] type-caption text-gray-500 mt-1">
+                Frivilligt - hjälper oss att förbättra produkten
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-8 text-black font-['Source_Sans_3'] type-secondary font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E5DEFD]"
+              style={{ backgroundColor: '#d7cffc' }}
+            >
+              {isSubmitting ? 'Skickar...' : 'Bli informerad'}
+            </button>
+          </form>
         </div>
 
         {/* Footer */}

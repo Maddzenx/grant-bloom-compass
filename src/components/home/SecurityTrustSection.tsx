@@ -27,10 +27,10 @@ const SecurityTrustSection = () => {
       <div className="w-full max-w-6xl mx-auto">
         {/* Headline */}
         <div className="mb-16">
-          <h2 className="font-[Basic] font-normal text-gray-900 text-left" style={{
-          fontSize: 'clamp(32px, 6vw, 48px)',
-          letterSpacing: '0.5px'
-        }}>
+          <h2 className="font-['Source_Sans_3'] font-normal text-gray-900 text-left" style={{
+            fontSize: 'clamp(32px, 6vw, 48px)',
+            letterSpacing: '0.5px'
+          }}>
             Security & Trust
           </h2>
         </div>
@@ -40,14 +40,14 @@ const SecurityTrustSection = () => {
           {securityCards.map((card, index) => (
             <div key={index} className="border border-[#CEC5F9] rounded bg-white p-10 flex flex-col h-full" tabIndex={0} role="region" aria-label={`Security feature: ${card.title}`}>
               {/* Card Title */}
-              <h3 className="font-[Basic] font-normal type-title text-zinc-900 mb-4 leading-[1.25] text-left md:text-left">
+              <h3 className="font-['Source_Sans_3'] font-normal type-title text-zinc-900 mb-4 leading-[1.25] text-left md:text-left">
                 {card.title}
               </h3>
               
               {/* Card Content */}
-              <p className="font-[Basic] type-secondary text-zinc-700 leading-[1.5] flex-1 text-left md:text-left" style={{
-            maxWidth: '60ch'
-          }}>
+              <p className="font-['Source_Sans_3'] type-secondary text-zinc-700 leading-[1.5] flex-1 text-left md:text-left" style={{
+                maxWidth: '60ch'
+              }}>
                 {card.content}
               </p>
             </div>
