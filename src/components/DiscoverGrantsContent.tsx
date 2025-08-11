@@ -408,7 +408,11 @@ export const DiscoverGrantsContent = ({
             <p className="type-body md:type-title text-zinc-700 max-w-2xl mx-auto font-['Source_Sans_3']">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
-            {lastUpdated}
+            {lastUpdated && (
+              <p className="text-sm text-zinc-500 mt-2">
+                Senast uppdaterad: {lastUpdated.toLocaleDateString('sv-SE')} {lastUpdated.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
           </div>
           
           {/* Search bar section with improved spacing */}
