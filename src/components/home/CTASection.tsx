@@ -1,22 +1,28 @@
 
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const CTASection = () => {
+  const handleGetStarted = () => {
+    // Handle CTA action
+    console.log('Get started clicked');
+  };
+
   return (
     <div className="relative z-10 w-full py-32 pb-28 px-6 bg-[#F0F1F3]" id="cta-section" style={{ scrollMarginTop: '6rem' }}>
       <div className="w-full max-w-6xl mx-auto text-center">
         {/* Primary Headline */}
         <h2 
-          className="font-[Basic] font-normal text-gray-900 mb-12 leading-[1.15]"
+          className="font-['Source_Sans_3'] font-normal text-gray-900 mb-12 leading-[1.15]"
           style={{ fontSize: 'clamp(42px, 6vw, 68px)' }}
         >
           Try it yourself!
         </h2>
-
+        
         {/* CTA Button */}
         <div className="mb-16">
           <button
-            className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white font-[Basic] font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
+            className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white font-['Source_Sans_3'] font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
             style={{ 
               fontSize: '22px',
               padding: '1.1rem 3.2rem',
@@ -28,6 +34,7 @@ const CTASection = () => {
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = 'none';
             }}
+            onClick={handleGetStarted}
           >
             Start for free
           </button>
@@ -36,7 +43,7 @@ const CTASection = () => {
         {/* Secondary Contact Line */}
         <div className="mb-8">
           <p 
-            className="font-[Basic] font-normal leading-[1.4] mb-2"
+            className="font-['Source_Sans_3'] font-normal leading-[1.4] mb-2"
             style={{ 
               fontSize: 'clamp(18px, 4.5vw, 24px)',
               color: '#78797A'
@@ -45,7 +52,7 @@ const CTASection = () => {
             More questions?
           </p>
           <p 
-            className="font-[Basic] font-normal leading-[1.4]"
+            className="font-['Source_Sans_3'] font-normal leading-[1.4]"
             style={{ 
               fontSize: 'clamp(18px, 4.5vw, 24px)',
               color: '#78797A'
@@ -65,7 +72,7 @@ const CTASection = () => {
         {/* Brand Mark */}
         <div className="mt-8">
           <div 
-            className="font-[Basic] font-normal inline-block"
+            className="font-['Source_Sans_3'] font-normal inline-block"
             style={{ fontSize: 'clamp(36px, 5vw, 46px)' }}
             role="img"
             aria-label="Graigent logo"

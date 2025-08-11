@@ -171,7 +171,7 @@ const HomePage = () => {
 
           {/* Grant Type Filter */}
           <div className="mt-4 mb-3">
-            <h3 className="text-base font-[Basic] font-normal mb-3 text-center text-ink-obsidian">
+            <h3 className="font-['Source_Sans_3'] type-title text-zinc-900 mb-3 text-center">
               Visa endast:
             </h3>
             <GrantTypeTabs onSelectionChange={handleGrantTypeSelectionChange} />
@@ -179,7 +179,7 @@ const HomePage = () => {
 
           {/* Organization Tabs */}
           <div className="mt-4 mb-3">
-            <h3 className="text-base font-[Basic] font-normal mb-3 text-center text-ink-obsidian">
+            <h3 className="font-['Source_Sans_3'] type-title text-zinc-900 mb-3 text-center">
              Jag söker som:
             </h3>
             <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />

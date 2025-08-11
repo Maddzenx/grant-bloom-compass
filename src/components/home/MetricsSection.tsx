@@ -118,7 +118,7 @@ const MetricsSection = () => {
       <div className="w-full max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
-          <h2 className="font-newsreader font-bold text-gray-900 leading-[1.2]" 
+          <h2 className="font-['Source_Sans_3'] font-bold text-gray-900 leading-[1.2]" 
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
             Utlysningars prestanda
           </h2>
@@ -136,7 +136,7 @@ const MetricsSection = () => {
               
               {/* Stat - Centered */}
               <div className="flex justify-center items-center mb-8 relative z-10">
-                <span className="font-[Basic] font-bold type-display text-gray-900 leading-none text-center">
+                <span className="font-['Source_Sans_3'] font-bold type-display text-gray-900 leading-none text-center">
                   {hasAnimated && animatedValues[index] !== undefined
                     ? `${animatedValues[index]}${metric.suffix || ''}${metric.hasPlus ? '+' : ''}`
                     : hasAnimated 
@@ -148,7 +148,7 @@ const MetricsSection = () => {
               
               {/* Caption - Centered */}
               <div className="flex justify-center items-center relative z-10">
-                <p className="font-[Basic] type-secondary leading-relaxed text-gray-700 text-center font-semibold max-w-xs">
+                <p className="font-['Source_Sans_3'] type-secondary leading-relaxed text-gray-700 text-center font-semibold max-w-xs">
                   {metric.caption}
                 </p>
               </div>
@@ -163,7 +163,7 @@ const MetricsSection = () => {
         <div className="text-center mt-16">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
             <div className={liveDotClass}></div>
-            <span className="font-[Basic] type-secondary text-gray-700 font-medium">
+            <span className="font-['Source_Sans_3'] type-secondary text-gray-700 font-medium">
               Live data uppdateras kontinuerligt
             </span>
           </div>
