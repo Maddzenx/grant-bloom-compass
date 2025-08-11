@@ -269,7 +269,28 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {features.map((feature, index) => (
+          {[
+            {
+              icon: <Sparkles className="w-8 h-8 text-white" />,
+              title: "AI-driven matchning",
+              description: "Hitta bidrag som passar just din verksamhet"
+            },
+            {
+              icon: <Users className="w-8 h-8 text-white" />,
+              title: "Ansökningshjälp",
+              description: "Få hjälp med att fylla i ansökningar"
+            },
+            {
+              icon: <Clock className="w-8 h-8 text-white" />,
+              title: "Automatisk bevakning",
+              description: "Få notiser om nya relevanta bidrag"
+            },
+            {
+              icon: <Star className="w-8 h-8 text-white" />,
+              title: "Expertråd",
+              description: "Tillgång till rådgivning och tips"
+            }
+          ].map((feature, index) => (
             <div key={index} className="text-center">
               <div className="w-16 h-16 bg-[#7D54F4] rounded-full flex items-center justify-center mx-auto mb-4">
                 {feature.icon}
@@ -293,48 +314,13 @@ const InterestPage: React.FC<InterestPageProps> = ({ onClose }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block font-['Source_Sans_3'] type-secondary font-medium text-gray-700 mb-2">
-                Din e-post
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="h-11 text-sm px-3 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 placeholder:text-gray-400 bg-white"
-                placeholder="din@email.se"
-              />
-              <p className="font-['Source_Sans_3'] type-caption text-gray-500 mt-1">
-                Din e-post används endast för denna notifiering
-              </p>
-            </div>
-
-            <div>
-              <label className="block font-['Source_Sans_3'] type-secondary font-medium text-gray-700 mb-2">
-                Dela dina tankar om funktionen
-              </label>
-              <textarea
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                className="w-full h-20 text-sm px-3 py-2 rounded-lg border border-gray-200 !focus:outline-none !focus:ring-0 !focus:border-gray-200 resize-none placeholder:text-gray-400 bg-white"
-                placeholder="Vad hoppas du att Bidragsprånget ska kunna hjälpa dig med?"
-              />
-              <p className="font-['Source_Sans_3'] type-caption text-gray-500 mt-1">
-                Frivilligt - hjälper oss att förbättra produkten
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full h-8 text-black font-['Source_Sans_3'] type-secondary font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#E5DEFD]"
-              style={{ backgroundColor: '#d7cffc' }}
-            >
-              {isSubmitting ? 'Skickar...' : 'Bli informerad'}
-            </button>
-          </form>
+          <EmailSignupInput
+            onSubmit={handleEmailSubmit}
+            isLoading={isLoading}
+            placeholder="din@email.se"
+            buttonText="Bli informerad"
+            className="w-full"
+          />
         </div>
 
         {/* Footer */}

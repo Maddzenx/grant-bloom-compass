@@ -397,6 +397,21 @@ export const DiscoverGrantsContent = ({
          {/* Background section for search component */}
          <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
              <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
+          {/* Breadcrumb Navigation */}
+          <nav aria-label="Breadcrumb" className="mb-8">
+            <ol className="flex items-center space-x-2 text-sm text-zinc-600">
+              <li>
+                <a href="/" className="hover:text-zinc-900 transition-colors">Hem</a>
+              </li>
+              <li>
+                <span className="text-zinc-400">/</span>
+              </li>
+              <li aria-current="page" className="text-zinc-900 font-medium">
+                Upptäck bidrag
+              </li>
+            </ol>
+          </nav>
+
           {/* Title section with better spacing */}
           <div className="mb-12 text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl text-zinc-900 leading-tight tracking-tight mb-4 font-['Source_Sans_3'] font-bold">
@@ -406,7 +421,13 @@ export const DiscoverGrantsContent = ({
             <p className="text-lg md:text-xl text-zinc-600 max-w-3xl mx-auto font-['Source_Sans_3'] font-normal">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
-            {lastUpdated && <></>}
+            {/* Status indicator */}
+            {(isBackendFetching || isSearching) && (
+              <div className="flex items-center justify-center gap-2 mt-4 text-zinc-500">
+                <div className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm">Uppdaterar bidragslistan...</span>
+              </div>
+            )}
           </div>
           
           {/* Search bar section with improved spacing */}
@@ -414,15 +435,33 @@ export const DiscoverGrantsContent = ({
             <DiscoverHeader searchTerm={searchTerm} onSearchChange={onSearchChange} onSearch={onSearch} sortBy={sortBy} onSortChange={onSortChange} totalGrants={searchResults.length} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} isAISearch={isAISearch} onToggleSearchMode={onToggleSearchMode} onClearSearch={onClearSearch} />
           </div>
 
-          {/* Compact active filter summary under sticky search (mobile) */}
-          {isMobile && activeFilterCount > 0 && <div className="w-full mb-4 max-w-4xl mx-auto px-1">
-              <button onClick={() => setFilterOpen(true)} className="w-full flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 py-2 px-3" aria-label={`Aktiva filter: ${activeFilterCount}`}>
-                <span className="type-secondary text-zinc-700">Aktiva filter:</span>
-                <span className="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-2 rounded-full bg-zinc-100 text-zinc-800 type-body">
-                  {activeFilterCount}
-                </span>
-              </button>
-            </div>}
+          {/* Enhanced filter summary for mobile */}
+          {isMobile && (
+            <div className="w-full mb-4 max-w-4xl mx-auto px-1">
+              {activeFilterCount > 0 ? (
+                <button 
+                  onClick={() => setFilterOpen(true)} 
+                  className="w-full flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 py-3 px-4 transition-colors" 
+                  aria-label={`${activeFilterCount} aktiva filter - tryck för att redigera`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-zinc-700">{activeFilterCount} aktiva filter</span>
+                  </div>
+                  <span className="text-xs text-zinc-500">Tryck för att ändra</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setFilterOpen(true)} 
+                  className="w-full flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 py-3 px-4 transition-colors" 
+                  aria-label="Öppna filter"
+                >
+                  <Filter className="w-4 h-4 text-zinc-600" />
+                  <span className="text-sm text-zinc-700">Filtrera bidrag</span>
+                </button>
+              )}
+            </div>
+          )}
             
           {/* Filter and sorting row with better organization */}
           <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">

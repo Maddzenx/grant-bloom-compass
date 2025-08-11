@@ -120,22 +120,41 @@ const DiscoverHeader = ({
 
           {/* Search Bar */}
           <div className="relative w-full">
-            <SearchBar searchTerm={searchTerm} onSearchChange={(v) => onSearchChange(v)} placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."} inputClassName="rounded-full pr-40 py-4 md:py-5" />
+            <SearchBar 
+              searchTerm={searchTerm} 
+              onSearchChange={(v) => onSearchChange(v)} 
+              placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."} 
+              inputClassName="rounded-full pr-40 py-4 md:py-5" 
+            />
             {/* Right side icons container */}
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2" role="group" aria-label="Sökåtgärder">
-              {searchTerm && <button className="text-gray-400 hover:text-gray-600 transition-colors" onClick={onClearSearch} aria-label="Clear search">
-                  <X className="w-6 h-6" />
-                </button>}
-              {isMobile ? (
-                <span className="leading-none text-sm text-zinc-600">Sök</span>
-              ) : (
-                <span className="hidden md:flex items-center gap-1 leading-none text-zinc-600">
-                  <span className="text-sm">Enter</span>
-                  <kbd className="inline-flex items-center justify-center px-1.5 py-0.5 rounded bg-white/90 text-[#7D54F4] border border-white/70 text-xs">↵</kbd>
-                </span>
+              {searchTerm && (
+                <button 
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded" 
+                  onClick={onClearSearch} 
+                  aria-label="Rensa sökning"
+                  title="Rensa sökning"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               )}
+              <Button
+                onClick={onSearch}
+                disabled={isSearching}
+                size="sm"
+                className="bg-primary text-white hover:bg-primary/90 px-3 py-1.5 text-sm font-medium"
+                aria-label="Utför sökning"
+              >
+                {isSearching ? (
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    <span className="sr-only">Söker...</span>
+                  </div>
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+              </Button>
             </div>
-
           </div>
 
           {/* Hint below search */}
