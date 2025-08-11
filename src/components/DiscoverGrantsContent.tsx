@@ -397,67 +397,70 @@ export const DiscoverGrantsContent = ({
          {/* Background section for search component */}
          <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
              <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
-          {/* Breadcrumb Navigation */}
-          <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex items-center space-x-2 text-sm text-zinc-600">
+          {/* Breadcrumb Navigation - enhanced spacing */}
+          <nav aria-label="Breadcrumb" className="mb-10">
+            <ol className="flex items-center space-x-3 text-sm text-muted-foreground">
               <li>
-                <a href="/" className="hover:text-zinc-900 transition-colors">Hem</a>
+                <a href="/" className="hover:text-foreground transition-colors font-medium">Hem</a>
               </li>
               <li>
-                <span className="text-zinc-400">/</span>
+                <span className="text-muted-foreground/40">/</span>
               </li>
-              <li aria-current="page" className="text-zinc-900 font-medium">
+              <li aria-current="page" className="text-foreground font-semibold">
                 Upptäck bidrag
               </li>
             </ol>
           </nav>
 
-          {/* Title section with better hierarchy */}
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl text-zinc-900 leading-tight tracking-tight mb-3 font-['Source_Sans_3'] font-bold">
-              Upptäck bidrag för ditt projekt
-            </h1>
-            {/* Subtitle with actionable language */}
-            <p className="text-base md:text-lg text-zinc-600 max-w-2xl mx-auto font-['Source_Sans_3'] font-normal">
-              Sök bland {searchMetrics?.totalInDatabase || grants.length} tillgängliga bidrag och hitta finansiering som passar dig
-            </p>
-            {/* Status indicator */}
+          {/* Title section with improved typography hierarchy */}
+          <div className="mb-12 text-center space-y-6">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-tight font-['Source_Sans_3'] font-bold">
+                Upptäck bidrag för ditt projekt
+              </h1>
+              {/* Enhanced subtitle with better visual weight */}
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto font-['Source_Sans_3'] font-normal leading-relaxed">
+                Sök bland {searchMetrics?.totalInDatabase || grants.length} tillgängliga bidrag och hitta finansiering som passar dig
+              </p>
+            </div>
+            
+            {/* Enhanced status indicator with better design */}
             {(isBackendFetching || isSearching) && (
-              <div className="flex items-center justify-center gap-2 mt-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm text-blue-700 font-medium">Söker igenom bidragsdatabasen...</span>
+              <div className="flex items-center justify-center gap-3 mt-8 p-4 bg-primary/5 rounded-xl border border-primary/20">
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm text-primary font-medium">Söker igenom bidragsdatabasen...</span>
               </div>
             )}
           </div>
           
-          {/* Search bar section with improved spacing */}
-          <div className="w-full mb-8 max-w-4xl mx-auto" role="search" aria-label="Sök bidrag">
+          {/* Search bar section with enhanced spacing and max-width */}
+          <div className="w-full mb-12 max-w-5xl mx-auto" role="search" aria-label="Sök bidrag">
             <DiscoverHeader searchTerm={searchTerm} onSearchChange={onSearchChange} onSearch={onSearch} sortBy={sortBy} onSortChange={onSortChange} totalGrants={searchResults.length} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} isAISearch={isAISearch} onToggleSearchMode={onToggleSearchMode} onClearSearch={onClearSearch} />
           </div>
 
-          {/* Enhanced filter summary for mobile */}
+          {/* Enhanced filter summary for mobile with better design */}
           {isMobile && (
-            <div className="w-full mb-4 max-w-4xl mx-auto px-1">
+            <div className="w-full mb-6 max-w-5xl mx-auto px-1">
               {activeFilterCount > 0 ? (
                 <button 
                   onClick={() => setFilterOpen(true)} 
-                  className="w-full flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 py-3 px-4 transition-colors" 
+                  className="w-full flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 py-4 px-5 transition-all duration-200 shadow-sm" 
                   aria-label={`${activeFilterCount} aktiva filter - tryck för att redigera`}
                 >
-                  <div className="flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-zinc-700">{activeFilterCount} aktiva filter</span>
+                  <div className="flex items-center gap-3">
+                    <Filter className="w-5 h-5 text-primary" />
+                    <span className="text-sm font-semibold text-foreground">{activeFilterCount} aktiva filter</span>
                   </div>
-                  <span className="text-xs text-zinc-500">Tryck för att ändra</span>
+                  <span className="text-xs text-muted-foreground font-medium">Tryck för att ändra</span>
                 </button>
               ) : (
                 <button 
                   onClick={() => setFilterOpen(true)} 
-                  className="w-full flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 py-3 px-4 transition-colors" 
+                  className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted/50 py-4 px-5 transition-all duration-200 shadow-sm" 
                   aria-label="Öppna filter"
                 >
-                  <Filter className="w-4 h-4 text-zinc-600" />
-                  <span className="text-sm text-zinc-700">Filtrera bidrag</span>
+                  <Filter className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-sm font-medium text-card-foreground">Filtrera bidrag</span>
                 </button>
               )}
             </div>
@@ -476,23 +479,39 @@ export const DiscoverGrantsContent = ({
           </div>
         </div>
       </div>
-      {/* Visual separator */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
-      {/* Sorting controls and pagination info */}
-      <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 lg:px-8 py-4">
-        <div className="flex justify-between items-center text-zinc-600">
-          {/* Pagination Info */}
-          {pagination && <div className="flex items-center gap-3">
-              <span className="text-sm font-medium">
+      {/* Enhanced visual separator */}
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent my-2"></div>
+      
+      {/* Enhanced sorting controls and pagination info */}
+      <div className="max-w-7xl mx-auto w-full px-4 lg:px-8 py-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 text-muted-foreground">
+          {/* Enhanced Pagination Info */}
+          {pagination && (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <span className="text-sm font-medium text-card-foreground">
                 Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
               </span>
-              {hasActiveFilters && <button className="type-secondary text-[#7D54F4] hover:opacity-90 underline" onClick={onClearFilters} aria-label="Rensa alla filter">
-                  Rensa alla
-                </button>}
-            </div>}
+              {hasActiveFilters && (
+                <button 
+                  className="text-sm text-primary hover:text-primary/80 underline font-medium" 
+                  onClick={onClearFilters} 
+                  aria-label="Rensa alla filter"
+                >
+                  Rensa alla filter
+                </button>
+              )}
+            </div>
+          )}
 
-          {/* Sorting Controls */}
-          <SortingControls sortBy={sortBy} onSortChange={onSortChange} hasSearchTerm={!!searchTerm.trim()} hasSemanticMatches={!!aiMatches && aiMatches.length > 0} />
+          {/* Enhanced Sorting Controls */}
+          <div className="flex justify-center sm:justify-end">
+            <SortingControls 
+              sortBy={sortBy} 
+              onSortChange={onSortChange} 
+              hasSearchTerm={!!searchTerm.trim()} 
+              hasSemanticMatches={!!aiMatches && aiMatches.length > 0} 
+            />
+          </div>
         </div>
       </div>
       {/* Floating filter button for mobile */}

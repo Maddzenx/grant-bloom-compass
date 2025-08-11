@@ -67,39 +67,39 @@ const DiscoverHeader = ({
   const baseBtn = isMobile ? 'px-3 py-1.5 text-sm' : 'px-4 py-2';
   
   return <div className="w-full flex-shrink-0 flex items-center px-0">
-      <div className="w-full px-0 pt-0 pb-0">
-        <div className="flex flex-col gap-3 mt-0 mb-2 w-full px-0">
-          {/* Search Mode Toggle - Simplified */}
-          <div className="flex justify-center mb-4">
-            <div className="inline-flex items-center bg-white rounded-lg border border-zinc-200 p-1 shadow-sm" role="tablist" aria-label="Sökläge">
+      <div className="w-full px-0 pt-0 pb-8">
+        <div className="flex flex-col gap-6 mt-0 mb-0 w-full px-0">
+          {/* Search Mode Toggle - Better spacing and sizing */}
+          <div className="flex justify-center">
+            <div className="inline-flex items-center bg-white rounded-xl border border-zinc-200 p-1.5 shadow-sm" role="tablist" aria-label="Sökläge">
               <button 
                 onClick={handleToggleSearchMode} 
-                className={`flex items-center gap-2 ${baseBtn} rounded-md transition-all duration-200 font-['Source_Sans_3'] ${!isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
+                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all duration-200 font-['Source_Sans_3'] text-sm font-medium ${!isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
                 role="tab"
                 aria-selected={!isAISearch}
                 aria-label="Vanlig sökning"
               >
                 <Search className="w-4 h-4" />
-                <span className="font-medium">Nyckelord</span>
+                <span>Nyckelord</span>
               </button>
               <button 
                 onClick={handleToggleSearchMode} 
-                className={`flex items-center gap-2 ${baseBtn} rounded-md transition-all duration-200 font-['Source_Sans_3'] ${isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
+                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all duration-200 font-['Source_Sans_3'] text-sm font-medium ${isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
                 role="tab"
                 aria-selected={isAISearch}
                 aria-label="AI sökning"
               >
                 <Sparkles className="w-4 h-4" />
-                <span className="font-medium">AI-matchning</span>
+                <span>AI-matchning</span>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="w-3 h-3 opacity-70 ml-1" />
+                      <HelpCircle className="w-3.5 h-3.5 opacity-70 ml-1" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs p-3">
                       <div className="space-y-2">
                         <p className="font-medium text-sm">AI-matchning</p>
-                        <p className="text-xs text-gray-600 leading-relaxed">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                           Beskriv ditt projekt på naturligt språk. AI:n analyserar innehåll och kontext för bättre matchning än bara nyckelord.
                         </p>
                       </div>
@@ -110,9 +110,9 @@ const DiscoverHeader = ({
             </div>
           </div>
           
-          {/* Simplified mode description */}
-          <div className="text-center mb-6">
-            <p className="text-sm text-zinc-600">
+          {/* Simplified mode description - Better typography */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {isAISearch 
                 ? 'Beskriv ditt projekt så matchar AI:n relevanta bidrag' 
                 : 'Sök med specifika nyckelord och använd filter för att förfina'
@@ -120,36 +120,36 @@ const DiscoverHeader = ({
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative w-full">
+          {/* Search Bar - Enhanced proportions */}
+          <div className="relative w-full max-w-3xl mx-auto">
             <SearchBar 
               searchTerm={searchTerm} 
               onSearchChange={(v) => onSearchChange(v)} 
               placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."} 
-              inputClassName="rounded-full pr-40 py-4 md:py-5" 
+              inputClassName="rounded-2xl pr-44 py-5 md:py-6 text-base placeholder:text-muted-foreground shadow-sm border border-zinc-200 focus:border-primary/30 focus:ring-4 focus:ring-primary/10" 
             />
-            {/* Right side icons container */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2" role="group" aria-label="Sökåtgärder">
+            {/* Right side icons container - Better spacing */}
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3" role="group" aria-label="Sökåtgärder">
               {searchTerm && (
                 <button 
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded" 
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted/50" 
                   onClick={onClearSearch} 
                   aria-label="Rensa sökning"
                   title="Rensa sökning"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
               <Button
                 onClick={onSearch}
                 disabled={isSearching}
                 size="sm"
-                className="bg-primary text-white hover:bg-primary/90 px-3 py-1.5 text-sm font-medium"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-sm font-medium rounded-xl shadow-sm"
                 aria-label="Utför sökning"
               >
                 {isSearching ? (
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span className="sr-only">Söker...</span>
                   </div>
                 ) : (
