@@ -5,7 +5,6 @@ import { GrantListItem } from "@/types/grant";
 import { AIGrantMatch } from "@/hooks/useAIGrantSearch";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-
 interface GrantListProps {
   grants: GrantListItem[];
   selectedGrant: GrantListItem | null;
@@ -28,7 +27,6 @@ interface GrantListProps {
   onScrollPositionChange?: (scrollTop: number) => void;
   restoreScrollTop?: number | null;
 }
-
 const GrantList = ({
   grants,
   selectedGrant,
@@ -54,12 +52,13 @@ const GrantList = ({
   React.useEffect(() => {
     const root = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null;
     if (!root) return;
-
     const handle = () => {
       if (onScrollPositionChange) onScrollPositionChange(root.scrollTop);
-      setScrollTick((t) => t + 1);
+      setScrollTick(t => t + 1);
     };
-    root.addEventListener('scroll', handle, { passive: true });
+    root.addEventListener('scroll', handle, {
+      passive: true
+    });
     // Fire once to initialize
     handle();
     return () => root.removeEventListener('scroll', handle);
@@ -70,7 +69,10 @@ const GrantList = ({
     if (restoreScrollTop == null) return;
     const root = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null;
     if (root) {
-      root.scrollTo({ top: restoreScrollTop, behavior: 'auto' });
+      root.scrollTo({
+        top: restoreScrollTop,
+        behavior: 'auto'
+      });
     }
   }, [restoreScrollTop]);
 
@@ -79,7 +81,6 @@ const GrantList = ({
   const hasMoreLocal = numVisibleGrants < grants.length;
   const hasMore = isMobile ? hasMoreBackend : hasMoreLocal;
   const totalPages = pagination?.totalPages || Math.ceil(grants.length / grantsPerPage);
-  
   const grantsToShow = isMobile ? grants.slice(0, numVisibleGrants) : grants.slice((currentPage - 1) * grantsPerPage, currentPage * grantsPerPage);
 
   // Handle manual load more for mobile
@@ -90,17 +91,15 @@ const GrantList = ({
         totalPages: pagination.totalPages,
         hasMore: hasMoreBackend
       });
-      
       setIsLoadingMore(true);
       onPageChange(pagination.page + 1);
-      
+
       // Reset loading state after a delay
       setTimeout(() => {
         setIsLoadingMore(false);
       }, 1000);
     }
   }, [isMobile, hasMoreBackend, onPageChange, pagination, isLoadingMore]);
-
   React.useEffect(() => {
     if (isMobile) {
       // For mobile, set visible grants to show all accumulated grants
@@ -128,11 +127,10 @@ const GrantList = ({
     isLoadingMore,
     showPagination: !isMobile && (pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)) > 1
   });
-
-  const SkeletonRows = () => (
-    <div className="divide-y divide-zinc-100">
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div key={index} className="p-4">
+  const SkeletonRows = () => <div className="divide-y divide-zinc-100">
+      {Array.from({
+      length: 8
+    }).map((_, index) => <div key={index} className="p-4">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
               <Skeleton className="h-6 w-6 rounded-full" />
@@ -147,79 +145,27 @@ const GrantList = ({
             <Skeleton className="h-3 w-24" />
             <Skeleton className="h-3 w-24" />
           </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  return (
-    <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
+        </div>)}
+    </div>;
+  return <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
       {/* Mobile Progress Indicator */}
-      {isMobile && pagination && totalPages > 1 && (
-        <div className="px-4 py-2 bg-white border-b border-gray-100">
-          <div className="flex items-center justify-between text-xs text-gray-600">
-            <span>
-              Visar {grants.length} av {pagination.total} bidrag
-            </span>
-            <span>
-              {Math.ceil((grants.length / pagination.total) * 100)}% laddat
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
-            <div 
-              className="bg-[#7D54F4] h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(grants.length / pagination.total) * 100}%` }}
-            />
-          </div>
-        </div>
-      )}
+      {isMobile && pagination && totalPages > 1}
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         {/* Skeletons when loading and no grants yet */}
-        {isLoadingList && grantsToShow.length === 0 ? (
-          <SkeletonRows />
-        ) : (
-          <ConsolidatedGrantList
-            grants={grantsToShow}
-            selectedGrant={selectedGrant}
-            onGrantSelect={onGrantSelect}
-            onToggleBookmark={onToggleBookmark}
-            searchTerm={searchTerm}
-            isMobile={isMobile}
-            aiMatches={aiMatches}
-            currentPage={pagination?.page || currentPage}
-            totalPages={pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)}
-            totalCount={pagination?.total || grants.length}
-            onPageChange={onPageChange || setCurrentPage}
-            scrollTick={scrollTick}
-          />
-        )}
+        {isLoadingList && grantsToShow.length === 0 ? <SkeletonRows /> : <ConsolidatedGrantList grants={grantsToShow} selectedGrant={selectedGrant} onGrantSelect={onGrantSelect} onToggleBookmark={onToggleBookmark} searchTerm={searchTerm} isMobile={isMobile} aiMatches={aiMatches} currentPage={pagination?.page || currentPage} totalPages={pagination?.totalPages || Math.ceil(grants.length / grantsPerPage)} totalCount={pagination?.total || grants.length} onPageChange={onPageChange || setCurrentPage} scrollTick={scrollTick} />}
         {/* Manual Load More Button for Mobile */}
-        {isMobile && hasMore && (
-          <div className="flex flex-col items-center justify-center py-6 px-4">
-            <Button
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className="w-48 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoadingMore ? (
-                <div className="flex items-center gap-2">
+        {isMobile && hasMore && <div className="flex flex-col items-center justify-center py-6 px-4">
+            <Button onClick={handleLoadMore} disabled={isLoadingMore} className="w-48 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {isLoadingMore ? <div className="flex items-center gap-2">
                   <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
                   <span>Laddar fler bidrag...</span>
-                </div>
-              ) : (
-                <span>Visa fler</span>
-              )}
+                </div> : <span>Visa fler</span>}
             </Button>
-            {!isLoadingMore && (
-              <div className="text-xs text-gray-400 mt-2 text-center">
+            {!isLoadingMore && <div className="text-xs text-gray-400 mt-2 text-center">
                 Klicka för att ladda fler bidrag
-              </div>
-            )}
-          </div>
-        )}
+              </div>}
+          </div>}
       </ScrollArea>
-    </div>
-  );
+    </div>;
 };
-
 export default GrantList;
