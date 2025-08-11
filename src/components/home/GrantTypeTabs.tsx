@@ -49,7 +49,7 @@ const GrantTypeTabs = ({ onSelectionChange }: GrantTypeTabsProps) => {
   }, []);
 
   return (
-    <div className="mb-16">
+    <div className="mb-4">
       <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
         {grantTypes.map(grantType => (
           <button

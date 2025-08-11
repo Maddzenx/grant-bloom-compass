@@ -45,7 +45,7 @@ const OrganizationTabs = ({
       }
     });
   }, []);
-  return <div className="mb-16">
+  return <div className="mb-4">
       <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
         {organizationTypes.map(org => (
           <button

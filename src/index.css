@@ -474,3 +474,15 @@
 [data-radix-select-trigger]:focus-visible {
   border-color: transparent !important;
 }
+
+/* Home search card height animation */
+.home-search-card {
+  transition: height 2s ease;
+  will-change: height;
+}
+
+.home-search-card-max {
+  transition: max-height 2s ease;
+  will-change: max-height;
+  overflow: hidden;
+}
