@@ -1,9 +1,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const MetricsSection = () => {
   const { t } = useLanguage();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [hasAnimated, setHasAnimated] = useState(false);
   const [animatedValues, setAnimatedValues] = useState<Record<number, number>>({});
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -41,6 +43,10 @@ const MetricsSection = () => {
 
   // Animation function
   const animateValue = (index: number, start: number, end: number, duration: number) => {
+    if (prefersReducedMotion) {
+      setAnimatedValues(prev => ({ ...prev, [index]: end }));
+      return;
+    }
     const startTime = performance.now();
     
     const updateValue = (currentTime: number) => {
@@ -78,8 +84,8 @@ const MetricsSection = () => {
             metrics.forEach((metric, index) => {
               if (metric.finalValue) {
                 setTimeout(() => {
-                  animateValue(index, 0, metric.finalValue, 2000);
-                }, index * 200); // Stagger the animations
+                  animateValue(index, 0, metric.finalValue, prefersReducedMotion ? 0 : 2000);
+                }, prefersReducedMotion ? 0 : index * 200);
               }
             });
           }
@@ -100,16 +106,21 @@ const MetricsSection = () => {
         observer.unobserve(sectionRef.current);
       }
     };
-  }, [hasAnimated, metrics]);
+  }, [hasAnimated, metrics, prefersReducedMotion]);
+
+  const cardBase = "bg-white/95 backdrop-blur-md p-8 rounded-3xl border border-white/30 relative overflow-hidden shadow-lg";
+  const cardMotion = prefersReducedMotion ? "" : "transition-all duration-500 hover:scale-105 hover:shadow-2xl";
+  const overlayMotion = prefersReducedMotion ? "opacity-0" : "opacity-0 hover:opacity-100 transition-opacity duration-500";
+  const liveDotClass = prefersReducedMotion ? "w-2 h-2 bg-green-500 rounded-full" : "w-2 h-2 bg-green-500 rounded-full animate-pulse";
 
   return (
-    <div ref={sectionRef} className="relative z-10 w-full bg-[#CEC5F9] py-32 px-8">
+    <div ref={sectionRef} className="relative z-10 w-full" style={{ backgroundColor: '#F3EFFD' }}>
       <div className="w-full max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="font-newsreader font-bold text-gray-900 leading-[1.2]" 
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
-                            Utlysningars prestanda
+            Utlysningars prestanda
           </h2>
         </div>
 
@@ -118,14 +129,14 @@ const MetricsSection = () => {
           {metrics.map((metric, index) => (
             <div 
               key={index}
-              className="bg-white/95 backdrop-blur-md p-8 rounded-3xl transition-all duration-500 hover:scale-105 hover:shadow-2xl border border-white/30 relative overflow-hidden shadow-lg"
+              className={`${cardBase} ${cardMotion}`}
             >
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-blue-50/50 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              <div className={`absolute inset-0 bg-gradient-to-br from-purple-50/50 to-blue-50/50 ${overlayMotion}`}></div>
               
               {/* Stat - Centered */}
               <div className="flex justify-center items-center mb-8 relative z-10">
-                <span className="font-[Basic] font-bold text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-none text-center">
+                <span className="font-[Basic] font-bold type-display text-gray-900 leading-none text-center">
                   {hasAnimated && animatedValues[index] !== undefined
                     ? `${animatedValues[index]}${metric.suffix || ''}${metric.hasPlus ? '+' : ''}`
                     : hasAnimated 
@@ -137,7 +148,7 @@ const MetricsSection = () => {
               
               {/* Caption - Centered */}
               <div className="flex justify-center items-center relative z-10">
-                <p className="font-[Basic] text-base leading-relaxed text-gray-700 text-center font-semibold max-w-xs">
+                <p className="font-[Basic] type-secondary leading-relaxed text-gray-700 text-center font-semibold max-w-xs">
                   {metric.caption}
                 </p>
               </div>
@@ -151,8 +162,8 @@ const MetricsSection = () => {
         {/* Live Data Button */}
         <div className="text-center mt-16">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="font-[Basic] text-sm text-gray-700 font-medium">
+            <div className={liveDotClass}></div>
+            <span className="font-[Basic] type-secondary text-gray-700 font-medium">
               Live data uppdateras kontinuerligt
             </span>
           </div>

@@ -35,7 +35,7 @@ const GrantKeyInfo = ({
         </div>
         
         <div className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm">
-          <Building2 className="w-5 md:w-6 h-5 md:h-6 text-blue-600 flex-shrink-0" />
+          <Building2 className="w-5 md:w-6 h-5 md:h-6 text-[#7D54F4] flex-shrink-0" />
           <div className="min-w-0 flex-1">
             <span className="text-xs text-gray-600 block">{t('grant.organization')}</span>
             <span className="font-bold text-gray-900 text-sm truncate">{grant.organization}</span>

@@ -61,7 +61,7 @@ const DraftViewer = () => {
       case 'completed':
         return 'bg-green-500';
       case 'generating':
-        return 'bg-blue-500';
+        return 'bg-[#7D54F4]';
       case 'failed':
         return 'bg-red-500';
       default:

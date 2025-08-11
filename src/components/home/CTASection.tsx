@@ -16,7 +16,7 @@ const CTASection = () => {
         {/* CTA Button */}
         <div className="mb-16">
           <button
-            className="bg-[#D1F364] hover:bg-[#C5E858] text-black font-[Basic] font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
+            className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white font-[Basic] font-medium px-12 py-4 rounded-full transition-all duration-200 hover:shadow-lg"
             style={{ 
               fontSize: '22px',
               padding: '1.1rem 3.2rem',

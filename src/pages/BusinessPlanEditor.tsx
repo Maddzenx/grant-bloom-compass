@@ -308,7 +308,7 @@ const BusinessPlanEditor = () => {
                                     
                                     // Add a subtle highlight effect to the section
                                     sectionElement.style.transition = 'box-shadow 0.3s ease';
-                                    sectionElement.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.3)';
+                                    sectionElement.style.boxShadow = '0 0 0 2px rgba(125, 84, 244, 0.28)';
                                     
                                     setTimeout(() => {
                                       sectionElement.style.boxShadow = '';
@@ -318,7 +318,7 @@ const BusinessPlanEditor = () => {
                              }}
                              className={`text-xs px-3 py-2 rounded-md transition-colors ${
                                standaloneExpandedSections[section.key]
-                                 ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                                 ? 'bg-[#f3efff] text-[#5332e0] border border-[#e5defd]'
                                  : section.completed 
                                    ? 'bg-green-100 text-green-700 hover:bg-green-200' 
                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -472,7 +472,7 @@ const BusinessPlanEditor = () => {
                                   <div 
                                     className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${
                                       dragStates.project 
-                                        ? 'border-blue-400 bg-blue-50' 
+                                        ? 'border-[#7D54F4] bg-[#f3efff]' 
                                         : 'border-gray-300 hover:border-gray-400'
                                     }`}
                                     onDragOver={(e) => handleDragOver(e, 'project')}
@@ -488,7 +488,7 @@ const BusinessPlanEditor = () => {
                                     <p className="text-sm text-gray-600 mb-3">
                                       {dragStates.project ? 'Släpp för att ladda upp' : 'Affärsplan, finansiella rapporter, CV, referenser'}
                                     </p>
-                                    <label className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
+                                    <label className="bg-[#7D54F4] hover:bg-[#6a40f2] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer">
                                       Välj filer
                                       <input
                                         type="file"
@@ -748,7 +748,7 @@ const BusinessPlanEditor = () => {
                                 <h4 className="text-sm font-medium text-gray-700 mb-2">Köns och/eller genusperspektiv</h4>
                                 <p className="text-sm text-gray-600 mb-4">
                                   Vinnova arbetar för att främja jämställdhet och inkludera köns- och genusperspektiv i alla projekt. 
-                                  <a href="#" className="text-blue-600 hover:underline"> Läs mer här om kön- och genusperspektiv.</a>
+                                  <a href="#" className="text-[#7D54F4] hover:opacity-90 underline"> Läs mer här om kön- och genusperspektiv.</a>
                                 </p>
                                 <p className="text-sm text-gray-600 mb-4">
                                   Observera att vi inte efterfrågar information om projektgruppens sammansättning (kvinnor/män).
@@ -1372,7 +1372,7 @@ const BusinessPlanEditor = () => {
                                  </p>
                                  <p className="text-sm text-gray-600">
                                    Information om vilka filtyper som är tillåtna att ladda upp som bilaga finns i{' '}
-                                   <a href="#" className="text-[#8B5CF6] hover:underline">Frågor och svar</a>
+                                   <a href="#" className="text-[#7D54F4] hover:underline">Frågor och svar</a>
                                  </p>
                                </div>
 
@@ -1500,7 +1500,7 @@ const BusinessPlanEditor = () => {
                 <div className="bg-[#f0f1f3] px-6 py-5 border-b border-gray-200">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">Granska förslag</h3>
-                    <div className="bg-[#8B5CF6] text-white text-xs font-medium px-2 py-1 rounded-full">
+                    <div className="bg-[#7D54F4] text-white text-xs font-medium px-2 py-1 rounded-full">
                       {pendingSuggestions.length}
                     </div>
                   </div>
@@ -1512,7 +1512,7 @@ const BusinessPlanEditor = () => {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2 px-3 text-xs font-medium rounded-md transition-colors ${
-                          activeTab === tab ? 'bg-white text-[#8B5CF6]' : 'text-gray-600 hover:text-gray-900'
+                          activeTab === tab ? 'bg-white text-[#7D54F4]' : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
                         {tab}
@@ -1523,7 +1523,7 @@ const BusinessPlanEditor = () => {
                   {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-1">
                     <div 
-                      className="bg-[#8B5CF6] h-1 rounded-full transition-all duration-300" 
+                      className="bg-[#7D54F4] h-1 rounded-full transition-all duration-300" 
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                   </div>
@@ -1550,7 +1550,7 @@ const BusinessPlanEditor = () => {
                             <div className="flex space-x-2">
                               <button 
                                 onClick={() => handleAcceptSuggestion(suggestion.id)}
-                                className="bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs px-3 py-1 rounded-md transition-colors"
+                                className="bg-[#7D54F4] hover:bg-[#6A40F2] text-white text-xs px-3 py-1 rounded-md transition-colors"
                               >
                                 Acceptera
                               </button>

@@ -21,7 +21,7 @@ const GrantNotionAdditionalInfoSection = ({ grant }: GrantNotionAdditionalInfoSe
               href={grant.originalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 underline break-all"
+              className="inline-flex items-center gap-2 text-sm text-[#7D54F4] hover:opacity-90 underline break-all"
             >
               <ExternalLink className="w-3 h-3 flex-shrink-0" />
               {grant.originalUrl}

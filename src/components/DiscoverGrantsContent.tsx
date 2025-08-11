@@ -128,12 +128,12 @@ const FilterContent = ({
       {/* Organization Filter */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Organisation</h3>
+          <h3 className="text-base font-semibold text-gray-900">Organisation{filters.organizations?.length ? ` (${filters.organizations.length})` : ''}</h3>
           {filters.organizations?.length > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs text-[#7D54F4] hover:bg-[#E5DEFD] px-2 py-1 h-auto" 
               onClick={() => onFiltersChange({ organizations: [] })}
             >
               Återställ
@@ -163,12 +163,12 @@ const FilterContent = ({
       {/* Deadline Filter */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Deadline</h3>
+          <h3 className="text-base font-semibold text-gray-900">Deadline{deadlineValue?.preset || deadlineValue?.type === 'custom' ? ' (1)' : ''}</h3>
           {deadlineValue?.preset && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs px-2 py-1 h-auto hover:bg-[#E5DEFD] text-[#7D54F4]" 
               onClick={() => onDeadlineChange({ type: 'preset', preset: '' })}
             >
               Återställ
@@ -176,7 +176,7 @@ const FilterContent = ({
           )}
         </div>
         <div className="relative">
-          <select className="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm p-3 appearance-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors">
+          <select className="w-full bg-gray-50 border border-gray-200 rounded-lg text-sm p-3 appearance-none focus:ring-2 focus:ring-[#7D54F4] focus:border-[#7D54F4] transition-colors">
             <option value="">Alla deadlines</option>
             <option value="urgent">Brådskande (7 dagar)</option>
             <option value="2weeks">Nästa 2 veckor</option>
@@ -189,12 +189,12 @@ const FilterContent = ({
       {/* Industry Sector Filter */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Bransch</h3>
+          <h3 className="text-base font-semibold text-gray-900">Bransch{filters.industrySectors?.length ? ` (${filters.industrySectors.length})` : ''}</h3>
           {filters.industrySectors?.length > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs px-2 py-1 h-auto hover:bg-[#E5DEFD] text-[#7D54F4]" 
               onClick={() => onFiltersChange({ industrySectors: [] })}
             >
               Återställ
@@ -224,12 +224,12 @@ const FilterContent = ({
       {/* Eligible Applicant Filter */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Stödberättigad sökande</h3>
+          <h3 className="text-base font-semibold text-gray-900">Stödberättigad sökande{filters.eligibleApplicants?.length ? ` (${filters.eligibleApplicants.length})` : ''}</h3>
           {filters.eligibleApplicants?.length > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs text-[#7D54F4] hover:bg-[#E5DEFD] px-2 py-1 h-auto" 
               onClick={() => onFiltersChange({ eligibleApplicants: [] })}
             >
               Återställ
@@ -259,12 +259,12 @@ const FilterContent = ({
       {/* Requirements Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Krav</h3>
+          <h3 className="text-base font-semibold text-gray-900">Krav{(filters.consortiumRequired || filters.cofinancingRequired) ? ' (1)' : ''}</h3>
           {(filters.consortiumRequired || filters.cofinancingRequired) && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs text-[#7D54F4] hover:bg-[#E5DEFD] px-2 py-1 h-auto" 
               onClick={() => onFiltersChange({
                 consortiumRequired: null,
                 cofinancingRequired: null
@@ -284,7 +284,7 @@ const FilterContent = ({
                 consortiumRequired: e.target.checked ? true : null
               })} 
             />
-            <span className="text-sm text-gray-700 group-hover:text-gray-900">Kræver consortium</span>
+            <span className="text-sm text-gray-700 group-hover:text-gray-900">Kräver konsortium</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer group hover:bg-gray-50 p-2 rounded-md transition-colors">
             <input 
@@ -295,7 +295,7 @@ const FilterContent = ({
                 cofinancingRequired: e.target.checked ? true : null
               })} 
             />
-            <span className="text-sm text-gray-700 group-hover:text-gray-900">Kræver medfinansiering</span>
+            <span className="text-sm text-gray-700 group-hover:text-gray-900">Kräver medfinansiering</span>
           </label>
         </div>
       </div>
@@ -303,12 +303,12 @@ const FilterContent = ({
       {/* Geographic Scope Filter */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Region</h3>
+          <h3 className="text-base font-semibold text-gray-900">Region{filters.region?.length ? ` (${filters.region.length})` : ''}</h3>
           {filters.region?.length > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-2 py-1 h-auto" 
+              className="text-xs text-[#7D54F4] hover:bg-[#E5DEFD] px-2 py-1 h-auto" 
               onClick={() => onFiltersChange({ region: [] })}
             >
               Återställ
@@ -348,7 +348,7 @@ const FilterContent = ({
         <Button 
           onClick={onClose}
           className="w-full sm:w-auto text-white font-semibold text-sm px-8 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md" 
-          style={{ backgroundColor: '#8B5CF6' }}
+          style={{ backgroundColor: '#7D54F4' }}
         >
           Visa {totalGrantsCount} resultat
         </Button>
@@ -430,6 +430,7 @@ export const DiscoverGrantsContent = ({
   const isMobile = useIsMobile();
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [detailsOpen, setDetailsOpen] = React.useState(false);
+  const [listScrollTop, setListScrollTop] = React.useState<number | null>(null);
 
   // Use allOrganizations from database if available, otherwise fall back to extracting from grants
   const organizationOptions = useMemo(() => {
@@ -467,28 +468,55 @@ export const DiscoverGrantsContent = ({
   // Sort grants based on selected sort option
   const sortedGrants = useMemo(() => sortGrants(searchResults, sortBy, searchTerm), [searchResults, sortBy, searchTerm]);
 
+  // Last updated timestamp (updates when fetching/searching completes)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(new Date());
+  useEffect(() => {
+    if (!isBackendFetching && !isSearching) {
+      setLastUpdated(new Date());
+    }
+  }, [isBackendFetching, isSearching, sortedGrants.length]);
+
+  // Active filter count for compact summary (approximation)
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    count += (filters.organizations?.length || 0);
+    count += (filters.industrySectors?.length || 0);
+    count += (filters.eligibleApplicants?.length || 0);
+    count += (filters.region?.length || 0);
+    if (filters.deadline && (filters.deadline.preset || (filters.deadline.type === 'custom'))) count += 1;
+    if (filters.consortiumRequired === true) count += 1;
+    if (filters.cofinancingRequired === true) count += 1;
+    return count;
+  }, [filters]);
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-         {/* Purple background section for search component */}
-         <div className="w-full" style={{ backgroundColor: '#D1C9FB' }}>
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-24">
+         {/* Background section for search component (brand-tinted subtle) */}
+         <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#F3EFFD' }}>
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-12 md:py-20">
           {/* Title section with better spacing */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-2 font-['Source_Sans_3']">
+            <h1 className="type-display text-zinc-900 leading-tight tracking-tight mb-2 font-['Source_Sans_3']">
               Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
             </h1>
-            <p className="text-lg text-gray-700 max-w-2xl mx-auto font-['Source_Sans_3']">
+            {/* Subtitle */}
+            <p className="type-body md:type-title text-zinc-700 max-w-2xl mx-auto font-['Source_Sans_3']">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
+            {lastUpdated && (
+              <div className="mt-2 text-center md:text-right">
+                <span className="type-caption text-zinc-600">Senast uppdaterad: {lastUpdated.toLocaleString('sv-SE', { hour12: false })}</span>
+              </div>
+            )}
           </div>
           
           {/* Search bar section with improved spacing */}
-          <div className="w-full mb-4 max-w-4xl mx-auto">
+          <div className="w-full mb-4 max-w-4xl mx-auto" role="search" aria-label="Sök bidrag">
             <DiscoverHeader 
               searchTerm={searchTerm} 
               onSearchChange={onSearchChange} 
               onSearch={onSearch} 
-              sortBy={sortBy} 
+              sortBy={sortBy}
               onSortChange={onSortChange} 
               totalGrants={searchResults.length} 
               suggestions={suggestions} 
@@ -499,7 +527,23 @@ export const DiscoverGrantsContent = ({
               onClearSearch={onClearSearch}
             />
           </div>
-          
+
+          {/* Compact active filter summary under sticky search (mobile) */}
+          {isMobile && activeFilterCount > 0 && (
+            <div className="w-full mb-3 max-w-4xl mx-auto px-1">
+              <button
+                onClick={() => setFilterOpen(true)}
+                className="w-full flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 py-2"
+                aria-label={`Aktiva filter: ${activeFilterCount}`}
+              >
+                <span className="type-secondary text-zinc-700">Aktiva filter:</span>
+                <span className="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-2 rounded-full bg-zinc-100 text-zinc-800 type-body">
+                  {activeFilterCount}
+                </span>
+              </button>
+            </div>
+          )}
+            
           {/* Filter and sorting row with better organization */}
           <div className="flex flex-col gap-y-2 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">
             {/* Only show FilterBar on desktop */}
@@ -529,10 +573,19 @@ export const DiscoverGrantsContent = ({
         <div className="flex justify-between items-center">
           {/* Pagination Info */}
           {pagination && (
-            <div className="flex items-center gap-2 text-base text-gray-600">
-              <span>
+            <div className="flex items-center gap-3">
+              <span className="type-body text-gray-600">
                 Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
               </span>
+              {hasActiveFilters && (
+                <button
+                  className="type-secondary text-[#7D54F4] hover:opacity-90 underline"
+                  onClick={onClearFilters}
+                  aria-label="Rensa alla filter"
+                >
+                  Rensa alla
+                </button>
+              )}
             </div>
           )}
 
@@ -549,12 +602,12 @@ export const DiscoverGrantsContent = ({
       {isMobile && (
         <>
           <button
-            className={`fixed z-50 bottom-4 right-4 rounded-full shadow-md flex items-center justify-center w-12 h-12 active:scale-95 transition-all ${
+            className={`fixed z-50 right-4 rounded-full shadow-md flex items-center justify-center w-12 h-12 active:scale-95 transition-all ${
               hasActiveFilters 
-                ? 'bg-purple-600 text-white' 
+                ? 'bg-[#7D54F4] text-white' 
                 : 'bg-white text-gray-600 border border-gray-200'
             }`}
-            style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+            style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 1rem)' }}
             onClick={() => setFilterOpen(true)}
             aria-label="Open filters"
           >
@@ -567,31 +620,36 @@ export const DiscoverGrantsContent = ({
           </button>
           <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
             <DrawerContent className="h-[90%] bg-white flex flex-col">
-              <DrawerHeader className="flex justify-between items-center p-4 border-b flex-shrink-0">
-                <DrawerTitle>Filter</DrawerTitle>
-                <DrawerClose asChild>
-                  <Button variant="ghost" size="icon" className="rounded-lg h-8 w-8">
-                    <X className="w-6 h-6" />
-                  </Button>
-                </DrawerClose>
-              </DrawerHeader>
-              <div className="flex-1 overflow-y-auto">
-                <FilterContent
-                  filters={filters}
-                  onFiltersChange={onFiltersChange}
-                  onResetFilters={onClearFilters}
-                  organizationOptions={organizationOptions}
-                  fundingRange={filters.fundingRange}
-                  onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
-                  deadlineValue={filters.deadline}
-                  onDeadlineChange={val => onFiltersChange({ deadline: val })}
-                  industryOptions={industryOptions}
-                  eligibleApplicantOptions={eligibleApplicantOptions}
-                  geographicScopeOptions={geographicScopeOptions}
-                  totalGrantsCount={searchResults.length}
-                  onClose={() => setFilterOpen(false)}
-                />
-              </div>
+              <SwipeableSheetContent onSwipeDown={() => setFilterOpen(false)}>
+                <DrawerHeader className="flex justify-between items-center p-4 border-b flex-shrink-0">
+                  <div className="flex items-center gap-3">
+                    <DrawerTitle>Filter</DrawerTitle>
+                    <Button variant="ghost" size="sm" className="type-secondary" onClick={onClearFilters}>Rensa alla</Button>
+                  </div>
+                  <DrawerClose asChild>
+                    <Button variant="ghost" size="icon" aria-label="Stäng"> 
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </DrawerClose>
+                </DrawerHeader>
+                <div className="flex-1 overflow-y-auto p-4">
+                  <FilterContent
+                    filters={filters}
+                    onFiltersChange={onFiltersChange}
+                    onResetFilters={onClearFilters}
+                    organizationOptions={organizationOptions}
+                    fundingRange={filters.fundingRange}
+                    onFundingRangeChange={range => onFiltersChange({ fundingRange: range })}
+                    deadlineValue={filters.deadline}
+                    onDeadlineChange={val => onFiltersChange({ deadline: val })}
+                    industryOptions={industryOptions}
+                    eligibleApplicantOptions={eligibleApplicantOptions}
+                    geographicScopeOptions={geographicScopeOptions}
+                    totalGrantsCount={searchResults.length}
+                    onClose={() => setFilterOpen(false)}
+                  />
+                </div>
+              </SwipeableSheetContent>
             </DrawerContent>
           </Drawer>
         </>
@@ -602,7 +660,7 @@ export const DiscoverGrantsContent = ({
         {isBackendFetching && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-start justify-center pt-12 animate-fade-in">
             <div className="bg-white rounded-lg shadow-lg border border-gray-200 px-6 py-4 flex items-center gap-3">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#7D54F4]"></div>
               <span className="text-sm font-medium text-gray-700">Uppdaterar resultat...</span>
             </div>
           </div>
@@ -630,12 +688,15 @@ export const DiscoverGrantsContent = ({
               aiMatches={aiMatches}
               pagination={pagination}
               onPageChange={onPageChange}
+              isLoadingList={Boolean(isSearching || isBackendFetching)}
+              onScrollPositionChange={(top) => setListScrollTop(top)}
+              restoreScrollTop={listScrollTop}
             />
             <Sheet open={detailsOpen && !!selectedGrant} onOpenChange={open => { setDetailsOpen(open); if (!open) onBackToList(); }}>
               <SwipeableSheetContent 
                 onSwipeDown={() => { setDetailsOpen(false); onBackToList(); }}
               >
-                <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp pointer-events-none">
+                                  <SheetContent side="bottom" className="max-h-[92vh] rounded-t-2xl p-0 flex flex-col animate-slideInUp">
                   {/* Mobile menu in left corner (same level as close icon) */}
                   {isMobile && (
                     <div className="absolute z-10 w-20 h-20 p-3">
@@ -713,6 +774,9 @@ export const DiscoverGrantsContent = ({
                 aiMatches={aiMatches}
                 pagination={pagination}
                 onPageChange={onPageChange}
+                isLoadingList={Boolean(isSearching || isBackendFetching)}
+                onScrollPositionChange={(top) => setListScrollTop(top)}
+                restoreScrollTop={listScrollTop}
               />
             </div>
 
@@ -724,7 +788,7 @@ export const DiscoverGrantsContent = ({
                     selectedGrant={selectedGrant} 
                     onToggleBookmark={onToggleBookmark} 
                     isMobile={false} 
-                    onBackToList={onBackToList}
+                    onBackToList={() => { onBackToList(); }}
                     sortBy={sortBy}
                     onSortChange={onSortChange}
                   />

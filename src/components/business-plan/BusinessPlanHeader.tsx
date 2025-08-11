@@ -53,7 +53,7 @@ export const BusinessPlanHeader: React.FC<BusinessPlanHeaderProps> = ({ grant, a
             </>
           )}
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 px-6">
+        <Button className="bg-[#7D54F4] hover:bg-[#6a40f2] px-6">
           Review
         </Button>
       </div>

@@ -26,11 +26,7 @@ const GrantApplicationCard = ({
   onStartApplication,
   onToggleSave
 }: GrantApplicationCardProps) => {
-  const {
-    isGrantSaved,
-    addToSaved,
-    removeFromSaved
-  } = useSavedGrantsContext();
+  const { isGrantSaved, addToSaved, removeFromSaved } = useSavedGrantsContext();
   const navigate = useNavigate();
 
   const formatDate = (date: Date) => {
@@ -76,8 +72,9 @@ const GrantApplicationCard = ({
   const renderActions = () => {
     switch (type) {
       case 'active':
-        return <div className="flex gap-2">
-            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="bg-accent-lime hover:bg-[#D7CFFC] text-ink-obsidian bg-[#cec5f9] py-0 px-[10px] text-sm h-10">
+        return (
+          <div className="flex gap-2">
+            <Button variant="default" onClick={() => onEdit?.(grant.id)} className="bg-[#CEC5F9] hover:bg-[#D7CFFC] text-ink-obsidian py-0 px-[10px] type-secondary h-10">
               Redigera
             </Button>
             
@@ -95,33 +92,38 @@ const GrantApplicationCard = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3] text-sm">Avbryt</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700 text-sm">
+                  <AlertDialogCancel className="bg-[#F0F1F3] hover:bg-[#E5E7EA] text-ink-obsidian border-[#F0F1F3] type-secondary">Avbryt</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete?.(grant.id)} className="bg-red-600 hover:bg-red-700 type-secondary">
                     Ta bort
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>;
+          </div>
+        );
       case 'pending':
-        return <div className="flex gap-2">
+        return (
+          <div className="flex gap-2">
             <Button variant="outline" size="icon" className="border-accent-lavender">
               <Download className="w-4 h-4" />
             </Button>
-          </div>;
+          </div>
+        );
       case 'saved':
         const actuallyBookmarked = isGrantSaved(grant.id);
-        return <div className="flex gap-3">
+        return (
+          <div className="flex gap-3">
             <Button variant="outline" size="icon" onClick={handleInfoClick} className="border-white bg-[#fefefe]">
               <Info className="w-4 h-4" />
             </Button>
-            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\\n               text-sm leading-none h-10">
+            <Button variant="default" onClick={handleStartApplication} className="inline-flex items-center justify-center\n               bg-[#D7CFFC] hover:bg-[#CEC5F9] text-ink-obsidian\n               type-secondary leading-none h-10">
               Börja ansökan
             </Button>
             <Button variant="outline" size="icon" onClick={handleToggleSave} className="border-white bg-white">
               <Bookmark className={`w-4 h-4 ${actuallyBookmarked ? 'text-[#CEC5F9] fill-[#CEC5F9]' : 'text-gray-400'}`} />
             </Button>
-          </div>;
+          </div>
+        );
       default:
         return null;
     }
@@ -153,16 +155,18 @@ const GrantApplicationCard = ({
     }
   };
 
-  return <Card className="p-6 bg-white border border-accent-lavender shadow-sm">
+  return (
+    <Card className="p-6 bg-white border border-accent-lavender shadow-sm">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-ink-obsidian mb-1">{grant.title}</h3>
-          {getStatusText() && <p className="text-sm text-ink-secondary mb-1">{getStatusText()}</p>}
-          <p className="text-xs text-ink-secondary">{getDateText()}</p>
+          <h3 className="type-title font-semibold text-ink-obsidian mb-1">{grant.title}</h3>
+          {getStatusText() && <p className="type-secondary text-ink-secondary mb-1">{getStatusText()}</p>}
+          <p className="type-caption text-ink-secondary">{getDateText()}</p>
         </div>
         {renderActions()}
       </div>
-    </Card>;
+    </Card>
+  );
 };
 
 export default GrantApplicationCard;
