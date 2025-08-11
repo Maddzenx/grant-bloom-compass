@@ -394,22 +394,20 @@ export const DiscoverGrantsContent = ({
     return count;
   }, [filters]);
   return <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-         {/* Background section for search component (brand-tinted subtle) */}
-         <div className="w-full border-b border-zinc-200" style={{
-      backgroundColor: '#F3EFFD'
-    }}>
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-12 md:py-20">
+         {/* Background section for search component */}
+         <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
+             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-12 md:py-20">
           {/* Title section with better spacing */}
           <div className="mb-8 text-center">
-            <h1 className="type-display text-zinc-900 leading-tight tracking-tight mb-2 font-['Source_Sans_3']">
+            <h1 className="type-display text-zinc-900 leading-tight tracking-tight mb-3 font-['Source_Sans_3']">
               Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
             </h1>
             {/* Subtitle */}
-            <p className="type-body md:type-title text-zinc-700 max-w-2xl mx-auto font-['Source_Sans_3']">
+            <p className="type-body md:type-title text-zinc-800 max-w-2xl mx-auto font-['Source_Sans_3'] mb-3">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
             {lastUpdated && (
-              <p className="text-sm text-zinc-500 mt-2">
+              <p className="type-caption text-zinc-600">
                 Senast uppdaterad: {lastUpdated.toLocaleDateString('sv-SE')} {lastUpdated.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
               </p>
             )}
@@ -422,7 +420,7 @@ export const DiscoverGrantsContent = ({
 
           {/* Compact active filter summary under sticky search (mobile) */}
           {isMobile && activeFilterCount > 0 && <div className="w-full mb-3 max-w-4xl mx-auto px-1">
-              <button onClick={() => setFilterOpen(true)} className="w-full flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 py-2" aria-label={`Aktiva filter: ${activeFilterCount}`}>
+              <button onClick={() => setFilterOpen(true)} className="w-full flex items-center justify-center gap-2 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 py-2 px-3" aria-label={`Aktiva filter: ${activeFilterCount}`}>
                 <span className="type-secondary text-zinc-700">Aktiva filter:</span>
                 <span className="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-2 rounded-full bg-zinc-100 text-zinc-800 type-body">
                   {activeFilterCount}
