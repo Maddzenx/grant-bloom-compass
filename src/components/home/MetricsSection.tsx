@@ -1,39 +1,115 @@
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const MetricsSection = () => {
   const { t } = useLanguage();
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [animatedValues, setAnimatedValues] = useState<Record<number, number>>({});
+  const sectionRef = useRef<HTMLDivElement>(null);
   
   // Use hardcoded metrics to avoid loading all grants unnecessarily
   // These values are updated periodically and don't need to be real-time
   const metrics = [
     {
       caption: "Bidrag tillgängliga just nu",
-      stat: "150+" // Approximate number of active grants
+      stat: "800+", // Approximate number of active grants
+      finalValue: 800,
+      hasPlus: true
     },
     {
       caption: "Aktiva bidragsorgan",
-      stat: "6" // Energimyndigheten, Vetenskapsrådet, Formas, Europeiska Kommissionen, Vinnova, Tillväxtverket
+      stat: "6", // Energimyndigheten, Vetenskapsrådet, Formas, Europeiska Kommissionen, Vinnova, Tillväxtverket
+      finalValue: 6,
+      hasPlus: false
     },
     {
       caption: "Sökningstid i snitt", 
-      stat: "30 sek"
+      stat: "30 sek",
+      finalValue: 30,
+      hasPlus: false,
+      suffix: " sek"
     },
     {
       caption: "Tidssparande jämfört med traditionell sökning",
-      stat: "95%"
+      stat: "95%",
+      finalValue: 95,
+      hasPlus: false,
+      suffix: "%"
     }
   ];
 
+  // Animation function
+  const animateValue = (index: number, start: number, end: number, duration: number) => {
+    const startTime = performance.now();
+    
+    const updateValue = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(start + (end - start) * easeOutQuart);
+      
+      setAnimatedValues(prev => ({
+        ...prev,
+        [index]: currentValue
+      }));
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateValue);
+      }
+    };
+    
+    requestAnimationFrame(updateValue);
+  };
+
+  // Intersection Observer to trigger animation
+  useEffect(() => {
+    if (hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            
+            // Animate each metric
+            metrics.forEach((metric, index) => {
+              if (metric.finalValue) {
+                setTimeout(() => {
+                  animateValue(index, 0, metric.finalValue, 2000);
+                }, index * 200); // Stagger the animations
+              }
+            });
+          }
+        });
+      },
+      {
+        threshold: 0.3, // Trigger when 30% of the section is visible
+        rootMargin: '0px 0px -100px 0px'
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [hasAnimated, metrics]);
+
   return (
-    <div className="relative z-10 w-full bg-[#CEC5F9] py-32 px-8">
+    <div ref={sectionRef} className="relative z-10 w-full bg-[#CEC5F9] py-32 px-8">
       <div className="w-full max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 className="font-newsreader font-bold text-gray-900 leading-[1.2]" 
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
-            Bidragssprångets prestanda
+                            Utlysningars prestanda
           </h2>
         </div>
 
@@ -42,21 +118,32 @@ const MetricsSection = () => {
           {metrics.map((metric, index) => (
             <div 
               key={index}
-              className="bg-white/90 backdrop-blur-sm p-10 rounded-2xl transition-all duration-300 border border-white/20 relative overflow-hidden"
+              className="bg-white/95 backdrop-blur-md p-8 rounded-3xl transition-all duration-500 hover:scale-105 hover:shadow-2xl border border-white/30 relative overflow-hidden shadow-lg"
             >
-              {/* Stat - Top Left */}
-              <div className="flex justify-start items-start mb-6">
-                <span className="font-[Basic] font-bold text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-none">
-                  {metric.stat}
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-blue-50/50 opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+              
+              {/* Stat - Centered */}
+              <div className="flex justify-center items-center mb-8 relative z-10">
+                <span className="font-[Basic] font-bold text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-none text-center">
+                  {hasAnimated && animatedValues[index] !== undefined
+                    ? `${animatedValues[index]}${metric.suffix || ''}${metric.hasPlus ? '+' : ''}`
+                    : hasAnimated 
+                      ? `${metric.finalValue}${metric.suffix || ''}${metric.hasPlus ? '+' : ''}`
+                      : `0${metric.suffix || ''}${metric.hasPlus ? '+' : ''}`
+                  }
                 </span>
               </div>
               
-              {/* Caption - Bottom Right */}
-              <div className="flex justify-end items-end">
-                <p className="font-[Basic] text-sm leading-tight text-gray-700 max-w-[85%] text-right font-medium">
+              {/* Caption - Centered */}
+              <div className="flex justify-center items-center relative z-10">
+                <p className="font-[Basic] text-base leading-relaxed text-gray-700 text-center font-semibold max-w-xs">
                   {metric.caption}
                 </p>
               </div>
+              
+              {/* Decorative corner element */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-bl-full"></div>
             </div>
           ))}
         </div>

@@ -77,7 +77,7 @@ const DiscoverHeader = ({
             <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1 shadow-sm">
                               <button
                   onClick={handleToggleSearchMode}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 font-['Source_Sans_3'] ${
                     !isAISearch 
                       ? 'bg-[#7D54F4] text-white shadow-sm' 
                       : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
@@ -91,7 +91,7 @@ const DiscoverHeader = ({
                   <TooltipTrigger asChild>
                     <button
                       onClick={handleToggleSearchMode}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 font-['Source_Sans_3'] ${
                         isAISearch 
                           ? 'bg-[#7D54F4] text-white shadow-sm' 
                           : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
@@ -119,7 +119,7 @@ const DiscoverHeader = ({
           <div className={`relative w-full ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
             <textarea
               ref={textareaRef}
-              className="w-full pl-6 pr-20 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500 resize-none overflow-hidden"
+              className="w-full pl-6 pr-20 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500 resize-none overflow-hidden font-['Source_Sans_3']"
               placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."}
               value={searchTerm}
               onChange={e => {
