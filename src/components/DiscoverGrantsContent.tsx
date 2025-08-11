@@ -412,20 +412,20 @@ export const DiscoverGrantsContent = ({
             </ol>
           </nav>
 
-          {/* Title section with better spacing */}
-          <div className="mb-12 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl text-zinc-900 leading-tight tracking-tight mb-4 font-['Source_Sans_3'] font-bold">
-              Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
+          {/* Title section with better hierarchy */}
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl text-zinc-900 leading-tight tracking-tight mb-3 font-['Source_Sans_3'] font-bold">
+              Upptäck bidrag för ditt projekt
             </h1>
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl text-zinc-600 max-w-3xl mx-auto font-['Source_Sans_3'] font-normal">
-              Hitta bidrag som passar ditt projekt och din organisation
+            {/* Subtitle with actionable language */}
+            <p className="text-base md:text-lg text-zinc-600 max-w-2xl mx-auto font-['Source_Sans_3'] font-normal">
+              Sök bland {searchMetrics?.totalInDatabase || grants.length} tillgängliga bidrag och hitta finansiering som passar dig
             </p>
             {/* Status indicator */}
             {(isBackendFetching || isSearching) && (
-              <div className="flex items-center justify-center gap-2 mt-4 text-zinc-500">
-                <div className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm">Uppdaterar bidragslistan...</span>
+              <div className="flex items-center justify-center gap-2 mt-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <span className="text-sm text-blue-700 font-medium">Söker igenom bidragsdatabasen...</span>
               </div>
             )}
           </div>

@@ -69,53 +69,55 @@ const DiscoverHeader = ({
   return <div className="w-full flex-shrink-0 flex items-center px-0">
       <div className="w-full px-0 pt-0 pb-0">
         <div className="flex flex-col gap-3 mt-0 mb-2 w-full px-0">
-          {/* Search Mode Toggle - Above the search bar */}
-          <div className="flex justify-center">
-            <div className="flex items-center bg-white rounded-full border border-zinc-200 p-1 shadow-sm" role="tablist" aria-label="Sökläge">
+          {/* Search Mode Toggle - Simplified */}
+          <div className="flex justify-center mb-4">
+            <div className="inline-flex items-center bg-white rounded-lg border border-zinc-200 p-1 shadow-sm" role="tablist" aria-label="Sökläge">
               <button 
                 onClick={handleToggleSearchMode} 
-                className={`flex items-center gap-2 ${baseBtn} rounded-full type-body font-medium transition-all duration-200 font-['Source_Sans_3'] ${!isAISearch ? 'bg-[#7D54F4] text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
-                title="Vanlig sökning"
+                className={`flex items-center gap-2 ${baseBtn} rounded-md transition-all duration-200 font-['Source_Sans_3'] ${!isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
                 role="tab"
                 aria-selected={!isAISearch}
                 aria-label="Vanlig sökning"
               >
-                <span>Vanlig sökning</span>
-                
+                <Search className="w-4 h-4" />
+                <span className="font-medium">Nyckelord</span>
               </button>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button 
-                      onClick={handleToggleSearchMode} 
-                      className={`flex items-center gap-2 ${baseBtn} rounded-full type-body font-medium transition-all duration-200 font-['Source_Sans_3'] ${isAISearch ? 'bg-[#7D54F4] text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
-                      title="AI sökning"
-                      role="tab"
-                      aria-selected={isAISearch}
-                      aria-label="AI sökning"
-                    >
-                      <span>AI sökning</span>
-                      <HelpCircle className="w-3 h-3 opacity-70" />
-                      
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs p-3">
-                    <div className="space-y-2">
-                      <p className="font-medium text-sm">AI-sökning</p>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Beskriv ditt projekt på naturligt språk och få intelligenta matchningar baserade på innehåll och kontext, inte bara nyckelord.
-                      </p>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <button 
+                onClick={handleToggleSearchMode} 
+                className={`flex items-center gap-2 ${baseBtn} rounded-md transition-all duration-200 font-['Source_Sans_3'] ${isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
+                role="tab"
+                aria-selected={isAISearch}
+                aria-label="AI sökning"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="font-medium">AI-matchning</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="w-3 h-3 opacity-70 ml-1" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-3">
+                      <div className="space-y-2">
+                        <p className="font-medium text-sm">AI-matchning</p>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Beskriv ditt projekt på naturligt språk. AI:n analyserar innehåll och kontext för bättre matchning än bara nyckelord.
+                        </p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </button>
             </div>
           </div>
-          {/* Sub-label under active mode */}
-          <div className="-mt-1 text-center">
-            <span className="type-caption text-zinc-600">
-              {isAISearch ? 'Träffar baserade på projektbeskrivning' : 'Träffar baserade på nyckelord'}
-            </span>
+          
+          {/* Simplified mode description */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-zinc-600">
+              {isAISearch 
+                ? 'Beskriv ditt projekt så matchar AI:n relevanta bidrag' 
+                : 'Sök med specifika nyckelord och använd filter för att förfina'
+              }
+            </p>
           </div>
 
           {/* Search Bar */}
