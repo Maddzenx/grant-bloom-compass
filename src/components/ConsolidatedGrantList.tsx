@@ -186,18 +186,18 @@ const ConsolidatedGrantList = ({
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-base font-bold text-gray-900 leading-tight">
+                    <h3 className="text-base font-bold text-gray-900 leading-tight font-['Source_Sans_3']">
                       {grant.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-sm text-gray-600 leading-snug">
+                    <p className="text-sm text-gray-600 leading-snug font-['Source_Sans_3']">
                       {grant.aboutGrant}
                     </p>
 
                     {/* Footer with funding and deadline */}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-gray-900">
+                            <div className="flex items-center justify-between text-xs font-['Source_Sans_3']">
+          <span className="font-semibold text-gray-900 font-['Source_Sans_3']">
                         {grant.fundingAmount}
                       </span>
                       

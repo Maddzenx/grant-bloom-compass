@@ -78,7 +78,7 @@ const GrantNotionHeader = ({
         {status === 'upcoming' && <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 w-fit text-sm px-3 py-1.5">Kommande</Badge>}
         {status === 'closed' && <Badge className="bg-red-100 text-red-800 hover:bg-red-200 w-fit text-sm px-3 py-1.5">Stängd</Badge>}
         
-        <span className="font-semibold text-gray-900 text-lg">{grant.organization}</span>
+        <span className="font-semibold text-gray-900 text-lg font-['Source_Sans_3']">{grant.organization}</span>
       </div>
 
       {/* Desktop action buttons in top right corner */}
@@ -92,11 +92,11 @@ const GrantNotionHeader = ({
             <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg rounded-lg p-1 min-w-[180px]">
               <DropdownMenuItem onClick={handleBookmarkToggle} className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
                 <Bookmark className={`h-4 w-4 mr-2 ${actuallyBookmarked ? 'fill-current text-purple-600' : 'text-gray-600'}`} />
-                <span className="text-sm font-medium">{actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}</span>
+                <span className="text-sm font-medium font-['Source_Sans_3']">{actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
                 <Send className="h-4 w-4 mr-2 text-gray-600" />
-                <span className="text-sm font-medium">Dela</span>
+                <span className="text-sm font-medium font-['Source_Sans_3']">Dela</span>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
                 <a href={grant.originalUrl} target="_blank" rel="noopener noreferrer" className="flex items-center w-full">

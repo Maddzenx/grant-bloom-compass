@@ -472,10 +472,10 @@ export const DiscoverGrantsContent = ({
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-24">
           {/* Title section with better spacing */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-2 font-['Source_Sans_3']">
               Sök bland {searchMetrics?.totalInDatabase || grants.length} bidrag
             </h1>
-            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto font-['Source_Sans_3']">
               Hitta bidrag som passar ditt projekt och din organisation
             </p>
           </div>

@@ -10,8 +10,8 @@ const GrantNotionDescriptionSection = ({ grant }: GrantNotionDescriptionSectionP
 
   return (
     <div>
-      <h3 className="text-base font-semibold text-gray-900 mb-4">Beskrivning</h3>
-      <p className="text-sm text-gray-700 leading-relaxed">
+      <h3 className="text-base font-semibold text-gray-900 mb-4 font-['Source_Sans_3']">Beskrivning</h3>
+      <p className="text-sm text-gray-700 leading-relaxed font-['Source_Sans_3']">
         {grant.description}
       </p>
     </div>
