@@ -41,7 +41,7 @@ const ContactSection = ({ contact, isMobile = false }: ContactSectionProps) => {
             <Mail className="w-3 h-3 text-gray-600 flex-shrink-0" />
             <a 
               href={`mailto:${contact.email}`}
-              className={`text-blue-600 underline hover:text-blue-800 ${textClass} break-all truncate`}
+              className={`text-[#7D54F4] underline hover:opacity-90 ${textClass} break-all truncate`}
             >
               {contact.email}
             </a>
@@ -52,7 +52,7 @@ const ContactSection = ({ contact, isMobile = false }: ContactSectionProps) => {
             <Phone className="w-3 h-3 text-gray-600 flex-shrink-0" />
             <a 
               href={`tel:${contact.phone}`}
-              className={`text-blue-600 underline hover:text-blue-800 ${textClass}`}
+              className={`text-[#7D54F4] underline hover:opacity-90 ${textClass}`}
             >
               {contact.phone}
             </a>

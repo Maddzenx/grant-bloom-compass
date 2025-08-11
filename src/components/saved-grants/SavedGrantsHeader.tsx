@@ -7,7 +7,7 @@ const SavedGrantsHeader = () => {
 
   return (
     <div className="mb-8">
-      <h1 className="font-bold text-ink-obsidian mb-2 text-2xl">{t('saved.dashboard')}</h1>
+      <h1 className="type-title font-bold text-ink-obsidian mb-2">{t('saved.dashboard')}</h1>
     </div>
   );
 };

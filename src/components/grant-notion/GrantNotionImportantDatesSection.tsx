@@ -144,17 +144,17 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
     <div>
       {validDates.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-base font-semibold text-gray-900 mb-4">Viktiga datum</h3>
+          <h3 className="type-title text-zinc-900 mb-4">Viktiga datum</h3>
           <ul className="space-y-0">
             {validDates.map((item, index) => (
-              <li key={index} className="text-sm text-gray-700 leading-relaxed">
+              <li key={index} className="type-secondary text-zinc-700 leading-relaxed">
                 <span className="font-bold">{formatDate(item.date)}</span>: {item.label}
                 {item.link && (
                   <a
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800 ml-1"
+                    className="text-[#7D54F4] underline hover:opacity-90 ml-1"
                   >
                     (länk)
                   </a>
@@ -167,10 +167,10 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
       
       {otherEvents.length > 0 && (
         <div>
-          <h3 className="text-base font-semibold text-gray-900 mb-4">Andra händelser</h3>
+          <h3 className="type-title text-zinc-900 mb-4">Andra händelser</h3>
           <ul className="space-y-0">
             {otherEvents.map((item, index) => (
-              <li key={index} className="text-sm text-gray-700 leading-relaxed flex items-start">
+              <li key={index} className="type-secondary text-zinc-700 leading-relaxed flex items-start">
                 <span className="mr-2 text-gray-500">•</span>
                 <span>
                   {item.label}
@@ -179,7 +179,7 @@ const GrantNotionImportantDatesSection = ({ grant }: GrantNotionImportantDatesSe
                       href={item.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 underline hover:text-blue-800 ml-1"
+                      className="text-[#7D54F4] underline hover:opacity-90 ml-1"
                     >
                       (länk)
                     </a>

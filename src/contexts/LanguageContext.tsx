@@ -84,7 +84,7 @@ const translations = {
     'faq.howWorksAnswer': 'Our platform uses advanced AI technology to match you with relevant grants based on your organization\'s profile and needs. Simply describe your project or upload your documents, and we\'ll find the best funding opportunities for you.',
     'faq.different': 'How is this different from other LLMs?',
     'faq.differentAnswer': 'Unlike general-purpose AI models, our system is specifically trained on grant databases and funding criteria. We understand the nuances of grant applications and can provide targeted matches with higher success rates.',
-    'faq.whoCan': 'Who can benefit from using Bidragssprånget?',
+    'faq.whoCan': 'Who can benefit from using Utlysningar?',
     'faq.whoCanAnswer': 'Anyone can use it. Independent or academic researchers pushing the boundaries of knowledge. Early-stage and growth-stage startups turning bold ideas into scalable products or services.',
     'faq.accurate': 'How do I know it is accurate?',
     'faq.accurateAnswer': 'Our matching algorithm is continuously validated against successful grant applications. We provide confidence scores for each match and allow you to verify the criteria directly with the funding sources.',

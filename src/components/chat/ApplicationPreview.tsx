@@ -37,7 +37,7 @@ export const ApplicationPreview = ({ draft, grant }: ApplicationPreviewProps) =>
         <div className="mt-6 pt-4 border-t border-gray-200">
           <div className="flex justify-between text-sm text-gray-500">
             <span>Ordantal: {draft.wordCount}</span>
-            <span>Senast uppdaterad: {new Date().toLocaleString('sv-SE')}</span>
+            
           </div>
         </div>
       </div>

@@ -107,11 +107,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         <input ref={fileInputRef} type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.bmp,.heic" onChange={handleFileChange} className="hidden" />
 
         {/* Upload Zone */}
-        <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${isDragOver ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400"}`} onClick={handleBrowseClick}>
+        <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${isDragOver ? "border-[#7D54F4] bg-[#f3efff]" : "border-gray-300 hover:border-gray-400"}`} onClick={handleBrowseClick}>
           <Upload className="w-8 h-8 text-gray-400 mx-auto mb-4" />
           <p className="text-sm text-gray-600 mb-2">
             Drag and drop to upload or{" "}
-            <button type="button" onClick={handleBrowseClick} className="text-blue-600 hover:underline font-medium">
+            <button type="button" onClick={handleBrowseClick} className="text-[#7D54F4] hover:opacity-90 font-medium">
               browse
             </button>
           </p>

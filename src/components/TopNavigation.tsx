@@ -80,13 +80,13 @@ export function TopNavigation() {
                   <div className="mr-3">
                     <div className="circular-logo-icon w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
                       <svg className="w-10 h-10" viewBox="0 0 100 100" fill="none">
-                        {/* Circular text path for "BIDRAGSSPRÅNGET" */}
+                        {/* Circular text path for "UTLYSNINGAR" */}
                         <defs>
                           <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                         </defs>
-                        <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                        <text fill="#7D54F4" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                           <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                            BIDRAGSSPRÅNGET
+                            UTLYSNINGAR
                           </textPath>
                         </text>
                       </svg>
@@ -95,7 +95,7 @@ export function TopNavigation() {
                   {/* Clean Typography */}
                   <div className="flex flex-col">
                     <span className="text-xl font-inter font-semibold leading-tight text-gray-900">
-                      Bidragssprånget
+                      Utlysningar
                     </span>
                   </div>
                 </div>
@@ -176,15 +176,15 @@ export function TopNavigation() {
       {/* Bottom Navigation for Mobile */}
       {user ? (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#fefefe]/80 border-t-0 md:hidden flex justify-around items-center h-16">
-          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:home" className="text-2xl" />
             <span className="text-xs mt-1">Hem</span>
           </Link>
-          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/discover' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/discover" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/discover' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/discover' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:magnify" className="text-2xl" />
             <span className="text-xs mt-1">Upptäck</span>
           </Link>
-          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/saved' ? { color: '#8B5CF6' } : {}}>
+          <Link to="/saved" className={cn("flex flex-col items-center justify-center flex-1 py-2", location.pathname === '/saved' ? 'font-bold' : 'text-gray-500')} style={location.pathname === '/saved' ? { color: '#7D54F4' } : {}}>
             <Icon icon="mdi:bookmark-outline" className="text-2xl" />
             <span className="text-xs mt-1">Sparade</span>
           </Link>

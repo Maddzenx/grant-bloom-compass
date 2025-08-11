@@ -12,8 +12,8 @@ const PendingReviewTab = ({ grants }: PendingReviewTabProps) => {
   if (grants.length === 0) {
     return (
       <Card className="p-8 bg-white border border-accent-lavender shadow-sm text-center">
-        <p className="text-ink-secondary">Inga ansökningar under granskning.</p>
-        <p className="text-sm text-ink-secondary mt-2">Skicka in ansökningar för att se dem här.</p>
+        <p className="type-body text-ink-secondary">Inga ansökningar under granskning.</p>
+        <p className="type-secondary text-ink-secondary mt-2">Skicka in ansökningar för att se dem här.</p>
       </Card>
     );
   }

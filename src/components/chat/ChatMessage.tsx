@@ -19,7 +19,7 @@ export const ChatMessage = ({
         </div>}
       
       <div className={`max-w-[70%] ${isUser ? 'order-first' : ''}`}>
-        <div className={`rounded-2xl px-4 py-3 ${isUser ? 'bg-blue-600 text-white ml-auto' : 'bg-canvas-bg text-gray-900'}`}>
+        <div className={`rounded-2xl px-4 py-3 ${isUser ? 'bg-[#7D54F4] text-white ml-auto' : 'bg-canvas-bg text-gray-900'}`}>
           <p className="text-sm leading-relaxed whitespace-pre-wrap">
             {message.content}
           </p>

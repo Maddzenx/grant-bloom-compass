@@ -107,6 +107,7 @@ export const EnhancedFilterControls = ({
       eligibleApplicants: [],
       consortiumRequired: null,
       geographicScope: [],
+      region: [],
       cofinancingRequired: null,
       statusFilter: '',
     };

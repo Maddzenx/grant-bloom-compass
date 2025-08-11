@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { X, ArrowRight, Sparkles, Search, HelpCircle } from 'lucide-react';
@@ -6,12 +5,11 @@ import { Button } from "./ui/button";
 import SortingControls, { SortOption } from "@/components/SortingControls";
 import { CustomDateRangePicker } from "./deadline-filter/CustomDateRangePicker";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
+import SearchBar from "./SearchBar";
 interface DiscoverHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onSearch: () => void;
-  onClearSearch?: () => void;
   sortBy: SortOption;
   onSortChange: (sortBy: SortOption) => void;
   totalGrants: number;
@@ -24,13 +22,12 @@ interface DiscoverHeaderProps {
   };
   isAISearch?: boolean;
   onToggleSearchMode?: (isAI: boolean) => void;
+  onClearSearch?: () => void;
 }
-
 const DiscoverHeader = ({
   searchTerm,
   onSearchChange,
   onSearch,
-  onClearSearch,
   sortBy,
   onSortChange,
   totalGrants,
@@ -38,25 +35,25 @@ const DiscoverHeader = ({
   isSearching = false,
   searchMetrics,
   isAISearch = false,
-  onToggleSearchMode
+  onToggleSearchMode,
+  onClearSearch
 }: DiscoverHeaderProps) => {
   const isMobile = useIsMobile();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  const [isInputFocused, setIsInputFocused] = React.useState(false);
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       onSearch();
     }
   };
-
   const handleSearchClick = () => {
     onSearch();
   };
-
   const handleToggleSearchMode = () => {
     onToggleSearchMode?.(!isAISearch);
   };
+  
 
   // Auto-resize textarea on mount and when searchTerm changes
   useEffect(() => {
@@ -67,106 +64,107 @@ const DiscoverHeader = ({
       textarea.style.height = newHeight + 'px';
     }
   }, [searchTerm]);
-
-  return (
-    <div className="w-full flex-shrink-0 flex items-center px-0">
-      <div className="w-full px-0 pt-0 pb-0">
-        <div className="flex flex-col gap-3 mt-0 mb-2 w-full px-0">
-          {/* Search Mode Toggle - Above the search bar */}
+  const baseBtn = isMobile ? 'px-3 py-1.5 text-sm' : 'px-4 py-2';
+  
+  return <div className="w-full flex-shrink-0 flex items-center px-0">
+      <div className="w-full px-0 pt-0 pb-8">
+        <div className="flex flex-col gap-6 mt-0 mb-0 w-full px-0">
+          {/* Search Mode Toggle - Better spacing and sizing */}
           <div className="flex justify-center">
-            <div className="flex items-center bg-white rounded-lg border border-gray-200 p-1 shadow-sm">
-                              <button
-                  onClick={handleToggleSearchMode}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
-                    !isAISearch 
-                      ? 'bg-[#7D54F4] text-white shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                  }`}
-                  title={isAISearch ? 'AI sökning' : 'Vanlig sökning'}
-                >
-                  <span>Vanlig sökning</span>
-                </button>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={handleToggleSearchMode}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition-all duration-200 ${
-                        isAISearch 
-                          ? 'bg-[#7D54F4] text-white shadow-sm' 
-                          : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-                      }`}
-                      title={isAISearch ? 'AI sökning' : 'Vanlig sökning'}
-                    >
-                      <span>AI sökning</span>
-                      <HelpCircle className="w-3 h-3 opacity-70" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs p-3">
-                    <div className="space-y-2">
-                      <p className="font-medium text-sm">AI-sökning</p>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Beskriv ditt projekt på naturligt språk och få intelligenta matchningar baserade på innehåll och kontext, inte bara nyckelord.
-                      </p>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className={`relative w-full ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
-            <textarea
-              ref={textareaRef}
-              className="w-full pl-6 pr-20 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500 resize-none overflow-hidden"
-              placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."}
-              value={searchTerm}
-              onChange={e => {
-                // Limit character count to prevent overflow (roughly 3 rows worth)
-                const maxChars = 300;
-                if (e.target.value.length <= maxChars) {
-                  onSearchChange(e.target.value);
-                }
-              }}
-              onKeyPress={handleKeyPress}
-              onInput={(e) => {
-                // Auto-resize the textarea
-                const textarea = e.target as HTMLTextAreaElement;
-                textarea.style.height = 'auto';
-                const newHeight = Math.min(textarea.scrollHeight, 180); // Max 4 rows (45px per row)
-                textarea.style.height = newHeight + 'px';
-              }}
-              rows={1}
-              maxLength={300}
-              aria-label="Search grants"
-              style={{ minHeight: '56px', maxHeight: '180px' }}
-            />
-            
-            {/* Right side icons container */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              {searchTerm && (
-                <button
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                  onClick={onClearSearch}
-                  aria-label="Clear search"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              )}
-              <button
-                className="text-purple-600 hover:text-purple-700 transition-colors cursor-pointer"
-                onClick={handleSearchClick}
-                aria-label="Search"
+            <div className="inline-flex items-center bg-white rounded-xl border border-zinc-200 p-1.5 shadow-sm" role="tablist" aria-label="Sökläge">
+              <button 
+                onClick={handleToggleSearchMode} 
+                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all duration-200 font-['Source_Sans_3'] text-sm font-medium ${!isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
+                role="tab"
+                aria-selected={!isAISearch}
+                aria-label="Vanlig sökning"
               >
-                <ArrowRight className="w-6 h-6" />
+                <Search className="w-4 h-4" />
+                <span>Nyckelord</span>
+              </button>
+              <button 
+                onClick={handleToggleSearchMode} 
+                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all duration-200 font-['Source_Sans_3'] text-sm font-medium ${isAISearch ? 'bg-primary text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-800 hover:bg-zinc-50'}`} 
+                role="tab"
+                aria-selected={isAISearch}
+                aria-label="AI sökning"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>AI-matchning</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="w-3.5 h-3.5 opacity-70 ml-1" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-3">
+                      <div className="space-y-2">
+                        <p className="font-medium text-sm">AI-matchning</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Beskriv ditt projekt på naturligt språk. AI:n analyserar innehåll och kontext för bättre matchning än bara nyckelord.
+                        </p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </button>
             </div>
           </div>
+          
+          {/* Simplified mode description - Better typography */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {isAISearch 
+                ? 'Beskriv ditt projekt så matchar AI:n relevanta bidrag' 
+                : 'Sök med specifika nyckelord och använd filter för att förfina'
+              }
+            </p>
+          </div>
+
+          {/* Search Bar - Enhanced proportions */}
+          <div className="relative w-full max-w-3xl mx-auto">
+            <SearchBar 
+              searchTerm={searchTerm} 
+              onSearchChange={(v) => onSearchChange(v)} 
+              placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."} 
+              inputClassName="rounded-2xl pr-44 py-5 md:py-6 text-base placeholder:text-muted-foreground shadow-sm border border-zinc-200 focus:border-primary/30 focus:ring-4 focus:ring-primary/10" 
+            />
+            {/* Right side icons container - Better spacing */}
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3" role="group" aria-label="Sökåtgärder">
+              {searchTerm && (
+                <button 
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted/50" 
+                  onClick={onClearSearch} 
+                  aria-label="Rensa sökning"
+                  title="Rensa sökning"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+              <Button
+                onClick={onSearch}
+                disabled={isSearching}
+                size="sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-sm font-medium rounded-xl shadow-sm"
+                aria-label="Utför sökning"
+              >
+                {isSearching ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span className="sr-only">Söker...</span>
+                  </div>
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Hint below search */}
+          
+
+          
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default DiscoverHeader;

@@ -113,9 +113,7 @@ const ChatInput = ({
 }: ChatInputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
 
   // File upload state
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -334,57 +332,45 @@ const ChatInput = ({
   };
   return <div className="mb-8">
       <div className="relative max-w-3xl mx-auto">
-        <div
-          ref={cardRef}
-          className="relative bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
-        >
-          {/* Normal content layer (fades out when searching) */}
-          <div
-            ref={contentRef}
-            className={`transition-opacity duration-300 ${isSearching ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-          >
-            {/* File Attachments Section */}
-            {uploadedFiles.length > 0 && (
-              <div className="px-4 pt-4 pb-2 flex flex-wrap gap-2">
-                {uploadedFiles.map(file => (
-                  <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-xs">
-                    <span>{getFileIcon(file.type)}</span>
-                    <span>{file.name}</span>
-                    <span className="text-gray-400">({formatFileSize(file.size)})</span>
-                    <button onClick={() => removeFile(file.id)} className="ml-1 text-gray-400 hover:text-red-500">
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+          {/* File Attachments Section */}
+          {uploadedFiles.length > 0 && <div className="px-4 pt-4 pb-2 flex flex-wrap gap-2">
+              {uploadedFiles.map(file => <div key={file.id} className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-xs">
+                  <span>{getFileIcon(file.type)}</span>
+                  <span>{file.name}</span>
+                  <span className="text-gray-400">({formatFileSize(file.size)})</span>
+                  <button onClick={() => removeFile(file.id)} className="ml-1 text-gray-400 hover:text-red-500">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>)}
+            </div>}
 
             {/* Text Input Area */}
-            <div className="px-4 py-4" style={{ overflow: 'hidden' }}>
-              <div className="block w-full">
-                {/* Normal textarea */}
-                <div className="w-full relative">
-                  <Textarea
-                    placeholder=""
-                    className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
-                    value={inputValue}
-                    onChange={handleTextareaChange}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    onKeyDown={handleKeyPress}
-                    ref={textareaRef}
-                    rows={1}
-                    maxLength={300}
-                    disabled={isProcessing}
-                    style={{ textAlign: 'left', verticalAlign: 'top' }}
-                  />
-                  {/* Animated placeholder overlay */}
-                  {(!inputValue && !isFocused && animatedPlaceholder) && (
-                    <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
-                      {animatedPlaceholder}
-                    </div>
-                  )}
-                </div>
+          <div className="px-4 py-4">
+            <div className="block w-full">
+              {/* Normal textarea */}
+              <div className="w-full relative">
+                <Textarea
+                  placeholder=""
+                  className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                  value={inputValue}
+                  onChange={handleTextareaChange}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  onKeyDown={handleKeyPress}
+                  ref={textareaRef}
+                  rows={1}
+                  maxLength={300}
+                  disabled={isProcessing}
+                  style={{ textAlign: 'left', verticalAlign: 'top' }}
+                />
+                {/* Animated placeholder overlay */}
+                {(!inputValue && !isFocused && animatedPlaceholder) && (
+                  <div className="absolute left-0 top-0 pointer-events-none text-gray-400 select-none text-base px-0 py-0">
+                    {animatedPlaceholder}
+                  </div>
+                )}
+              </div>
 
                 {/* Submit Button and Bottom Left Buttons */}
                 <div className="flex items-end justify-between mt-2">
@@ -401,69 +387,54 @@ const ChatInput = ({
                       <Paperclip className="w-4 h-4" />
                     </Button>
 
-                    {/* Voice Recording Button */}
-                    <div className="relative">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-300 ${
-                          isRecording 
-                            ? 'bg-red-500 text-white border-red-500 shadow-lg scale-110' 
-                            : 'hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
-                        }`}
-                        onClick={handleVoiceInput}
-                        disabled={isProcessing}
-                        title={isRecording ? 'Stoppa inspelning' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
-                      >
-                        {isRecording ? (
-                          <div className="w-3 h-3 bg-white rounded-full" />
-                        ) : (
-                          <Mic className="w-4 h-4" />
-                        )}
-                      </Button>
-                      
-                      {/* Recording indicator */}
-                      {isRecording && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                  {/* Voice Recording Button */}
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`w-8 h-8 p-0 rounded-full flex-shrink-0 border transition-all duration-300 ${
+                        isRecording 
+                          ? 'bg-red-500 text-white border-red-500 shadow-lg scale-110' 
+                          : 'hover:bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={handleVoiceInput}
+                      disabled={isProcessing}
+                      title={isRecording ? 'Stoppa inspelning' : isTranscribing ? 'Transkriberar...' : 'Starta röstinspelning'}
+                    >
+                      {isRecording ? (
+                        <div className="w-3 h-3 bg-white rounded-full" />
+                      ) : (
+                        <Mic className="w-4 h-4" />
                       )}
-                    </div>
-                  </div>
-                  {/* Submit Button */}
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={isProcessing || !inputValue.trim()}
-                    size="sm"
-                    title="Hitta bidrag"
-                    className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
-                  >
-                    {isProcessing ? (
-                      <Loader2 className="w-7 h-7 animate-spin" />
-                    ) : (
-                      <ArrowUp className="w-7 h-7" />
+                    </Button>
+                    
+                    {/* Recording indicator */}
+                    {isRecording && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                     )}
-                  </Button>
+                  </div>
                 </div>
+                {/* Submit Button */}
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isProcessing || !inputValue.trim()}
+                  size="sm"
+                  title="Hitta bidrag"
+                  className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                >
+                  {isProcessing ? (
+                    <Loader2 className="w-7 h-7 animate-spin" />
+                  ) : (
+                    <ArrowUp className="w-7 h-7" />
+                  )}
+                </Button>
               </div>
             </div>
-            
-            {/* Hidden File Input */}
-            <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" onChange={handleFileSelect} className="hidden" />
           </div>
 
-          {/* Loading bar layer (fades in when searching) */}
-          <div
-          className={`absolute inset-0 transition-opacity duration-300 ${isSearching ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          >
-            <div className="relative w-full h-full">
-              <div
-                ref={loadingBarRef}
-                className="absolute left-0 top-0 h-full bg-[#cec5f9]"
-                style={{ width: '0%' }}
-              />
-            </div>
-          </div>
+          {/* Hidden File Input */}
+          <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.gif" onChange={handleFileSelect} className="hidden" />
         </div>
-        {/* test/debug controls removed */}
       </div>
     </div>;
 };

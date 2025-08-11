@@ -134,16 +134,18 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
+    <div className="min-h-screen relative bg-canvas-cloud">
       <img
         src="/lovable-uploads/purple-cloud.png"
-        alt="Purple Cloud"
-        className="absolute left-1/2 top-20 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-90"
+        alt="Decorative purple cloud background for grant search"
+        className="absolute left-1/2 top-20 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-50"
         style={{
-          filter: 'blur(35px) contrast(0.5) brightness(1.3) saturate(0.8)',
+          filter: 'blur(35px) contrast(0.5) brightness(1.2) saturate(0.8)',
           mixBlendMode: 'multiply'
         }}
+        aria-hidden="true"
         draggable={false}
+        loading="eager"
       />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
@@ -168,16 +170,16 @@ const HomePage = () => {
           />
 
           {/* Grant Type Filter */}
-          <div className="mt-4 mb-0">
-            <h3 className="text-base font-[Basic] font-normal mb-2 text-center text-black">
+          <div className="mt-4 mb-3">
+            <h3 className="font-['Source_Sans_3'] type-title text-zinc-900 mb-3 text-center">
               Visa endast:
             </h3>
             <GrantTypeTabs onSelectionChange={handleGrantTypeSelectionChange} />
           </div>
 
           {/* Organization Tabs */}
-          <div className="mt-0 mb-3">
-            <h3 className="text-base font-[Basic] font-normal mb-3 text-center text-black">
+          <div className="mt-4 mb-3">
+            <h3 className="font-['Source_Sans_3'] type-title text-zinc-900 mb-3 text-center">
              Jag söker som:
             </h3>
             <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />
