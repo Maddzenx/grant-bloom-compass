@@ -433,31 +433,6 @@ export const DiscoverGrantsContent = ({
          <div className="bg-white">
            <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-8">
 
-          {/* Title section with improved typography hierarchy */}
-          <div className="mb-12 text-center space-y-6">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl text-black leading-tight tracking-tight font-['Source_Sans_3'] font-bold">
-                Upptäck bidrag för ditt projekt
-              </h1>
-              {/* Enhanced subtitle with better visual weight */}
-              <p className="text-lg md:text-xl text-black max-w-3xl mx-auto font-['Source_Sans_3'] font-normal leading-relaxed">
-                Sök bland {searchMetrics?.totalInDatabase || grants.length} tillgängliga bidrag och hitta finansiering som passar dig
-              </p>
-            </div>
-            
-            {/* Enhanced status indicator with better design */}
-            {(isBackendFetching || isSearching) && (
-              <div className="flex items-center justify-center gap-3 mt-8 p-4 bg-primary/5 rounded-xl border border-primary/20">
-                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm text-primary font-medium">Söker igenom bidragsdatabasen...</span>
-              </div>
-            )}
-          </div>
-          
-          {/* Search bar section with enhanced spacing and max-width */}
-          <div className="w-full mb-12 max-w-5xl mx-auto" role="search" aria-label="Sök bidrag">
-            <DiscoverHeader searchTerm={searchTerm} onSearchChange={onSearchChange} onSearch={onSearch} sortBy={sortBy} onSortChange={onSortChange} totalGrants={searchResults.length} suggestions={suggestions} isSearching={isSearching} searchMetrics={searchMetrics} isAISearch={isAISearch} onToggleSearchMode={onToggleSearchMode} onClearSearch={onClearSearch} />
-          </div>
 
           {/* Enhanced filter summary for mobile with better design */}
           {isMobile && (
