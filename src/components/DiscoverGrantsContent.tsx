@@ -434,45 +434,33 @@ export const DiscoverGrantsContent = ({
            <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-8">
 
 
-          {/* Enhanced filter summary for mobile with better design */}
-          {isMobile && (
-            <div className="w-full mb-6 max-w-5xl mx-auto px-1">
-              {activeFilterCount > 0 ? (
-                <button 
-                  onClick={() => setFilterOpen(true)} 
-                  className="w-full flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 py-4 px-5 transition-all duration-200 shadow-sm" 
-                  aria-label={`${activeFilterCount} aktiva filter - tryck för att redigera`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Filter className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-semibold text-black">{activeFilterCount} aktiva filter</span>
-                  </div>
-                  <span className="text-xs text-black font-medium">Tryck för att ändra</span>
-                </button>
-              ) : (
-                <button 
-                  onClick={() => setFilterOpen(true)} 
-                  className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted/50 py-4 px-5 transition-all duration-200 shadow-sm" 
-                  aria-label="Öppna filter"
-                >
-                  <Filter className="w-5 h-5 text-black" />
-                  <span className="text-sm font-medium text-black">Filtrera bidrag</span>
-                </button>
-              )}
-            </div>
-          )}
-            
-          {/* Filter and sorting row with better organization */}
-          <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:justify-center md:gap-x-8 w-full">
-            {/* Only show FilterBar on desktop */}
-            {!isMobile && <div className="flex-1 max-w-4xl">
-                <FilterBar filters={filters} onFiltersChange={onFiltersChange} onResetFilters={onClearFilters} organizationOptions={organizationOptions} fundingRange={filters.fundingRange} onFundingRangeChange={range => onFiltersChange({
-              fundingRange: range
-            })} deadlineValue={filters.deadline} onDeadlineChange={val => onFiltersChange({
-              deadline: val
-            })} industryOptions={industryOptions} eligibleApplicantOptions={eligibleApplicantOptions} geographicScopeOptions={geographicScopeOptions} totalGrantsCount={searchResults.length} />
-              </div>}
-          </div>
+           {/* Enhanced filter summary for mobile with better design */}
+           {isMobile && (
+             <div className="w-full mb-6 max-w-5xl mx-auto px-1">
+               {activeFilterCount > 0 ? (
+                 <button 
+                   onClick={() => setFilterOpen(true)} 
+                   className="w-full flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 py-4 px-5 transition-all duration-200" 
+                   aria-label={`${activeFilterCount} aktiva filter - tryck för att redigera`}
+                 >
+                   <div className="flex items-center gap-3">
+                     <Filter className="w-5 h-5 text-primary" />
+                     <span className="text-sm font-semibold text-black">{activeFilterCount} aktiva filter</span>
+                   </div>
+                   <span className="text-xs text-black font-medium">Tryck för att ändra</span>
+                 </button>
+               ) : (
+                 <button 
+                   onClick={() => setFilterOpen(true)} 
+                   className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted/50 py-4 px-5 transition-all duration-200" 
+                   aria-label="Öppna filter"
+                 >
+                   <Filter className="w-5 h-5 text-black" />
+                   <span className="text-sm font-medium text-black">Filtrera bidrag</span>
+                 </button>
+               )}
+             </div>
+           )}
         </div>
       </div>
       {/* Enhanced visual separator */}
