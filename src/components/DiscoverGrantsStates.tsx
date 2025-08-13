@@ -29,11 +29,11 @@ export const DiscoverGrantsStates = ({
   if (isLoading) {
     console.log('🔍 DiscoverGrantsStates: Returning loading state');
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center" role="status" aria-live="polite">
+      <div className="min-h-screen bg-[#f8f4ec] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7D54F4] mx-auto mb-4"></div>
-          <div className="text-base text-zinc-600 mb-2">Laddar bidrag...</div>
-          <div className="text-xs text-zinc-500">Hämtar data från databasen...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-lg text-gray-600 mb-2">Laddar bidrag...</div>
+          <div className="text-sm text-gray-500">Hämtar data från databasen...</div>
         </div>
       </div>
     );
@@ -53,7 +53,7 @@ export const DiscoverGrantsStates = ({
             {error?.message || 'Ett oväntat fel inträffade vid hämtning av data'}
           </div>
           <div className="space-x-2">
-            <button onClick={onRefresh} className="px-4 py-2 text-white rounded transition-all duration-200 hover:opacity-90" style={{ backgroundColor: '#7D54F4' }}>
+            <button onClick={onRefresh} className="px-4 py-2 text-white rounded transition-all duration-200" style={{ backgroundColor: '#8B5CF6' }}>
               Försök igen
             </button>
             <button onClick={() => window.location.reload()} className="px-4 py-2 text-white rounded transition-all duration-200" style={{ backgroundColor: '#6B7280' }}>
