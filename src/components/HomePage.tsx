@@ -134,19 +134,19 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#f0ebde' }}>
+    <div className="min-h-screen relative">
       <div 
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 z-[-1]"
         style={{
           backgroundImage: 'url(/lovable-uploads/975ab3a4-6b12-4041-939f-61d629eeafc5.png)',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundColor: '#f0ebde'
+          backgroundColor: '#f5f5f5'
         }}
       />
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16" style={{ backgroundColor: 'transparent' }}>
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
         <div className="w-full max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="text-center">
