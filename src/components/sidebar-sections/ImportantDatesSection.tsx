@@ -41,14 +41,14 @@ const ImportantDatesSection = ({ importantDates, isMobile = false }: ImportantDa
   if (importantDates.length === 0) return null;
 
   return (
-    <section className={`bg-blue-50 ${paddingClass} rounded-lg border border-blue-200`}>
+    <section className={`bg-zinc-50 ${paddingClass} rounded-lg border border-zinc-200`}>
       <div className="flex items-center gap-2 mb-2 md:mb-3">
-        <Calendar className="w-4 h-4 text-blue-600" />
-        <h3 className={`font-bold text-blue-900 ${titleClass}`}>Viktiga datum</h3>
+        <Calendar className="w-4 h-4 text-[#7D54F4]" />
+        <h3 className={`font-bold text-zinc-900 ${titleClass}`}>Viktiga datum</h3>
       </div>
       <ul className="space-y-1 md:space-y-2">
         {importantDates.map((date, index) => (
-          <li key={index} className="text-blue-800">
+          <li key={index} className="text-zinc-800">
             <span className={`${textClass} leading-relaxed`}>{formatImportantDate(date)}</span>
           </li>
         ))}

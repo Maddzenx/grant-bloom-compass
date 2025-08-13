@@ -4,6 +4,8 @@ import GrantNotionHeader from "./grant-notion/GrantNotionHeader";
 import GrantNotionKeyInfo from "./grant-notion/GrantNotionKeyInfo";
 import GrantNotionContent from "./grant-notion/GrantNotionContent";
 import GrantNotionImportantDatesSection from "./grant-notion/GrantNotionImportantDatesSection";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 interface GrantDetailsProps {
   grant: GrantDetailsType;
   isBookmarked: boolean;
@@ -24,6 +26,12 @@ const GrantDetails = ({
 }: GrantDetailsProps) => {
   return <div>
       <div className="bg-white">
+        <div className="flex items-center justify-between px-0 md:px-0 pt-4">
+          <Button variant="ghost" size="sm" onClick={onBackToList} className="inline-flex items-center gap-2 text-zinc-700 hover:text-zinc-900">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="type-secondary">Tillbaka till listan</span>
+          </Button>
+        </div>
         <GrantNotionHeader grant={grant} isBookmarked={isBookmarked} onToggleBookmark={onToggleBookmark} isMobile={isMobile} onBackToList={onBackToList} sortBy={sortBy} onSortChange={onSortChange} />
         {/* Two-column layout starts here */}
         <div className="w-full px-0 pb-0 rounded-none py-0 md:px-0">

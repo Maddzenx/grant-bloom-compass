@@ -32,7 +32,7 @@ export default {
 			colors: {
 				// New semantic palette
 				'canvas-cloud': '#F0F1F3',
-				'accent-lime': '#D1F364',
+				'accent-lime': '#7D54F4',
 				'accent-lavender': '#CEC5F9',
 				'ink-obsidian': '#000000',
 				'ink-secondary': '#333333',

@@ -70,10 +70,10 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
   if (!hasTemplates && !hasGeneralInfo && !hasOtherSources) return null;
 
   return (
-            <section className="p-4 md:p-6 rounded-lg border-2" style={{ backgroundColor: '#FAF5FF', borderColor: '#D7CFFC' }}>
+            <section className="p-4 md:p-6 rounded-lg border-2" style={{ backgroundColor: '#F3EFFD', borderColor: '#E5DEFD' }}>
       <div className="flex items-center gap-2 mb-3 md:mb-4">
-                  <FileText className="w-5 h-5" style={{ color: '#8B5CF6' }} />
-                  <h2 className={`font-bold ${titleClass}`} style={{ color: '#8B5CF6' }}>
+                  <FileText className="w-5 h-5" style={{ color: '#7D54F4' }} />
+                  <h2 className={`font-bold ${titleClass}`} style={{ color: '#7D54F4' }}>
           Mallar och dokument
         </h2>
       </div>
@@ -81,7 +81,7 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
         {/* Allmän information och dokument - now first, combining both generalInfo and other_sources_names */}
         {(hasGeneralInfo || hasOtherSources) && (
           <div>
-            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#8B5CF6' }}>
+            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#7D54F4' }}>
               Allmän information och dokument
             </h3>
             <div className="grid gap-2">
@@ -90,15 +90,15 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
                 <div 
                   key={`general-${index}`}
                   className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
-                  style={{ borderColor: '#D7CFFC' }}
+                  style={{ borderColor: '#E5DEFD' }}
                   onClick={() => handleFileClick(file)}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4" style={{ color: '#8B5CF6' }} />
-                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
+                    <FileText className="w-4 h-4" style={{ color: '#7D54F4' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#7D54F4' }}>
                       {file}
                     </span>
-                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#7D54F4' }}>
                       Klicka för mer info
                     </span>
                   </div>
@@ -110,15 +110,15 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
                 <div 
                   key={`source-${index}`}
                   className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
-                  style={{ borderColor: '#D7CFFC' }}
+                  style={{ borderColor: '#E5DEFD' }}
                   onClick={() => handleFileClick(source)}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className="w-4 h-4" style={{ color: '#8B5CF6' }} />
-                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
+                    <FileText className="w-4 h-4" style={{ color: '#7D54F4' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#7D54F4' }}>
                       {source}
                     </span>
-                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#7D54F4' }}>
                       Klicka för mer info
                     </span>
                   </div>
@@ -131,7 +131,7 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
         {/* Ansökningsmallar - now second */}
         {hasTemplates && (
           <div>
-            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#8B5CF6' }}>
+            <h3 className={`font-semibold mb-2 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ color: '#7D54F4' }}>
               Ansökningsmallar
             </h3>
             <div className="grid gap-2">
@@ -139,15 +139,15 @@ const GrantTemplatesSection = ({ grant, isMobile = false }: GrantTemplatesSectio
                 <div 
                   key={index}
                   className="bg-white p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md group"
-                  style={{ borderColor: '#D7CFFC' }}
+                  style={{ borderColor: '#E5DEFD' }}
                   onClick={() => handleFileClick(template)}
                 >
                   <div className="flex items-center gap-3">
-                    <Download className="w-4 h-4" style={{ color: '#8B5CF6' }} />
-                    <span className={`${textClass} flex-1`} style={{ color: '#8B5CF6' }}>
+                    <Download className="w-4 h-4" style={{ color: '#7D54F4' }} />
+                    <span className={`${textClass} flex-1`} style={{ color: '#7D54F4' }}>
                       {template}
                     </span>
-                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#8B5CF6' }}>
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#7D54F4' }}>
                       Klicka för att ladda ner
                     </span>
                   </div>

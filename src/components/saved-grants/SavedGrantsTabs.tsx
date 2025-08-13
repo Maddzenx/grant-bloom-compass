@@ -30,13 +30,13 @@ const SavedGrantsTabs = ({
   return (
     <Tabs defaultValue="active" className="w-full">
       <TabsList className="grid w-full grid-cols-3 bg-white border border-accent-lavender rounded-full p-1 mb-8 h-auto">
-        <TabsTrigger value="active" className="rounded-full px-6 py-3 text-sm font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
+        <TabsTrigger value="active" className="rounded-full px-6 py-3 type-secondary font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
           Aktiva ansökningar ({savedGrants.activeApplications.length})
         </TabsTrigger>
-        <TabsTrigger value="pending" className="rounded-full px-6 py-3 text-sm font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
+        <TabsTrigger value="pending" className="rounded-full px-6 py-3 type-secondary font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
           Väntande granskning ({savedGrants.pendingReview.length})
         </TabsTrigger>
-        <TabsTrigger value="saved" className="rounded-full px-6 py-3 text-sm font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
+        <TabsTrigger value="saved" className="rounded-full px-6 py-3 type-secondary font-medium transition-all data-[state=active]:bg-ink-obsidian data-[state=active]:text-white data-[state=inactive]:text-ink-secondary data-[state=inactive]:hover:text-ink-obsidian">
           Sparade ansökningar ({savedGrants.savedApplications.length})
         </TabsTrigger>
       </TabsList>

@@ -20,6 +20,8 @@ const SheetOverlay = React.forwardRef<
   <SheetPrimitive.Overlay
     className={cn(
       "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      // Disable animations under reduced motion using utility applied at runtime
+      "motion-reduce:!animate-none motion-reduce:!transition-none",
       className
     )}
     {...props}
@@ -29,7 +31,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500 motion-reduce:!animate-none motion-reduce:!transition-none",
   {
     variants: {
       side: {
@@ -63,7 +65,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full opacity-70 bg-transparent border-0 shadow-none transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:border-0 active:border-0 active:ring-0">
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full opacity-70 bg-transparent border-0 shadow-none transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:border-0 active:border-0 active:ring-0 motion-reduce:!transition-none">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>

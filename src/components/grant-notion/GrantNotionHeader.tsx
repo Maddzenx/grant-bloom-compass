@@ -91,7 +91,7 @@ const GrantNotionHeader = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg rounded-lg p-1 min-w-[180px]">
               <DropdownMenuItem onClick={handleBookmarkToggle} className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
-                <Bookmark className={`h-4 w-4 mr-2 ${actuallyBookmarked ? 'fill-current text-purple-600' : 'text-gray-600'}`} />
+                <Bookmark className={`h-4 w-4 mr-2 ${actuallyBookmarked ? 'fill-current text-[#7D54F4]' : 'text-gray-600'}`} />
                 <span className="text-sm font-medium font-['Source_Sans_3']">{actuallyBookmarked ? 'Ta bort från sparade' : 'Spara bidrag'}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="!bg-transparent !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 transition-all duration-200 cursor-pointer border-b border-gray-100 last:border-b-0 rounded-md px-3 py-2.5">
@@ -129,8 +129,8 @@ const GrantNotionHeader = ({
         {/* Primary CTA Button */}
         <Button 
           onClick={handleApplyClick} 
-          className="w-full text-black font-normal text-base py-3 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-[#d7cffc]"
-          style={{ backgroundColor: '#d7cffc' }}
+          className="w-full text-black font-normal text-base py-3 rounded-lg transition-all duration-200 flex items-center justify-center hover:bg-[#E5DEFD]"
+          style={{ backgroundColor: '#CEC5F9' }}
         >
           Skapa din ansökan direkt
         </Button>

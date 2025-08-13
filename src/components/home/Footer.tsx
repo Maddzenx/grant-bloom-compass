@@ -22,7 +22,7 @@ const Footer = () => {
                       <defs>
                         <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                       </defs>
-                      <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                      <text fill="#7D54F4" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                         <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
                           UTLYSNINGAR
                         </textPath>
@@ -32,13 +32,13 @@ const Footer = () => {
                 </div>
                 {/* Clean Typography */}
                 <div className="flex flex-col">
-                  <span className="text-xl font-inter font-semibold leading-tight text-white">
-                                            Utlysningar
+                  <span className="type-title font-inter font-semibold leading-tight text-white">
+                    Utlysningar
                   </span>
                 </div>
               </div>
             </div>
-            <p className="text-gray-300 mb-4 leading-relaxed">
+            <p className="type-secondary text-gray-300 mb-4 leading-relaxed">
               Vi analyserar hundratals bidrag i realtid och presenterar dig med de mest relevanta alternativen för att öka dina chanser till finansiering. 
             </p>
           </div>
@@ -47,8 +47,8 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex justify-center">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-                              <span>Utlysningar är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
+            <div className="flex items-center gap-2 type-secondary text-gray-400">
+              <span>Utlysningar är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
             </div>
           </div>
         </div>

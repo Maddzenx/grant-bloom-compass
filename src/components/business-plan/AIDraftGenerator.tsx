@@ -93,13 +93,13 @@ export const AIDraftGenerator: React.FC<AIDraftGeneratorProps> = ({
     <Card className="border border-gray-200">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-medium text-gray-900 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-500" />
+          <Sparkles className="w-5 h-5 text-[#7D54F4]" />
           AI Application Draft Generator
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <p className="text-sm text-purple-700 mb-2">
+        <div className="p-4 rounded-lg" style={{ backgroundColor: '#F3EFFD' }}>
+          <p className="text-sm mb-2" style={{ color: '#5332E0' }}>
             Generate a professional application draft using AI based on your business plan and uploaded documents.
           </p>
           <div className="flex flex-wrap gap-2 mb-3">
@@ -160,7 +160,7 @@ export const AIDraftGenerator: React.FC<AIDraftGeneratorProps> = ({
         <Button 
           onClick={handleGenerateDraft}
           disabled={isGenerating || !grant || uploadedFiles.length === 0}
-          className="w-full bg-purple-600 hover:bg-purple-700"
+          className="w-full bg-[#7D54F4] hover:bg-[#6A40F2]"
           size="lg"
         >
           {isGenerating ? (

@@ -57,7 +57,7 @@ const GrantStickyHeader = ({
             className={`${orgLogo.className} ${isMobile ? 'w-4 h-4' : 'w-6 h-6'} flex-shrink-0 transition-transform duration-300 group-hover:scale-110`} 
           />
           <div className="min-w-0 flex-1">
-            <h2 className={`font-semibold text-gray-900 truncate transition-colors duration-300 group-hover:text-blue-600 ${isMobile ? 'text-sm' : 'text-base'}`}>
+            <h2 className={`font-semibold text-gray-900 truncate transition-colors duration-300 group-hover:text-[#7D54F4] ${isMobile ? 'text-sm' : 'text-base'}`}>
               {grant.title}
             </h2>
             <p className={`text-gray-600 truncate transition-colors duration-300 group-hover:text-gray-700 ${isMobile ? 'text-xs' : 'text-sm'}`}>
@@ -74,7 +74,7 @@ const GrantStickyHeader = ({
           >
             <Bookmark
               className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} transition-all duration-300 hover:scale-110 ${
-                actuallyBookmarked ? "fill-blue-500 text-blue-500" : "text-gray-400 hover:text-blue-500"
+                actuallyBookmarked ? "fill-[#7D54F4] text-[#7D54F4]" : "text-gray-400 hover:text-[#7D54F4]"
               }`}
             />
           </Button>
@@ -82,7 +82,7 @@ const GrantStickyHeader = ({
             onClick={handleApplyClick}
             size="sm"
             className="text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-md"
-            style={{ backgroundColor: '#8B5CF6' }}
+            style={{ backgroundColor: '#7D54F4' }}
           >
             Ansök
           </Button>

@@ -120,7 +120,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
-                  className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-blue-50 transition font-sans"
+                  className="w-full flex items-center justify-center gap-2 border-2 border-[#7D54F4] rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-[#f3efff] transition font-sans"
                 >
                   <img src="/google-g.png" alt="Google" className="w-6 h-6" />
                   Fortsätt med Google
@@ -180,7 +180,7 @@ const AuthPage = () => {
                 </form>
                 <div className="mt-5 text-center text-gray-700 text-sm font-sans">
                   Har du redan ett konto?{' '}
-                  <Link to="/login" className="font-semibold underline hover:text-indigo-600 font-sans">Logga in</Link>
+                  <Link to="/login" className="font-semibold underline hover:text-[#7D54F4] font-sans">Logga in</Link>
                 </div>
               </>
             ) : (
@@ -190,7 +190,7 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
-                  className="w-full flex items-center justify-center gap-2 border-2 border-blue-500 rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-blue-50 transition font-sans"
+                  className="w-full flex items-center justify-center gap-2 border-2 border-[#7D54F4] rounded-lg py-2 mb-3 bg-white font-medium text-base hover:bg-[#f3efff] transition font-sans"
                 >
                   <img src="/google-g.png" alt="Google" className="w-6 h-6" />
                   Fortsätt med Google
@@ -240,7 +240,7 @@ const AuthPage = () => {
                 </form>
                 <div className="mt-5 text-center text-gray-700 text-sm font-sans">
                   Har du inget konto?{' '}
-                  <Link to="/signup" className="font-semibold underline hover:text-indigo-600 font-sans">Skapa konto</Link>
+                  <Link to="/signup" className="font-semibold underline hover:text-[#7D54F4] font-sans">Skapa konto</Link>
                 </div>
               </>
             )}
