@@ -139,7 +139,7 @@ const HomePage = () => {
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: 'url(/lovable-uploads/975ab3a4-6b12-4041-939f-61d629eeafc5.png)',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
