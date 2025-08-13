@@ -84,12 +84,12 @@ const DiscoverHeader = ({
 
         {/* Search Mode Toggle */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center bg-white rounded-2xl p-1 shadow-lg" role="tablist">
+          <div className="inline-flex items-center bg-white rounded-2xl p-1" role="tablist">
             <button 
               onClick={handleToggleSearchMode} 
               className={`px-8 py-3 rounded-xl transition-all duration-300 text-base font-medium ${
                 !isAISearch 
-                  ? 'bg-purple-600 text-white shadow-md' 
+                  ? 'bg-purple-600 text-white' 
                   : 'text-gray-700 hover:bg-gray-50'
               }`} 
               role="tab"
@@ -101,7 +101,7 @@ const DiscoverHeader = ({
               onClick={handleToggleSearchMode} 
               className={`px-8 py-3 rounded-xl transition-all duration-300 text-base font-medium ${
                 isAISearch 
-                  ? 'bg-purple-600 text-white shadow-md' 
+                  ? 'bg-purple-600 text-white' 
                   : 'text-gray-700 hover:bg-gray-50'
               }`} 
               role="tab"
@@ -120,7 +120,7 @@ const DiscoverHeader = ({
             onChange={(e) => onSearchChange(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Sök efter bidrag..."
-            className="w-full rounded-2xl px-6 py-5 text-lg placeholder:text-gray-500 shadow-lg border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 bg-white outline-none"
+            className="w-full rounded-2xl px-6 py-5 text-lg placeholder:text-gray-500 border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 bg-white outline-none"
           />
           <button
             onClick={onSearch}
@@ -140,7 +140,7 @@ const DiscoverHeader = ({
         <div className="flex flex-wrap justify-center gap-4 pt-4">
           <Button
             variant="outline"
-            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl text-base font-medium"
           >
             Visa alla
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@ const DiscoverHeader = ({
           </Button>
           <Button
             variant="outline"
-            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl text-base font-medium"
           >
             Organisation
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ const DiscoverHeader = ({
           </Button>
           <Button
             variant="outline"
-            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl text-base font-medium"
           >
             Stödberättigad sökande
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -167,7 +167,7 @@ const DiscoverHeader = ({
           </Button>
           <Button
             variant="outline"
-            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl text-base font-medium"
           >
             Region
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ const DiscoverHeader = ({
           </Button>
           <Button
             variant="outline"
-            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl text-base font-medium"
           >
             Övriga filter
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
