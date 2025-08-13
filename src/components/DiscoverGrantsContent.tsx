@@ -413,9 +413,25 @@ export const DiscoverGrantsContent = ({
         </div>
       </div>
 
-         {/* Background section for search component */}
-         <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
-             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
+         {/* Header Section - Replace with new design */}
+         <DiscoverHeader
+           searchTerm={searchTerm}
+           onSearchChange={onSearchChange}
+           onSearch={onSearch}
+           onClearSearch={onClearSearch}
+           sortBy={sortBy}
+           onSortChange={onSortChange}
+           totalGrants={grants.length}
+           suggestions={suggestions}
+           isSearching={isSearching}
+           searchMetrics={searchMetrics}
+           isAISearch={isAISearch}
+           onToggleSearchMode={onToggleSearchMode}
+         />
+
+         {/* Main Content Area */}
+         <div className="bg-white">
+           <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-8">
 
           {/* Title section with improved typography hierarchy */}
           <div className="mb-12 text-center space-y-6">
