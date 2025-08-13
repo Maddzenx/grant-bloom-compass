@@ -70,118 +70,119 @@ const DiscoverHeader = ({
   }, [searchTerm]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-indigo-50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          {/* Main Title */}
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              Upptäck bidrag för ditt projekt
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-              Sök bland {totalGrants} tillgängliga bidrag och hitta finansiering som passar dig
-            </p>
-          </div>
+    <div className="bg-gradient-to-br from-purple-200 via-purple-100 to-purple-50 px-4 py-16">
+      <div className="max-w-4xl mx-auto text-center space-y-8">
+        {/* Main Title */}
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+            Sök bland {totalGrants} bidrag
+          </h1>
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+            Hitta bidrag som passar ditt projekt och din organisation
+          </p>
+        </div>
 
-          {/* Search Mode Toggle */}
-          <div className="flex justify-center">
-            <div className="inline-flex items-center bg-white rounded-2xl border border-gray-200 p-1.5 shadow-lg backdrop-blur-sm" role="tablist" aria-label="Sökläge">
-              <button 
-                onClick={handleToggleSearchMode} 
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
-                  !isAISearch 
-                    ? 'bg-primary text-white shadow-md' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`} 
-                role="tab"
-                aria-selected={!isAISearch}
-                aria-label="Nyckelordssökning"
-              >
-                <Search className="w-4 h-4" />
-                <span>Nyckelord</span>
-              </button>
-              <button 
-                onClick={handleToggleSearchMode} 
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
-                  isAISearch 
-                    ? 'bg-primary text-white shadow-md' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`} 
-                role="tab"
-                aria-selected={isAISearch}
-                aria-label="AI-matchning"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>AI-matchning</span>
-              </button>
-            </div>
+        {/* Search Mode Toggle */}
+        <div className="flex justify-center">
+          <div className="inline-flex items-center bg-white rounded-2xl p-1 shadow-lg" role="tablist">
+            <button 
+              onClick={handleToggleSearchMode} 
+              className={`px-8 py-3 rounded-xl transition-all duration-300 text-base font-medium ${
+                !isAISearch 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`} 
+              role="tab"
+              aria-selected={!isAISearch}
+            >
+              Vanlig sökning
+            </button>
+            <button 
+              onClick={handleToggleSearchMode} 
+              className={`px-8 py-3 rounded-xl transition-all duration-300 text-base font-medium ${
+                isAISearch 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`} 
+              role="tab"
+              aria-selected={isAISearch}
+            >
+              AI sökning
+            </button>
           </div>
-          
-          {/* Mode Description */}
-          <div className="text-center">
-            <p className="text-base text-gray-600">
-              {isAISearch 
-                ? 'Beskriv ditt projekt så matchar AI:n relevanta bidrag' 
-                : 'Sök med specifika nyckelord och använd filter för att förfina'
-              }
-            </p>
-          </div>
+        </div>
 
-          {/* Search Bar */}
-          <div className="relative w-full max-w-3xl mx-auto">
-            <SearchBar 
-              searchTerm={searchTerm} 
-              onSearchChange={(v) => onSearchChange(v)} 
-              placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."} 
-              inputClassName="w-full rounded-2xl pr-16 py-4 md:py-5 text-base placeholder:text-gray-400 shadow-lg border border-gray-200 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 bg-white/80 backdrop-blur-sm" 
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              {searchTerm && (
-                <button 
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100" 
-                  onClick={onClearSearch} 
-                  aria-label="Rensa sökning"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-              <Button
-                onClick={onSearch}
-                disabled={isSearching}
-                size="sm"
-                className="bg-primary text-white hover:bg-primary/90 px-3 py-2 rounded-xl shadow-md"
-                aria-label="Sök"
-              >
-                {isSearching ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Search className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
-          </div>
+        {/* Search Bar */}
+        <div className="relative w-full max-w-4xl mx-auto">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Sök efter bidrag..."
+            className="w-full rounded-2xl px-6 py-5 text-lg placeholder:text-gray-500 shadow-lg border border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 bg-white outline-none"
+          />
+          <button
+            onClick={onSearch}
+            disabled={isSearching}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-600 hover:text-purple-700 p-2"
+            aria-label="Sök"
+          >
+            {isSearching ? (
+              <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <ArrowRight className="w-6 h-6" />
+            )}
+          </button>
+        </div>
 
-          {/* Filter Buttons */}
-          <div className="flex justify-center gap-3 pt-4">
-            <Button
-              variant="outline"
-              className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white text-gray-700 px-6 py-3 rounded-2xl shadow-md transition-all duration-200"
-            >
-              Visa alla
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white text-gray-700 px-6 py-3 rounded-2xl shadow-md transition-all duration-200"
-            >
-              Organisation
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white text-gray-700 px-6 py-3 rounded-2xl shadow-md transition-all duration-200"
-            >
-              Fler filter
-            </Button>
-          </div>
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap justify-center gap-4 pt-4">
+          <Button
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+          >
+            Visa alla
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+          >
+            Organisation
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+          >
+            Stödberättigad sökande
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+          >
+            Region
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-2xl shadow-md text-base font-medium"
+          >
+            Övriga filter
+            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
         </div>
       </div>
     </div>
