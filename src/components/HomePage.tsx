@@ -134,16 +134,15 @@ const HomePage = () => {
   const isProcessing = isTranscribing || isUploading || isMatching || isSearching;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
-      <img
-        src="/lovable-uploads/purple-cloud.png"
-        alt="Purple Cloud"
-        className="absolute left-1/2 top-20 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-90"
+    <div className="min-h-screen relative">
+      <div 
+        className="absolute inset-0 z-0"
         style={{
-          filter: 'blur(35px) contrast(0.5) brightness(1.3) saturate(0.8)',
-          mixBlendMode: 'multiply'
+          backgroundImage: 'url(/lovable-uploads/975ab3a4-6b12-4041-939f-61d629eeafc5.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
         }}
-        draggable={false}
       />
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8 md:px-12 lg:px-16">
