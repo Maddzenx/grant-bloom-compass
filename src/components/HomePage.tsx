@@ -136,12 +136,13 @@ const HomePage = () => {
   return (
     <div className="min-h-screen relative">
       <div 
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 z-[-1]"
         style={{
           backgroundImage: 'url(/lovable-uploads/975ab3a4-6b12-4041-939f-61d629eeafc5.png)',
           backgroundSize: 'contain',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#f5f5f5'
         }}
       />
       {/* Main Content */}
