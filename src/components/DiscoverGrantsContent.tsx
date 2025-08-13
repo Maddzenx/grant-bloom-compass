@@ -394,32 +394,37 @@ export const DiscoverGrantsContent = ({
     return count;
   }, [filters]);
   return <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
-         {/* Background section for search component */}
-         <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
-             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
-          {/* Breadcrumb Navigation - enhanced spacing */}
-          <nav aria-label="Breadcrumb" className="mb-10">
-            <ol className="flex items-center space-x-3 text-sm text-muted-foreground">
+      {/* Breadcrumb Navigation - positioned at the very top */}
+      <div className="w-full bg-white border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <nav aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-3 text-sm text-black">
               <li>
-                <a href="/" className="hover:text-foreground transition-colors font-medium">Hem</a>
+                <a href="/" className="hover:text-zinc-600 transition-colors font-medium">Hem</a>
               </li>
               <li>
-                <span className="text-muted-foreground/40">/</span>
+                <span className="text-zinc-400">/</span>
               </li>
-              <li aria-current="page" className="text-foreground font-semibold">
+              <li aria-current="page" className="text-black font-semibold">
                 Upptäck bidrag
               </li>
             </ol>
           </nav>
+        </div>
+      </div>
+
+         {/* Background section for search component */}
+         <div className="w-full border-b border-zinc-200" style={{ backgroundColor: '#CEC5F9' }}>
+             <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16 md:py-24">
 
           {/* Title section with improved typography hierarchy */}
           <div className="mb-12 text-center space-y-6">
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-tight font-['Source_Sans_3'] font-bold">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl text-black leading-tight tracking-tight font-['Source_Sans_3'] font-bold">
                 Upptäck bidrag för ditt projekt
               </h1>
               {/* Enhanced subtitle with better visual weight */}
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto font-['Source_Sans_3'] font-normal leading-relaxed">
+              <p className="text-lg md:text-xl text-black max-w-3xl mx-auto font-['Source_Sans_3'] font-normal leading-relaxed">
                 Sök bland {searchMetrics?.totalInDatabase || grants.length} tillgängliga bidrag och hitta finansiering som passar dig
               </p>
             </div>
@@ -449,9 +454,9 @@ export const DiscoverGrantsContent = ({
                 >
                   <div className="flex items-center gap-3">
                     <Filter className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-semibold text-foreground">{activeFilterCount} aktiva filter</span>
+                    <span className="text-sm font-semibold text-black">{activeFilterCount} aktiva filter</span>
                   </div>
-                  <span className="text-xs text-muted-foreground font-medium">Tryck för att ändra</span>
+                  <span className="text-xs text-black font-medium">Tryck för att ändra</span>
                 </button>
               ) : (
                 <button 
@@ -459,8 +464,8 @@ export const DiscoverGrantsContent = ({
                   className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted/50 py-4 px-5 transition-all duration-200 shadow-sm" 
                   aria-label="Öppna filter"
                 >
-                  <Filter className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-sm font-medium text-card-foreground">Filtrera bidrag</span>
+                  <Filter className="w-5 h-5 text-black" />
+                  <span className="text-sm font-medium text-black">Filtrera bidrag</span>
                 </button>
               )}
             </div>
@@ -484,11 +489,11 @@ export const DiscoverGrantsContent = ({
       
       {/* Enhanced sorting controls and pagination info */}
       <div className="max-w-7xl mx-auto w-full px-4 lg:px-8 py-6">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 text-black">
           {/* Enhanced Pagination Info */}
           {pagination && (
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <span className="text-sm font-medium text-card-foreground">
+              <span className="text-sm font-medium text-black">
                 Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
               </span>
               {hasActiveFilters && (

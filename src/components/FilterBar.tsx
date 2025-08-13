@@ -6,6 +6,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerFooter, DrawerClose } from "./ui/drawer";
 import { Separator } from "./ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 interface FilterBarProps {
   filters: any;
   onFiltersChange: (filters: Partial<any>) => void;
@@ -44,7 +49,7 @@ const FilterContent = ({
       {/* Status Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Status</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Status</h3>
           {filters.statusFilter && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           statusFilter: ''
         })}>
@@ -52,19 +57,19 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700 font-['Source_Sans_3']">
+          <label className="flex items-center gap-3 cursor-pointer text-black font-['Source_Sans_3']">
             <input type="radio" name="statusFilter" value="" checked={!filters.statusFilter} onChange={() => onFiltersChange({
             statusFilter: ''
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
             <span className="font-['Source_Sans_3']">Visa alla</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="radio" name="statusFilter" value="open" checked={filters.statusFilter === 'open'} onChange={() => onFiltersChange({
             statusFilter: 'open'
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
             <span>Öppen</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="radio" name="statusFilter" value="upcoming" checked={filters.statusFilter === 'upcoming'} onChange={() => onFiltersChange({
             statusFilter: 'upcoming'
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
@@ -77,7 +82,7 @@ const FilterContent = ({
       {/* Organization Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Organisation</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Organisation</h3>
           {filters.organizations?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           organizations: []
         })}>
@@ -85,7 +90,7 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          {organizationOptions.map(org => <label key={org} className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.organizations?.includes(org)} onChange={e => {
             const newOrgs = e.target.checked ? [...(filters.organizations || []), org] : (filters.organizations || []).filter(o => o !== org);
             onFiltersChange({
@@ -101,7 +106,7 @@ const FilterContent = ({
       {/* Deadline Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Deadline</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Deadline</h3>
           {deadlineValue?.preset && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onDeadlineChange({
           type: 'preset',
           preset: ''
@@ -110,28 +115,28 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700 font-['Source_Sans_3']">
+          <label className="flex items-center gap-3 cursor-pointer text-black font-['Source_Sans_3']">
             <input type="radio" name="deadline" value="" checked={!deadlineValue?.preset} onChange={() => onDeadlineChange({
             type: 'preset',
             preset: ''
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
             <span className="font-['Source_Sans_3']">Visa alla</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="radio" name="deadline" value="urgent" checked={deadlineValue?.preset === 'urgent'} onChange={() => onDeadlineChange({
             type: 'preset',
             preset: 'urgent'
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
             <span>Brådskande (7 dagar)</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="radio" name="deadline" value="2weeks" checked={deadlineValue?.preset === '2weeks'} onChange={() => onDeadlineChange({
             type: 'preset',
             preset: '2weeks'
           })} className="h-4 w-4 text-[#7D54F4] focus:ring-zinc-300" />
             <span>Nästa 2 veckor</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="radio" name="deadline" value="1month" checked={deadlineValue?.preset === '1month'} onChange={() => onDeadlineChange({
             type: 'preset',
             preset: '1month'
@@ -145,7 +150,7 @@ const FilterContent = ({
       {/* Eligible Applicant Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Stödberättigad sökande</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Stödberättigad sökande</h3>
           {filters.eligibleApplicants?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           eligibleApplicants: []
         })}>
@@ -153,7 +158,7 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          {eligibleApplicantOptions.map(app => <label key={app} className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.eligibleApplicants?.includes(app)} onChange={e => {
             const newApps = e.target.checked ? [...(filters.eligibleApplicants || []), app] : (filters.eligibleApplicants || []).filter(a => a !== app);
             onFiltersChange({
@@ -169,7 +174,7 @@ const FilterContent = ({
       {/* Region Filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Region</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Region</h3>
           {filters.regions?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           regions: []
         })}>
@@ -177,7 +182,7 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.regions?.includes('Sverige') || false} onChange={e => {
             const newRegions = e.target.checked ? [...(filters.regions || []), 'Sverige'] : (filters.regions || []).filter(r => r !== 'Sverige');
             onFiltersChange({
@@ -186,7 +191,7 @@ const FilterContent = ({
           }} />
             <span>Sverige</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.regions?.includes('EU') || false} onChange={e => {
             const newRegions = e.target.checked ? [...(filters.regions || []), 'EU'] : (filters.regions || []).filter(r => r !== 'EU');
             onFiltersChange({
@@ -202,7 +207,7 @@ const FilterContent = ({
       {/* Övriga filter */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-zinc-900 font-['Source_Sans_3']">Övriga filter</h3>
+          <h3 className="text-lg font-semibold text-black font-['Source_Sans_3']">Övriga filter</h3>
           {(filters.noCofinancingRequired || filters.noConsortiumRequired) && <Button variant="link" size="sm" className="p-0 h-auto text-[#7D54F4] font-semibold" onClick={() => onFiltersChange({
           noCofinancingRequired: false,
           noConsortiumRequired: false
@@ -211,7 +216,7 @@ const FilterContent = ({
           </Button>}
         </div>
         <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.noCofinancingRequired || false} onChange={e => {
             onFiltersChange({
               noCofinancingRequired: e.target.checked
@@ -219,7 +224,7 @@ const FilterContent = ({
           }} />
             <span>Ingen medfinansiering</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer type-secondary text-zinc-700">
+          <label className="flex items-center gap-3 cursor-pointer text-black">
             <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#7D54F4] focus:ring-zinc-300" checked={filters.noConsortiumRequired || false} onChange={e => {
             onFiltersChange({
               noConsortiumRequired: e.target.checked
