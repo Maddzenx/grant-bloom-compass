@@ -161,7 +161,7 @@ const ChatInput = ({
         { height: `${startH}px` },
         { height: '40px' }
       ], {
-        duration: 2000,
+        duration:1200,
         easing: 'ease',
         fill: 'forwards'
       });
