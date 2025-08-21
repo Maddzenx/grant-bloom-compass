@@ -12,7 +12,7 @@ const FAQSection = () => {
     },
     {
       question: "Vilka typer av organisationer kan använda plattformen?",
-      answer: "Bidragsprånget är designat för alla som söker finansiering, från startups och småföretag till forskningsinstitut, universitet, ideella organisationer och offentliga myndigheter. Vår plattform täcker både svenska och EU-bidrag för olika branscher och projekttyper."
+      answer: "allautlysningar är designat för alla som söker finansiering, från startups och småföretag till forskningsinstitut, universitet, ideella organisationer och offentliga myndigheter. Vår plattform täcker både svenska och EU-bidrag för olika branscher och projekttyper."
     },
     {
       question: "Hur mycket tid sparar jag jämfört med traditionell sökning?",
@@ -23,8 +23,8 @@ const FAQSection = () => {
       answer: "Vi uppdaterar vår databas kontinuerligt med de senaste bidragen från officiella källor. Varje matchning inkluderar förtroendepoäng och direktlänkar till källorna så du alltid kan verifiera informationen."
     },
     {
-      question: "Är Bidragsprånget gratis att använda?",
-      answer: "Ja, Bidragsprånget är helt gratis att använda. Du kan söka efter bidrag, få AI-matchningar och använda alla funktioner utan kostnad."
+      question: "Är allautlysningar gratis att använda?",
+      answer: "Ja, allautlysningar är helt gratis att använda. Du kan söka efter bidrag, få AI-matchningar och använda alla funktioner utan kostnad."
     }
   ];
 
