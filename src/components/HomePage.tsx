@@ -16,6 +16,7 @@ import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
 import Footer from "@/components/home/Footer";
+import BetaBanner from "@/components/home/BetaBanner";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
@@ -142,7 +143,7 @@ const HomePage = () => {
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
-        className="absolute left-1/2 top-20 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-90"
+        className="absolute left-1/2 top-32 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-90"
         style={{
           filter: 'blur(35px) contrast(0.5) brightness(1.3) saturate(0.8)',
           mixBlendMode: 'multiply'
