@@ -120,7 +120,7 @@ const HomePage = () => {
         alt="Purple Cloud"
         className="absolute left-1/2 top-32 z-0 w-[700px] h-[700px] -translate-x-1/2 pointer-events-none select-none animate-liquid-blob opacity-90"
         style={{
-          filter: 'blur(35px) contrast(0.5) brightness(1.3) saturate(0.8)',
+          filter: 'contrast(0.5) brightness(1.3) saturate(0.9)',
           mixBlendMode: 'multiply'
         }}
         draggable={false}
@@ -148,17 +148,17 @@ const HomePage = () => {
           />
 
           {/* Grant Type Filter */}
-          <div className="mt-4 mb-0">
-            <h3 className="text-base font-[Basic] font-normal mb-2 text-center text-black">
+          <div className="mt-4 mb-0 flex flex-col items-center">
+            <h3 className="text-base font-sans font-normal mb-2 text-center text-black">
               Visa endast:
             </h3>
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full">
               <div className="flex bg-gray-100 rounded-lg p-1 shadow-sm">
                 <button
                   onClick={() => setGrantType('swedish')}
                   className={`px-6 py-3 rounded-l-md font-medium text-sm transition-all duration-200 ${
                     grantType === 'swedish' 
-                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      ? 'bg-[#7D54F4] text-white shadow-md font-semibold' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -168,7 +168,7 @@ const HomePage = () => {
                   onClick={() => setGrantType('both')}
                   className={`px-6 py-3 font-medium text-sm transition-all duration-200 ${
                     grantType === 'both' 
-                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      ? 'bg-[#7D54F4] text-white shadow-md font-semibold' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -178,7 +178,7 @@ const HomePage = () => {
                   onClick={() => setGrantType('eu')}
                   className={`px-6 py-3 rounded-r-md font-medium text-sm transition-all duration-200 ${
                     grantType === 'eu' 
-                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      ? 'bg-[#7D54F4] text-white shadow-md font-semibold' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -189,8 +189,8 @@ const HomePage = () => {
           </div>
 
           {/* Organization Tabs */}
-          <div className="mt-0 mb-3">
-            <h3 className="text-base font-[Basic] font-normal mb-3 text-center text-black">
+          <div className="mt-3 mb-3 flex flex-col items-center">
+            <h3 className="text-base font-sans font-normal mb-2 text-center text-black">
              Jag söker som:
             </h3>
             <OrganizationTabs onSelectionChange={handleOrganizationSelectionChange} />

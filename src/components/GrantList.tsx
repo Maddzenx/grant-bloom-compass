@@ -97,25 +97,7 @@ const GrantList = ({
 
   return (
     <div className="w-full bg-canvas-cloud h-full overflow-hidden flex flex-col">
-      {/* Mobile Progress Indicator */}
-      {isMobile && pagination && totalPages > 1 && (
-        <div className="px-4 py-2 bg-white border-b border-gray-100">
-          <div className="flex items-center justify-between text-xs text-gray-600">
-            <span>
-              Visar {grants.length} av {pagination.total} bidrag
-            </span>
-            <span>
-              {Math.ceil((grants.length / pagination.total) * 100)}% laddat
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
-            <div 
-              className="bg-purple-600 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(grants.length / pagination.total) * 100}%` }}
-            />
-          </div>
-        </div>
-      )}
+
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <ConsolidatedGrantList
           grants={grantsToShow}

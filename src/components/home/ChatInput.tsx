@@ -248,7 +248,7 @@ const ChatInput = ({
       textarea.style.height = 'auto';
 
       // Calculate the new height based on content
-      const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400)); // Min 48px, Max 400px
+      const newHeight = Math.max(64, Math.min(textarea.scrollHeight, 400)); // Min 64px, Max 400px
       textarea.style.height = newHeight + 'px';
     }
   };
@@ -318,7 +318,7 @@ const ChatInput = ({
     if (textareaRef.current) {
       const textarea = textareaRef.current;
       textarea.style.height = 'auto';
-      const newHeight = Math.max(48, Math.min(textarea.scrollHeight, 400));
+      const newHeight = Math.max(64, Math.min(textarea.scrollHeight, 400));
       textarea.style.height = newHeight + 'px';
     }
   }, [inputValue]);
@@ -366,7 +366,7 @@ const ChatInput = ({
                 <div className="w-full relative">
                   <Textarea
                     placeholder=""
-                    className="w-full min-h-[48px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-[Basic] resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
+                    className="w-full min-h-[64px] border-0 bg-transparent text-base focus-visible:ring-0 focus-visible:ring-offset-0 px-0 py-0 font-sans resize-none overflow-y-auto placeholder:text-gray-400 text-left align-top"
                     value={inputValue}
                     onChange={handleTextareaChange}
                     onFocus={() => setIsFocused(true)}
@@ -434,7 +434,11 @@ const ChatInput = ({
                     disabled={isProcessing || !inputValue.trim()}
                     size="sm"
                     title="Hitta bidrag"
-                    className="w-10 h-10 p-0 rounded-full flex-shrink-0 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-[#cec5f9] hover:bg-[#8162F4]"
+                    className={`w-10 h-10 p-0 rounded-full flex-shrink-0 border-0 disabled:cursor-not-allowed transition-all duration-200 ${
+                      inputValue.trim() 
+                        ? 'bg-[#7D54F4] text-white hover:bg-[#6B46C1]' 
+                        : 'bg-gray-100 text-gray-400'
+                    }`}
                   >
                     {isProcessing ? (
                       <Loader2 className="w-7 h-7 animate-spin" />
