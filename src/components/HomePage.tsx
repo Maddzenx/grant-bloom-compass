@@ -2,6 +2,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import BetaBanner from "@/components/home/BetaBanner";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
 import OrganizationTabs from "@/components/home/OrganizationTabs";
@@ -135,6 +136,9 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: '#fafafa' }}>
+      {/* Beta Banner */}
+      <BetaBanner />
+      
       <img
         src="/lovable-uploads/purple-cloud.png"
         alt="Purple Cloud"
