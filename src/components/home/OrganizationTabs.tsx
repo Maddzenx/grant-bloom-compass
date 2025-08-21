@@ -45,15 +45,15 @@ const OrganizationTabs = ({
       }
     });
   }, []);
-  return <div className="mb-4">
-      <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+  return <div className="mb-4 w-full flex justify-center">
+      <div className="flex flex-wrap justify-center gap-3 max-w-4xl">
         {organizationTypes.map(org => (
           <button
             key={org.key}
             onClick={() => toggleOrganization(org.key)}
-            className={`px-6 py-3 rounded-xl font-[Basic] font-medium text-sm transition-all duration-200 ${
+            className={`px-6 py-3 rounded-xl font-sans font-medium text-sm transition-all duration-200 ${
               selectedOrganizations.includes(org.key)
-                ? 'bg-blue-600 text-white shadow-md font-semibold border-2 border-blue-700'
+                ? 'bg-[#7D54F4] text-white shadow-md font-semibold border-2 border-[#6B46C1]'
                 : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200 hover:border-gray-400'
             }`}
           >

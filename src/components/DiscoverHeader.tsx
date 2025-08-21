@@ -117,50 +117,57 @@ const DiscoverHeader = ({
 
           {/* Search Bar */}
           <div className={`relative w-full ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
-            <textarea
-              ref={textareaRef}
-              className="w-full pl-6 pr-20 py-4 rounded-lg border border-gray-200 bg-white text-base font-medium text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none placeholder:text-gray-500 resize-none overflow-hidden"
-              placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."}
-              value={searchTerm}
-              onChange={e => {
-                // Limit character count to prevent overflow (roughly 3 rows worth)
-                const maxChars = 300;
-                if (e.target.value.length <= maxChars) {
-                  onSearchChange(e.target.value);
-                }
-              }}
-              onKeyPress={handleKeyPress}
-              onInput={(e) => {
-                // Auto-resize the textarea
-                const textarea = e.target as HTMLTextAreaElement;
-                textarea.style.height = 'auto';
-                const newHeight = Math.min(textarea.scrollHeight, 180); // Max 4 rows (45px per row)
-                textarea.style.height = newHeight + 'px';
-              }}
-              rows={1}
-              maxLength={300}
-              aria-label="Search grants"
-              style={{ minHeight: '56px', maxHeight: '180px' }}
-            />
-            
-            {/* Right side icons container */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              {searchTerm && (
+            <div className="relative bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+              <textarea
+                ref={textareaRef}
+                className="w-full pl-6 pr-20 py-4 bg-transparent text-base font-medium text-gray-900 focus:outline-none focus:ring-0 focus:border-transparent placeholder:text-gray-400 resize-none overflow-hidden"
+                placeholder={isAISearch ? "Beskriv ditt projekt för AI-matchning..." : "Sök efter bidrag..."}
+                value={searchTerm}
+                onChange={e => {
+                  // Limit character count to prevent overflow (roughly 3 rows worth)
+                  const maxChars = 300;
+                  if (e.target.value.length <= maxChars) {
+                    onSearchChange(e.target.value);
+                  }
+                }}
+                onKeyPress={handleKeyPress}
+                onInput={(e) => {
+                  // Auto-resize the textarea
+                  const textarea = e.target as HTMLTextAreaElement;
+                  textarea.style.height = 'auto';
+                  const newHeight = Math.min(textarea.scrollHeight, 180); // Max 4 rows (45px per row)
+                  textarea.style.height = newHeight + 'px';
+                }}
+                rows={1}
+                maxLength={300}
+                aria-label="Search grants"
+                style={{ minHeight: '64px', maxHeight: '180px' }}
+              />
+              
+              {/* Right side icons container */}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+                {searchTerm && (
+                  <button
+                    className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+                    onClick={onClearSearch}
+                    aria-label="Clear search"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
                 <button
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                  onClick={onClearSearch}
-                  aria-label="Clear search"
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    searchTerm.trim() 
+                      ? 'bg-[#7D54F4] text-white hover:bg-[#6B46C1] shadow-md' 
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
+                  onClick={handleSearchClick}
+                  disabled={!searchTerm.trim()}
+                  aria-label="Search"
                 >
-                  <X className="w-6 h-6" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
-              )}
-              <button
-                className="text-purple-600 hover:text-purple-700 transition-colors cursor-pointer"
-                onClick={handleSearchClick}
-                aria-label="Search"
-              >
-                <ArrowRight className="w-6 h-6" />
-              </button>
+              </div>
             </div>
           </div>
         </div>

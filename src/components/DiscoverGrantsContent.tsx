@@ -529,7 +529,7 @@ export const DiscoverGrantsContent = ({
         <div className="flex justify-between items-center">
           {/* Pagination Info */}
           {pagination && (
-            <div className="flex items-center gap-2 text-base text-gray-600">
+            <div className="flex items-center gap-2 text-xs text-base text-gray-600">
               <span>
                 Visar {(pagination.page - 1) * pagination.limit + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} av {pagination.total} bidrag
               </span>
