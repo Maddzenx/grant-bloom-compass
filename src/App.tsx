@@ -8,6 +8,7 @@ import { TopNavigation } from "@/components/TopNavigation";
 import { SavedGrantsProvider } from "@/contexts/SavedGrantsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { GoogleAnalyticsProvider } from "@/contexts/GoogleAnalyticsContext";
 import AuthPage from "@/components/AuthPage";
 import Index from "./pages/Index";
 import DiscoverGrants from "./pages/DiscoverGrants";
@@ -44,48 +45,50 @@ const App = () => (
         <SavedGrantsProvider>
           <TooltipProvider>
             <Router>
-              <TopNavigation />
-              <main className="w-full">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/discover" element={<DiscoverGrants />} />
-                  <Route path="/login" element={<AuthPage />} />
-                  <Route path="/signup" element={<AuthPage />} />
-                  {/* Protected routes */}
-                  <Route path="/saved" element={
-                    <ProtectedRoute>
-                      <SavedGrants />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/ongoing" element={
-                    <ProtectedRoute>
-                      <ProgressChecklist />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/progress" element={
-                    <ProtectedRoute>
-                      <ProgressChecklist />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/draft/:draftId" element={
-                    <ProtectedRoute>
-                      <DraftViewer />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/chat" element={
-                    <ProtectedRoute>
-                      <ChatInterface />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/business-plan-editor" element={
-                    <ProtectedRoute>
-                      <BusinessPlanEditor />
-                    </ProtectedRoute>
-                  } />
-                </Routes>
-              </main>
-              <Toaster />
-              <Sonner />
+              <GoogleAnalyticsProvider>
+                <TopNavigation />
+                <main className="w-full">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/discover" element={<DiscoverGrants />} />
+                    <Route path="/login" element={<AuthPage />} />
+                    <Route path="/signup" element={<AuthPage />} />
+                    {/* Protected routes */}
+                    <Route path="/saved" element={
+                      <ProtectedRoute>
+                        <SavedGrants />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/ongoing" element={
+                      <ProtectedRoute>
+                        <ProgressChecklist />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/progress" element={
+                      <ProtectedRoute>
+                        <ProgressChecklist />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/draft/:draftId" element={
+                      <ProtectedRoute>
+                        <DraftViewer />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/chat" element={
+                      <ProtectedRoute>
+                        <ChatInterface />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/business-plan-editor" element={
+                      <ProtectedRoute>
+                        <BusinessPlanEditor />
+                      </ProtectedRoute>
+                    } />
+                  </Routes>
+                </main>
+                <Toaster />
+                <Sonner />
+              </GoogleAnalyticsProvider>
             </Router>
           </TooltipProvider>
         </SavedGrantsProvider>

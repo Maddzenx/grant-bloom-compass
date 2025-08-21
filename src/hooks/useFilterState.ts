@@ -23,6 +23,9 @@ export interface EnhancedFilterOptions {
   region: string[]; // New region filter for EU, Sverige, Regionalt
   cofinancingRequired: boolean | null;
   statusFilter: string;
+  // Legacy fields for UI compatibility
+  noCofinancingRequired?: boolean;
+  noConsortiumRequired?: boolean;
 }
 
 const defaultFilters: EnhancedFilterOptions = {
