@@ -13,7 +13,7 @@ const BetaBanner = () => {
     <>
       <div className="bg-primary text-primary-foreground px-4 py-3 text-center text-sm relative">
         <p className="max-w-4xl mx-auto">
-          Sidan är just nu en betaversion och vi jobbar på att göra den ännu bättre. Vill du veta när vi släpper den färdiga versionen? Skriv gärna upp dig på vår intresselista{" "}
+          Sidan är under uppbyggnad och det är fortfarande många funktioner som saknas eller inte funkar riktigt som de ska. Vill du få uppdateringar om hur projektet utvecklas? Skriv gärna upp dig på vår intresselista{" "}
           <button
             onClick={() => setIsModalOpen(true)}
             className="underline font-medium hover:no-underline cursor-pointer"
