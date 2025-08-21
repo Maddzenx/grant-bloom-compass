@@ -33,7 +33,7 @@ const MetricsSection = () => {
         <div className="text-center mb-16">
           <h2 className="font-newsreader font-bold text-gray-900 leading-[1.2]" 
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
-            Bidragssprångets prestanda
+            allautlysningars prestanda
           </h2>
         </div>
 

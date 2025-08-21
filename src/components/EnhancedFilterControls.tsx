@@ -109,6 +109,7 @@ export const EnhancedFilterControls = ({
       geographicScope: [],
       cofinancingRequired: null,
       statusFilter: '',
+      region: [],
     };
     setPendingFilters(defaultFilters);
     onClearAll();

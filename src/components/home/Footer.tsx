@@ -18,13 +18,13 @@ const Footer = () => {
                 <div className="mr-3">
                   <div className="circular-logo-icon w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-md">
                     <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none">
-                      {/* Circular text path for "BIDRAGSSPRÅNGET" */}
+                      {/* Circular text path for "ALLAUTLYSNINGAR" */}
                       <defs>
                         <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                       </defs>
                       <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                         <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                          BIDRAGSSPRÅNGET
+                          ALLAUTLYSNINGAR
                         </textPath>
                       </text>
                     </svg>
@@ -33,7 +33,7 @@ const Footer = () => {
                 {/* Clean Typography */}
                 <div className="flex flex-col">
                   <span className="text-xl font-inter font-semibold leading-tight text-white">
-                    Bidragssprånget
+                    allautlysningar
                   </span>
                 </div>
               </div>
@@ -48,7 +48,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex justify-center">
             <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span>Bidragssprånget är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
+              <span>allautlysningar är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
             </div>
           </div>
         </div>
