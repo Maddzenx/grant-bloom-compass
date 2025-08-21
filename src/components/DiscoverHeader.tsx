@@ -116,7 +116,7 @@ const DiscoverHeader = ({
           </div>
 
           {/* Search Bar */}
-          <div className={`relative w-full ${isMobile ? 'sticky top-0 z-30 bg-canvas-cloud' : ''}`}>
+          <div className="relative w-full">
             <div className="relative bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
               <textarea
                 ref={textareaRef}

@@ -551,8 +551,8 @@ export const DiscoverGrantsContent = ({
           <button
             className={`fixed z-50 bottom-4 right-4 rounded-full shadow-md flex items-center justify-center w-12 h-12 active:scale-95 transition-all ${
               hasActiveFilters 
-                ? 'bg-purple-600 text-white' 
-                : 'bg-white text-gray-600 border border-gray-200'
+                ? 'bg-[#7D54F4] text-white hover:bg-[#6B46C1]' 
+                : 'bg-[#7D54F4] text-white hover:bg-[#6B46C1]'
             }`}
             style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
             onClick={() => setFilterOpen(true)}

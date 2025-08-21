@@ -170,27 +170,27 @@ const FilterContent = ({
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-900">Region</h3>
-          {filters.regions?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
-          regions: []
+          {filters.region?.length > 0 && <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 font-semibold" onClick={() => onFiltersChange({
+          region: []
         })}>
             Rensa
           </Button>}
         </div>
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('Sverige') || false} onChange={e => {
-            const newRegions = e.target.checked ? [...(filters.regions || []), 'Sverige'] : (filters.regions || []).filter(r => r !== 'Sverige');
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.region?.includes('Sverige') || false} onChange={e => {
+            const newRegions = e.target.checked ? [...(filters.region || []), 'Sverige'] : (filters.region || []).filter(r => r !== 'Sverige');
             onFiltersChange({
-              regions: newRegions
+              region: newRegions
             });
           }} />
             <span>Sverige</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
-            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('EU') || false} onChange={e => {
-            const newRegions = e.target.checked ? [...(filters.regions || []), 'EU'] : (filters.regions || []).filter(r => r !== 'EU');
+            <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.region?.includes('EU') || false} onChange={e => {
+            const newRegions = e.target.checked ? [...(filters.region || []), 'EU'] : (filters.region || []).filter(r => r !== 'EU');
             onFiltersChange({
-              regions: newRegions
+              region: newRegions
             });
           }} />
             <span>EU</span>
@@ -241,7 +241,19 @@ const FilterContent = ({
 export const FilterBar: React.FC<FilterBarProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const activeFilterCount = [props.filters.organizations?.length, props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0, props.deadlineValue?.preset ? 1 : 0, props.filters.industrySectors?.length, props.filters.eligibleApplicants?.length, props.filters.consortiumRequired ? 1 : 0, props.filters.cofinancingRequired ? 1 : 0, props.filters.region?.length, props.filters.statusFilter ? 1 : 0].filter(Boolean).reduce((acc: number, count: any) => acc + (typeof count === 'number' ? count : 0), 0);
+  const activeFilterCount = [
+    props.filters.organizations?.length || 0,
+    props.fundingRange.min !== null || props.fundingRange.max !== null ? 1 : 0,
+    props.deadlineValue?.preset ? 1 : 0,
+    props.filters.industrySectors?.length || 0,
+    props.filters.eligibleApplicants?.length || 0,
+    props.filters.consortiumRequired ? 1 : 0,
+    props.filters.cofinancingRequired ? 1 : 0,
+    props.filters.noConsortiumRequired ? 1 : 0,
+    props.filters.noCofinancingRequired ? 1 : 0,
+    props.filters.region?.length || 0,
+    props.filters.statusFilter ? 1 : 0
+  ].reduce((acc, count) => acc + count, 0);
   const {
     filters,
     onFiltersChange,
@@ -336,25 +348,25 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
         <Popover>
             <PopoverTrigger asChild>
             <Button variant="outline" className="flex items-center gap-1 rounded-full px-5 py-3 border border-gray-300 text-gray-700 font-medium shadow-none hover:bg-gray-50 min-h-0 h-10 bg-white text-sm">
-  Region {filters.regions?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.regions.length}</span>} <ChevronDown className="w-4 h-4" />
+  Region {filters.region?.length > 0 && <span className="bg-blue-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs ml-1">{filters.region.length}</span>} <ChevronDown className="w-4 h-4" />
           </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-4 bg-white border border-gray-200 shadow-lg rounded-lg" align="start">
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('Sverige') || false} onChange={e => {
-                const newRegions = e.target.checked ? [...(filters.regions || []), 'Sverige'] : (filters.regions || []).filter(r => r !== 'Sverige');
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.region?.includes('Sverige') || false} onChange={e => {
+                const newRegions = e.target.checked ? [...(filters.region || []), 'Sverige'] : (filters.region || []).filter(r => r !== 'Sverige');
                 onFiltersChange({
-                  regions: newRegions
+                  region: newRegions
                 });
               }} />
                     <span>Sverige</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer text-base font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.regions?.includes('EU') || false} onChange={e => {
-                const newRegions = e.target.checked ? [...(filters.regions || []), 'EU'] : (filters.regions || []).filter(r => r !== 'EU');
+                    <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filters.region?.includes('EU') || false} onChange={e => {
+                const newRegions = e.target.checked ? [...(filters.region || []), 'EU'] : (filters.region || []).filter(r => r !== 'EU');
                 onFiltersChange({
-                  regions: newRegions
+                  region: newRegions
                 });
               }} />
                     <span>EU</span>
@@ -391,6 +403,17 @@ export const FilterBar: React.FC<FilterBarProps> = props => {
                 </div>
             </PopoverContent>
         </Popover>
+        
+        {/* Rensa filter button - only show when filters are active */}
+        {activeFilterCount > 0 && (
+          <Button 
+            variant="ghost" 
+            onClick={props.onResetFilters}
+            className="text-gray-600 hover:text-gray-800 font-medium bg-transparent hover:bg-transparent border-0 text-xs px-2 py-1 h-auto underline"
+          >
+            Rensa filter
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-1 mt-2 px-1">

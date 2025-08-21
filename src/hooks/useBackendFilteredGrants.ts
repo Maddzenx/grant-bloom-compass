@@ -28,6 +28,9 @@ interface BackendFilterOptions {
   region?: string[]; // New region filter for EU, Sverige, Regionalt
   cofinancingRequired?: boolean;
   statusFilter?: 'open' | 'upcoming' | '';
+  // Legacy fields for UI compatibility
+  noCofinancingRequired?: boolean;
+  noConsortiumRequired?: boolean;
 }
 
 interface BackendSortOptions {
@@ -115,10 +118,15 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.eligibleApplicants = filters.eligibleApplicants;
   }
   
-  // Only include consortium required if it's explicitly set by user (not default null)
+  // Map consortium requirement filter (UI uses noConsortiumRequired, backend expects consortiumRequired)
   if (filters.consortiumRequired !== null) {
     backendFilters.consortiumRequired = filters.consortiumRequired;
     console.log('🔧 Transform: Including consortiumRequired filter:', filters.consortiumRequired);
+  }
+  // Handle legacy field mapping from UI 
+  if (filters.noConsortiumRequired === true) {
+    backendFilters.consortiumRequired = false;
+    console.log('🔧 Transform: Converting noConsortiumRequired=true to consortiumRequired=false');
   }
   
   // Only include geographic scope if there are actually selected
@@ -131,10 +139,15 @@ const transformFiltersForBackend = (filters: EnhancedFilterOptions): BackendFilt
     backendFilters.region = filters.region;
   }
   
-  // Only include cofinancing required if it's explicitly set by user (not default null)
+  // Map cofinancing requirement filter (UI uses noCofinancingRequired, backend expects cofinancingRequired)
   if (filters.cofinancingRequired !== null) {
     backendFilters.cofinancingRequired = filters.cofinancingRequired;
     console.log('🔧 Transform: Including cofinancingRequired filter:', filters.cofinancingRequired);
+  }
+  // Handle legacy field mapping from UI
+  if (filters.noCofinancingRequired === true) {
+    backendFilters.cofinancingRequired = false;
+    console.log('🔧 Transform: Converting noCofinancingRequired=true to cofinancingRequired=false');
   }
   
   // Only include status filter if it's a meaningful value
