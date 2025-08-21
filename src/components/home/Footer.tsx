@@ -22,9 +22,9 @@ const Footer = () => {
                       <defs>
                         <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                       </defs>
-                      <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                      <text fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                         <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                          ALLAUTLYSNINGAR
+                          <tspan fill="#FFFFFF">ALL</tspan><tspan fill="#CEC5F9">AUTLYSNINGAR</tspan>
                         </textPath>
                       </text>
                     </svg>
@@ -33,7 +33,7 @@ const Footer = () => {
                 {/* Clean Typography */}
                 <div className="flex flex-col">
                   <span className="text-xl font-inter font-semibold leading-tight text-white">
-                    allautlysningar
+                    all<span className="text-accent-lavender">autlysningar</span>
                   </span>
                 </div>
               </div>
@@ -48,7 +48,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex justify-center">
             <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span>allautlysningar är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
+              <span>all<span className="text-accent-lavender">autlysningar</span> är en oberoende plattform och har inget officiellt samarbete med statliga myndigheter eller EU-organisationer.</span>
             </div>
           </div>
         </div>
