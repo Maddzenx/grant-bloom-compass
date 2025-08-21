@@ -76,21 +76,13 @@ export function TopNavigation() {
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
                 <div className="flex items-center">
-                  {/* Circular Logo Icon */}
+                  {/* Logo Icon */}
                   <div className="mr-3">
-                    <div className="circular-logo-icon w-12 h-12 bg-black rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
-                      <svg className="w-10 h-10" viewBox="0 0 100 100" fill="none">
-                        {/* Circular text path for "ALLAUTLYSNINGAR" */}
-                        <defs>
-                          <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
-                        </defs>
-                        <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
-                          <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                            ALLAUTLYSNINGAR
-                          </textPath>
-                        </text>
-                      </svg>
-                    </div>
+                    <img 
+                      src="/lovable-uploads/Favvicon.png" 
+                      alt="Allabidrag Logo" 
+                      className="w-12 h-12 object-contain hover:scale-105 transition-all duration-300"
+                    />
                   </div>
                   {/* Clean Typography */}
                   <div className="flex flex-col">
