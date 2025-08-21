@@ -226,12 +226,19 @@ const isGrantWithinDeadline = (grant: GrantListItem, deadline: DeadlineFilter): 
   const closingDate = new Date(grant.application_closing_date);
   
   switch (deadline.preset) {
+    case 'urgent':
     case 'this-week':
+    case '1week':
       const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       return closingDate <= weekFromNow;
+    case '2weeks':
+      const twoWeeksFromNow = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+      return closingDate <= twoWeeksFromNow;
+    case '1month':
     case 'this-month':
       const monthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
       return closingDate <= monthFromNow;
+    case '3months':
     case 'next-3-months':
       const threeMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
       return closingDate <= threeMonthsFromNow;

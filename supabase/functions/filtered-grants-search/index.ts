@@ -236,8 +236,12 @@ serve(async (req) => {
         let targetDate: Date;
 
         switch (filters.deadline.preset) {
+          case 'urgent':
           case '1week':
             targetDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            break;
+          case '2weeks':
+            targetDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
             break;
           case '1month':
             targetDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());

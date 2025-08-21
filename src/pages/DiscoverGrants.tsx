@@ -13,10 +13,12 @@ import { sortGrants } from "@/utils/grantSorting";
 import { useBackendFilteredGrants } from "@/hooks/useBackendFilteredGrants";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSemanticFiltering } from '@/hooks/useSemanticFiltering';
+import { useGoogleAnalyticsContext } from '@/contexts/GoogleAnalyticsContext';
 
 const DiscoverGrants = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { trackSearch } = useGoogleAnalyticsContext();
   
   // State for search and pipeline management
   const [sortBy, setSortBy] = useState<SortOption>("deadline-asc"); // Default to deadline-asc for filtered search
@@ -325,6 +327,9 @@ const DiscoverGrants = () => {
     // Update the actual search term when performing search
     setSearchTerm(inputValue);
     
+    // Track search event
+    trackSearch(baseSearchTerm, 0); // We'll update the count later when we have results
+    
     if (isAISearch) {
       // Use semantic search for AI mode
       try {
@@ -416,9 +421,13 @@ const DiscoverGrants = () => {
           });
           
           setSemanticMatches(transformedMatches);
+          // Track successful search with result count
+          trackSearch(baseSearchTerm, transformedMatches.length);
         } else {
           console.log('❌ No semantic matches found');
           setSemanticMatches(undefined);
+          // Track search with no results
+          trackSearch(baseSearchTerm, 0);
         }
       } catch (error) {
         console.error('❌ Semantic search failed:', error);
