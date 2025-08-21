@@ -112,27 +112,22 @@ const GrantList = ({
           totalCount={pagination?.total || grants.length}
           onPageChange={onPageChange || setCurrentPage}
         />
-        {/* Manual Load More Button for Mobile */}
+        {/* Manual Load More Text for Mobile */}
         {isMobile && hasMore && (
           <div className="flex flex-col items-center justify-center py-6 px-4">
-            <Button
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className="w-48 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoadingMore ? (
-                <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-                  <span>Laddar fler bidrag...</span>
-                </div>
-              ) : (
-                <span>Visa fler</span>
-              )}
-            </Button>
-            {!isLoadingMore && (
-              <div className="text-xs text-gray-400 mt-2 text-center">
-                Klicka för att ladda fler bidrag
+            {isLoadingMore ? (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#7D54F4]"></div>
+                <span>Laddar fler bidrag...</span>
               </div>
+            ) : (
+                             <button
+                 onClick={handleLoadMore}
+                 disabled={isLoadingMore}
+                 className="text-xs text-gray-700 hover:text-gray-900 text-center underline hover:no-underline transition-colors cursor-pointer"
+               >
+                Klicka för att ladda fler bidrag
+              </button>
             )}
           </div>
         )}

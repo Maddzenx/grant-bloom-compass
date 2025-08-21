@@ -471,7 +471,7 @@ export const DiscoverGrantsContent = ({
     <div className="flex flex-col w-full min-h-screen bg-canvas-cloud">
          {/* Purple background section for search component */}
          <div className="w-full" style={{ backgroundColor: '#D1C9FB' }}>
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-24">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-16">
           {/* Title section with better spacing */}
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-2">
@@ -558,7 +558,7 @@ export const DiscoverGrantsContent = ({
             onClick={() => setFilterOpen(true)}
             aria-label="Open filters"
           >
-            <Filter className="w-5 h-5" />
+            <Filter className="w-6 h-6" />
             {hasActiveFilters && (
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
                 <span className="text-xs text-white font-bold">!</span>
