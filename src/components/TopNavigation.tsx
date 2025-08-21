@@ -84,9 +84,9 @@ export function TopNavigation() {
                         <defs>
                           <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
                         </defs>
-                        <text fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
+                        <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
                           <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                            <tspan fill="#000000">ALL</tspan><tspan fill="#CEC5F9">AUTLYSNINGAR</tspan>
+                            ALLAUTLYSNINGAR
                           </textPath>
                         </text>
                       </svg>
@@ -95,7 +95,7 @@ export function TopNavigation() {
                   {/* Clean Typography */}
                   <div className="flex flex-col">
                     <span className="text-xl font-inter font-semibold leading-tight text-gray-900">
-                      all<span className="text-accent-lavender">autlysningar</span>
+                      allautlysningar
                     </span>
                   </div>
                 </div>
