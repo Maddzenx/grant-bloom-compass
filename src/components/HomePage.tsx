@@ -15,7 +15,7 @@ import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
 import Footer from "@/components/home/Footer";
-import { GoogleAnalyticsTest } from "@/components/GoogleAnalyticsTest";
+
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
@@ -230,10 +230,7 @@ const HomePage = () => {
       {/* FAQ Section */}
       <FAQSection />
 
-      {/* Google Analytics Test Component */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <GoogleAnalyticsTest />
-      </div>
+
 
       {/* CTA Section */}
       {/* <CTASection /> */}
