@@ -156,8 +156,8 @@ const HomePage = () => {
                   onClick={() => setGrantType('swedish')}
                   className={`px-6 py-3 rounded-l-md font-medium text-sm transition-all duration-200 ${
                     grantType === 'swedish' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   Svenska bidrag
@@ -166,8 +166,8 @@ const HomePage = () => {
                   onClick={() => setGrantType('both')}
                   className={`px-6 py-3 font-medium text-sm transition-all duration-200 ${
                     grantType === 'both' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   Alla bidrag
@@ -176,8 +176,8 @@ const HomePage = () => {
                   onClick={() => setGrantType('eu')}
                   className={`px-6 py-3 rounded-r-md font-medium text-sm transition-all duration-200 ${
                     grantType === 'eu' 
-                      ? 'bg-white text-gray-900 shadow-sm' 
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   EU-bidrag
