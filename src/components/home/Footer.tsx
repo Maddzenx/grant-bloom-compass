@@ -14,21 +14,13 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center">
-                {/* Circular Logo Icon */}
+                {/* Logo Icon */}
                 <div className="mr-3">
-                  <div className="circular-logo-icon w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-md">
-                    <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none">
-                      {/* Circular text path for "ALLAUTLYSNINGAR" */}
-                      <defs>
-                        <path id="circlePath" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" />
-                      </defs>
-                      <text fill="#8B5CF6" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold">
-                        <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                          ALLAUTLYSNINGAR
-                        </textPath>
-                      </text>
-                    </svg>
-                  </div>
+                  <img 
+                    src="/lovable-uploads/Favvicon.png" 
+                    alt="Allabidrag Logo" 
+                    className="w-10 h-10 object-contain"
+                  />
                 </div>
                 {/* Clean Typography */}
                 <div className="flex flex-col">
