@@ -6,7 +6,6 @@ import BetaBanner from "@/components/home/BetaBanner";
 import HeroSection from "@/components/home/HeroSection";
 import ChatInput from "@/components/home/ChatInput";
 import OrganizationTabs from "@/components/home/OrganizationTabs";
-import GrantTypeTabs from "@/components/home/GrantTypeTabs";
 import StatusMessages from "@/components/home/StatusMessages";
 import VideoDemo from "@/components/home/VideoDemo";
 import MetricsSection from "@/components/home/MetricsSection";
@@ -16,7 +15,6 @@ import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
 import Footer from "@/components/home/Footer";
-import BetaBanner from "@/components/home/BetaBanner";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useGrantsMatchingEngine } from "@/hooks/useGrantsMatchingEngine";
@@ -25,7 +23,7 @@ import { useSemanticSearch } from "@/hooks/useSemanticSearch";
 const HomePage = () => {
   const [inputValue, setInputValue] = useState("");
   const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>([]);
-  const [selectedGrantTypes, setSelectedGrantTypes] = useState<string[]>([]);
+  const [grantType, setGrantType] = useState<'swedish' | 'eu' | 'both'>('both');
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -48,51 +46,31 @@ const HomePage = () => {
 
     console.log('🚀 Starting search on home page for:', inputValue);
     console.log('🏢 With organization filter:', selectedOrganizations);
-    console.log('🌍 Grant types:', selectedGrantTypes);
-    
-    // Determine grant type filter based on selection
-    let grantTypeFilter: 'swedish' | 'eu' | 'both' = 'both';
-    if (selectedGrantTypes.length === 1) {
-      grantTypeFilter = selectedGrantTypes[0] as 'swedish' | 'eu';
-    }
+    console.log('🌍 Grant type:', grantType);
     
     try {
-      // Perform the search first with organization filtering and grant type filtering
-      const searchResult = await searchGrants(inputValue, selectedOrganizations, grantTypeFilter);
+      // Perform the search first with organization filtering
+      const searchResult = await searchGrants(inputValue, selectedOrganizations);
       
       console.log('🔍 Search completed, navigating to discover page with results:', searchResult);
       
-      // Create filter information for hashtags
-      const filterInfo = {
-        grantTypes: selectedGrantTypes,
-        organizations: selectedOrganizations
-      };
-
       // Navigate to discover page with search term and results
       navigate("/discover", {
         state: {
           searchTerm: inputValue,
           searchResults: searchResult,
-          grantType: grantTypeFilter,
-          filterInfo: filterInfo
+          grantType: grantType
         }
       });
     } catch (error) {
       console.error('❌ Search failed on home page:', error);
       
-      // Create filter information for hashtags
-      const filterInfo = {
-        grantTypes: selectedGrantTypes,
-        organizations: selectedOrganizations
-      };
-
       // Navigate anyway but let discover page handle the error
       navigate("/discover", {
         state: {
           searchTerm: inputValue,
           searchError: true,
-          grantType: grantTypeFilter,
-          filterInfo: filterInfo
+          grantType: grantType
         }
       });
     }
@@ -118,10 +96,7 @@ const HomePage = () => {
     setSelectedOrganizations(organizations);
   }, []);
 
-  const handleGrantTypeSelectionChange = useCallback((grantTypes: string[]) => {
-    console.log('🌍 Grant type selection changed:', grantTypes);
-    setSelectedGrantTypes(grantTypes);
-  }, []);
+
 
   const onFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const extractedText = await handleFileSelect(event);
@@ -177,7 +152,40 @@ const HomePage = () => {
             <h3 className="text-base font-[Basic] font-normal mb-2 text-center text-black">
               Visa endast:
             </h3>
-            <GrantTypeTabs onSelectionChange={handleGrantTypeSelectionChange} />
+            <div className="flex justify-center">
+              <div className="flex bg-gray-100 rounded-lg p-1 shadow-sm">
+                <button
+                  onClick={() => setGrantType('swedish')}
+                  className={`px-6 py-3 rounded-l-md font-medium text-sm transition-all duration-200 ${
+                    grantType === 'swedish' 
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Svenska bidrag
+                </button>
+                <button
+                  onClick={() => setGrantType('both')}
+                  className={`px-6 py-3 font-medium text-sm transition-all duration-200 ${
+                    grantType === 'both' 
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Alla bidrag
+                </button>
+                <button
+                  onClick={() => setGrantType('eu')}
+                  className={`px-6 py-3 rounded-r-md font-medium text-sm transition-all duration-200 ${
+                    grantType === 'eu' 
+                      ? 'bg-blue-600 text-white shadow-md font-semibold' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  EU-bidrag
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Organization Tabs */}
